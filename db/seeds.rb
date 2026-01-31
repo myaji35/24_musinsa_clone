@@ -83,7 +83,7 @@ products_data = [
 ]
 
 # Create 20 products using the Generated Model Variations
-brands_list = ["COVERNAT", "THISISNEVERTHAT", "LEE", "MUSINSA STANDARD", "ANDERSSON BELL", "MARD MERCREDI", "WHAT IT ISNT", "GROOVE RHYME", "PARTIMENTO", "DRAW FIT"]
+brands_list = [ "COVERNAT", "THISISNEVERTHAT", "LEE", "MUSINSA STANDARD", "ANDERSSON BELL", "MARD MERCREDI", "WHAT IT ISNT", "GROOVE RHYME", "PARTIMENTO", "DRAW FIT" ]
 
 # Define Image Mapping based on Category or Rotation
 # Define Image Mapping with Matching Names/Categories
@@ -96,19 +96,19 @@ model_variations = [
 
 20.times do |i|
   source_item = products_data[i % products_data.length]
-  
+
   # Cycle strictly through the 4 variations to ensure all 4 are visible
   variation = model_variations[i % 4]
-  
+
   # Construct a name that matches the image
   # We keep the brand from the source list for variety, but override the product name/category
   brand_name = brands_list[i % brands_list.length]
-  
+
   # AI 속성 정의 (29cm 스타일 큐레이션용)
-  moods = ["minimal", "casual", "delicate", "vintage", "modern"]
-  tpos = ["daily", "office", "date", "party", "casual"]
-  fit_styles = ["slim", "regular", "oversized", "loose"]
-  material_feels = ["soft", "structured", "lightweight", "warm"]
+  moods = [ "minimal", "casual", "delicate", "vintage", "modern" ]
+  tpos = [ "daily", "office", "date", "party", "casual" ]
+  fit_styles = [ "slim", "regular", "oversized", "loose" ]
+  material_feels = [ "soft", "structured", "lightweight", "warm" ]
 
   ai_attrs = {
     "mood" => moods.sample,
@@ -150,11 +150,11 @@ Product.all.each do |product|
     Review.create!(
       product: product,
       user: user,
-      content: ["모델핏이 너무 예뻐서 샀어요!", "사진이랑 똑같네요.", "고급스러워 보입니다.", "재질 만족합니다.", "핏이 예술이네요."].sample,
+      content: [ "모델핏이 너무 예뻐서 샀어요!", "사진이랑 똑같네요.", "고급스러워 보입니다.", "재질 만족합니다.", "핏이 예술이네요." ].sample,
       rating: rand(4..5),
       height: rand(155..175),
       weight: rand(45..65),
-      size_purchased: ['S', 'M', 'Free'].sample,
+      size_purchased: [ 'S', 'M', 'Free' ].sample,
       photo_url: nil
     )
   end
@@ -165,10 +165,10 @@ puts "Added sample reviews"
 10.times do |i|
   source_item = products_data[i % products_data.length]
   variation = model_variations.sample # Random snap image
-  
+
   Snap.create!(
     user: user,
-    content: "모델 착장 그대로 구매! #{['#데일리룩', '#하객룩', '#데이트룩'].sample} #Coren #{source_item[:name]} #OOTD",
+    content: "모델 착장 그대로 구매! #{[ '#데일리룩', '#하객룩', '#데이트룩' ].sample} #Coren #{source_item[:name]} #OOTD",
   )
 end
 puts "Created sample snaps"

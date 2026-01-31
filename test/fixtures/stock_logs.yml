@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  variant: one
+  log_type: MyString
+  quantity: 1
+  supplier: MyString
+  unit_cost: 9.99
+  order_id: 1
+  note: MyText
+
+two:
+  variant: two
+  log_type: MyString
+  quantity: 1
+  supplier: MyString
+  unit_cost: 9.99
+  order_id: 1
+  note: MyText

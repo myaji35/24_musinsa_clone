@@ -1,12 +1,23 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  root "home#index"
-  
-  resources :products do
-    resources :reviews, only: [:create]
+  # Inventory Management (Epic 2)
+  namespace :inventory do
+    get :scan
+    get :stock_in
+    post :stock_in, action: :create_stock_in
+    get :stock_out
+    post :stock_out, action: :create_stock_out
+    get :history
+    post :find_variant
   end
 
-  resources :snaps, only: [:index, :new, :create, :show]
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  root "home#index"
+
+  resources :products do
+    resources :reviews, only: [ :create ]
+  end
+
+  resources :snaps, only: [ :index, :new, :create, :show ]
   get "search", to: "search#index"
   get "up" => "rails/health#show", as: :rails_health_check
 

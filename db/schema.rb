@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_31_110020) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_31_110515) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -90,6 +90,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_31_110020) do
     t.index ["user_id"], name: "index_snaps_on_user_id"
   end
 
+  create_table "stock_logs", force: :cascade do |t|
+    t.integer "variant_id", null: false
+    t.string "log_type", null: false
+    t.integer "quantity", null: false
+    t.string "supplier"
+    t.decimal "unit_cost", precision: 10, scale: 2
+    t.integer "order_id"
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_stock_logs_on_created_at"
+    t.index ["log_type"], name: "index_stock_logs_on_log_type"
+    t.index ["variant_id"], name: "index_stock_logs_on_variant_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "name"
@@ -117,5 +132,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_31_110020) do
   add_foreign_key "snap_products", "products"
   add_foreign_key "snap_products", "snaps"
   add_foreign_key "snaps", "users"
+  add_foreign_key "stock_logs", "variants"
   add_foreign_key "variants", "products"
 end

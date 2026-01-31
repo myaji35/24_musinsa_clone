@@ -1,5 +1,6 @@
 class Variant < ApplicationRecord
   belongs_to :product
+  has_many :stock_logs, dependent: :destroy
 
   # 유효성 검증
   validates :color, presence: true

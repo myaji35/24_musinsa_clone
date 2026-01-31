@@ -9,7 +9,7 @@ class ProductsHelperTest < ActionView::TestCase
       category: "Top",
       brand: "Test Brand",
       ai_attributes: { mood: "minimal" }.to_json,
-      badges: ["coupon"].to_json,
+      badges: [ "coupon" ].to_json,
       is_new: true,
       restocked_at: nil
     )

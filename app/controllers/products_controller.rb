@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [:show, :edit, :update, :destroy]
+  before_action :set_product, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @products = Product.all
@@ -41,7 +41,7 @@ class ProductsController < ApplicationController
     @product = Product.new(product_params)
 
     if @product.save
-      redirect_to @product, notice: '상품이 성공적으로 등록되었습니다.'
+      redirect_to @product, notice: "상품이 성공적으로 등록되었습니다."
     else
       render :new, status: :unprocessable_entity
     end
@@ -52,7 +52,7 @@ class ProductsController < ApplicationController
 
   def update
     if @product.update(product_params)
-      redirect_to @product, notice: '상품이 성공적으로 수정되었습니다.'
+      redirect_to @product, notice: "상품이 성공적으로 수정되었습니다."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -60,7 +60,7 @@ class ProductsController < ApplicationController
 
   def destroy
     @product.destroy
-    redirect_to products_url, notice: '상품이 삭제되었습니다.'
+    redirect_to products_url, notice: "상품이 삭제되었습니다."
   end
 
   private
@@ -84,7 +84,7 @@ class ProductsController < ApplicationController
       :restocked_at,
       ai_attributes: {},
       badges: [],
-      variants_attributes: [:id, :color, :size, :stock, :min_stock, :barcode, :sku_code, :_destroy]
+      variants_attributes: [ :id, :color, :size, :stock, :min_stock, :barcode, :sku_code, :_destroy ]
     )
   end
 end

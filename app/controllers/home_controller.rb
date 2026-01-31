@@ -1,10 +1,9 @@
 class HomeController < ApplicationController
   def index
-
     @products = Product.all
 
     # 1. Filter by Category
-    if params[:category].present? && params[:category] != '전체'
+    if params[:category].present? && params[:category] != "전체"
       # Map Korean categories to English DB values if necessary, or assume DB uses Korean/English mix.
       # Based on seeds, we have "Top", "One-piece". We need to handle this mapping.
       # For now, let's try to match partially or define a mapping.
@@ -31,11 +30,11 @@ class HomeController < ApplicationController
 
     # 3. Sorting
     case params[:sort]
-    when 'price_low'
+    when "price_low"
       @products = @products.order(price: :asc)
-    when 'price_high'
+    when "price_high"
       @products = @products.order(price: :desc)
-    when 'newest'
+    when "newest"
       @products = @products.order(created_at: :desc)
     else
       # Default Ranking: Sales Count

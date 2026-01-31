@@ -9,7 +9,7 @@ class ProductTest < ActiveSupport::TestCase
       category: "Top",
       brand: "Test Brand",
       ai_attributes: { mood: "minimal", tpo: "daily" }.to_json,
-      badges: ["coupon"].to_json,
+      badges: [ "coupon" ].to_json,
       is_new: true,
       restocked_at: nil
     )
@@ -28,7 +28,7 @@ class ProductTest < ActiveSupport::TestCase
   end
 
   test "has_coupon? returns true when badges include coupon" do
-    @product.badges = ["coupon"].to_json
+    @product.badges = [ "coupon" ].to_json
     assert @product.has_coupon?
 
     @product.badges = [].to_json
@@ -67,7 +67,7 @@ class ProductTest < ActiveSupport::TestCase
   end
 
   test "badge_list returns array of badges" do
-    assert_equal ["coupon"], @product.badge_list
+    assert_equal [ "coupon" ], @product.badge_list
 
     @product.badges = nil
     assert_equal [], @product.badge_list

@@ -79,6 +79,7 @@ class ProductsController < ApplicationController
       :brand,
       :gender,
       :image_url,
+      :image,
       :is_new,
       :restocked_at,
       ai_attributes: {},

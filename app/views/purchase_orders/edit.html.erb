@@ -1,0 +1,139 @@
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+  <h1 class="text-3xl font-bold mb-6">발주서 수정</h1>
+
+  <%= form_with(model: @purchase_order, class: "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4") do |form| %>
+    <% if @purchase_order.errors.any? %>
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <p class="font-bold"><%= pluralize(@purchase_order.errors.count, "error") %> 발생:</p>
+        <ul class="list-disc list-inside">
+          <% @purchase_order.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div>
+        <%= form.label :supplier_id, "거래처 *", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= form.select :supplier_id,
+            options_from_collection_for_select(@suppliers, :id, :name, @purchase_order.supplier_id),
+            { prompt: "거래처 선택" },
+            { class: "shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500", required: true } %>
+      </div>
+
+      <div>
+        <%= form.label :expected_delivery_date, "납품 예정일", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= form.date_field :expected_delivery_date, class: "shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <%= form.label :notes, "메모", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.text_area :notes, rows: 3, class: "shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+
+    <div class="mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">발주 품목</h2>
+        <button type="button" onclick="addLineItem()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm">
+          품목 추가
+        </button>
+      </div>
+
+      <div id="purchase-order-items">
+        <%= form.fields_for :purchase_order_items do |item_form| %>
+          <div class="purchase-order-item border rounded p-4 mb-4 bg-gray-50">
+            <%= item_form.hidden_field :id %>
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-5">
+                <%= item_form.label :variant_id, "상품", class: "block text-gray-700 text-sm font-bold mb-2" %>
+                <%= item_form.select :variant_id,
+                    options_from_collection_for_select(@variants, :id, ->(v) { "#{v.product.name} (#{v.color}/#{v.size})" }, item_form.object.variant_id),
+                    { prompt: "상품 선택" },
+                    { class: "shadow border rounded w-full py-2 px-3 text-gray-700", required: true } %>
+              </div>
+
+              <div class="col-span-2">
+                <%= item_form.label :quantity, "수량", class: "block text-gray-700 text-sm font-bold mb-2" %>
+                <%= item_form.number_field :quantity, min: 1, class: "shadow border rounded w-full py-2 px-3 text-gray-700", required: true %>
+              </div>
+
+              <div class="col-span-3">
+                <%= item_form.label :unit_price, "사입가", class: "block text-gray-700 text-sm font-bold mb-2" %>
+                <%= item_form.number_field :unit_price, min: 0, step: 0.01, class: "shadow border rounded w-full py-2 px-3 text-gray-700", required: true %>
+              </div>
+
+              <div class="col-span-2 flex items-end">
+                <%= item_form.hidden_field :_destroy, value: false, class: "destroy-flag" %>
+                <button type="button" onclick="removeLineItem(this)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm w-full">
+                  삭제
+                </button>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <%= form.submit "수정", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
+      <%= link_to "취소", purchase_order_path(@purchase_order), class: "text-gray-600 hover:text-gray-800" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  let itemIndex = <%= @purchase_order.purchase_order_items.size %>;
+
+  function addLineItem() {
+    const container = document.getElementById('purchase-order-items');
+    const newItem = `
+      <div class="purchase-order-item border rounded p-4 mb-4 bg-gray-50">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-5">
+            <label class="block text-gray-700 text-sm font-bold mb-2">상품</label>
+            <select name="purchase_order[purchase_order_items_attributes][${itemIndex}][variant_id]" class="shadow border rounded w-full py-2 px-3 text-gray-700" required>
+              <option value="">상품 선택</option>
+              <% @variants.each do |v| %>
+                <option value="<%= v.id %>"><%= "#{v.product.name} (#{v.color}/#{v.size})" %></option>
+              <% end %>
+            </select>
+          </div>
+
+          <div class="col-span-2">
+            <label class="block text-gray-700 text-sm font-bold mb-2">수량</label>
+            <input type="number" name="purchase_order[purchase_order_items_attributes][${itemIndex}][quantity]" min="1" value="1" class="shadow border rounded w-full py-2 px-3 text-gray-700" required>
+          </div>
+
+          <div class="col-span-3">
+            <label class="block text-gray-700 text-sm font-bold mb-2">사입가</label>
+            <input type="number" name="purchase_order[purchase_order_items_attributes][${itemIndex}][unit_price]" min="0" step="0.01" class="shadow border rounded w-full py-2 px-3 text-gray-700" required>
+          </div>
+
+          <div class="col-span-2 flex items-end">
+            <button type="button" onclick="removeLineItem(this)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm w-full">
+              삭제
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', newItem);
+    itemIndex++;
+  }
+
+  function removeLineItem(button) {
+    const item = button.closest('.purchase-order-item');
+    const destroyFlag = item.querySelector('.destroy-flag');
+
+    if (destroyFlag) {
+      // Existing item - mark for destruction
+      destroyFlag.value = '1';
+      item.style.display = 'none';
+    } else {
+      // New item - just remove
+      item.remove();
+    }
+  }
+</script>

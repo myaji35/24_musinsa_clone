@@ -40,3 +40,20 @@ plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
+
+# Clean stale PID files on startup
+on_booted do
+  pid_file = ENV["PIDFILE"] || "tmp/pids/server.pid"
+  if File.exist?(pid_file)
+    old_pid = File.read(pid_file).strip.to_i
+    begin
+      Process.kill(0, old_pid)
+      # Process is still running, log warning
+      puts "⚠ Warning: PID #{old_pid} is still running"
+    rescue Errno::ESRCH
+      # Process not found, remove stale PID
+      File.delete(pid_file)
+      puts "✓ Removed stale PID file (#{old_pid})"
+    end
+  end
+end

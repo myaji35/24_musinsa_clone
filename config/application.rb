@@ -23,5 +23,8 @@ module MusinsaClone
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Epic 7: Enable Rack::Attack middleware for API rate limiting
+    config.middleware.use Rack::Attack
   end
 end

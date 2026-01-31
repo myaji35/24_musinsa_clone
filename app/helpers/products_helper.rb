@@ -30,9 +30,12 @@ module ProductsHelper
     badges
   end
 
-  # 할인율 계산 (임시로 30% 고정, 추후 실제 할인 로직 구현)
+  # 할인율 계산
+  # Note: Product 모델에 discount_rate 컬럼 추가 시 product.discount_rate 반환
+  # 현재는 기본 30% 고정 (무신사 스타일 UI 시연용)
   def discount_rate(product)
-    30 # TODO: 실제 할인율 계산 로직 구현
+    return product.discount_rate if product.respond_to?(:discount_rate) && product.discount_rate.present?
+    30 # 기본값
   end
 
   # 할인가 계산
@@ -61,5 +64,27 @@ module ProductsHelper
       "modern" => "트렌디한 감성을 담은"
     }
     descriptions[mood] || ""
+  end
+
+  # 평점 계산 (평균 리뷰 점수)
+  def average_rating(product)
+    return 0 if product.reviews.empty?
+
+    total = product.reviews.sum(:rating)
+    (total.to_f / product.reviews.count).round(1)
+  end
+
+  # 평점 별 표시 (5점 만점)
+  def rating_stars(rating)
+    full_stars = rating.floor
+    half_star = (rating - full_stars) >= 0.5
+    empty_stars = 5 - full_stars - (half_star ? 1 : 0)
+
+    stars = []
+    stars += ["★"] * full_stars
+    stars << "☆" if half_star
+    stars += ["☆"] * empty_stars
+
+    stars.join
   end
 end

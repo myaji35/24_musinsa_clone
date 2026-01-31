@@ -1,0 +1,46 @@
+# examples:
+#   periodic_cleanup:
+#     class: CleanSoftDeletedRecordsJob
+#     queue: background
+#     args: [ 1000, { batch_size: 500 } ]
+#     schedule: every hour
+#   periodic_cleanup_with_command:
+#     command: "SoftDeletedRecord.due.delete_all"
+#     priority: 2
+#     schedule: at 5am every day
+
+development:
+  # Epic 5.1: 재고 부족 알림 Job (개발 환경 - 테스트용 5분마다 실행)
+  low_stock_alert:
+    class: LowStockAlertJob
+    queue: default
+    schedule: every 5 minutes
+
+  # Epic 6.1: 마케팅 캠페인 자동 발송 Job (매 10분마다 체크)
+  send_campaign:
+    class: SendCampaignJob
+    queue: default
+    schedule: every 10 minutes
+
+  # Epic 4.2: 취향 태그 수집 Job (이미 Order 생성 시 자동 실행되므로 주석 처리)
+  # update_preference_tags:
+  #   class: UpdatePreferenceTagsJob
+  #   queue: default
+  #   schedule: every hour
+
+production:
+  clear_solid_queue_finished_jobs:
+    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
+    schedule: every hour at minute 12
+
+  # Epic 5.1: 재고 부족 알림 Job (매일 오전 9시 실행)
+  low_stock_alert:
+    class: LowStockAlertJob
+    queue: default
+    schedule: at 9am every day
+
+  # Epic 6.1: 마케팅 캠페인 자동 발송 Job (매 30분마다 체크)
+  send_campaign:
+    class: SendCampaignJob
+    queue: default
+    schedule: every 30 minutes

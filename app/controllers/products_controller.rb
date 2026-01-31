@@ -29,8 +29,11 @@ class ProductsController < ApplicationController
   end
 
   def show
-    @reviews = @product.reviews.order(created_at: :desc)
+    @variants = @product.variants.includes(:stock_logs)
+    @selected_variant = @variants.first
+    @reviews = @product.reviews.order(created_at: :desc).limit(10)
     @related_products = Product.where(category: @product.category).where.not(id: @product.id).limit(4)
+    @average_rating = @product.reviews.any? ? (@product.reviews.sum(:rating).to_f / @product.reviews.count).round(1) : 0
   end
 
   def new

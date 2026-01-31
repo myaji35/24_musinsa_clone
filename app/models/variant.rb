@@ -1,6 +1,8 @@
 class Variant < ApplicationRecord
   belongs_to :product
   has_many :stock_logs, dependent: :destroy
+  has_many :orders
+  has_many :notifications, dependent: :destroy # Epic 5.1
 
   # 유효성 검증
   validates :color, presence: true

@@ -1,0 +1,145 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">발주서 상세 - <%= @purchase_order.order_number %></h1>
+    <div>
+      <% if @purchase_order.status == "draft" %>
+        <%= link_to "수정", edit_purchase_order_path(@purchase_order), class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg mr-2" %>
+        <%= link_to "제출", submit_purchase_order_path(@purchase_order), method: :post, data: { turbo_method: :post, turbo_confirm: "발주서를 거래처에 제출하시겠습니까?" }, class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mr-2" %>
+      <% end %>
+      <% if @purchase_order.status == "confirmed" %>
+        <%= link_to "입고 처리", receive_purchase_order_path(@purchase_order), method: :post, data: { turbo_method: :post, turbo_confirm: "입고 처리하시겠습니까? 재고가 업데이트됩니다." }, class: "bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mr-2" %>
+      <% end %>
+      <%= link_to "목록", purchase_orders_path, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-6 mb-6">
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">거래처 정보</h2>
+      <div class="space-y-2">
+        <div>
+          <p class="text-sm text-gray-600">거래처명</p>
+          <p class="font-medium">
+            <%= link_to @purchase_order.supplier.name, supplier_path(@purchase_order.supplier), class: "text-blue-600 hover:text-blue-800" %>
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600">담당자</p>
+          <p class="font-medium"><%= @purchase_order.supplier.contact_person || "-" %></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600">연락처</p>
+          <p class="font-medium"><%= @purchase_order.supplier.phone %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">발주 정보</h2>
+      <div class="space-y-2">
+        <div>
+          <p class="text-sm text-gray-600">상태</p>
+          <% status_class = case @purchase_order.status
+            when "draft" then "bg-gray-100 text-gray-800"
+            when "submitted" then "bg-yellow-100 text-yellow-800"
+            when "confirmed" then "bg-blue-100 text-blue-800"
+            when "received" then "bg-green-100 text-green-800"
+            when "cancelled" then "bg-red-100 text-red-800"
+            end %>
+          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= status_class %>">
+            <%= @purchase_order.status %>
+          </span>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600">총액</p>
+          <p class="font-medium text-xl text-blue-600">₩<%= number_with_delimiter(@purchase_order.total_amount) %></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600">납품 예정일</p>
+          <p class="font-medium"><%= @purchase_order.expected_delivery_date&.strftime("%Y-%m-%d") || "-" %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">처리 이력</h2>
+      <div class="space-y-2">
+        <div>
+          <p class="text-sm text-gray-600">등록일</p>
+          <p class="font-medium"><%= @purchase_order.created_at.strftime("%Y-%m-%d %H:%M") %></p>
+        </div>
+        <% if @purchase_order.confirmed_at %>
+          <div>
+            <p class="text-sm text-gray-600">확정일</p>
+            <p class="font-medium"><%= @purchase_order.confirmed_at.strftime("%Y-%m-%d %H:%M") %></p>
+          </div>
+        <% end %>
+        <% if @purchase_order.received_at %>
+          <div>
+            <p class="text-sm text-gray-600">입고일</p>
+            <p class="font-medium"><%= @purchase_order.received_at.strftime("%Y-%m-%d %H:%M") %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <% if @purchase_order.notes.present? %>
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <h2 class="text-xl font-bold mb-2">메모</h2>
+      <p class="text-gray-700"><%= @purchase_order.notes %></p>
+    </div>
+  <% end %>
+
+  <% if @purchase_order.status == "submitted" %>
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            <strong>거래처 확인 대기 중</strong><br>
+            거래처 확인 URL: <code class="bg-yellow-100 px-2 py-1 rounded"><%= @purchase_order.confirmation_url %></code>
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">발주 품목</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상품명</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">옵션</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">수량</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">사입가</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">소계</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @purchase_order_items.each do |item| %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap"><%= item.product_name %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= item.variant_name %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= item.quantity %></td>
+              <td class="px-6 py-4 whitespace-nowrap">₩<%= number_with_delimiter(item.unit_price) %></td>
+              <td class="px-6 py-4 whitespace-nowrap font-medium">₩<%= number_with_delimiter(item.subtotal) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot class="bg-gray-50">
+          <tr>
+            <td colspan="4" class="px-6 py-4 text-right font-bold">총액</td>
+            <td class="px-6 py-4 font-bold text-lg text-blue-600">₩<%= number_with_delimiter(@purchase_order.total_amount) %></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

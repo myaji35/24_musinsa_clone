@@ -50,19 +50,22 @@ class HomeController < ApplicationController
   private
 
   def prepare_curated_collections
-    [
-      {
-        mood: "minimal",
-        products: Product.where("ai_attributes LIKE ?", "%minimal%").order(views_count: :desc)
-      },
-      {
-        mood: "casual",
-        products: Product.where("ai_attributes LIKE ?", "%casual%").order(views_count: :desc)
-      },
-      {
-        mood: "delicate",
-        products: Product.where("ai_attributes LIKE ?", "%delicate%").order(views_count: :desc)
-      }
-    ].select { |collection| collection[:products].any? }
+    # Low-level caching for curated collections (1 hour expiration)
+    Rails.cache.fetch("curated-collections", expires_in: 1.hour) do
+      [
+        {
+          mood: "minimal",
+          products: Product.where("ai_attributes LIKE ?", "%minimal%").order(views_count: :desc).limit(10).to_a
+        },
+        {
+          mood: "casual",
+          products: Product.where("ai_attributes LIKE ?", "%casual%").order(views_count: :desc).limit(10).to_a
+        },
+        {
+          mood: "delicate",
+          products: Product.where("ai_attributes LIKE ?", "%delicate%").order(views_count: :desc).limit(10).to_a
+        }
+      ].select { |collection| collection[:products].any? }
+    end
   end
 end

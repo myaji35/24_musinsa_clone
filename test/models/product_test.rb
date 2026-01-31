@@ -72,4 +72,55 @@ class ProductTest < ActiveSupport::TestCase
     @product.badges = nil
     assert_equal [], @product.badge_list
   end
+
+  # Edge Cases for ai_attributes parsing
+  test "should handle nil ai_attributes" do
+    product = Product.new(
+      name: "Test",
+      price: 10000,
+      brand: "Brand",
+      category: "Top",
+      ai_attributes: nil
+    )
+
+    assert_nil product.mood
+    assert_nil product.tpo
+  end
+
+  test "should handle empty string ai_attributes" do
+    product = Product.new(
+      name: "Test",
+      price: 10000,
+      brand: "Brand",
+      category: "Top",
+      ai_attributes: ""
+    )
+
+    assert_nil product.mood
+  end
+
+  test "should handle malformed JSON ai_attributes" do
+    product = Product.new(
+      name: "Test",
+      price: 10000,
+      brand: "Brand",
+      category: "Top",
+      ai_attributes: "invalid{json"
+    )
+
+    # Should not raise error, should return nil
+    assert_nothing_raised do
+      assert_nil product.mood
+    end
+  end
+
+  test "parsed_ai_attributes should return empty hash for nil" do
+    product = Product.new(ai_attributes: nil)
+    assert_equal({}, product.parsed_ai_attributes)
+  end
+
+  test "parsed_ai_attributes should parse String JSON" do
+    product = Product.new(ai_attributes: '{"mood":"minimal"}')
+    assert_equal "minimal", product.parsed_ai_attributes["mood"]
+  end
 end

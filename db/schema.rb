@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_31_110515) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_31_115314) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,6 +39,70 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_31_110515) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "anony_customers", force: :cascade do |t|
+    t.string "uuid", null: false
+    t.string "zip_prefix", limit: 3
+    t.string "phone_suffix", limit: 4
+    t.integer "birth_year"
+    t.text "preference_tags"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["phone_suffix", "birth_year"], name: "index_anony_customers_on_phone_suffix_and_birth_year"
+    t.index ["uuid"], name: "index_anony_customers_on_uuid", unique: true
+    t.index ["zip_prefix"], name: "index_anony_customers_on_zip_prefix"
+  end
+
+  create_table "campaigns", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "campaign_type", null: false
+    t.text "target_segment"
+    t.integer "product_id"
+    t.text "message_template"
+    t.string "status", default: "draft"
+    t.datetime "scheduled_at"
+    t.datetime "sent_at"
+    t.integer "target_count", default: 0
+    t.integer "sent_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_type"], name: "index_campaigns_on_campaign_type"
+    t.index ["product_id"], name: "index_campaigns_on_product_id"
+    t.index ["scheduled_at"], name: "index_campaigns_on_scheduled_at"
+    t.index ["status"], name: "index_campaigns_on_status"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.integer "variant_id", null: false
+    t.string "notification_type", null: false
+    t.text "message"
+    t.string "status", default: "pending"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notification_type"], name: "index_notifications_on_notification_type"
+    t.index ["sent_at"], name: "index_notifications_on_sent_at"
+    t.index ["status"], name: "index_notifications_on_status"
+    t.index ["variant_id"], name: "index_notifications_on_variant_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "anony_customer_id", null: false
+    t.integer "product_id", null: false
+    t.integer "variant_id", null: false
+    t.integer "quantity", default: 1, null: false
+    t.decimal "total_price", precision: 10, scale: 2, null: false
+    t.string "status", default: "pending"
+    t.string "order_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["anony_customer_id"], name: "index_orders_on_anony_customer_id"
+    t.index ["created_at"], name: "index_orders_on_created_at"
+    t.index ["order_number"], name: "index_orders_on_order_number", unique: true
+    t.index ["product_id"], name: "index_orders_on_product_id"
+    t.index ["status"], name: "index_orders_on_status"
+    t.index ["variant_id"], name: "index_orders_on_variant_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -56,6 +120,37 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_31_110515) do
     t.text "badges"
     t.boolean "is_new", default: false
     t.datetime "restocked_at"
+  end
+
+  create_table "purchase_order_items", force: :cascade do |t|
+    t.integer "purchase_order_id", null: false
+    t.integer "variant_id", null: false
+    t.integer "quantity", null: false
+    t.decimal "unit_price", precision: 10, scale: 2, null: false
+    t.decimal "subtotal", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["purchase_order_id", "variant_id"], name: "index_po_items_on_po_and_variant", unique: true
+    t.index ["purchase_order_id"], name: "index_purchase_order_items_on_purchase_order_id"
+    t.index ["variant_id"], name: "index_purchase_order_items_on_variant_id"
+  end
+
+  create_table "purchase_orders", force: :cascade do |t|
+    t.integer "supplier_id", null: false
+    t.string "order_number", null: false
+    t.string "status", default: "draft"
+    t.date "expected_delivery_date"
+    t.decimal "total_amount", precision: 10, scale: 2, default: "0.0"
+    t.text "notes"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "received_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["confirmation_token"], name: "index_purchase_orders_on_confirmation_token"
+    t.index ["order_number"], name: "index_purchase_orders_on_order_number", unique: true
+    t.index ["status"], name: "index_purchase_orders_on_status"
+    t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -105,6 +200,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_31_110515) do
     t.index ["variant_id"], name: "index_stock_logs_on_variant_id"
   end
 
+  create_table "suppliers", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "contact_person"
+    t.string "phone", null: false
+    t.string "email"
+    t.text "address"
+    t.string "payment_terms"
+    t.text "notes"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_suppliers_on_active"
+    t.index ["name"], name: "index_suppliers_on_name", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "name"
@@ -127,6 +237,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_31_110515) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "campaigns", "products"
+  add_foreign_key "notifications", "variants"
+  add_foreign_key "orders", "anony_customers"
+  add_foreign_key "orders", "products"
+  add_foreign_key "orders", "variants"
+  add_foreign_key "purchase_order_items", "purchase_orders"
+  add_foreign_key "purchase_order_items", "variants"
+  add_foreign_key "purchase_orders", "suppliers"
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"
   add_foreign_key "snap_products", "products"

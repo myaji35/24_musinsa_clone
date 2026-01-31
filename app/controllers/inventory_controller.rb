@@ -14,12 +14,19 @@ class InventoryController < ApplicationController
 
   # POST /inventory/stock_in - 입고 처리
   def create_stock_in
-    @stock_log = @variant.stock_logs.build(stock_in_params)
-    @stock_log.log_type = "in"
+    result = Inventory::StockAdjuster.call(
+      barcode: @variant.barcode,
+      quantity: stock_in_params[:quantity],
+      stock_type: "in",
+      note: stock_in_params[:note],
+      user_name: current_user_name
+    )
 
-    if @stock_log.save
-      redirect_to stock_in_inventory_index_path(barcode: @variant.barcode), notice: "입고 처리 완료 (재고: #{@variant.stock})"
+    if result.success?
+      redirect_to stock_in_inventory_index_path(barcode: @variant.barcode),
+                  notice: result.data[:message]
     else
+      flash.now[:alert] = result.error
       render :stock_in, status: :unprocessable_entity
     end
   end
@@ -32,19 +39,19 @@ class InventoryController < ApplicationController
 
   # POST /inventory/stock_out - 출고 처리
   def create_stock_out
-    @stock_log = @variant.stock_logs.build(stock_out_params)
-    @stock_log.log_type = "out"
+    result = Inventory::StockAdjuster.call(
+      barcode: @variant.barcode,
+      quantity: stock_out_params[:quantity],
+      stock_type: "out",
+      note: stock_out_params[:note],
+      user_name: current_user_name
+    )
 
-    # 재고 부족 검증
-    if @variant.stock.to_i < @stock_log.quantity
-      flash.now[:alert] = "재고 부족: 현재고 #{@variant.stock}개, 요청 #{@stock_log.quantity}개"
-      render :stock_out, status: :unprocessable_entity
-      return
-    end
-
-    if @stock_log.save
-      redirect_to stock_out_inventory_index_path(barcode: @variant.barcode), notice: "출고 처리 완료 (잔여: #{@variant.stock})"
+    if result.success?
+      redirect_to stock_out_inventory_index_path(barcode: @variant.barcode),
+                  notice: result.data[:message]
     else
+      flash.now[:alert] = result.error
       render :stock_out, status: :unprocessable_entity
     end
   end
@@ -73,18 +80,23 @@ class InventoryController < ApplicationController
 
   # POST /inventory/find_variant - 바코드로 Variant 찾기 (AJAX)
   def find_variant
-    @variant = Variant.includes(:product).find_by(barcode: params[:barcode])
+    result = Inventory::BarcodeScanner.call(barcode: params[:barcode])
 
     respond_to do |format|
-      if @variant
-        format.json { render json: { variant: @variant, product: @variant.product } }
+      if result.success?
+        format.json { render json: result.data }
       else
-        format.json { render json: { error: "Variant not found" }, status: :not_found }
+        format.json { render json: { error: result.error }, status: :not_found }
       end
     end
   end
 
   private
+
+  def current_user_name
+    # TODO: 실제 사용자 인증 시스템 연동 시 수정
+    "Admin"
+  end
 
   def set_variant_by_barcode
     barcode = params.dig(:stock_log, :barcode) || params[:barcode]

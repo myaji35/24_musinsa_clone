@@ -1,0 +1,146 @@
+<%# Epic 4.3: 익명 CRM 대시보드 메인 페이지 %>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <%# 헤더 %>
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold mb-2">JIEUN 익명 CRM 대시보드</h1>
+    <p class="text-gray-600">Privacy-First 고객 인사이트 분석</p>
+  </div>
+
+  <%# 주요 지표 카드 %>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+      <div class="text-sm text-gray-600 mb-1">총 익명 고객</div>
+      <div class="text-3xl font-bold text-blue-600"><%= number_with_delimiter(@total_customers) %></div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+      <div class="text-sm text-gray-600 mb-1">총 주문 수</div>
+      <div class="text-3xl font-bold text-green-600"><%= number_with_delimiter(@total_orders) %></div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+      <div class="text-sm text-gray-600 mb-1">총 매출</div>
+      <div class="text-3xl font-bold text-purple-600">₩<%= number_with_delimiter(@total_revenue.to_i) %></div>
+    </div>
+  </div>
+
+  <%# 두 컬럼 레이아웃 %>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <%# 지역별 판매 Top 5 %>
+    <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">지역별 판매 Top 5</h2>
+        <%= link_to "전체 보기 →", dashboard_regional_trends_path, class: "text-sm text-blue-600 hover:underline" %>
+      </div>
+
+      <% if @regional_sales.any? %>
+        <div class="space-y-3">
+          <% @regional_sales.each_with_index do |region, index| %>
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                  <%= index + 1 %>
+                </div>
+                <div>
+                  <div class="font-medium">우편번호 <%= region[:zip_prefix] %>xxx</div>
+                  <div class="text-sm text-gray-600"><%= region[:order_count] %>건 주문</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-gray-900">₩<%= number_with_delimiter(region[:total_sales].to_i) %></div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 text-center py-8">아직 주문 데이터가 없습니다.</p>
+      <% end %>
+    </div>
+
+    <%# 인기 취향 태그 Top 10 %>
+    <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">인기 취향 태그</h2>
+        <%= link_to "전체 분석 →", dashboard_preference_analysis_path, class: "text-sm text-blue-600 hover:underline" %>
+      </div>
+
+      <% if @top_preferences.any? %>
+        <div class="space-y-2">
+          <% @top_preferences.each_with_index do |pref, index| %>
+            <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500"><%= index + 1 %>.</span>
+                <span class="font-medium"><%= pref[:tag] %></span>
+              </div>
+              <span class="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded"><%= pref[:count] %>회</span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 text-center py-8">아직 취향 데이터가 없습니다.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <%# 최근 주문 테이블 %>
+  <div class="bg-white rounded-lg shadow border border-gray-200">
+    <div class="p-6 border-b border-gray-200">
+      <h2 class="text-xl font-bold">최근 7일 주문</h2>
+    </div>
+
+    <% if @recent_orders.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">주문번호</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상품</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">수량</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">금액</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지역</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상태</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">주문일</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% @recent_orders.each do |order| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 text-sm font-mono"><%= order.order_number %></td>
+                <td class="px-6 py-4 text-sm">
+                  <div class="font-medium"><%= order.product.name %></div>
+                  <div class="text-gray-500"><%= order.variant.color %> / <%= order.variant.size %></div>
+                </td>
+                <td class="px-6 py-4 text-sm"><%= order.quantity %></td>
+                <td class="px-6 py-4 text-sm font-medium">₩<%= number_with_delimiter(order.total_price.to_i) %></td>
+                <td class="px-6 py-4 text-sm">
+                  <% if order.anony_customer.zip_prefix.present? %>
+                    <%= order.anony_customer.zip_prefix %>xxx
+                  <% else %>
+                    <span class="text-gray-400">-</span>
+                  <% end %>
+                </td>
+                <td class="px-6 py-4 text-sm">
+                  <% status_class = case order.status
+                                    when "delivered" then "bg-green-100 text-green-800"
+                                    when "shipped" then "bg-blue-100 text-blue-800"
+                                    when "paid" then "bg-yellow-100 text-yellow-800"
+                                    when "cancelled" then "bg-red-100 text-red-800"
+                                    else "bg-gray-100 text-gray-800"
+                                    end %>
+                  <span class="px-2 py-1 rounded text-xs font-medium <%= status_class %>">
+                    <%= order.status %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-600"><%= order.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="p-12 text-center text-gray-500">
+        최근 7일간 주문이 없습니다.
+      </div>
+    <% end %>
+  </div>
+</div>

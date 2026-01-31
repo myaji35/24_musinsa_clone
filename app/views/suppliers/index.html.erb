@@ -1,0 +1,52 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">거래처 관리</h1>
+    <%= link_to "거래처 등록", new_supplier_path, class: "bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg" %>
+  </div>
+
+  <% if @suppliers.any? %>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">거래처명</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">담당자</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">연락처</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">이메일</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">결제조건</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">작업</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @suppliers.each do |supplier| %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <%= link_to supplier.name, supplier_path(supplier), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= supplier.contact_person %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= supplier.phone %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= supplier.email %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= supplier.payment_terms %></td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <% if supplier.active %>
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">활성</span>
+                <% else %>
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">비활성</span>
+                <% end %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <%= link_to "수정", edit_supplier_path(supplier), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
+                <%= link_to "비활성화", supplier_path(supplier), method: :delete, data: { turbo_method: :delete, turbo_confirm: "정말 비활성화하시겠습니까?" }, class: "text-red-600 hover:text-red-900" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+      등록된 거래처가 없습니다. 새로운 거래처를 등록해주세요.
+    </div>
+  <% end %>
+</div>

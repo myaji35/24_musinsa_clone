@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  anony_customer: one
+  product: one
+  variant: one
+  quantity: 1
+  total_price: 9.99
+  status: MyString
+  order_number: MyString
+
+two:
+  anony_customer: two
+  product: two
+  variant: two
+  quantity: 1
+  total_price: 9.99
+  status: MyString
+  order_number: MyString

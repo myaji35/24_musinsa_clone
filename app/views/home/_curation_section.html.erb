@@ -12,7 +12,7 @@
 
   <%# 상품 그리드 (29cm 스타일: 모바일 2열, 데스크톱 4열) %>
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-    <% products.limit(4).each do |product| %>
+    <% products.first(4).each do |product| %>
       <%= render 'products/card', product: product %>
     <% end %>
   </div>

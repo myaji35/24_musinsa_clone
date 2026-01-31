@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Musinsa Clone" %></title>
+    <title><%= content_for(:title) || "JIEUN - AI Fashion OS" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Musinsa Clone">
+    <meta name="application-name" content="JIEUN">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+    <%# PWA Manifest - Enabled for installable apps %>
+    <%= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
@@ -33,7 +33,7 @@
     </style>
   </head>
 
-  <body class="bg-gray-50 text-gray-900 font-sans antialiased">
+  <body class="bg-gray-50 text-gray-900 font-sans antialiased" data-controller="lazy-load">
     <!-- Top Utility Bar -->
     <div class="bg-white border-b border-gray-100 hidden md:block">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-end space-x-4 text-[11px] text-gray-500 font-medium">
@@ -49,7 +49,7 @@
     <nav class="bg-white sticky top-0 z-50 shadow-sm border-b border-black">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 md:h-20 flex items-center justify-between gap-4 md:gap-8">
         <!-- Logo -->
-        <a href="/" class="text-2xl md:text-3xl font-black tracking-tighter shrink-0 font-oswald italic pr-2">COREN MUSINSA</a>
+        <a href="/" class="text-2xl md:text-3xl font-black tracking-tighter shrink-0 font-oswald italic pr-2">JIEUN</a>
         
         <!-- Search Bar (Hidden on mobile, visible on desktop) -->
         <div class="hidden md:flex flex-1 max-w-xl mx-auto relative">
@@ -63,12 +63,13 @@
 
         <!-- Navigation Links -->
         <div class="hidden md:flex items-center space-x-6 md:space-x-8 font-bold text-sm md:text-[15px] tracking-tight whitespace-nowrap">
-          <a href="#" class="hover:text-gray-500 hover:underline underline-offset-4 decoration-2">랭킹</a>
-          <a href="#" class="hover:text-gray-500">업데이트</a>
-          <a href="#" class="hover:text-gray-500">코디</a>
-          <a href="#" class="hover:text-gray-500">세일</a>
-          <a href="#" class="hover:text-gray-500">스페셜</a>
-          <a href="/snaps" class="hover:text-gray-500 text-black">매거진</a> <!-- Linked Snap to Magazine for demo -->
+          <a href="/" class="hover:text-gray-500 hover:underline underline-offset-4 decoration-2">랭킹</a>
+          <a href="/products" class="hover:text-gray-500">상품</a>
+          <a href="/snaps" class="hover:text-gray-500">매거진</a>
+          <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
+          <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
+          <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
+          <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
         </div>
 
         <!-- Mobile Menu & Icons -->
@@ -109,12 +110,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div class="col-span-1 md:col-span-2">
-                    <h3 class="text-2xl font-black text-black mb-4 font-oswald italic">MUSINSA CLONE</h3>
+                    <h3 class="text-2xl font-black text-black mb-4 font-oswald italic">JIEUN</h3>
                     <p class="leading-relaxed mb-4">
-                        주식회사 무신사 (MUSINSA Co., Ltd.)<br>
-                        서울시 성동구 아차산로 13길 11, 1층 (성수동 2가, 무신사 캠퍼스 엔1)<br>
-                        대표이사 : 강승식 | 사업자등록번호 : 123-45-67890<br>
-                        통신판매업신고 : 2026-서울성동-01234
+                        "주소는 지우고 취향은 잇다"<br>
+                        AI-Native Fashion Operating System<br>
+                        Privacy-First CRM · UCP Protocol · Barcode Automation<br>
+                        Built with Rails 7.2 + Claude AI
                     </p>
                     <div class="flex space-x-3">
                         <a href="#" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">F</a>
@@ -142,10 +143,9 @@
                 </div>
             </div>
             <div class="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-400">
-                <p>COPYRIGHT (C) MUSINSA ALL RIGHTS RESERVED.</p>
+                <p>🤖 Generated with <a href="https://claude.com/claude-code" class="underline hover:text-black">Claude Code</a> · COPYRIGHT (C) 2026 JIEUN ALL RIGHTS RESERVED.</p>
                 <div class="flex space-x-2 mt-2 md:mt-0">
-                    <span>에스크로 서비스 가입 확인</span>
-                    <span class="border-l border-gray-300 pl-2">소비자피해보상보험 가입 확인</span>
+                    <span>Rails 7.2 · Solid Queue · Tailwind CSS</span>
                 </div>
             </div>
         </div>

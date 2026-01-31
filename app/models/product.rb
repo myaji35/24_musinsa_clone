@@ -3,6 +3,8 @@ class Product < ApplicationRecord
   has_many :snap_products, dependent: :destroy
   has_many :snaps, through: :snap_products
   has_many :variants, dependent: :destroy
+  has_many :orders
+  has_many :campaigns # Epic 6.1
 
   # Active Storage 이미지 첨부 (Story 1.1)
   has_one_attached :image
@@ -48,20 +50,30 @@ class Product < ApplicationRecord
     restocked_at && restocked_at > 7.days.ago
   end
 
-  # AI 속성 접근자
+  # AI 속성 접근자 (안전하게 파싱)
+  def parsed_ai_attributes
+    return {} if ai_attributes.blank?
+
+    if ai_attributes.is_a?(String)
+      JSON.parse(ai_attributes) rescue {}
+    else
+      ai_attributes || {}
+    end
+  end
+
   def mood
-    ai_attributes&.dig("mood")
+    parsed_ai_attributes["mood"]
   end
 
   def tpo
-    ai_attributes&.dig("tpo")
+    parsed_ai_attributes["tpo"]
   end
 
   def fit_style
-    ai_attributes&.dig("fit_style")
+    parsed_ai_attributes["fit_style"]
   end
 
   def material_feel
-    ai_attributes&.dig("material_feel")
+    parsed_ai_attributes["material_feel"]
   end
 end

@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  variant: one
+  notification_type: MyString
+  message: MyText
+  status: MyString
+  sent_at: 2026-01-31 20:32:23
+
+two:
+  variant: two
+  notification_type: MyString
+  message: MyText
+  status: MyString
+  sent_at: 2026-01-31 20:32:23

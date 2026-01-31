@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  campaign_type: MyString
+  target_segment: MyText
+  product: one
+  message_template: MyText
+  status: MyString
+  scheduled_at: 2026-01-31 20:34:52
+  sent_at: 2026-01-31 20:34:52
+
+two:
+  name: MyString
+  campaign_type: MyString
+  target_segment: MyText
+  product: two
+  message_template: MyText
+  status: MyString
+  scheduled_at: 2026-01-31 20:34:52
+  sent_at: 2026-01-31 20:34:52

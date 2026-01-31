@@ -27,20 +27,22 @@
     <%# 필터 & 검색 섹션 %>
     <%= render 'home/filter_section' %>
 
-    <%# 상품 그리드 (ProductCard partial 사용) %>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-8 sm:gap-x-4">
-      <% @ranked_products.each_with_index do |product, index| %>
-        <div class="relative">
-          <%# 랭킹 배지 오버레이 %>
-          <div class="absolute top-0 left-0 z-10">
-              <div class="bg-black/90 text-white font-oswald text-lg px-2.5 py-1 leading-none font-bold">
-                  <%= index + 1 %>
-              </div>
-          </div>
+    <%# 상품 그리드 (ProductCard partial 사용) - Russian Doll Caching %>
+    <% cache(["ranked-products-grid", @ranked_products.maximum(:updated_at), params[:category], params[:sort]], expires_in: 10.minutes) do %>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-8 sm:gap-x-4">
+        <% @ranked_products.each_with_index do |product, index| %>
+          <div class="relative">
+            <%# 랭킹 배지 오버레이 %>
+            <div class="absolute top-0 left-0 z-10">
+                <div class="bg-black/90 text-white font-oswald text-lg px-2.5 py-1 leading-none font-bold">
+                    <%= index + 1 %>
+                </div>
+            </div>
 
-          <%= render 'products/card', product: product %>
-        </div>
-      <% end %>
-    </div>
+            <%= render 'products/card', product: product %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </div>

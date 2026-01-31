@@ -1,0 +1,56 @@
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <h1 class="text-3xl font-bold mb-6">거래처 수정</h1>
+
+  <%= form_with(model: @supplier, class: "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4") do |form| %>
+    <% if @supplier.errors.any? %>
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <p class="font-bold"><%= pluralize(@supplier.errors.count, "error") %> 발생:</p>
+        <ul class="list-disc list-inside">
+          <% @supplier.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-4">
+      <%= form.label :name, "거래처명 *", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.text_field :name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500", required: true %>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :contact_person, "담당자", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.text_field :contact_person, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :phone, "연락처 *", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.text_field :phone, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500", placeholder: "010-1234-5678", required: true %>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :email, "이메일", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.email_field :email, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500", placeholder: "supplier@example.com" %>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :address, "주소", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.text_area :address, rows: 3, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :payment_terms, "결제조건", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.text_field :payment_terms, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500", placeholder: "예: 30일 후불, 선불" %>
+    </div>
+
+    <div class="mb-6">
+      <%= form.label :notes, "메모", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.text_area :notes, rows: 4, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <%= form.submit "수정", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
+      <%= link_to "취소", supplier_path(@supplier), class: "text-gray-600 hover:text-gray-800" %>
+    </div>
+  <% end %>
+</div>

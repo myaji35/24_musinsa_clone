@@ -1,0 +1,121 @@
+<%# Epic 4.3: 취향 태그 분석 페이지 %>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <%# 헤더 %>
+  <div class="mb-8">
+    <%= link_to "← 대시보드", dashboard_index_path, class: "text-blue-600 hover:underline mb-2 inline-block" %>
+    <h1 class="text-3xl font-bold mb-2">취향 태그 분석</h1>
+    <p class="text-gray-600">AI 기반 자동 수집된 고객 취향 데이터 인사이트</p>
+  </div>
+
+  <%# 전체 인기 취향 태그 %>
+  <div class="bg-white rounded-lg shadow border border-gray-200 mb-8">
+    <div class="p-6 border-b border-gray-200">
+      <h2 class="text-xl font-bold">전체 인기 취향 태그 Top 10</h2>
+      <p class="text-sm text-gray-600 mt-1">모든 익명 고객의 구매 패턴에서 추출된 취향 태그</p>
+    </div>
+
+    <% if @top_preferences.any? %>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <% @top_preferences.each_with_index do |pref, index| %>
+            <div class="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition">
+              <div class="w-12 h-12 rounded-full <%= index < 3 ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white' : 'bg-gray-100 text-gray-600' %> flex items-center justify-center font-bold text-lg">
+                <%= index + 1 %>
+              </div>
+              <div class="flex-1">
+                <div class="font-bold text-lg"><%= pref[:tag] %></div>
+                <div class="text-sm text-gray-600"><%= number_with_delimiter(pref[:count]) %>회 구매</div>
+              </div>
+              <div class="text-right">
+                <% percentage = (@top_preferences.any? ? (pref[:count].to_f / @top_preferences.sum { |p| p[:count] } * 100).round(1) : 0) %>
+                <div class="text-sm font-medium text-blue-600"><%= percentage %>%</div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="p-12 text-center text-gray-500">
+        아직 취향 태그 데이터가 없습니다.
+      </div>
+    <% end %>
+  </div>
+
+  <%# 연령대별 취향 트렌드 %>
+  <div class="bg-white rounded-lg shadow border border-gray-200 mb-8">
+    <div class="p-6 border-b border-gray-200">
+      <h2 class="text-xl font-bold">연령대별 취향 트렌드</h2>
+      <p class="text-sm text-gray-600 mt-1">생년 정보 기반 연령대별 선호 스타일 분석</p>
+    </div>
+
+    <% if @preference_trends.any? %>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <% %w[10대 20대 30대 40대 50대+].each do |age_group| %>
+            <% tags = @preference_trends[age_group] || {} %>
+            <div class="border border-gray-200 rounded-lg p-4 <%= tags.any? ? 'hover:shadow-md' : 'opacity-50' %> transition">
+              <div class="font-bold text-lg mb-3 text-center text-blue-600"><%= age_group %></div>
+              <% if tags.any? %>
+                <div class="space-y-2">
+                  <% tags.each_with_index do |(tag, count), index| %>
+                    <div class="text-sm">
+                      <div class="font-medium text-gray-900"><%= index + 1 %>. <%= tag %></div>
+                      <div class="text-xs text-gray-500"><%= count %>회</div>
+                    </div>
+                  <% end %>
+                </div>
+              <% else %>
+                <div class="text-sm text-gray-400 text-center py-4">데이터 없음</div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="p-12 text-center text-gray-500">
+        아직 연령대별 데이터가 없습니다.
+      </div>
+    <% end %>
+  </div>
+
+  <%# 카테고리별 취향 태그 %>
+  <div class="bg-white rounded-lg shadow border border-gray-200">
+    <div class="p-6 border-b border-gray-200">
+      <h2 class="text-xl font-bold">카테고리별 취향 태그</h2>
+      <p class="text-sm text-gray-600 mt-1">상품 카테고리별 구매 고객의 취향 분석</p>
+    </div>
+
+    <% if @category_preferences.any? %>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% @category_preferences.each do |cat_data| %>
+            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+              <div class="font-bold text-lg mb-3 pb-3 border-b border-gray-200">
+                <%= cat_data[:category] %>
+              </div>
+              <% if cat_data[:top_tags].any? %>
+                <div class="space-y-2">
+                  <% cat_data[:top_tags].each_with_index do |(tag, count), index| %>
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-500"><%= index + 1 %>.</span>
+                        <span class="text-sm font-medium"><%= tag %></span>
+                      </div>
+                      <span class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded"><%= count %>회</span>
+                    </div>
+                  <% end %>
+                </div>
+              <% else %>
+                <div class="text-sm text-gray-400 text-center py-2">데이터 없음</div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="p-12 text-center text-gray-500">
+        아직 카테고리별 데이터가 없습니다.
+      </div>
+    <% end %>
+  </div>
+</div>

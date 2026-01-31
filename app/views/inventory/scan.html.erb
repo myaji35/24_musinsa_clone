@@ -36,7 +36,9 @@
     <% end %>
 
     <!-- Barcode Scanner Section -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
+         data-controller="barcode-scanner"
+         data-barcode-scanner-auto-redirect-value="false">
       <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
           <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,19 +49,22 @@
         <p class="text-sm text-gray-500">카메라로 바코드를 스캔하거나 직접 입력하세요</p>
       </div>
 
-      <!-- Camera Scanner (HTML5 API) -->
+      <!-- Result Display -->
+      <div data-barcode-scanner-target="result"></div>
+
+      <!-- Camera Scanner (QuaggaJS) -->
       <div class="mb-6">
-        <div id="scanner-container" class="hidden">
+        <div id="scanner-container" class="hidden" data-barcode-scanner-target="video">
           <div class="aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4 relative">
-            <video id="scanner-video" class="w-full h-full object-cover" playsinline></video>
-            <div class="absolute inset-0 border-2 border-white opacity-50 m-8" style="border-style: dashed;"></div>
+            <div id="interactive" class="viewport w-full h-full"></div>
+            <div class="absolute inset-0 border-2 border-green-500 opacity-50 m-8" style="border-style: dashed;"></div>
           </div>
-          <button type="button" id="stop-scanner" class="w-full py-3 bg-gray-200 text-gray-700 font-medium rounded-md hover:bg-gray-300 transition-colors">
-            카메라 중지
-          </button>
         </div>
 
-        <button type="button" id="start-scanner" class="w-full py-4 bg-black text-white font-bold rounded-md hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+        <button type="button"
+                data-action="click->barcode-scanner#toggle"
+                data-barcode-scanner-target="scanButton"
+                class="w-full py-4 bg-black text-white font-bold rounded-md hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -76,10 +81,10 @@
       </div>
 
       <!-- Manual Input -->
-      <%= form_with(url: inventory_scan_path, method: :get, class: "space-y-4") do |form| %>
+      <%= form_with(url: inventory_scan_path, method: :get, class: "space-y-4", data: { action: "submit->barcode-scanner#submitManual" }) do |form| %>
         <div>
           <%= form.label :barcode, "바코드 직접 입력", class: "block text-sm font-medium text-gray-700 mb-2" %>
-          <%= form.text_field :barcode, id: "barcode-input", class: "w-full border border-gray-300 rounded-md px-4 py-3 text-lg font-mono focus:ring-black focus:border-black", placeholder: "바코드 번호를 입력하세요", autofocus: true %>
+          <%= form.text_field :barcode, data: { barcode_scanner_target: "manualInput" }, class: "w-full border border-gray-300 rounded-md px-4 py-3 text-lg font-mono focus:ring-black focus:border-black", placeholder: "바코드 번호를 입력하세요", autofocus: true %>
         </div>
         <%= form.submit "조회", class: "w-full py-4 bg-gray-900 text-white font-bold rounded-md hover:bg-gray-800 transition-colors cursor-pointer" %>
       <% end %>
@@ -114,45 +119,3 @@
     </div>
   </div>
 </div>
-
-<!-- Simple Barcode Scanner Script (Using HTML5 API) -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const startButton = document.getElementById('start-scanner');
-    const stopButton = document.getElementById('stop-scanner');
-    const scannerContainer = document.getElementById('scanner-container');
-    const video = document.getElementById('scanner-video');
-    const barcodeInput = document.getElementById('barcode-input');
-    let stream = null;
-
-    // Start Camera
-    startButton.addEventListener('click', async () => {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' } // Use back camera on mobile
-        });
-        video.srcObject = stream;
-        video.play();
-        startButton.classList.add('hidden');
-        scannerContainer.classList.remove('hidden');
-      } catch (error) {
-        alert('카메라 접근 권한이 필요합니다. 브라우저 설정을 확인해주세요.');
-        console.error('Camera access error:', error);
-      }
-    });
-
-    // Stop Camera
-    stopButton.addEventListener('click', () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        video.srcObject = null;
-        stream = null;
-      }
-      scannerContainer.classList.add('hidden');
-      startButton.classList.remove('hidden');
-    });
-
-    // Note: Full barcode scanning requires a library like QuaggaJS or ZXing
-    // This is a simplified version. For production, integrate a barcode scanning library
-  });
-</script>

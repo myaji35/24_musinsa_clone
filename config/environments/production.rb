@@ -19,7 +19,10 @@ Rails.application.configure do
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
-  # config.asset_host = "http://assets.example.com"
+  # CDN configuration for Cloudflare (Phase 3.4)
+  # Set this environment variable to enable CDN:
+  # export CLOUDFLARE_CDN_HOST="https://cdn.yourdomain.com"
+  config.asset_host = ENV["CLOUDFLARE_CDN_HOST"] if ENV["CLOUDFLARE_CDN_HOST"].present?
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
@@ -50,7 +53,8 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
-  # config.active_job.queue_adapter = :resque
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

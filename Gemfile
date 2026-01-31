@@ -42,6 +42,16 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 
+# HTTP client for Claude API [Epic 5.1]
+gem "http", "~> 5.0"
+
+# Rate limiting for API endpoints [Epic 7]
+gem "rack-attack", "~> 6.7"
+
+# Error tracking and monitoring [Phase 1.4]
+gem "sentry-ruby"
+gem "sentry-rails"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -54,6 +64,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Detect N+1 queries and unused eager loading [Phase 3.3]
+  gem "bullet"
 end
 
 group :development do
@@ -65,4 +78,8 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Code coverage measurement
+  gem "simplecov", require: false
+  gem "simplecov-html", require: false
 end

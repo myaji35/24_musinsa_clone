@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>발주서 확인 - <%= @purchase_order.order_number %></title>
+  <%= csrf_meta_tags %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">발주서 확인</h1>
+        <p class="text-gray-600">JIEUN 거래처 발주 확인 시스템</p>
+      </div>
+
+      <div class="border-b pb-6 mb-6">
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <h2 class="text-sm font-semibold text-gray-600 mb-2">발주번호</h2>
+            <p class="text-lg font-bold text-blue-600"><%= @purchase_order.order_number %></p>
+          </div>
+          <div>
+            <h2 class="text-sm font-semibold text-gray-600 mb-2">상태</h2>
+            <% status_class = case @purchase_order.status
+              when "draft" then "bg-gray-100 text-gray-800"
+              when "submitted" then "bg-yellow-100 text-yellow-800"
+              when "confirmed" then "bg-blue-100 text-blue-800"
+              when "received" then "bg-green-100 text-green-800"
+              when "cancelled" then "bg-red-100 text-red-800"
+              end %>
+            <span class="px-3 py-1 inline-flex text-sm font-semibold rounded-full <%= status_class %>">
+              <%= @purchase_order.status %>
+            </span>
+          </div>
+          <div>
+            <h2 class="text-sm font-semibold text-gray-600 mb-2">납품 예정일</h2>
+            <p class="text-lg"><%= @purchase_order.expected_delivery_date&.strftime("%Y년 %m월 %d일") || "미정" %></p>
+          </div>
+          <div>
+            <h2 class="text-sm font-semibold text-gray-600 mb-2">총 발주액</h2>
+            <p class="text-lg font-bold text-green-600">₩<%= number_with_delimiter(@purchase_order.total_amount) %></p>
+          </div>
+        </div>
+      </div>
+
+      <% if @purchase_order.notes.present? %>
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+          <h2 class="text-sm font-semibold text-gray-700 mb-2">발주 메모</h2>
+          <p class="text-gray-700"><%= @purchase_order.notes %></p>
+        </div>
+      <% end %>
+
+      <div class="mb-8">
+        <h2 class="text-xl font-bold mb-4">발주 품목</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 border">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상품명</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">옵션</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">수량</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">단가</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">소계</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @purchase_order.purchase_order_items.each_with_index do |item, index| %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= index + 1 %></td>
+                  <td class="px-6 py-4 whitespace-nowrap font-medium"><%= item.product_name %></td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= item.variant_name %></td>
+                  <td class="px-6 py-4 whitespace-nowrap"><%= item.quantity %>개</td>
+                  <td class="px-6 py-4 whitespace-nowrap">₩<%= number_with_delimiter(item.unit_price) %></td>
+                  <td class="px-6 py-4 whitespace-nowrap font-medium">₩<%= number_with_delimiter(item.subtotal) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+            <tfoot class="bg-gray-50">
+              <tr>
+                <td colspan="5" class="px-6 py-4 text-right font-bold text-lg">총액</td>
+                <td class="px-6 py-4 font-bold text-lg text-green-600">₩<%= number_with_delimiter(@purchase_order.total_amount) %></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <% if @purchase_order.status == "submitted" %>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <h2 class="text-lg font-bold text-blue-900 mb-4">발주서 확정</h2>
+          <p class="text-gray-700 mb-6">
+            위 발주 내역을 확인하셨다면 아래 버튼을 클릭하여 발주서를 확정해주세요.<br>
+            확정 후에는 취소할 수 없으니 신중히 확인 부탁드립니다.
+          </p>
+
+          <%= form_with url: confirm_purchase_order_path(token: @purchase_order.confirmation_token), method: :post, local: true do |form| %>
+            <div class="flex justify-center">
+              <%= form.submit "발주서 확정하기",
+                  class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg transform transition hover:scale-105",
+                  data: { confirm: "정말 발주서를 확정하시겠습니까?\n확정 후에는 취소할 수 없습니다." } %>
+            </div>
+          <% end %>
+        </div>
+      <% elsif @purchase_order.status == "confirmed" %>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+          <svg class="mx-auto h-12 w-12 text-green-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h2 class="text-xl font-bold text-green-900 mb-2">발주서가 확정되었습니다</h2>
+          <p class="text-gray-700">
+            확정일시: <%= @purchase_order.confirmed_at.strftime("%Y년 %m월 %d일 %H시 %M분") %><br>
+            납품 준비를 진행해주시기 바랍니다.
+          </p>
+        </div>
+      <% elsif @purchase_order.status == "received" %>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+          <svg class="mx-auto h-12 w-12 text-green-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <h2 class="text-xl font-bold text-green-900 mb-2">입고 완료</h2>
+          <p class="text-gray-700">
+            입고일시: <%= @purchase_order.received_at.strftime("%Y년 %m월 %d일 %H시 %M분") %><br>
+            발주가 정상적으로 처리되었습니다. 감사합니다.
+          </p>
+        </div>
+      <% end %>
+
+      <div class="mt-8 text-center text-sm text-gray-500">
+        <p>문의사항이 있으시면 발주처에 직접 연락 부탁드립니다.</p>
+        <p class="mt-2">JIEUN - AI-Native Fashion OS</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

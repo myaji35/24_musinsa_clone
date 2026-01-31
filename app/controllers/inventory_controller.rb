@@ -1,5 +1,5 @@
 class InventoryController < ApplicationController
-  before_action :set_variant_by_barcode, only: [:create_stock_in, :create_stock_out]
+  before_action :set_variant_by_barcode, only: [ :create_stock_in, :create_stock_out ]
 
   # GET /inventory/scan - 바코드 스캔 페이지
   def scan
@@ -108,7 +108,7 @@ class InventoryController < ApplicationController
     require "csv"
 
     CSV.generate(headers: true) do |csv|
-      csv << ["일시", "유형", "상품명", "바코드", "수량", "사입처", "단가", "메모"]
+      csv << [ "일시", "유형", "상품명", "바코드", "수량", "사입처", "단가", "메모" ]
 
       stock_logs.each do |log|
         csv << [

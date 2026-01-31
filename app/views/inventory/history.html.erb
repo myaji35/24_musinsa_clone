@@ -1,4 +1,244 @@
-<div>
-  <h1 class="font-bold text-4xl">Inventory#history</h1>
-  <p>Find me in app/views/inventory/history.html.erb</p>
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <%= link_to inventory_scan_path, class: "text-gray-500 hover:text-black" do %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          <% end %>
+          <h1 class="text-xl font-bold text-gray-900">재고 이력 조회</h1>
+        </div>
+        <button id="download-csv" class="text-sm bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          CSV 다운로드
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Flash Messages -->
+    <% if flash[:notice] %>
+      <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
+        <%= flash[:notice] %>
+      </div>
+    <% end %>
+
+    <% if flash[:alert] %>
+      <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <%= form_with(url: inventory_history_path, method: :get, class: "space-y-4") do |form| %>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- Date Range -->
+          <div>
+            <%= form.label :start_date, "시작일", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.date_field :start_date, value: params[:start_date], class: "w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-black focus:border-black" %>
+          </div>
+
+          <div>
+            <%= form.label :end_date, "종료일", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.date_field :end_date, value: params[:end_date], class: "w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-black focus:border-black" %>
+          </div>
+
+          <!-- Transaction Type -->
+          <div>
+            <%= form.label :transaction_type, "거래 유형", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.select :transaction_type,
+                options_for_select([
+                  ['전체', ''],
+                  ['입고', 'in'],
+                  ['출고', 'out']
+                ], params[:transaction_type]),
+                {},
+                class: "w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-black focus:border-black"
+            %>
+          </div>
+
+          <!-- Barcode Search -->
+          <div>
+            <%= form.label :barcode, "바코드", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.text_field :barcode, value: params[:barcode], class: "w-full border border-gray-300 rounded-md px-3 py-2 font-mono focus:ring-black focus:border-black", placeholder: "바코드 검색" %>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <%= form.submit "검색", class: "px-6 py-2 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-colors cursor-pointer" %>
+          <%= link_to "초기화", inventory_history_path, class: "px-6 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-md hover:border-black transition-colors" %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 mb-1">총 입고</p>
+            <p class="text-2xl font-bold text-blue-600"><%= @total_stock_in || 0 %>개</p>
+          </div>
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 mb-1">총 출고</p>
+            <p class="text-2xl font-bold text-red-600"><%= @total_stock_out || 0 %>개</p>
+          </div>
+          <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 mb-1">순 재고 변동</p>
+            <p class="text-2xl font-bold text-gray-900"><%= (@total_stock_in || 0) - (@total_stock_out || 0) %>개</p>
+          </div>
+          <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Table -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full" id="history-table">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">일시</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">유형</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">바코드</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상품명</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">옵션</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">수량</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">사입처/주문ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">메모</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% if @stock_logs && @stock_logs.any? %>
+              <% @stock_logs.each do |log| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= log.created_at.strftime("%Y-%m-%d %H:%M") %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <% if log.transaction_type == 'in' %>
+                      <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">입고</span>
+                    <% else %>
+                      <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded">출고</span>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
+                    <%= log.variant.barcode %>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-900">
+                    <%= log.variant.product.name %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    <%= log.variant.color %> / <%= log.variant.size %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-bold <%= log.transaction_type == 'in' ? 'text-blue-600' : 'text-red-600' %>">
+                    <%= log.transaction_type == 'in' ? '+' : '-' %><%= log.quantity %>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-600">
+                    <%= log.supplier || log.order_id || '-' %>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-500">
+                    <%= log.note.present? ? truncate(log.note, length: 30) : '-' %>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                  <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                  </svg>
+                  <p class="text-sm">재고 이력이 없습니다</p>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination (if needed) -->
+      <% if @stock_logs && @stock_logs.respond_to?(:total_pages) && @stock_logs.total_pages > 1 %>
+        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+              <%= page_entries_info @stock_logs %>
+            </div>
+            <div>
+              <%= paginate @stock_logs, theme: 'twitter-bootstrap-4' %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
+
+<!-- CSV Download Script -->
+<script>
+  document.getElementById('download-csv').addEventListener('click', () => {
+    const table = document.getElementById('history-table');
+    const rows = table.querySelectorAll('tr');
+    let csv = [];
+
+    // Extract table data
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('th, td');
+      const rowData = Array.from(cells).map(cell => {
+        // Clean up cell content
+        let text = cell.innerText.trim();
+        // Escape quotes and wrap in quotes if contains comma
+        if (text.includes(',') || text.includes('"')) {
+          text = '"' + text.replace(/"/g, '""') + '"';
+        }
+        return text;
+      });
+      csv.push(rowData.join(','));
+    });
+
+    // Create CSV file
+    const csvContent = csv.join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    const date = new Date().toISOString().split('T')[0];
+    link.setAttribute('href', url);
+    link.setAttribute('download', `재고이력_${date}.csv`);
+    link.style.visibility = 'hidden';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+</script>

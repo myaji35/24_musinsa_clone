@@ -1,4 +1,158 @@
-<div>
-  <h1 class="font-bold text-4xl">Inventory#scan</h1>
-  <p>Find me in app/views/inventory/scan.html.erb</p>
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <%= link_to root_path, class: "text-gray-500 hover:text-black" do %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          <% end %>
+          <h1 class="text-xl font-bold text-gray-900">재고 관리</h1>
+        </div>
+        <%= link_to inventory_history_path, class: "text-sm text-gray-600 hover:text-black flex items-center gap-1" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          이력
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Flash Messages -->
+    <% if flash[:notice] %>
+      <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
+        <%= flash[:notice] %>
+      </div>
+    <% end %>
+
+    <% if flash[:alert] %>
+      <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <!-- Barcode Scanner Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+          <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path>
+          </svg>
+        </div>
+        <h2 class="text-lg font-bold text-gray-900 mb-2">바코드 스캔</h2>
+        <p class="text-sm text-gray-500">카메라로 바코드를 스캔하거나 직접 입력하세요</p>
+      </div>
+
+      <!-- Camera Scanner (HTML5 API) -->
+      <div class="mb-6">
+        <div id="scanner-container" class="hidden">
+          <div class="aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4 relative">
+            <video id="scanner-video" class="w-full h-full object-cover" playsinline></video>
+            <div class="absolute inset-0 border-2 border-white opacity-50 m-8" style="border-style: dashed;"></div>
+          </div>
+          <button type="button" id="stop-scanner" class="w-full py-3 bg-gray-200 text-gray-700 font-medium rounded-md hover:bg-gray-300 transition-colors">
+            카메라 중지
+          </button>
+        </div>
+
+        <button type="button" id="start-scanner" class="w-full py-4 bg-black text-white font-bold rounded-md hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          카메라로 스캔
+        </button>
+      </div>
+
+      <!-- OR Divider -->
+      <div class="flex items-center gap-3 mb-6">
+        <div class="flex-1 border-t border-gray-300"></div>
+        <span class="text-sm text-gray-500 font-medium">또는</span>
+        <div class="flex-1 border-t border-gray-300"></div>
+      </div>
+
+      <!-- Manual Input -->
+      <%= form_with(url: inventory_scan_path, method: :get, class: "space-y-4") do |form| %>
+        <div>
+          <%= form.label :barcode, "바코드 직접 입력", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.text_field :barcode, id: "barcode-input", class: "w-full border border-gray-300 rounded-md px-4 py-3 text-lg font-mono focus:ring-black focus:border-black", placeholder: "바코드 번호를 입력하세요", autofocus: true %>
+        </div>
+        <%= form.submit "조회", class: "w-full py-4 bg-gray-900 text-white font-bold rounded-md hover:bg-gray-800 transition-colors cursor-pointer" %>
+      <% end %>
+    </div>
+
+    <!-- Quick Action Buttons -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <%= link_to inventory_stock_in_path, class: "bg-white border-2 border-blue-500 text-blue-600 font-bold py-6 rounded-lg hover:bg-blue-50 transition-colors flex flex-col items-center gap-2" do %>
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+        </svg>
+        <span>입고 처리</span>
+      <% end %>
+
+      <%= link_to inventory_stock_out_path, class: "bg-white border-2 border-red-500 text-red-600 font-bold py-6 rounded-lg hover:bg-red-50 transition-colors flex flex-col items-center gap-2" do %>
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+        </svg>
+        <span>출고 처리</span>
+      <% end %>
+    </div>
+
+    <!-- Info Section -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <h3 class="text-sm font-bold text-blue-900 mb-2">사용 안내</h3>
+      <ul class="text-xs text-blue-800 space-y-1">
+        <li>• 카메라 스캔을 사용하려면 브라우저 권한이 필요합니다</li>
+        <li>• 바코드를 카메라 중앙에 위치시켜 스캔하세요</li>
+        <li>• 바코드 스캐너를 사용하는 경우 입력창에 자동으로 입력됩니다</li>
+        <li>• 조회된 상품은 입고 또는 출고 처리를 진행할 수 있습니다</li>
+      </ul>
+    </div>
+  </div>
 </div>
+
+<!-- Simple Barcode Scanner Script (Using HTML5 API) -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const startButton = document.getElementById('start-scanner');
+    const stopButton = document.getElementById('stop-scanner');
+    const scannerContainer = document.getElementById('scanner-container');
+    const video = document.getElementById('scanner-video');
+    const barcodeInput = document.getElementById('barcode-input');
+    let stream = null;
+
+    // Start Camera
+    startButton.addEventListener('click', async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' } // Use back camera on mobile
+        });
+        video.srcObject = stream;
+        video.play();
+        startButton.classList.add('hidden');
+        scannerContainer.classList.remove('hidden');
+      } catch (error) {
+        alert('카메라 접근 권한이 필요합니다. 브라우저 설정을 확인해주세요.');
+        console.error('Camera access error:', error);
+      }
+    });
+
+    // Stop Camera
+    stopButton.addEventListener('click', () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+        stream = null;
+      }
+      scannerContainer.classList.add('hidden');
+      startButton.classList.remove('hidden');
+    });
+
+    // Note: Full barcode scanning requires a library like QuaggaJS or ZXing
+    // This is a simplified version. For production, integrate a barcode scanning library
+  });
+</script>

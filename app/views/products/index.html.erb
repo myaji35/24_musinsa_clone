@@ -1,0 +1,91 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">상품 관리</h1>
+      <p class="text-sm text-gray-500">총 <%= @products.count %>개의 상품</p>
+    </div>
+
+    <%= link_to new_product_path, class: "bg-black text-white font-bold px-6 py-3 rounded-md hover:bg-gray-800 transition-colors inline-flex items-center gap-2" do %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      신규 상품 등록
+    <% end %>
+  </div>
+
+  <!-- Products Grid -->
+  <% if @products.any? %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <% @products.each do |product| %>
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+          <!-- Product Image -->
+          <%= link_to product_path(product), class: "block aspect-[4/5] bg-gray-50 overflow-hidden" do %>
+            <% if product.image_url.present? %>
+              <%= image_tag product.image_url, class: "w-full h-full object-cover hover:scale-105 transition-transform duration-300" %>
+            <% else %>
+              <div class="w-full h-full flex items-center justify-center text-gray-300">
+                <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+            <% end %>
+          <% end %>
+
+          <!-- Product Info -->
+          <div class="p-4">
+            <div class="text-xs font-bold text-gray-500 mb-1"><%= product.brand %></div>
+            <%= link_to product.name, product_path(product), class: "font-medium text-sm text-gray-900 hover:underline line-clamp-2 mb-2 block" %>
+
+            <div class="flex items-baseline gap-1 mb-3">
+              <span class="text-lg font-bold text-black"><%= number_to_currency(product.price, unit: "", precision: 0) %></span>
+              <span class="text-sm font-medium text-black">원</span>
+            </div>
+
+            <!-- Meta Info -->
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
+              <span>재고: <%= product.stock || 0 %></span>
+              <span><%= product.category %></span>
+            </div>
+
+            <!-- AI Attributes Tags -->
+            <% if product.ai_attributes.present? %>
+              <div class="flex flex-wrap gap-1 mb-3">
+                <% if product.mood.present? %>
+                  <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-medium rounded">
+                    <%= product.mood.is_a?(Array) ? product.mood.first : product.mood %>
+                  </span>
+                <% end %>
+                <% if product.tpo.present? %>
+                  <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-medium rounded">
+                    <%= product.tpo.is_a?(Array) ? product.tpo.first : product.tpo %>
+                  </span>
+                <% end %>
+              </div>
+            <% end %>
+
+            <!-- Actions -->
+            <div class="flex gap-2 pt-3 border-t border-gray-100">
+              <%= link_to "수정", edit_product_path(product), class: "flex-1 text-center text-xs font-medium text-gray-700 py-2 border border-gray-300 rounded hover:border-black transition-colors" %>
+              <%= link_to "보기", product_path(product), class: "flex-1 text-center text-xs font-medium text-white bg-black py-2 rounded hover:bg-gray-800 transition-colors" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <!-- Empty State -->
+    <div class="text-center py-20">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">등록된 상품이 없습니다</h3>
+      <p class="mt-1 text-sm text-gray-500">첫 번째 상품을 등록해보세요</p>
+      <div class="mt-6">
+        <%= link_to new_product_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800" do %>
+          신규 상품 등록
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

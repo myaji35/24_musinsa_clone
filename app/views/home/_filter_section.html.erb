@@ -1,0 +1,54 @@
+<%# 29cm 스타일 필터 & 정렬 섹션 %>
+<div class="mb-8">
+  <%# 정렬 옵션 %>
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+      <span class="text-sm text-gray-500">정렬:</span>
+      <div class="flex gap-2">
+        <%= link_to "인기순", root_path(category: params[:category], q: params[:q], sort: nil),
+            class: "px-3 py-1.5 text-xs font-medium border transition-all #{params[:sort].blank? ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}" %>
+
+        <%= link_to "최신순", root_path(category: params[:category], q: params[:q], sort: 'newest'),
+            class: "px-3 py-1.5 text-xs font-medium border transition-all #{params[:sort] == 'newest' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}" %>
+
+        <%= link_to "낮은가격", root_path(category: params[:category], q: params[:q], sort: 'price_low'),
+            class: "px-3 py-1.5 text-xs font-medium border transition-all #{params[:sort] == 'price_low' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}" %>
+
+        <%= link_to "높은가격", root_path(category: params[:category], q: params[:q], sort: 'price_high'),
+            class: "px-3 py-1.5 text-xs font-medium border transition-all #{params[:sort] == 'price_high' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}" %>
+      </div>
+    </div>
+
+    <%# 검색 결과 카운트 %>
+    <div class="text-sm text-gray-500">
+      총 <span class="font-bold text-black"><%= @ranked_products.count %></span>개
+    </div>
+  </div>
+
+  <%# 검색 바 (29cm 스타일) %>
+  <div class="relative max-w-md">
+    <%= form_with url: root_path, method: :get, class: "flex items-center gap-2" do |f| %>
+      <%= f.hidden_field :category, value: params[:category] %>
+      <%= f.hidden_field :sort, value: params[:sort] %>
+
+      <div class="relative flex-1">
+        <%= f.text_field :q,
+            value: params[:q],
+            placeholder: "브랜드, 상품명 검색",
+            class: "w-full px-4 py-2.5 border border-gray-300 text-sm focus:outline-none focus:border-black transition-colors" %>
+
+        <%# 검색 아이콘 %>
+        <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+      </div>
+
+      <% if params[:q].present? %>
+        <%= link_to "초기화", root_path(category: params[:category], sort: params[:sort]),
+            class: "px-4 py-2.5 border border-gray-300 text-sm text-gray-600 hover:border-black hover:text-black transition-colors whitespace-nowrap" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

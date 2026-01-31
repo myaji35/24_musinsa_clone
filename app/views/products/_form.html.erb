@@ -1,0 +1,198 @@
+<%= form_with(model: product, class: "space-y-6") do |form| %>
+  <% if product.errors.any? %>
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <h3 class="text-sm font-bold text-red-800 mb-2"><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h3>
+      <ul class="list-disc list-inside text-sm text-red-700">
+        <% product.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- 기본 정보 섹션 -->
+  <div class="bg-white border border-gray-200 rounded-lg p-6">
+    <h3 class="text-lg font-bold mb-4 pb-2 border-b border-gray-200">기본 정보</h3>
+
+    <div class="space-y-4">
+      <!-- 상품명 -->
+      <div>
+        <%= form.label :name, "상품명 *", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.text_field :name, required: true, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-black focus:border-black" %>
+      </div>
+
+      <!-- 브랜드 & 카테고리 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <%= form.label :brand, "브랜드 *", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= form.text_field :brand, required: true, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-black focus:border-black" %>
+        </div>
+
+        <div>
+          <%= form.label :category, "카테고리 *", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= form.select :category,
+              ["상의", "아우터", "바지", "원피스", "스커트", "가방", "신발", "액세서리"],
+              { include_blank: "선택하세요" },
+              { required: true, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-black focus:border-black" }
+          %>
+        </div>
+      </div>
+
+      <!-- 가격 & 재고 & 성별 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <%= form.label :price, "가격 (원) *", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= form.number_field :price, required: true, min: 0, step: 100, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-black focus:border-black" %>
+        </div>
+
+        <div>
+          <%= form.label :stock, "재고 수량", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= form.number_field :stock, min: 0, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-black focus:border-black" %>
+        </div>
+
+        <div>
+          <%= form.label :gender, "성별", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= form.select :gender,
+              ["남성", "여성", "공용"],
+              { include_blank: "선택하세요" },
+              { class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-black focus:border-black" }
+          %>
+        </div>
+      </div>
+
+      <!-- 이미지 URL -->
+      <div>
+        <%= form.label :image_url, "이미지 URL", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.text_field :image_url, placeholder: "https://example.com/image.jpg", class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-black focus:border-black" %>
+        <p class="text-xs text-gray-500 mt-1">상품 이미지 URL을 입력하세요 (향후 파일 업로드 지원 예정)</p>
+      </div>
+
+      <!-- 상품 설명 -->
+      <div>
+        <%= form.label :description, "상품 설명 (최대 500자)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.text_area :description, rows: 5, maxlength: 500, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-black focus:border-black", placeholder: "상품에 대한 자세한 설명을 입력하세요..." %>
+        <p class="text-xs text-gray-500 mt-1">현재 <span id="char-count">0</span> / 500자</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI 속성 섹션 -->
+  <div class="bg-white border border-gray-200 rounded-lg p-6">
+    <h3 class="text-lg font-bold mb-2 pb-2 border-b border-gray-200">AI 검색 속성</h3>
+    <p class="text-xs text-gray-500 mb-4">향후 AI 검색 및 추천에 활용될 상품 특성을 선택하세요</p>
+
+    <div class="space-y-4">
+      <!-- Mood (감성) -->
+      <div>
+        <%= form.label "ai_attributes[mood]", "감성 (Mood)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="flex flex-wrap gap-2">
+          <% ["minimal", "casual", "vintage", "modern", "delicate"].each do |mood| %>
+            <label class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors">
+              <%= check_box_tag "product[ai_attributes][mood][]", mood,
+                  (product.mood.is_a?(Array) ? product.mood.include?(mood) : product.mood == mood),
+                  class: "hidden peer" %>
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+                <%= { "minimal" => "미니멀", "casual" => "캐주얼", "vintage" => "빈티지", "modern" => "모던", "delicate" => "우아함" }[mood] %>
+              </span>
+            </label>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- TPO -->
+      <div>
+        <%= form.label "ai_attributes[tpo]", "TPO (착용 상황)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="flex flex-wrap gap-2">
+          <% ["daily", "office", "date", "party", "casual"].each do |tpo| %>
+            <label class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors">
+              <%= check_box_tag "product[ai_attributes][tpo][]", tpo,
+                  (product.tpo.is_a?(Array) ? product.tpo.include?(tpo) : product.tpo == tpo),
+                  class: "hidden peer" %>
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+                <%= { "daily" => "데일리", "office" => "오피스", "date" => "데이트", "party" => "파티", "casual" => "캐주얼" }[tpo] %>
+              </span>
+            </label>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Fit Style (핏감) -->
+      <div>
+        <%= form.label "ai_attributes[fit_style]", "핏 스타일", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="flex flex-wrap gap-2">
+          <% ["slim", "regular", "oversized", "loose"].each do |fit| %>
+            <label class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors">
+              <%= radio_button_tag "product[ai_attributes][fit_style]", fit,
+                  product.fit_style == fit,
+                  class: "hidden peer" %>
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+                <%= { "slim" => "슬림", "regular" => "레귤러", "oversized" => "오버사이즈", "loose" => "루즈" }[fit] %>
+              </span>
+            </label>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Material Feel (소재감) -->
+      <div>
+        <%= form.label "ai_attributes[material_feel]", "소재감", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="flex flex-wrap gap-2">
+          <% ["soft", "structured", "lightweight", "warm"].each do |material| %>
+            <label class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors">
+              <%= radio_button_tag "product[ai_attributes][material_feel]", material,
+                  product.material_feel == material,
+                  class: "hidden peer" %>
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+                <%= { "soft" => "부드러움", "structured" => "구조감", "lightweight" => "가벼움", "warm" => "따뜻함" }[material] %>
+              </span>
+            </label>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 제출 버튼 -->
+  <div class="flex gap-3">
+    <%= form.submit "저장", class: "flex-1 bg-black text-white font-bold py-3 rounded-md hover:bg-gray-800 transition-colors cursor-pointer" %>
+    <%= link_to "취소", products_path, class: "flex-1 bg-white border border-gray-300 text-black font-bold py-3 rounded-md hover:border-black transition-colors text-center" %>
+  </div>
+<% end %>
+
+<script>
+  // 글자 수 카운터
+  document.addEventListener('DOMContentLoaded', () => {
+    const textarea = document.querySelector('textarea[name="product[description]"]');
+    const counter = document.getElementById('char-count');
+
+    if (textarea && counter) {
+      const updateCount = () => {
+        counter.textContent = textarea.value.length;
+      };
+
+      textarea.addEventListener('input', updateCount);
+      updateCount();
+    }
+
+    // AI 속성 체크박스 스타일링
+    document.querySelectorAll('input[type="checkbox"].peer, input[type="radio"].peer').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const label = e.target.closest('label');
+        if (e.target.checked) {
+          label.classList.add('bg-black', 'text-white', 'border-black');
+          label.querySelector('span').classList.add('text-white');
+        } else {
+          label.classList.remove('bg-black', 'text-white', 'border-black');
+          label.querySelector('span').classList.remove('text-white');
+        }
+      });
+
+      // 초기 상태 적용
+      if (input.checked) {
+        const label = input.closest('label');
+        label.classList.add('bg-black', 'text-white', 'border-black');
+        label.querySelector('span').classList.add('text-white');
+      }
+    });
+  });
+</script>

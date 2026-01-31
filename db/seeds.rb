@@ -104,6 +104,23 @@ model_variations = [
   # We keep the brand from the source list for variety, but override the product name/category
   brand_name = brands_list[i % brands_list.length]
   
+  # AI 속성 정의 (29cm 스타일 큐레이션용)
+  moods = ["minimal", "casual", "delicate", "vintage", "modern"]
+  tpos = ["daily", "office", "date", "party", "casual"]
+  fit_styles = ["slim", "regular", "oversized", "loose"]
+  material_feels = ["soft", "structured", "lightweight", "warm"]
+
+  ai_attrs = {
+    "mood" => moods.sample,
+    "tpo" => tpos.sample,
+    "fit_style" => fit_styles.sample,
+    "material_feel" => material_feels.sample
+  }
+
+  # 배지 정의
+  badge_array = []
+  badge_array << "coupon" if i % 3 == 0
+
   Product.create!(
     name: "#{brand_name} #{variation[:name_suffix]}",
     description: "Exclusive fitting by our main model. Premium quality from #{brand_name}. This item features our signature #{variation[:category]} design.",
@@ -114,7 +131,11 @@ model_variations = [
     gender: 'Women',
     views_count: rand(100..10000),
     sales_count: 50 + rand(10..1000),
-    image_url: variation[:image] 
+    image_url: variation[:image],
+    ai_attributes: ai_attrs.to_json,
+    badges: badge_array.to_json,
+    is_new: i < 5, # 처음 5개는 신상
+    restocked_at: (i % 7 == 0 ? 3.days.ago : nil) # 7의 배수는 재입고
   )
 end
 

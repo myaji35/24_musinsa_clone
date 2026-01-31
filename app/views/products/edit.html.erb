@@ -1,0 +1,16 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <!-- Header -->
+  <div class="mb-8 flex justify-between items-start">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">상품 수정</h1>
+      <p class="text-sm text-gray-500"><%= @product.name %></p>
+    </div>
+
+    <%= button_to "삭제", product_path(@product), method: :delete,
+        data: { turbo_confirm: "정말 삭제하시겠습니까?" },
+        class: "bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-red-700 transition-colors" %>
+  </div>
+
+  <!-- Form -->
+  <%= render "form", product: @product %>
+</div>

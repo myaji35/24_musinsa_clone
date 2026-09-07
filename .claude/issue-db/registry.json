@@ -537,6 +537,21 @@
       "done_criteria": "카메라 스캔 클릭 시 권한 프롬프트 또는 명확한 실패 안내가 뜨고, 성공 시 영상 영역이 표시된다",
       "created_at": "2026-09-07T17:24:56.880022",
       "updated_at": "2026-09-07T17:28:53.265287"
+    },
+    {
+      "id": "ISS-038",
+      "title": "수동 바코드 '조회' 버튼·Enter가 서버 조회로 이어지지 않음(submitManual이 preventDefault만)",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "S",
+      "phase": "0",
+      "status": "COMPLETED",
+      "depends_on": [
+        "ISS-026"
+      ],
+      "done_criteria": "바코드 입력 후 조회 버튼 또는 Enter → ?barcode=... 로 이동해 상품 정보가 표시된다",
+      "created_at": "2026-09-07T17:39:23.204636",
+      "updated_at": "2026-09-07T17:41:08.657878"
     }
   ],
   "hooks": {

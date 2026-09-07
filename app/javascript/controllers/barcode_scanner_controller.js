@@ -198,15 +198,19 @@ export default class extends Controller {
   }
 
   // 수동 입력 제출
+  // 수동 입력은 서버 조회(GET)가 목적이므로 제출을 막지 않는다.
+  // 결과는 서버가 렌더한 조회 영역이 보여준다.
   submitManual(event) {
-    event.preventDefault()
+    const code = this.hasManualInputTarget ? this.manualInputTarget.value.trim() : ""
 
-    if (this.hasManualInputTarget) {
-      const code = this.manualInputTarget.value.trim()
+    if (!code) {
+      event.preventDefault()
+      return
+    }
 
-      if (code) {
-        this.onBarcodeConfirmed(code)
-      }
+    // 페이지 이동 전에 카메라를 정리한다
+    if (this.isScanning) {
+      this.stopScanning()
     }
   }
 }

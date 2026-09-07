@@ -1,19 +1,19 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
   product: one
-  sku_code: MyString
-  color: MyString
-  size: MyString
-  barcode: MyString
-  stock: 1
-  min_stock: 1
+  sku_code: TSHIRT-BLACK-M
+  color: black
+  size: M
+  barcode: "8800000000001"
+  stock: 5
+  min_stock: 5
 
 two:
   product: two
-  sku_code: MyString
-  color: MyString
-  size: MyString
-  barcode: MyString
-  stock: 1
-  min_stock: 1
+  sku_code: DENIM-BLUE-L
+  color: blue
+  size: L
+  barcode: "8800000000002"
+  stock: 0
+  min_stock: 3

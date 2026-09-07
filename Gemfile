@@ -75,6 +75,9 @@ group :development do
 end
 
 group :test do
+  # Rails 7.2 테스트 러너와 호환되는 버전 유지
+  gem "minitest", "~> 5.25"
+
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"

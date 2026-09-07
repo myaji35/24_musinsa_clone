@@ -1,19 +1,15 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
   variant: one
-  log_type: MyString
-  quantity: 1
-  supplier: MyString
-  unit_cost: 9.99
-  order_id: 1
-  note: MyText
+  log_type: in
+  quantity: 7
+  supplier: 동대문 코튼상사
+  unit_cost: 10000
+  note: 티셔츠 초도 입고
 
 two:
   variant: two
-  log_type: MyString
+  log_type: out
   quantity: 1
-  supplier: MyString
-  unit_cost: 9.99
-  order_id: 1
-  note: MyText
+  note: 데님 팬츠 판매 출고

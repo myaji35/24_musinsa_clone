@@ -1,0 +1,506 @@
+{
+  "version": "3.0.0",
+  "created_at": "2026-09-07T15:02:15.033596",
+  "issues": [
+    {
+      "id": "ISS-028",
+      "title": "하네스 설치·registry 생성",
+      "type": "INFRA",
+      "priority": "P0",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "registry에 33건 등록",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-001",
+      "title": "Gemfile minitest ~>5.25 핀",
+      "type": "INFRA",
+      "priority": "P0",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "bin/rails test가 결과 수 출력",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-002",
+      "title": "fixture 13개 스캐폴딩 정리",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [
+        "ISS-001"
+      ],
+      "done_criteria": "fixtures :all 로드 에러 0",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-004",
+      "title": "importmap 배선+ProductsController#new variants.build",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "size": "M",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "렌더 importmap에 turbo/stimulus/controllers 포함",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-031",
+      "title": "quagga 의존성 해결",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [
+        "ISS-004"
+      ],
+      "done_criteria": "/inventory/scan 콘솔 import 에러 0",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-005",
+      "title": "Rack::Attack req/ip 전역 스로틀 재설계",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "스토어 30회 연속 200, UCP 61번째 429",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-006",
+      "title": "StockAdjuster 컬럼 정합+재고조정 콜백 일원화",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "size": "M",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [
+        "ISS-001",
+        "ISS-002"
+      ],
+      "done_criteria": "입고5→stock+5, 초과출고→failure+불변",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-032",
+      "title": "입출고 실패경로 500(@stock_log 미세팅)",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "초과출고 POST→422+재고부족 문구",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-007",
+      "title": "LowStockAlertJob 호출 시그니처 정합",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [
+        "ISS-006"
+      ],
+      "done_criteria": "assert_enqueued_with 통과",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-008",
+      "title": "ai_attributes/badges Hash 단일화+마이그레이션",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "size": "M",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [
+        "ISS-001"
+      ],
+      "done_criteria": "전건 Hash, by_mood 일치, UCP 200",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-033",
+      "title": "RuboCop 54건 해소",
+      "type": "REFACTOR",
+      "priority": "P1",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "bin/rubocop 0 offenses",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-019",
+      "title": "테스트-스키마 정합+모델테스트 실질화",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "M",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [
+        "ISS-001",
+        "ISS-002",
+        "ISS-006",
+        "ISS-032"
+      ],
+      "done_criteria": "bin/rails test 0F/0E",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-003",
+      "title": "CI 진실화(continue-on-error 제거)",
+      "type": "INFRA",
+      "priority": "P0",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [
+        "ISS-019",
+        "ISS-033"
+      ],
+      "done_criteria": "bin/ci 녹색",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-026",
+      "title": "InventoryController#scan barcode 처리",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [
+        "ISS-004"
+      ],
+      "done_criteria": "/inventory/scan?barcode=X 정보표시",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-012",
+      "title": "관리자 인증+백오피스 보호",
+      "type": "SECURITY",
+      "priority": "P0",
+      "size": "M",
+      "phase": "1",
+      "status": "READY",
+      "depends_on": [
+        "ISS-001",
+        "ISS-002"
+      ],
+      "done_criteria": "비로그인 302/로그인 200",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-009",
+      "title": "발주 제출 복구",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "M",
+      "phase": "1",
+      "status": "READY",
+      "depends_on": [
+        "ISS-004"
+      ],
+      "done_criteria": "제출→submitted+메일프리뷰",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-010",
+      "title": "PO 링크 button_to 전환",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "S",
+      "phase": "1",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "클릭시 POST, received+StockLog",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-011",
+      "title": "confirm! 상태가드+토큰 1회성/만료",
+      "type": "SECURITY",
+      "priority": "P1",
+      "size": "S",
+      "phase": "1",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "submitted 외 422",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-014",
+      "title": "ClaudeBot 정직화(x-api-key,출처컬럼)",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "M",
+      "phase": "1",
+      "status": "READY",
+      "depends_on": [
+        "ISS-007"
+      ],
+      "done_criteria": "source 컬럼 기록+화면 표기",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-022",
+      "title": "상품 이미지 단일화",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "size": "S",
+      "phase": "1",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "업로드 이미지 표시 또는 필드 제거",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-018",
+      "title": "상세 재고이력 탭+dead 정리",
+      "type": "FEATURE",
+      "priority": "P3",
+      "size": "S",
+      "phase": "1",
+      "status": "READY",
+      "depends_on": [
+        "ISS-004"
+      ],
+      "done_criteria": "Variant별 최근20건",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-015",
+      "title": "주문 수집 진입점+주소 폐기",
+      "type": "FEATURE",
+      "priority": "P1",
+      "size": "L",
+      "phase": "2",
+      "status": "READY",
+      "depends_on": [
+        "ISS-006",
+        "ISS-008",
+        "ISS-012"
+      ],
+      "done_criteria": "grep 주소 0건",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-016",
+      "title": "취향 이중학습 제거",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "size": "S",
+      "phase": "2",
+      "status": "READY",
+      "depends_on": [
+        "ISS-008"
+      ],
+      "done_criteria": "주문1건당 1회",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-017",
+      "title": "대시보드 완성(차트,기간필터)",
+      "type": "FEATURE",
+      "priority": "P2",
+      "size": "M",
+      "phase": "2",
+      "status": "READY",
+      "depends_on": [
+        "ISS-004",
+        "ISS-008"
+      ],
+      "done_criteria": "7/30/90일+차트",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-013",
+      "title": "캠페인 발송 재정의",
+      "type": "FEATURE",
+      "priority": "P2",
+      "size": "M",
+      "phase": "3",
+      "status": "READY",
+      "depends_on": [
+        "ISS-014"
+      ],
+      "done_criteria": "전용 이력모델+failed 사유",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-029",
+      "title": "채팅형 분석",
+      "type": "FEATURE",
+      "priority": "P3",
+      "size": "L",
+      "phase": "3",
+      "status": "READY",
+      "depends_on": [
+        "ISS-014",
+        "ISS-017"
+      ],
+      "done_criteria": "보류",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-025",
+      "title": "UCP API키+sanitize_sql_like",
+      "type": "SECURITY",
+      "priority": "P2",
+      "size": "S",
+      "phase": "4",
+      "status": "READY",
+      "depends_on": [
+        "ISS-008"
+      ],
+      "done_criteria": "이스케이프+docs/ucp.md",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-024",
+      "title": "배포 구성",
+      "type": "INFRA",
+      "priority": "P1",
+      "size": "M",
+      "phase": "4",
+      "status": "READY",
+      "depends_on": [
+        "ISS-003",
+        "ISS-012"
+      ],
+      "done_criteria": "kamal deploy 성공",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-023",
+      "title": "Solid Cache 배선 또는 제거",
+      "type": "INFRA",
+      "priority": "P2",
+      "size": "S",
+      "phase": "4",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "db:prepare 무오류",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-020",
+      "title": "reviews#create 댕글링 라우트",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "size": "S",
+      "phase": "4",
+      "status": "READY",
+      "depends_on": [
+        "ISS-021"
+      ],
+      "done_criteria": "제거 또는 구현",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-021",
+      "title": "스토어 프론트 범위확정+스텁 제거",
+      "type": "REFACTOR",
+      "priority": "P2",
+      "size": "M",
+      "phase": "4",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "스텁 제거",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-027",
+      "title": "PRD v2+EPIC v2 재작성",
+      "type": "DOC",
+      "priority": "P1",
+      "size": "M",
+      "phase": "4",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "docs/PRD_v2.md",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-030",
+      "title": "외부채널 수집 스파이크",
+      "type": "FEATURE",
+      "priority": "P3",
+      "size": "M",
+      "phase": "4",
+      "status": "READY",
+      "depends_on": [
+        "ISS-015"
+      ],
+      "done_criteria": "스파이크 문서",
+      "created_at": "2026-09-07T15:03:23.919740",
+      "updated_at": "2026-09-07T15:03:23.919740"
+    }
+  ],
+  "hooks": {
+    "on_create": [],
+    "on_start": [],
+    "on_complete": [],
+    "on_fail": [],
+    "on_learn": []
+  },
+  "knowledge": {
+    "success_patterns": [],
+    "failure_patterns": [],
+    "meta_observations": []
+  },
+  "stats": {
+    "total_issues": 33,
+    "completed": 0,
+    "failed": 0,
+    "evolved": 0
+  }
+}

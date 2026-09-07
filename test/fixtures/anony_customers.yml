@@ -1,15 +1,15 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
-  uuid: MyString
-  zip_prefix: MyString
-  phone_suffix: MyString
-  birth_year: 1
-  preference_tags: MyText
+  uuid: 1b10ef21-85b4-4da9-8651-58a02f6dd001
+  zip_prefix: "045"
+  phone_suffix: "1234"
+  birth_year: 1995
+  preference_tags: '{"상의":2,"무신사 스탠다드":2}'
 
 two:
-  uuid: MyString
-  zip_prefix: MyString
-  phone_suffix: MyString
-  birth_year: 1
-  preference_tags: MyText
+  uuid: 2b10ef21-85b4-4da9-8651-58a02f6dd002
+  zip_prefix: "061"
+  phone_suffix: "5678"
+  birth_year: 1998
+  preference_tags: '{"하의":1,"커버낫":1}'

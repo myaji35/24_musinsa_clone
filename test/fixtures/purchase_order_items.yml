@@ -1,15 +1,15 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
   purchase_order: one
   variant: one
-  quantity: 1
-  unit_price: 9.99
-  subtotal: 9.99
+  quantity: 10
+  unit_price: 10000
+  subtotal: 100000
 
 two:
   purchase_order: two
   variant: two
-  quantity: 1
-  unit_price: 9.99
-  subtotal: 9.99
+  quantity: 5
+  unit_price: 30000
+  subtotal: 150000

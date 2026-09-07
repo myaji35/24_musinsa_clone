@@ -1,13 +1,19 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
-  content: MyText
-  rating: 1
+  content: 면 소재가 부드럽고 정사이즈로 잘 맞아요.
+  rating: 5
   user: one
   product: one
+  height: 175
+  weight: 68
+  size_purchased: M
 
 two:
-  content: MyText
-  rating: 1
+  content: 통이 넉넉해서 활동하기 편합니다.
+  rating: 4
   user: two
   product: two
+  height: 170
+  weight: 60
+  size_purchased: L

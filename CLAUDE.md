@@ -6,436 +6,171 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Project JIEUN (지은)** - AI-Native Fashion Operating System
+**Project JIEUN (지은)** — AI-Native Fashion Operating System. "주소는 지우고 취향은 잇다."
 
-"주소는 지우고 취향은 잇다." AI 에이전트(ClaudeBot)와 공존하는 차세대 의류 운영 솔루션.
+Rails 7.2 앱. 저장소 이름은 `musinsa_clone`(무신사 클론 프로토타입에서 출발)이지만, **현재 코드베이스는 이미 JIEUN 도메인으로 전환되어 있다.** 커머스 프론트(상품·리뷰·스냅·검색) 위에 재고/발주/익명 CRM 백오피스가 얹힌 구조다.
 
-현재 저장소는 **musinsa_clone**으로, JIEUN의 MVP 구축을 위한 Rails 7.2 기반 패션 커머스 프로토타입입니다.
+프로젝트 루트는 이 디렉터리(`musinsa_clone/`)이며, 상위 디렉터리에 `legacy_docs/prd.md`, `legacy_docs/EPIC_STORY.md`가 있다.
+
+---
+
+## ⚠️ 현재 저장소의 알려진 결함 (작업 전 반드시 인지)
+
+아래 3건은 실측으로 확인된 상태다. 관련 영역을 건드리기 전에 먼저 읽을 것.
+
+### 1. 테스트 스위트가 통째로 실행 불가 — minitest 6 비호환
+`Gemfile`에 minitest 버전 제약이 없어 **minitest 6.0.1**이 설치되어 있고, Rails 7.2.3의 `line_filtering.rb`와 시그니처가 맞지 않는다. `bin/rails test`가 테스트 실행 전에 크래시한다:
+
+```
+line_filtering.rb:7:in `run': wrong number of arguments (given 3, expected 1..2) (ArgumentError)
+```
+
+→ `gem "minitest", "~> 5.25"`를 Gemfile에 추가하면 해소된다(실측 확인). **`bin/ci`도 이 단계에서 실패하므로 CI 전체가 막혀 있다.**
+
+### 2. minitest를 고쳐도 전 테스트가 fixture에서 에러 (16/16)
+`test/fixtures/anony_customers.yml`이 **Rails 제너레이터 스캐폴딩 그대로**다. `one`/`two` 두 레코드 모두 `uuid: MyString`이라 `anony_customers.uuid` unique 인덱스를 위반한다:
+
+```
+ActiveRecord::RecordNotUnique: SQLite3::ConstraintException: UNIQUE constraint failed: anony_customers.uuid
+```
+
+`test_helper.rb`가 `fixtures :all`이라 이 파일 하나가 **모든 테스트를 죽인다.** 다른 fixture들도 `MyString` 스캐폴딩이 남아 있는지 함께 확인할 것.
+
+### 3. 입출고 전 경로가 런타임에서 깨짐 — `StockLog` 컬럼 불일치
+`Inventory::StockAdjuster`가 `StockLog.create!`에 **존재하지 않는 컬럼**을 넘긴다:
+
+| StockAdjuster가 넘기는 것 | 실제 `stock_logs` 스키마 |
+|---|---|
+| `stock_type:` | `log_type` (컬럼명 다름) |
+| `user_name:` | **컬럼 없음** |
+
+`app/services/inventory/stock_adjuster.rb:59` 부근. `InventoryController#create_stock_in` / `#create_stock_out`이 둘 다 이 서비스를 `stock_type:`으로 호출하므로 **입고·출고 기능 전체가 동작하지 않는다.** 컨트롤러의 `StockLog.new(log_type: "in")`과 `StockLog` 모델의 validation(`log_type`)은 올바른 이름을 쓰고 있어, 서비스 레이어만 어긋난 상태다. 테스트(`test/services/inventory/stock_adjuster_test.rb`)도 `stock_type`을 단언하고 있어 **테스트가 이 버그를 잡지 못한다** — 위 1·2번 때문에 애초에 실행된 적이 없기 때문.
+
+수정 시 서비스·테스트·(필요하면)스키마 중 어디를 정본으로 삼을지 먼저 정할 것. 스키마와 모델과 컨트롤러가 `log_type`으로 일치하므로 **서비스와 테스트를 고치는 쪽이 변경 범위가 작다.**
 
 ---
 
 ## Technology Stack
 
-- **Framework**: Ruby on Rails 7.2
-- **Database**: SQLite 3 (multi-database configuration for production)
-  - Primary DB: `storage/production.sqlite3`
-  - Cache DB: `storage/production_cache.sqlite3`
-  - Queue DB: `storage/production_queue.sqlite3`
-  - Cable DB: `storage/production_cable.sqlite3`
-- **Background Jobs**: Solid Queue (SQLite-backed)
-- **Caching**: Solid Cache (SQLite-backed)
-- **WebSocket**: Solid Cable (SQLite-backed)
-- **Frontend**: Hotwire (Turbo + Stimulus) + Tailwind CSS
+- **Framework**: Rails 7.2.3 / Ruby 3.3.0 (rbenv)
+- **Database**: SQLite 3 — 멀티 DB (primary / cache / queue / cable), production 포함
+- **Solid 스택**: Solid Queue(잡) · Solid Cache(캐시) · Solid Cable(웹소켓) 전부 SQLite 백엔드
+- **Frontend**: Hotwire (Turbo + Stimulus) + Tailwind CSS, Importmap
 - **Asset Pipeline**: Propshaft
-- **Deployment**: Kamal (Docker-based)
-- **Testing**: Minitest (Rails default)
+- **Storage**: Active Storage (Product 이미지)
+- **Deployment**: Kamal (Docker)
+- **Testing**: Minitest + Capybara/Selenium(system) + SimpleCov
 
 ---
 
 ## Essential Commands
 
-### Development
-
 ```bash
-# Setup
-bin/setup                  # Initial setup (bundle install, db setup)
+bin/setup                   # 초기 셋업
+bin/dev                     # 개발 서버 (Rails + Tailwind watcher, Procfile.dev)
 
-# Run development server
-bin/dev                    # Runs both Rails server and Tailwind watcher (Procfile.dev)
-bin/rails server           # Rails server only
-bin/rails tailwindcss:watch # Tailwind CSS watcher only
+bin/rails test                                  # 전체 (현재 위 결함 1로 크래시)
+bin/rails test test/models/product_test.rb      # 파일 단위
+bin/rails test test/models/product_test.rb:10   # 단일 테스트 (line filtering — 결함 1의 크래시 지점)
+bin/rails test:system                           # 시스템 테스트 (Capybara)
+COVERAGE=1 bin/rails test                       # SimpleCov 커버리지 (최소 80%, 파일별 70% 강제)
 
-# Database
-bin/rails db:create        # Create database
-bin/rails db:migrate       # Run migrations
-bin/rails db:seed          # Seed sample data
-bin/rails db:reset         # Drop, create, migrate, and seed
-bin/rails db:schema:load   # Load schema without running migrations
+bin/rubocop                 # 린트 (rails-omakase 기반)
+bin/rubocop -a              # 자동 수정
+bin/brakeman                # 정적 보안 분석
+bin/bundler-audit           # 취약 gem 점검
+bin/ci                      # 전체 CI 파이프라인 (config/ci.rb 정의)
 ```
 
-### Testing
+### `bin/ci`의 실제 단계 (`config/ci.rb`)
+Setup → RuboCop → bundler-audit → importmap audit → Brakeman(`--exit-on-warn`) → `bin/rails test` → `db:seed:replant`.
+Brakeman이 **경고에도 실패**하도록 설정되어 있고, seed replant까지 CI에 포함된다는 점에 유의.
 
-```bash
-# Run all tests
-bin/rails test
-
-# Run specific test file
-bin/rails test test/models/product_test.rb
-
-# Run single test method
-bin/rails test test/models/product_test.rb:10
-
-# Run tests with verbose output
-bin/rails test -v
-```
-
-### Code Quality
-
-```bash
-# Linting
-bin/rubocop                # Run RuboCop linter
-bin/rubocop -a             # Auto-fix violations
-
-# Security audits
-bin/brakeman               # Static security analysis
-bin/bundler-audit          # Check for vulnerable dependencies
-
-# CI checks (runs all quality checks)
-bin/ci                     # Combines bundler-audit, brakeman, and rubocop
-```
-
-### Deployment
-
-```bash
-# Kamal deployment
-bin/kamal setup            # Initial server setup
-bin/kamal deploy           # Deploy to production
-bin/kamal app exec 'bin/rails db:migrate' # Run migrations on production
-```
+### 배포
+`config/deploy.yml`의 서버 IP가 아직 **플레이스홀더(`192.168.0.1`)**이고 proxy/SSL 블록도 주석 상태다. Kamal 배포는 미구성이므로 `bin/kamal deploy`를 그대로 실행하면 안 된다.
 
 ---
 
-## Architecture & Code Structure
+## Architecture
 
-### Data Models
+### 도메인 구조 — 두 레이어가 한 앱에 공존
 
-현재 구현된 모델 (무신사 클론 프로토타입):
+**(A) 커머스 프론트** — 소비자용
+`Product` ← `Review`, `Snap`(스타일 피드) ↔ `SnapProduct` 다대다.
+컨트롤러: `Home`(랭킹), `Products`, `Search`(카테고리·브랜드·성별 필터), `Snaps`.
 
-- **Product**: 상품 기본 정보 (name, description, price, stock, category, brand, gender, views_count, sales_count, image_url)
-- **User**: 사용자 (email, name)
-- **Review**: 상품 리뷰 (content, rating, height, weight, size_purchased, photo_url)
-- **Snap**: 스타일 스냅 (user_id, content)
-- **SnapProduct**: Snap-Product 다대다 관계
+**(B) 백오피스 / 운영** — JIEUN 본체
+`Product` → `Variant`(SKU) → `StockLog`(입출고 원장) / `Notification`.
+`Supplier` → `PurchaseOrder` → `PurchaseOrderItem` (발주, 토큰 기반 거래처 확인 URL).
+`AnonyCustomer` → `Order`. `Campaign`(마케팅).
+컨트롤러: `Inventory`, `Dashboard`, `Suppliers`, `PurchaseOrders`, `Api::V1::Ucp`.
 
-### JIEUN 목표 모델 (PRD 기반)
+### 재고의 정본은 `StockLog`이고, `Variant.stock`은 파생값이다
+`StockLog`에 `after_create :update_variant_stock` 콜백이 있어 **로그가 생성되면 `Variant.stock`을 자동으로 증감**시킨다(`increment!`/`decrement!`).
 
-향후 구현 예정:
+⚠️ 그런데 `Inventory::StockAdjuster`는 `adjust_stock`으로 **직접 stock을 조정한 뒤 다시 `StockLog.create!`**를 호출한다. 콜백까지 함께 돌면 **재고가 이중 반영**되는 구조다(현재는 결함 3 때문에 create! 자체가 터져서 표면화되지 않음). 이 영역을 수정할 때는 **조정 주체를 콜백 하나로 일원화**할 것.
 
-- **Variants**: SKU별 상세 옵션 (바코드, 컬러, 사이즈, 재고)
-- **AnonyCustomers**: 익명 CRM (UUID, 우편번호 앞 3자리, 연락처 뒤 4자리, 취향 태그)
-- **Orders**: 판매 채널, 결제 정보, 배송 상태 (익명 식별자 연결)
-- **StockLogs**: 입출고 이력 (사입처 정보 포함)
-
-### Controllers
-
-- `HomeController`: 메인 페이지 (랭킹 상품 표시)
-- `ProductsController`: 상품 상세 페이지
-- `SearchController`: 상품 검색 (카테고리, 브랜드, 성별 필터)
-- `SnapsController`: 스타일 스냅 CRUD
-
-### Routes
+### 서비스 레이어 규약 — `ApplicationService`
+모든 서비스는 `ApplicationService`를 상속하고 `Result` 객체를 반환한다. 컨트롤러는 절대 예외를 기대하지 않고 `result.success?`로 분기한다.
 
 ```ruby
-root "home#index"
-resources :products, only: [:show] do
-  resources :reviews, only: [:create]
-end
-resources :snaps, only: [:index, :new, :create, :show]
-get "search", to: "search#index"
-get "up" => "rails/health#show"  # Health check endpoint
-```
-
----
-
-## Development Workflow
-
-### Migration 작성
-
-```bash
-bin/rails generate migration AddColumnToTable column:type
-bin/rails db:migrate
-```
-
-### Model 생성
-
-```bash
-bin/rails generate model ModelName field:type field:type
-bin/rails db:migrate
-```
-
-### Controller 생성
-
-```bash
-bin/rails generate controller ControllerName action1 action2
-```
-
----
-
-## JIEUN-Specific Implementation Guidelines
-
-### 1. Privacy-First CRM
-
-- **절대 저장 금지**: 상세 주소, 전체 연락처, 전체 이메일
-- **허용 데이터**: UUID, 우편번호 앞 3자리, 연락처 뒤 4자리, 지역 정보
-- AnonyCustomers 모델 생성 시 JSONB 컬럼 활용하여 취향 태그 저장
-
-### 2. AI-Enhanced Inventory
-
-- Product 모델에 JSONB 속성 추가 (TPO, 감성, 핏감, 소재)
-- Variants 모델: 바코드 기반 SKU 관리 (현재고, 적정재고 컬럼 필수)
-- StockLogs: 입출고 이력 추적 (timestamps, 사입처, 수량, 담당자)
-
-### 3. Barcode System
-
-- 바코드는 Variant 단위로 생성 (컬러 + 사이즈 조합)
-- 모바일 카메라 스캔 → Turbo Stream으로 실시간 재고 업데이트
-- Solid Queue로 백그라운드 재고 동기화 처리
-
-### 4. ClaudeBot Integration (Phase 2)
-
-- Claude API 연동 시 `app/services/claude_bot/` 디렉토리 구조 권장
-- 운영 리포트, 마케팅 자동화, UCP 응답 생성 서비스 클래스 분리
-- Background job으로 정기 분석 보고서 생성
-
----
-
-## Performance & Production Considerations
-
-### SQLite Production Setup
-
-- Rails 7+는 SQLite를 production에서 사용 가능 (단, 단일 서버 환경)
-- `config/database.yml`에 이미 멀티 DB 설정 완료 (primary, cache, queue, cable)
-- WAL 모드 활성화로 동시성 개선 (Rails 7.2 default)
-
-### Caching Strategy
-
-- Solid Cache 사용 (SQLite 기반)
-- Fragment caching: 상품 목록, 랭킹 데이터
-- Russian Doll Caching: 상품 상세 페이지
-
-### Background Jobs
-
-- Solid Queue 활용 (cron 기반 정기 작업 지원)
-- 재고 동기화, AI 분석 리포트, 마케팅 메시지 발송에 사용
-
----
-
-## Testing Strategy
-
-- **Model Tests**: 비즈니스 로직, 유효성 검증, 관계 테스트
-- **Controller Tests**: HTTP 요청/응답 검증
-- **System Tests**: Capybara + Selenium으로 E2E 테스트
-- Coverage 목표: 80%+ (Phase 1), 90%+ (Phase 2)
-
----
-
-## Security Checklist
-
-- [ ] Brakeman 정기 실행 (CI 파이프라인 포함)
-- [ ] `bundler-audit`로 취약한 gem 점검
-- [ ] Strong Parameters 사용 (Mass Assignment 방지)
-- [ ] CSRF 보호 활성화 (Rails default)
-- [ ] Content Security Policy 설정 (`config/initializers/content_security_policy.rb`)
-- [ ] 민감 정보 credentials 관리 (`rails credentials:edit`)
-
----
-
-## Key Files & Directories
-
-- `config/database.yml`: Multi-database configuration
-- `config/deploy.yml`: Kamal deployment settings
-- `Procfile.dev`: Development process management (web + css)
-- `app/models/`: Domain models
-- `app/controllers/`: Request handlers
-- `app/views/`: ERB templates (Hotwire Turbo Frames/Streams)
-- `app/javascript/`: Stimulus controllers
-- `db/migrate/`: Database migrations
-- `db/schema.rb`: Current database schema
-- `test/`: Minitest test suite
-
----
-
-## PM Orchestrator Integration
-
-이 프로젝트는 `SKILL.md`에 정의된 **PM Orchestrator** 패턴을 따릅니다.
-
-### 주요 원칙
-
-1. **PM은 오케스트레이터** - 직접 실행하지 않고 위임과 조율에 집중
-2. **속도 > 완벽** - 빠른 피드백 루프로 점진적 개선
-3. **명확한 R&R** - 각 에이전트의 책임 영역 명확화
-4. **상태 투명성** - 모든 진행 상황 추적 가능
-
-### 서브 에이전트 활용
-
-코드 작업 시 다음 에이전트 역할 분담:
-
-- **SA (Solution Architect)**: 아키텍처 설계, 기술 선택
-- **BE (Backend Engineer)**: Model, Controller, Service 구현
-- **FE (Frontend Engineer)**: View, Stimulus, Turbo 구현
-- **DBA (Database Architect)**: Migration, Schema 최적화
-- **QA (QA Engineer)**: Test 작성 및 품질 검증
-- **SEC (Security Specialist)**: 보안 검토, OWASP 체크
-
----
-
-## Migration from Prototype to JIEUN
-
-현재 저장소는 무신사 클론 기반 프로토타입입니다. JIEUN으로 전환 시:
-
-1. **Models**: Product → 확장 (JSONB 속성 추가), Variants 생성, AnonyCustomers/Orders/StockLogs 추가
-2. **Controllers**: Inventory, Stock, Dashboard 컨트롤러 신규 생성
-3. **Views**: 바코드 스캔 UI, 익명 CRM 대시보드, AI 리포트 페이지 추가
-4. **Services**: Claude API 연동 서비스 클래스 (`app/services/claude_bot/`)
-5. **Background Jobs**: 재고 동기화, AI 분석 정기 실행 Job 추가
-
----
-
-## Claude Code Custom Commands
-
-이 프로젝트는 `.claude/commands/` 디렉토리에 커스텀 슬래시 커맨드를 제공합니다.
-
-### 사용 가능한 커맨드
-
-#### `/test-all` - 전체 테스트 실행
-모든 테스트 스위트를 실행하고 커버리지를 측정합니다.
-- Model Tests
-- System Tests (Capybara)
-- Smoke Tests (curl-based)
-- Coverage 측정 (SimpleCov)
-
-```bash
-# Claude Code에서 사용
-/test-all
-```
-
-#### `/deploy-check` - 배포 전 체크리스트
-배포 전 모든 품질 검사를 자동 실행합니다.
-- RuboCop 코드 품질
-- Bundler Audit 보안 검사
-- Brakeman 보안 검사
-- 전체 테스트 실행
-- 데이터베이스 마이그레이션 확인
-
-```bash
-# Claude Code에서 사용
-/deploy-check
-```
-
-#### `/fix-errors` - 에러 감지 및 수정 가이드
-현재 프로젝트의 에러를 자동 감지하고 수정 방안을 제시합니다.
-- 서버 에러 확인 (PID 파일, 로그)
-- 데이터베이스 에러 확인 (마이그레이션, N+1)
-- 테스트 에러 확인
-- Chain-of-Thought 에러 분석
-
-```bash
-# Claude Code에서 사용
-/fix-errors
-```
-
-#### `/upgrade-plan` - 시스템 고도화 계획
-JIEUN 프로젝트 고도화 작업 현황 및 다음 단계를 확인합니다.
-- Phase 1 안정화 현황
-- Phase 3 성능 최적화 현황
-- 성능 개선 지표
-- 다음 단계 가이드
-
-```bash
-# Claude Code에서 사용
-/upgrade-plan
-```
-
-### 커맨드 작성 가이드
-
-`.claude/commands/` 디렉토리에 Markdown 파일을 추가하면 자동으로 슬래시 커맨드로 등록됩니다.
-
-```markdown
-# /my-command - 커맨드 설명
-
-**상세 설명**
-
-## 실행 순서
-
-1. 단계 1
-2. 단계 2
-
-## 명령어
-
-\```bash
-bin/rails my:task
-\```
-```
-
----
-
-## Error Handling & Chain-of-Thought Analysis
-
-### 에러 발생 시 체크리스트
-
-1. **에러 메시지 정확히 읽기**
-   - 에러 타입 확인 (NoMethodError, TypeError, etc.)
-   - 스택 트레이스에서 파일명과 라인 번호 추출
-
-2. **데이터 타입 검증**
-   - 예상한 데이터 타입과 실제 타입 비교
-   - `nil`, 빈 문자열, malformed JSON 등 Edge Case 확인
-
-3. **테스트 커버리지 검토**
-   - 해당 케이스를 테스트했는가?
-   - Edge Case 테스트가 누락되지 않았는가?
-
-4. **Chain-of-Thought 분석**
-   - 왜 이 에러가 발생했는가?
-   - 어떤 가정이 잘못되었는가?
-   - 어떻게 방지할 수 있었는가?
-
-### 일반적인 에러 패턴
-
-#### NoMethodError: undefined method for String
-```ruby
-# ❌ 잘못된 코드
-ai_attributes.dig("mood")  # ai_attributes가 String이면 에러
-
-# ✅ 올바른 코드
-def parsed_ai_attributes
-  return {} if ai_attributes.blank?
-  ai_attributes.is_a?(String) ? JSON.parse(ai_attributes) : ai_attributes
-rescue JSON::ParserError
-  {}
-end
-
-def mood
-  parsed_ai_attributes["mood"]
+result = Inventory::StockAdjuster.call(barcode:, quantity:, ...)
+if result.success?
+  redirect_to ..., notice: result.data[:message]
+else
+  flash.now[:alert] = result.error
+  render :stock_in, status: :unprocessable_entity
 end
 ```
 
-#### N+1 Query Problem
+- `self.call(*args, **kwargs)` → `new(...).call` 원라이너
+- 내부에서 `success(data)` / `failure(error)` (protected) 사용
+- 서비스는 `StandardError`를 rescue해 `Rails.logger.error` 후 `failure`로 변환한다 — **새 서비스도 이 패턴을 따를 것**
+
+디렉터리: `app/services/{inventory,crm,claude_bot,notifications}/`
+
+### JSON 컬럼은 `serialize`로 다룬다 (JSONB 아님 — SQLite다)
+`Product#ai_attributes`, `Product#badges`, `AnonyCustomer#preference_tags`가 `serialize ..., coder: JSON`이다.
+
+이 때문에 **AI 속성 필터링 scope가 `LIKE` 문자열 매칭**으로 구현되어 있다:
 ```ruby
-# ❌ N+1 발생
-@products = Product.all
-@products.each { |p| p.variants.count }  # 각 product마다 쿼리 실행
-
-# ✅ Eager Loading
-@products = Product.includes(:variants).all
-@products.each { |p| p.variants.count }  # 쿼리 1회만 실행
+scope :by_mood, ->(mood) { where("ai_attributes LIKE ?", "%\"mood\":%\"#{mood}\"%") }
 ```
+인덱스를 타지 않고 SQL 인젝션 표면이 있으므로, 이 scope를 확장할 때는 주의할 것. `Product#parsed_ai_attributes`는 String/Hash 양쪽을 방어적으로 파싱한다(JSON::ParserError → `{}`).
 
-#### Stale PID File
-```bash
-# 자동 정리
-bin/rails server:clean_pids
-
-# 또는 Puma 재시작 시 자동 정리 (config/puma.rb에 설정됨)
-```
-
-### 테스트 누락 방지 전략
-
-`docs/TESTING_STRATEGY.md` 참조:
-1. TDD 워크플로우 적용
-2. Edge Case 체크리스트 사용
-3. CI/CD 파이프라인 구축
-4. 커버리지 80% 이상 유지
+### 바코드 자동 생성
+`Variant`의 `before_validation :generate_barcode` (on: create)가 `{PRODUCT_ID}-{COLOR}-{SIZE}` 형식으로 생성하고, 충돌 시 `-1`, `-2` 접미사를 붙인다. `sku_code`도 같은 값으로 채워진다. **바코드를 수동 지정하면 생성 로직은 건너뛴다.**
 
 ---
 
-## Additional Resources
+## Privacy-First CRM — 이 프로젝트의 핵심 제약
 
-- **PRD**: 프로젝트 루트의 `../prd.md` 참조
-- **PM Orchestrator Guide**: `SKILL.md` 참조
-- **Testing Strategy**: `docs/TESTING_STRATEGY.md`
-- **Smoke Test Guide**: `docs/SMOKE_TEST_GUIDE.md`
-- **Upgrade Summary**: `docs/UPGRADE_SUMMARY.md`
-- **Rails 7.2 Guides**: https://guides.rubyonrails.org/
-- **Solid Queue Docs**: https://github.com/basecamp/solid_queue
-- **Kamal Deployment**: https://kamal-deploy.org/
+`AnonyCustomer`는 **개인을 식별할 수 없는 데이터만** 저장한다. 스키마가 이를 강제한다:
+
+| 저장 O | 저장 X (절대 금지) |
+|---|---|
+| `uuid` (자동 생성) | 상세 주소 |
+| `zip_prefix` — 우편번호 **앞 3자리** (`limit: 3`) | 전체 연락처 |
+| `phone_suffix` — 연락처 **뒤 4자리** (`limit: 4`) | 전체 이메일 |
+| `birth_year`, `preference_tags` | 이름 |
+
+동일인 판별은 `find_or_create_by_identifier(phone_suffix, birth_year)` — 이 조합에 복합 인덱스가 있다.
+**CRM 영역에 컬럼을 추가할 때 이 원칙을 깨지 않을 것.** LLM API로 고객 데이터를 보내는 코드를 작성할 때도 동일하게 적용된다.
+
+---
+
+## 커밋 / 코드 스타일
+
+- **Conventional Commits + 한국어 본문.** 기존 이력: `feat: Epic 1 지능형 상품 관리 시스템 구현`, `fix: Production 환경 설정 및 RuboCop 오류 수정`
+- 주석·검증 메시지·flash 메시지는 **한국어**로 작성한다 (기존 코드 전반의 관례)
+- 모델의 validation/scope에 해당 Story 번호를 주석으로 남기는 관례가 있다 (`# Story 1.3 Acceptance Criteria`)
+- RuboCop은 `rails-omakase` 기반 (`.rubocop.yml`)
+
+---
+
+## 참고 문서
+
+- `docs/TESTING_STRATEGY.md`, `docs/SMOKE_TEST_GUIDE.md`, `docs/REBUILD_PLAN.md`, `docs/UPGRADE_SUMMARY.md`, `docs/stories/`
+- `SKILL.md` — PM Orchestrator 패턴 (PM은 오케스트레이터, 직접 실행보다 위임·조율)
+- `.claude/commands/` — `/test-all`, `/deploy-check`, `/fix-errors`, `/upgrade-plan`
+- `../legacy_docs/prd.md`, `../legacy_docs/EPIC_STORY.md`

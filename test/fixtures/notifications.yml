@@ -1,15 +1,14 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
   variant: one
-  notification_type: MyString
-  message: MyText
-  status: MyString
-  sent_at: 2026-01-31 20:32:23
+  notification_type: low_stock
+  message: 블랙 M 티셔츠 재고가 최소 재고에 도달했습니다.
+  status: pending
 
 two:
   variant: two
-  notification_type: MyString
-  message: MyText
-  status: MyString
-  sent_at: 2026-01-31 20:32:23
+  notification_type: out_of_stock
+  message: 블루 L 데님 팬츠가 품절되었습니다.
+  status: sent
+  sent_at: 2026-09-01 10:00:00

@@ -1,19 +1,19 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
   anony_customer: one
   product: one
   variant: one
-  quantity: 1
-  total_price: 9.99
-  status: MyString
-  order_number: MyString
+  quantity: 2
+  total_price: 39800
+  status: paid
+  order_number: ORD-20260901-0001
 
 two:
   anony_customer: two
   product: two
   variant: two
   quantity: 1
-  total_price: 9.99
-  status: MyString
-  order_number: MyString
+  total_price: 59000
+  status: delivered
+  order_number: ORD-20260901-0002

@@ -1,9 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
-  content: MyText
+  content: 블랙 티셔츠로 완성한 데일리 코디
   user: one
 
 two:
-  content: MyText
+  content: 와이드 데님과 함께한 주말 산책
   user: two

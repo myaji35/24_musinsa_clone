@@ -1,0 +1,6 @@
+graphify-out/
+.rebuild-needed
+.last-autobuild
+autobuild.log
+semantic/__pycache__/
+semantic/fixtures/

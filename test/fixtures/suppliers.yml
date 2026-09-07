@@ -1,19 +1,21 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
-  name: MyString
-  contact_person: MyString
-  phone: MyString
-  email: MyString
-  address: MyText
-  payment_terms: MyString
-  notes: MyText
+  name: 동대문 코튼상사
+  contact_person: 김민수
+  phone: "02-1234-5678"
+  email: cotton@example.com
+  address: 서울특별시 중구 장충단로 100
+  payment_terms: 월말 정산
+  notes: 면 소재 의류 공급처
+  active: true
 
 two:
-  name: MyString
-  contact_person: MyString
-  phone: MyString
-  email: MyString
-  address: MyText
-  payment_terms: MyString
-  notes: MyText
+  name: 서울 데님상사
+  contact_person: 이지은
+  phone: "02-2345-6789"
+  email: denim@example.com
+  address: 서울특별시 성동구 성수이로 100
+  payment_terms: 입고 후 30일 이내 결제
+  notes: 데님 의류 공급처
+  active: true

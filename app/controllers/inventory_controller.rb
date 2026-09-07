@@ -26,6 +26,12 @@ class InventoryController < ApplicationController
       redirect_to stock_in_inventory_index_path(barcode: @variant.barcode),
                   notice: result.data[:message]
     else
+      # 실패한 입력값과 오류를 유지하여 폼을 다시 표시
+      @stock_log = StockLog.new(stock_in_params.except(:barcode))
+      @stock_log.variant = @variant
+      @stock_log.log_type = "in"
+      @stock_log.errors.add(:base, result.error)
+      params[:barcode] = @variant.barcode
       flash.now[:alert] = result.error
       render :stock_in, status: :unprocessable_entity
     end
@@ -51,6 +57,12 @@ class InventoryController < ApplicationController
       redirect_to stock_out_inventory_index_path(barcode: @variant.barcode),
                   notice: result.data[:message]
     else
+      # 실패한 입력값과 오류를 유지하여 폼을 다시 표시
+      @stock_log = StockLog.new(stock_out_params.except(:barcode))
+      @stock_log.variant = @variant
+      @stock_log.log_type = "out"
+      @stock_log.errors.add(:base, result.error)
+      params[:barcode] = @variant.barcode
       flash.now[:alert] = result.error
       render :stock_out, status: :unprocessable_entity
     end

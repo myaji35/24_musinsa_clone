@@ -45,3 +45,7 @@
 .Spotlight-V100
 .Trashes
 coverage/
+.claude/worktrees
+worktrees/
+.harness-worktree-meta
+.claude/worktrees.json

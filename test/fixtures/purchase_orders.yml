@@ -1,21 +1,20 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
   supplier: one
-  order_number: MyString
-  status: MyString
-  expected_delivery_date: 2026-01-31
-  total_amount: 9.99
-  notes: MyText
-  confirmation_token: MyString
-  confirmed_at: 2026-01-31 20:53:09
+  order_number: PO-20260901-0001
+  status: draft
+  expected_delivery_date: 2026-09-10
+  total_amount: 100000
+  notes: 가을 티셔츠 재고 확보
+  confirmation_token: cotton-order-confirmation-0001
 
 two:
   supplier: two
-  order_number: MyString
-  status: MyString
-  expected_delivery_date: 2026-01-31
-  total_amount: 9.99
-  notes: MyText
-  confirmation_token: MyString
-  confirmed_at: 2026-01-31 20:53:09
+  order_number: PO-20260901-0002
+  status: confirmed
+  expected_delivery_date: 2026-09-12
+  total_amount: 150000
+  notes: 품절 데님 재입고 요청
+  confirmation_token: denim-order-confirmation-0002
+  confirmed_at: 2026-09-02 10:00:00

@@ -4,6 +4,7 @@ class InventoryController < ApplicationController
   # GET /inventory/scan - 바코드 스캔 페이지
   def scan
     # 모바일 전용 바코드 스캔 UI
+    @variant = Variant.includes(:product).find_by(barcode: params[:barcode]) if params[:barcode].present?
   end
 
   # GET /inventory/stock_in - 입고 폼

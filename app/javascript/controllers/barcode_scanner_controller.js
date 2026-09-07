@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import Quagga from "quagga"
+import { Html5Qrcode } from "html5-qrcode"
 
 // Connects to data-controller="barcode-scanner"
 export default class extends Controller {
@@ -28,48 +28,18 @@ export default class extends Controller {
     this.isScanning = true
     this.updateUI("scanning")
 
-    Quagga.init({
-      inputStream: {
-        name: "Live",
-        type: "LiveStream",
-        target: this.videoTarget,
-        constraints: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          facingMode: "environment" // 후면 카메라 사용
-        }
+    this.scanner = new Html5Qrcode(this.videoTarget.id)
+    this.scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: undefined },
+      (decodedText, decodedResult) => {
+        this.onDetected({ codeResult: { code: decodedText, decodedCodes: decodedResult } })
       },
-      decoder: {
-        readers: [
-          "code_128_reader",
-          "ean_reader",
-          "ean_8_reader",
-          "code_39_reader",
-          "code_39_vin_reader",
-          "codabar_reader",
-          "upc_reader",
-          "upc_e_reader",
-          "i2of5_reader"
-        ]
-      },
-      locate: true,
-      locator: {
-        patchSize: "medium",
-        halfSample: true
-      },
-      frequency: 10
-    }, (err) => {
-      if (err) {
-        console.error("QuaggaJS 초기화 실패:", err)
-        this.handleError("카메라 접근 실패. 권한을 확인해주세요.")
-        return
-      }
-
-      console.log("QuaggaJS 초기화 성공")
-      Quagga.start()
-
-      // 바코드 감지 이벤트
-      Quagga.onDetected(this.onDetected.bind(this))
+      () => {}
+    ).catch((err) => {
+      this.isScanning = false
+      console.error("Html5Qrcode 초기화 실패:", err)
+      this.handleError("카메라 접근 실패. 권한을 확인해주세요.")
     })
   }
 
@@ -78,8 +48,7 @@ export default class extends Controller {
     if (!this.isScanning) return
 
     this.isScanning = false
-    Quagga.stop()
-    Quagga.offDetected(this.onDetected.bind(this))
+    this.scanner.stop().then(() => this.scanner.clear()).catch(() => {})
     this.updateUI("idle")
     console.log("스캔 중지")
   }

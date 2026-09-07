@@ -24,6 +24,25 @@ class InventoryControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get scan with existing barcode" do
+    variant = variants(:one)
+    get inventory_scan_url, params: { barcode: variant.barcode }
+
+    assert_response :success
+    assert_includes response.body, variant.product.name
+    assert_select "p", text: "컬러: #{variant.color} / 사이즈: #{variant.size}"
+    assert_select "p", text: "현재 재고: #{variant.stock}개"
+    assert_select "a[href=?]", inventory_stock_in_path(barcode: variant.barcode)
+    assert_select "a[href=?]", inventory_stock_out_path(barcode: variant.barcode)
+  end
+
+  test "should get scan with nonexistent barcode" do
+    get inventory_scan_url, params: { barcode: "NONEXISTENT" }
+
+    assert_response :success
+    assert_includes response.body, "등록되지 않은 바코드입니다"
+  end
+
   # GET /inventory/stock_in
   test "should get stock_in" do
     get inventory_stock_in_url

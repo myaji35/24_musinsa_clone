@@ -212,14 +212,14 @@
       "priority": "P0",
       "size": "M",
       "phase": "1",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-001",
         "ISS-002"
       ],
       "done_criteria": "비로그인 302/로그인 200",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T17:24:56.880022"
+      "updated_at": "2026-09-07T17:32:23.186955"
     },
     {
       "id": "ISS-009",

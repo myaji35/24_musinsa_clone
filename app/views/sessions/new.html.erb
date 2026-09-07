@@ -1,0 +1,17 @@
+<div class="max-w-md mx-auto px-6 py-12">
+  <h1 class="text-2xl font-bold mb-6">관리자 로그인</h1>
+  <% if flash[:alert] %>
+    <p role="alert" class="text-red-600 mb-4"><%= flash[:alert] %></p>
+  <% end %>
+  <%= form_with url: login_path, class: "space-y-4" do |form| %>
+    <div>
+      <%= form.label :email, "이메일", class: "block mb-1" %>
+      <%= form.email_field :email, value: params[:email], required: true, autocomplete: "username", class: "w-full border p-2" %>
+    </div>
+    <div>
+      <%= form.label :password, "비밀번호", class: "block mb-1" %>
+      <%= form.password_field :password, required: true, autocomplete: "current-password", class: "w-full border p-2" %>
+    </div>
+    <%= form.submit "로그인", class: "w-full bg-black text-white py-3 cursor-pointer" %>
+  <% end %>
+</div>

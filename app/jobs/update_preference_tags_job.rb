@@ -30,13 +30,13 @@ class UpdatePreferenceTagsJob < ApplicationJob
     return unless product.ai_attributes.is_a?(Hash)
 
     # Mood (예: "minimal", "vintage", "street")
-    if product.ai_attributes["mood"].present?
-      customer.add_preference("mood:#{product.ai_attributes['mood']}", 1)
+    Array(product.ai_attributes["mood"]).reject(&:blank?).each do |value|
+      customer.add_preference("mood:#{value}", 1)
     end
 
     # TPO (예: "daily", "outdoor", "office")
-    if product.ai_attributes["tpo"].present?
-      customer.add_preference("tpo:#{product.ai_attributes['tpo']}", 1)
+    Array(product.ai_attributes["tpo"]).reject(&:blank?).each do |value|
+      customer.add_preference("tpo:#{value}", 1)
     end
 
     # Fit Style (예: "slim", "oversized", "regular")

@@ -8,7 +8,7 @@ module Inventory
       @quantity = quantity.to_i
       @stock_type = stock_type # "in" or "out"
       @note = note
-      @user_name = user_name
+      @user_name = user_name # 인증 도입 전까지 저장하지 않음
     end
 
     def call
@@ -20,6 +20,7 @@ module Inventory
       ActiveRecord::Base.transaction do
         adjust_stock
         create_stock_log
+        @variant.reload
         check_low_stock_alert
       end
 
@@ -42,12 +43,11 @@ module Inventory
     def adjust_stock
       case @stock_type
       when "in"
-        @variant.increment!(:stock, @quantity)
+        # 재고 변경은 StockLog 콜백에서만 처리
       when "out"
         if @variant.stock < @quantity
           raise "재고 부족: 현재 #{@variant.stock}개, 요청 #{@quantity}개"
         end
-        @variant.decrement!(:stock, @quantity)
       else
         raise "잘못된 stock_type: #{@stock_type}"
       end
@@ -56,16 +56,15 @@ module Inventory
     def create_stock_log
       StockLog.create!(
         variant: @variant,
-        stock_type: @stock_type,
+        log_type: @stock_type,
         quantity: @quantity,
-        note: @note,
-        user_name: @user_name
+        note: @note
       )
     end
 
     def check_low_stock_alert
       if @variant.low_stock?
-        LowStockAlertJob.perform_later(@variant.id)
+        LowStockAlertJob.perform_later
       end
     end
 

@@ -9,11 +9,11 @@
       "priority": "P0",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "registry에 33건 등록",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:10:00.263340"
     },
     {
       "id": "ISS-001",
@@ -22,11 +22,11 @@
       "priority": "P0",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "bin/rails test가 결과 수 출력",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:10:00.263340"
     },
     {
       "id": "ISS-002",
@@ -35,13 +35,13 @@
       "priority": "P0",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-001"
       ],
       "done_criteria": "fixtures :all 로드 에러 0",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:10:00.263340"
     },
     {
       "id": "ISS-004",
@@ -78,11 +78,11 @@
       "priority": "P0",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "스토어 30회 연속 200, UCP 61번째 429",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:10:00.263340"
     },
     {
       "id": "ISS-006",
@@ -91,14 +91,14 @@
       "priority": "P0",
       "size": "M",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-001",
         "ISS-002"
       ],
       "done_criteria": "입고5→stock+5, 초과출고→failure+불변",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:18:56.818174"
     },
     {
       "id": "ISS-032",
@@ -107,11 +107,11 @@
       "priority": "P0",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "초과출고 POST→422+재고부족 문구",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:10:00.263340"
     },
     {
       "id": "ISS-007",
@@ -120,13 +120,13 @@
       "priority": "P1",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-006"
       ],
       "done_criteria": "assert_enqueued_with 통과",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:18:56.818174"
     },
     {
       "id": "ISS-008",
@@ -135,13 +135,13 @@
       "priority": "P0",
       "size": "M",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-001"
       ],
       "done_criteria": "전건 Hash, by_mood 일치, UCP 200",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:18:56.818174"
     },
     {
       "id": "ISS-033",
@@ -483,6 +483,32 @@
       "done_criteria": "스파이크 문서",
       "created_at": "2026-09-07T15:03:23.919740",
       "updated_at": "2026-09-07T15:03:23.919740"
+    },
+    {
+      "id": "ISS-034",
+      "title": "입출고 성공 후 리다이렉트 라우트 헬퍼 오류(stock_in_inventory_index_path)",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "입고 POST 성공 시 302 후 200, 재고 반영",
+      "created_at": "2026-09-07T15:18:56.818174",
+      "updated_at": "2026-09-07T15:18:56.818174"
+    },
+    {
+      "id": "ISS-035",
+      "title": "BarcodeScanner 품절 시 알림 2건 중복(low_stock?와 out_of_stock? 동시 참)",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "stock=0일 때 alerts 1건(danger)",
+      "created_at": "2026-09-07T15:18:56.818174",
+      "updated_at": "2026-09-07T15:18:56.818174"
     }
   ],
   "hooks": {
@@ -498,8 +524,8 @@
     "meta_observations": []
   },
   "stats": {
-    "total_issues": 33,
-    "completed": 0,
+    "total_issues": 35,
+    "completed": 8,
     "failed": 0,
     "evolved": 0
   }

@@ -120,8 +120,8 @@ model_variations = [
   material_feels = [ "soft", "structured", "lightweight", "warm" ]
 
   ai_attrs = {
-    "mood" => moods.sample,
-    "tpo" => tpos.sample,
+    "mood" => [ moods.sample ],
+    "tpo" => [ tpos.sample ],
     "fit_style" => fit_styles.sample,
     "material_feel" => material_feels.sample
   }
@@ -141,8 +141,8 @@ model_variations = [
     views_count: rand(100..10000),
     sales_count: 50 + rand(10..1000),
     image_url: variation[:image],
-    ai_attributes: ai_attrs.to_json,
-    badges: badge_array.to_json,
+    ai_attributes: ai_attrs,
+    badges: badge_array,
     is_new: i < 5, # 처음 5개는 신상
     restocked_at: (i % 7 == 0 ? 3.days.ago : nil) # 7의 배수는 재입고
   )

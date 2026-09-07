@@ -16,6 +16,8 @@ class Product < ApplicationRecord
   serialize :ai_attributes, coder: JSON
   serialize :badges, coder: JSON
 
+  before_validation :normalize_ai_data
+
   # 유효성 검증 (Story 1.1 Acceptance Criteria)
   validates :name, presence: true, length: { maximum: 200 }
   validates :price, presence: true, numericality: { greater_than: 0 }
@@ -24,14 +26,15 @@ class Product < ApplicationRecord
   validates :description, length: { maximum: 500 }, allow_blank: true
 
   # AI 속성 필터링 Scopes (Story 1.2)
-  scope :by_mood, ->(mood) { where("ai_attributes LIKE ?", "%\"mood\":%\"#{mood}\"%") }
-  scope :by_tpo, ->(tpo) { where("ai_attributes LIKE ?", "%\"tpo\":%\"#{tpo}\"%") }
-  scope :by_fit_style, ->(fit_style) { where("ai_attributes LIKE ?", "%\"fit_style\":\"#{fit_style}\"%") }
-  scope :by_material_feel, ->(material_feel) { where("ai_attributes LIKE ?", "%\"material_feel\":\"#{material_feel}\"%") }
+  scope :by_mood, ->(mood) { where("json_extract(ai_attributes, '$.mood') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(mood.to_s.to_json)}%") }
+  scope :by_tpo, ->(tpo) { where("json_extract(ai_attributes, '$.tpo') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(tpo.to_s.to_json)}%") }
+  scope :by_fit_style, ->(fit_style) { where("json_extract(ai_attributes, '$.fit_style') LIKE ? ESCAPE '\\'", sanitize_sql_like(fit_style.to_s)) }
+  scope :by_material_feel, ->(material_feel) { where("json_extract(ai_attributes, '$.material_feel') LIKE ? ESCAPE '\\'", sanitize_sql_like(material_feel.to_s)) }
 
   # 배지 관련 헬퍼 메서드
   def badge_list
-    badges || []
+    value = parse_json_value(badges)
+    value.is_a?(Array) ? value : []
   end
 
   def free_shipping?
@@ -52,13 +55,8 @@ class Product < ApplicationRecord
 
   # AI 속성 접근자 (안전하게 파싱)
   def parsed_ai_attributes
-    return {} if ai_attributes.blank?
-
-    if ai_attributes.is_a?(String)
-      JSON.parse(ai_attributes) rescue {}
-    else
-      ai_attributes || {}
-    end
+    value = parse_json_value(ai_attributes)
+    value.is_a?(Hash) ? value : {}
   end
 
   def mood
@@ -75,5 +73,22 @@ class Product < ApplicationRecord
 
   def material_feel
     parsed_ai_attributes["material_feel"]
+  end
+  private
+
+  # 기존 문자열 입력도 저장 시 Hash/Array로 통일
+  def normalize_ai_data
+    attributes = parsed_ai_attributes.stringify_keys
+    %w[mood tpo].each do |key|
+      attributes[key] = Array(attributes[key]).reject(&:blank?) if attributes.key?(key)
+    end
+    self.ai_attributes = attributes
+    self.badges = badge_list
+  end
+
+  def parse_json_value(value)
+    value.is_a?(String) ? JSON.parse(value) : value
+  rescue JSON::ParserError
+    nil
   end
 end

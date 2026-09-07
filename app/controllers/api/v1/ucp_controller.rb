@@ -18,12 +18,12 @@ module Api
 
           # AI 감성 필터 (mood)
           if params[:mood].present?
-            @products = @products.where("ai_attributes LIKE ?", "%#{params[:mood]}%")
+            @products = @products.by_mood(params[:mood])
           end
 
           # TPO 필터
           if params[:tpo].present?
-            @products = @products.where("ai_attributes LIKE ?", "%#{params[:tpo]}%")
+            @products = @products.by_tpo(params[:tpo])
           end
 
           # 카테고리 필터
@@ -32,7 +32,7 @@ module Api
           end
 
           # 제한 수량 (기본 20, 최대 100)
-          limit = [params[:limit].to_i, 100].min
+          limit = [ params[:limit].to_i, 100 ].min
           limit = 20 if limit <= 0
           @products = @products.limit(limit)
 
@@ -70,20 +70,24 @@ module Api
           mood: params[:mood]&.downcase&.strip,
           tpo: params[:tpo]&.downcase&.strip,
           category: params[:category]&.downcase&.strip,
-          limit: [params[:limit].to_i, 100].min
+          limit: [ params[:limit].to_i, 100 ].min
         }.compact
 
-        "ucp/products/v2/#{Digest::MD5.hexdigest(normalized_params.to_json)}"
+        "ucp/products/v3/#{Digest::MD5.hexdigest(normalized_params.to_json)}"
       end
 
-      def parse_ai_attributes(ai_attributes_json)
-        return {} if ai_attributes_json.blank?
+      def parse_ai_attributes(attributes)
+        # 이관 전 문자열 데이터도 안전하게 처리
+        attributes = JSON.parse(attributes) if attributes.is_a?(String)
+        return {} unless attributes.is_a?(Hash)
 
-        begin
-          JSON.parse(ai_attributes_json)
-        rescue JSON::ParserError
-          {}
+        attributes = attributes.stringify_keys
+        %w[mood tpo].each do |key|
+          attributes[key] = Array(attributes[key]).reject(&:blank?) if attributes.key?(key)
         end
+        attributes
+      rescue JSON::ParserError
+        {}
       end
     end
   end

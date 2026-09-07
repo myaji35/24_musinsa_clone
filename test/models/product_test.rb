@@ -8,8 +8,8 @@ class ProductTest < ActiveSupport::TestCase
       stock: 10,
       category: "Top",
       brand: "Test Brand",
-      ai_attributes: { mood: "minimal", tpo: "daily" }.to_json,
-      badges: [ "coupon" ].to_json,
+      ai_attributes: { "mood" => [ "minimal" ], "tpo" => [ "daily" ] },
+      badges: [ "coupon" ],
       is_new: true,
       restocked_at: nil
     )
@@ -28,10 +28,10 @@ class ProductTest < ActiveSupport::TestCase
   end
 
   test "has_coupon? returns true when badges include coupon" do
-    @product.badges = [ "coupon" ].to_json
+    @product.badges = [ "coupon" ]
     assert @product.has_coupon?
 
-    @product.badges = [].to_json
+    @product.badges = []
     assert_not @product.has_coupon?
   end
 
@@ -59,11 +59,11 @@ class ProductTest < ActiveSupport::TestCase
   end
 
   test "mood accessor returns correct value from ai_attributes" do
-    assert_equal "minimal", @product.mood
+    assert_equal [ "minimal" ], @product.mood
   end
 
   test "tpo accessor returns correct value from ai_attributes" do
-    assert_equal "daily", @product.tpo
+    assert_equal [ "daily" ], @product.tpo
   end
 
   test "badge_list returns array of badges" do
@@ -122,5 +122,42 @@ class ProductTest < ActiveSupport::TestCase
   test "parsed_ai_attributes should parse String JSON" do
     product = Product.new(ai_attributes: '{"mood":"minimal"}')
     assert_equal "minimal", product.parsed_ai_attributes["mood"]
+  end
+  test "저장 시 AI 속성과 배지를 단일 표현으로 정규화한다" do
+    @product.ai_attributes = { mood: "minimal", tpo: "daily" }.to_json
+    @product.badges = [ "coupon" ].to_json
+    @product.save!
+    @product.reload
+
+    assert_kind_of Hash, @product.ai_attributes
+    assert_equal [ "minimal" ], @product.mood
+    assert_equal [ "daily" ], @product.tpo
+    assert_equal [ "coupon" ], @product.badge_list
+  end
+
+  test "AI 속성 스코프가 해당 키의 값만 검색한다" do
+    @product.ai_attributes = {
+      "mood" => [ "minimal", "modern" ],
+      "tpo" => [ "daily", "office" ],
+      "fit_style" => "regular",
+      "material_feel" => "soft"
+    }
+    @product.save!
+
+    assert_includes Product.by_mood("minimal"), @product
+    assert_includes Product.by_mood("modern"), @product
+    assert_includes Product.by_tpo("office"), @product
+    assert_includes Product.by_fit_style("regular"), @product
+    assert_includes Product.by_material_feel("soft"), @product
+    assert_not_includes Product.by_mood("office"), @product
+    assert_not_includes Product.by_tpo("regular"), @product
+    assert_not_includes Product.by_mood("%"), @product
+  end
+
+  test "잘못된 배지 표현도 배열을 반환한다" do
+    [ "invalid{json", {}, 1 ].each do |value|
+      @product.badges = value
+      assert_equal [], @product.badge_list
+    end
   end
 end

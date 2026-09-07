@@ -2,6 +2,8 @@ require "test_helper"
 
 module Inventory
   class StockAdjusterTest < ActiveSupport::TestCase
+    include ActiveJob::TestHelper
+
     def setup
       @product = Product.create!(
         name: "Test Product",
@@ -21,15 +23,20 @@ module Inventory
 
     # 성공 케이스: 입고
     test "should successfully stock in" do
-      result = StockAdjuster.call(
-        barcode: "TEST-001",
-        quantity: 5,
-        stock_type: "in",
-        note: "Test stock in"
-      )
+      result = nil
+      assert_difference "StockLog.count", 1 do
+        result = StockAdjuster.call(
+          barcode: "TEST-001",
+          quantity: 5,
+          stock_type: "in",
+          note: "Test stock in"
+        )
+      end
 
       assert result.success?
       assert_equal 15, @variant.reload.stock
+      assert_equal 15, result.data[:new_stock]
+      assert_equal 15, result.data[:variant].stock
       assert_equal "입고 완료: 5개 추가 (현재 재고: 15개)", result.data[:message]
     end
 
@@ -61,11 +68,15 @@ module Inventory
 
     # 실패 케이스: 재고 부족
     test "should fail when stock insufficient" do
-      result = StockAdjuster.call(
-        barcode: "TEST-001",
-        quantity: 20,
-        stock_type: "out"
-      )
+      result = nil
+      assert_no_difference "StockLog.count" do
+        result = StockAdjuster.call(
+          barcode: "TEST-001",
+          quantity: 20,
+          stock_type: "out"
+        )
+      end
+      assert_equal 10, @variant.reload.stock
 
       assert result.failure?
       assert_match /재고 부족/, result.error
@@ -109,17 +120,16 @@ module Inventory
 
       log = StockLog.last
       assert_equal @variant.id, log.variant_id
-      assert_equal "in", log.stock_type
+      assert_equal "in", log.log_type
       assert_equal 5, log.quantity
       assert_equal "Test note", log.note
-      assert_equal "TestUser", log.user_name
     end
 
     # 알림: 재고 부족 시 Job 큐잉
     test "should enqueue low stock alert job when stock is low" do
       @variant.update(stock: 6, min_stock: 5)
 
-      assert_enqueued_with(job: LowStockAlertJob, args: [@variant.id]) do
+      assert_enqueued_with(job: LowStockAlertJob, args: []) do
         StockAdjuster.call(
           barcode: "TEST-001",
           quantity: 2,

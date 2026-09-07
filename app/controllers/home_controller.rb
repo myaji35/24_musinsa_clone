@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   skip_before_action :require_admin, only: [ :index ]
   def index
-    @products = Product.includes(:reviews)
+    @products = Product.includes(:reviews).with_attached_image
 
     # 1. Filter by Category
     if params[:category].present? && params[:category] != "전체"
@@ -56,15 +56,15 @@ class HomeController < ApplicationController
       [
         {
           mood: "minimal",
-          products: Product.includes(:reviews).where("ai_attributes LIKE ?", "%minimal%").order(views_count: :desc).limit(10).to_a
+          products: Product.includes(:reviews).with_attached_image.where("ai_attributes LIKE ?", "%minimal%").order(views_count: :desc).limit(10).to_a
         },
         {
           mood: "casual",
-          products: Product.includes(:reviews).where("ai_attributes LIKE ?", "%casual%").order(views_count: :desc).limit(10).to_a
+          products: Product.includes(:reviews).with_attached_image.where("ai_attributes LIKE ?", "%casual%").order(views_count: :desc).limit(10).to_a
         },
         {
           mood: "delicate",
-          products: Product.includes(:reviews).where("ai_attributes LIKE ?", "%delicate%").order(views_count: :desc).limit(10).to_a
+          products: Product.includes(:reviews).with_attached_image.where("ai_attributes LIKE ?", "%delicate%").order(views_count: :desc).limit(10).to_a
         }
       ].select { |collection| collection[:products].any? }
     end

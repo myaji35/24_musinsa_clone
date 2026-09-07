@@ -109,6 +109,7 @@
     </div>
 
     <!-- Quick Action Buttons -->
+    <% unless params[:barcode].present? && @variant %>
     <div class="grid grid-cols-2 gap-4 mb-6">
       <%= link_to inventory_stock_in_path, class: "bg-white border-2 border-blue-500 text-blue-600 font-bold py-6 rounded-lg hover:bg-blue-50 transition-colors flex flex-col items-center gap-2" do %>
         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,6 +125,7 @@
         <span>출고 처리</span>
       <% end %>
     </div>
+    <% end %>
 
     <!-- Info Section -->
     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">

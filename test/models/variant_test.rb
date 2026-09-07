@@ -1,6 +1,22 @@
 require "test_helper"
 
 class VariantTest < ActiveSupport::TestCase
+  test "재고 없이 생성하면 재고를 0으로 저장한다" do
+    variant = Variant.create!(product: products(:one), color: "Navy", size: "S")
+    assert_equal 0, variant.reload.stock
+  end
+
+  test "재고가 nil인 상태로 생성하면 재고를 0으로 저장한다" do
+    variant = Variant.create!(product: products(:one), color: "Navy", size: "S", stock: nil)
+    assert_equal 0, variant.reload.stock
+  end
+
+  test "기존 재고를 nil로 변경할 수 없다" do
+    variant = variants(:one)
+    assert_not variant.update(stock: nil)
+    assert variant.errors[:stock].present?
+  end
+
   test "색상과 사이즈는 필수이고 재고는 음수가 될 수 없다" do
     variant = Variant.new(product: products(:one), stock: -1, min_stock: -1)
     assert_not variant.valid?

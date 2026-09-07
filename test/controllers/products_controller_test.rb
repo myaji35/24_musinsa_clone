@@ -24,6 +24,48 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "should create product with uploaded image" do
+    sign_in
+
+    assert_difference("Product.count", 1) do
+      post products_url, params: { product: {
+        name: "Uploaded product", price: 10000, brand: "Test", category: "상의",
+        image: fixture_file_upload("product.png", "image/png")
+      } }
+    end
+
+    product = Product.order(:id).last
+    assert_redirected_to product_url(product)
+    assert product.image.attached?
+    assert_equal "image/png", product.image.content_type
+  end
+
+  test "should create product with image URL only" do
+    sign_in
+
+    assert_difference("Product.count", 1) do
+      post products_url, params: { product: {
+        name: "URL product", price: 10000, brand: "Test", category: "상의",
+        image_url: @product.image_url
+      } }
+    end
+
+    product = Product.order(:id).last
+    assert_redirected_to product_url(product)
+    assert_not product.image.attached?
+    assert_equal @product.image_url, product.image_url
+  end
+
+  test "should display attached image before image URL" do
+    @product.image.attach(fixture_file_upload("product.png", "image/png"))
+
+    get product_url(@product)
+
+    assert_response :success
+    assert_select "img[src=?]", rails_blob_url(@product.image), count: 2
+    assert_select "img[src=?]", @product.image_url, count: 0
+  end
+
   # GET /products/:id
   test "should show product" do
     get product_url(@product)

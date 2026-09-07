@@ -284,11 +284,11 @@
       "priority": "P2",
       "size": "S",
       "phase": "1",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
-      "done_criteria": "업로드 이미지 표시 또는 필드 제거",
+      "done_criteria": "상품 폼에서 파일 업로드 → 목록·상세·카드에 첨부 이미지가 표시된다. 첨부 없으면 image_url로 폴백, 둘 다 없으면 No Image. UCP API도 동일 규칙.",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T18:57:19.543449"
     },
     {
       "id": "ISS-018",
@@ -702,6 +702,47 @@
       "done_criteria": "PRD v2에 '셀프 피팅은 범위 밖/차기' 결정 문장이 명기된다",
       "created_at": "2026-09-07T18:34:06.678521",
       "updated_at": "2026-09-07T18:34:06.678521"
+    },
+    {
+      "id": "ISS-049",
+      "title": "출고 폼 order_id placeholder가 integer 스키마와 불일치 — '예: ORDER-20240131-001' 안내",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "size": "S",
+      "phase": "0",
+      "status": "COMPLETED",
+      "depends_on": [],
+      "done_criteria": "placeholder가 숫자 예시로 바뀌어 사용자가 문자열을 넣지 않는다",
+      "created_at": "2026-09-07T18:36:29.619805",
+      "updated_at": "2026-09-07T18:57:19.543449"
+    },
+    {
+      "id": "ISS-050",
+      "title": "스캔 조회 결과의 입고/출고 버튼이 하단 Quick Action과 중복",
+      "type": "REFACTOR",
+      "priority": "P2",
+      "size": "S",
+      "phase": "0",
+      "status": "COMPLETED",
+      "depends_on": [
+        "ISS-026"
+      ],
+      "done_criteria": "화면당 입고/출고 진입점이 하나로 정리된다",
+      "created_at": "2026-09-07T18:36:29.619805",
+      "updated_at": "2026-09-07T18:57:19.543449"
+    },
+    {
+      "id": "ISS-051",
+      "title": "UCP API 500 — variant.stock 이 nil 이면 in_stock 계산에서 NoMethodError",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "S",
+      "phase": "0",
+      "status": "COMPLETED",
+      "depends_on": [],
+      "done_criteria": "stock 이 nil 인 variant 가 있어도 /api/v1/ucp/products 가 200 을 반환하고 in_stock 이 false 로 계산된다",
+      "created_at": "2026-09-07T18:54:16.820830",
+      "updated_at": "2026-09-07T18:57:19.543449"
     }
   ],
   "hooks": {

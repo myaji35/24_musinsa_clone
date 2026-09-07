@@ -16,7 +16,7 @@ module Api
 
         # Cache entire response for 1 minute (reduced from 10 minutes)
         @response_data = Rails.cache.fetch(cache_key, expires_in: 1.minute) do
-          @products = Product.includes(:variants).all
+          @products = Product.includes(:variants).with_attached_image.all
 
           # AI 감성 필터 (mood)
           if params[:mood].present?
@@ -40,6 +40,15 @@ module Api
 
           # Build response data
           products_data = @products.map do |product|
+            image_url = product.image_url
+            if product.image.attached?
+              begin
+                image_url = Rails.application.routes.url_helpers.rails_blob_url(product.image, host: request.base_url)
+              rescue StandardError
+                image_url = product.image_url
+              end
+            end
+
             {
               product_id: product.id,
               name: product.name,
@@ -47,9 +56,9 @@ module Api
               price: product.price,
               category: product.category,
               ai_attributes: parse_ai_attributes(product.ai_attributes),
-              image_url: product.image_url,
+              image_url: image_url,
               url: product_url(product, host: request.base_url),
-              in_stock: product.variants.any? { |v| v.stock > 0 }
+              in_stock: product.variants.any? { |v| v.stock.to_i > 0 }
             }
           end
 

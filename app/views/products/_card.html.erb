@@ -4,9 +4,9 @@
 
   <%# 상품 이미지 영역 %>
   <div class="relative w-full aspect-[4/5] bg-gray-100 overflow-hidden mb-3">
-    <% if product.respond_to?(:image_url) && product.image_url.present? %>
+    <% if (image_source = product_image_source(product)) %>
       <img
-        data-src="<%= product.image_url %>"
+        data-src="<%= image_source.is_a?(String) ? image_source : url_for(image_source) %>"
         alt="<%= product.name %>"
         class="lazy w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         loading="lazy">

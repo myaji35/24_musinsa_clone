@@ -49,3 +49,4 @@ coverage/
 worktrees/
 .harness-worktree-meta
 .claude/worktrees.json
+.gstack/

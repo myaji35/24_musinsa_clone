@@ -21,8 +21,8 @@
         <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
           <!-- Product Image -->
           <%= link_to product_path(product), class: "block aspect-[4/5] bg-gray-50 overflow-hidden" do %>
-            <% if product.image_url.present? %>
-              <%= image_tag product.image_url, class: "w-full h-full object-cover hover:scale-105 transition-transform duration-300" %>
+            <% if (image_source = product_image_source(product)) %>
+              <%= image_tag image_source, class: "w-full h-full object-cover hover:scale-105 transition-transform duration-300" %>
             <% else %>
               <div class="w-full h-full flex items-center justify-center text-gray-300">
                 <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">

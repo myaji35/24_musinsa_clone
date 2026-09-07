@@ -3,7 +3,7 @@ class ProductsController < ApplicationController
   before_action :set_product, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @products = Product.all
+    @products = Product.with_attached_image
 
     # 카테고리 필터
     @products = @products.where(category: params[:category]) if params[:category].present?
@@ -33,7 +33,7 @@ class ProductsController < ApplicationController
     @variants = @product.variants
     @selected_variant = @variants.first
     @reviews = @product.reviews.includes(:user).order(created_at: :desc).limit(10)
-    @related_products = Product.where(category: @product.category).where.not(id: @product.id).limit(4)
+    @related_products = Product.with_attached_image.where(category: @product.category).where.not(id: @product.id).limit(4)
     @average_rating = @product.reviews.any? ? (@product.reviews.sum(:rating).to_f / @product.reviews.count).round(1) : 0
   end
 

@@ -1,4 +1,10 @@
 module ImageHelper
+  # 상품 대표 이미지 소스. 첨부 > image_url 순으로 우선한다.
+  def product_image_source(product)
+    return product.image if product.respond_to?(:image) && product.image.attached?
+    product.image_url.presence
+  end
+
   # Generate WebP variant for Active Storage images
   def webp_image_tag(attachment, alt: "", css_class: "", lazy: true, **options)
     return "" unless attachment.attached?

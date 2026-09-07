@@ -7,9 +7,12 @@ class Variant < ApplicationRecord
   # 유효성 검증
   validates :color, presence: true
   validates :size, presence: true
-  validates :stock, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :stock, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
   validates :min_stock, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :barcode, uniqueness: true, allow_blank: true
+
+  # 생성 시 재고 기본값 설정
+  before_validation :set_default_stock, on: :create
 
   # 바코드 자동 생성 (Story 1.3 Acceptance Criteria)
   # 형식: {PRODUCT_ID}-{COLOR}-{SIZE}
@@ -26,6 +29,10 @@ class Variant < ApplicationRecord
   end
 
   private
+
+  def set_default_stock
+    self.stock ||= 0
+  end
 
   def generate_barcode
     return if barcode.present?

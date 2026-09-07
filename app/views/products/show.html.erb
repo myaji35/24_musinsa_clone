@@ -7,8 +7,8 @@
     <div class="space-y-4">
       <!-- 메인 이미지 -->
       <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden">
-        <% if @product.image_url.present? %>
-          <img src="<%= @product.image_url %>" alt="<%= @product.name %>" class="w-full h-full object-cover">
+        <% if (image_source = product_image_source(@product)) %>
+          <%= image_tag image_source, alt: @product.name, class: "w-full h-full object-cover" %>
         <% else %>
           <div class="w-full h-full flex items-center justify-center text-gray-300">
             <span class="text-sm font-medium">이미지 없음</span>
@@ -20,8 +20,8 @@
       <div class="grid grid-cols-4 gap-2">
         <% 4.times do |i| %>
           <div class="aspect-[3/4] bg-gray-100 border-2 <%= i == 0 ? 'border-black' : 'border-transparent' %> cursor-pointer hover:border-black transition-colors overflow-hidden">
-            <% if i == 0 && @product.image_url.present? %>
-              <img src="<%= @product.image_url %>" alt="<%= @product.name %>" class="w-full h-full object-cover">
+            <% if i == 0 && (image_source = product_image_source(@product)) %>
+              <%= image_tag image_source, alt: @product.name, class: "w-full h-full object-cover" %>
             <% else %>
               <div class="w-full h-full bg-gray-50"></div>
             <% end %>
@@ -260,8 +260,8 @@
 
             <!-- 상품 이미지 -->
             <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden">
-              <% if product.image_url.present? %>
-                <img src="<%= product.image_url %>" alt="<%= product.name %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <% if (image_source = product_image_source(product)) %>
+                <%= image_tag image_source, alt: product.name, class: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" %>
               <% else %>
                 <div class="w-full h-full flex items-center justify-center text-gray-300">
                   <span class="text-xs">이미지 없음</span>

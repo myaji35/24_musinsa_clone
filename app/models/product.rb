@@ -24,6 +24,7 @@ class Product < ApplicationRecord
   validates :brand, presence: true
   validates :category, presence: true
   validates :description, length: { maximum: 500 }, allow_blank: true
+  validate :validate_image
 
   # AI 속성 필터링 Scopes (Story 1.2)
   scope :by_mood, ->(mood) { where("json_extract(ai_attributes, '$.mood') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(mood.to_s.to_json)}%") }
@@ -75,6 +76,18 @@ class Product < ApplicationRecord
     parsed_ai_attributes["material_feel"]
   end
   private
+
+  # 첨부 이미지 형식 및 크기 검증
+  def validate_image
+    return unless image.attached?
+
+    unless image.content_type.in?(%w[image/png image/jpeg image/webp])
+      errors.add(:image, "는 PNG, JPEG, WebP 형식만 업로드할 수 있습니다")
+    end
+    if image.byte_size > 10.megabytes
+      errors.add(:image, "는 10MB 이하여야 합니다")
+    end
+  end
 
   # 기존 문자열 입력도 저장 시 Hash/Array로 통일
   def normalize_ai_data

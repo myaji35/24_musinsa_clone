@@ -48,8 +48,11 @@ module Inventory
 
     def generate_alerts(variant)
       alerts = []
-      alerts << { type: "warning", message: "재고 부족 (#{variant.stock}개)" } if variant.low_stock?
-      alerts << { type: "danger", message: "품절" } if variant.out_of_stock?
+      if variant.out_of_stock?
+        alerts << { type: "danger", message: "품절" }
+      elsif variant.low_stock?
+        alerts << { type: "warning", message: "재고 부족 (#{variant.stock}개)" }
+      end
       alerts
     end
   end

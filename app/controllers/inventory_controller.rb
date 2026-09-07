@@ -23,7 +23,7 @@ class InventoryController < ApplicationController
     )
 
     if result.success?
-      redirect_to stock_in_inventory_index_path(barcode: @variant.barcode),
+      redirect_to inventory_stock_in_path(barcode: @variant.barcode),
                   notice: result.data[:message]
     else
       # 실패한 입력값과 오류를 유지하여 폼을 다시 표시
@@ -54,7 +54,7 @@ class InventoryController < ApplicationController
     )
 
     if result.success?
-      redirect_to stock_out_inventory_index_path(barcode: @variant.barcode),
+      redirect_to inventory_stock_out_path(barcode: @variant.barcode),
                   notice: result.data[:message]
     else
       # 실패한 입력값과 오류를 유지하여 폼을 다시 표시

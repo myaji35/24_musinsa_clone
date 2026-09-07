@@ -26,26 +26,31 @@ export default class extends Controller {
     if (this.isScanning) return
 
     this.isScanning = true
-    this.updateUI("scanning")
+    this.updateUI("starting")
 
     this.scanner = new Html5Qrcode("interactive")
 
-    // 영상 영역이 레이아웃에 올라온 뒤에 start 해야 크기가 잡힌다
+    // 준비 중 UI가 반영된 뒤 카메라 시작을 요청한다
     await new Promise(requestAnimationFrame)
     if (!this.isScanning) return
 
-    this.scanner.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: undefined },
-      (decodedText, decodedResult) => {
-        this.onDetected({ codeResult: { code: decodedText, decodedCodes: decodedResult } })
-      },
-      () => {}
-    ).catch((err) => {
+    try {
+      await this.scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: undefined },
+        (decodedText, decodedResult) => {
+          this.onDetected({ codeResult: { code: decodedText, decodedCodes: decodedResult } })
+        },
+        () => {}
+      )
+      if (!this.isScanning) return
+
+      this.updateUI("scanning")
+    } catch (err) {
       this.isScanning = false
       console.error("Html5Qrcode 초기화 실패:", err)
       this.handleError("카메라 접근 실패. 권한을 확인해주세요.")
-    })
+    }
   }
 
   // 스캔 중지
@@ -159,10 +164,21 @@ export default class extends Controller {
     const videoContainer = this.videoTarget
 
     switch (state) {
+      case "starting":
+        videoContainer.classList.add("hidden")
+        if (this.hasScanButtonTarget) {
+          this.scanButtonTarget.textContent = "카메라 준비 중…"
+          this.scanButtonTarget.disabled = true
+          this.scanButtonTarget.classList.remove("bg-red-600")
+          this.scanButtonTarget.classList.add("bg-black")
+        }
+        break
+
       case "scanning":
         videoContainer.classList.remove("hidden")
         if (this.hasScanButtonTarget) {
           this.scanButtonTarget.textContent = "스캔 중지"
+          this.scanButtonTarget.disabled = false
           this.scanButtonTarget.classList.remove("bg-black")
           this.scanButtonTarget.classList.add("bg-red-600")
         }
@@ -172,6 +188,7 @@ export default class extends Controller {
         videoContainer.classList.add("hidden")
         if (this.hasScanButtonTarget) {
           this.scanButtonTarget.textContent = "카메라로 스캔"
+          this.scanButtonTarget.disabled = false
           this.scanButtonTarget.classList.remove("bg-red-600")
           this.scanButtonTarget.classList.add("bg-black")
         }
@@ -181,6 +198,7 @@ export default class extends Controller {
         videoContainer.classList.add("hidden")
         if (this.hasScanButtonTarget) {
           this.scanButtonTarget.textContent = "다시 시도"
+          this.scanButtonTarget.disabled = false
           this.scanButtonTarget.classList.remove("bg-red-600")
           this.scanButtonTarget.classList.add("bg-black")
         }

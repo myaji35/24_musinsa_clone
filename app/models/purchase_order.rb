@@ -22,7 +22,7 @@ class PurchaseOrder < ApplicationRecord
   scope :submitted, -> { where(status: "submitted") }
   scope :confirmed, -> { where(status: "confirmed") }
   scope :received, -> { where(status: "received") }
-  scope :pending, -> { where(status: ["submitted", "confirmed"]) }
+  scope :pending, -> { where(status: [ "submitted", "confirmed" ]) }
   scope :recent, -> { order(created_at: :desc) }
 
   # Methods
@@ -30,7 +30,7 @@ class PurchaseOrder < ApplicationRecord
   # 발주서 제출 (거래처에게 발송)
   # 이메일 발송은 PurchaseOrdersController#submit에서 처리
   def submit!
-    return false unless draft?
+    return false unless status == "draft"
 
     update(status: "submitted")
   end
@@ -45,7 +45,7 @@ class PurchaseOrder < ApplicationRecord
 
   # 실제 입고 처리
   def receive!
-    return false unless confirmed?
+    return false unless status == "confirmed"
 
     ActiveRecord::Base.transaction do
       # 1. 각 아이템별로 StockLog 생성 및 재고 증가
@@ -92,6 +92,6 @@ class PurchaseOrder < ApplicationRecord
   end
 
   def calculate_total_amount
-    self.total_amount = purchase_order_items.map { |item| item.subtotal || 0 }.sum
+    self.total_amount = purchase_order_items.map { |item| item.quantity * item.unit_price }.sum
   end
 end

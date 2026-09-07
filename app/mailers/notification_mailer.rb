@@ -31,7 +31,7 @@ class NotificationMailer < ApplicationMailer
 
     mail(
       to: supplier.email,
-      subject: "[JIEUN] 발주서 확인 요청 (#{purchase_order.po_number})"
+      subject: "[JIEUN] 발주서 확인 요청 (#{purchase_order.order_number})"
     )
   end
 

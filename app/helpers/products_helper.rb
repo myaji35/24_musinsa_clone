@@ -81,9 +81,9 @@ module ProductsHelper
     empty_stars = 5 - full_stars - (half_star ? 1 : 0)
 
     stars = []
-    stars += ["★"] * full_stars
+    stars += [ "★" ] * full_stars
     stars << "☆" if half_star
-    stars += ["☆"] * empty_stars
+    stars += [ "☆" ] * empty_stars
 
     stars.join
   end

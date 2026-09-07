@@ -2,22 +2,22 @@ require "test_helper"
 
 class SnapsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
-    get snaps_index_url
+    get snaps_url
     assert_response :success
   end
 
   test "should get new" do
-    get snaps_new_url
+    get new_snap_url
     assert_response :success
   end
 
-  test "should get create" do
-    get snaps_create_url
+  test "should post create" do
+    post snaps_url
     assert_response :success
   end
 
   test "should get show" do
-    get snaps_show_url
+    get snap_url(snaps(:one))
     assert_response :success
   end
 end

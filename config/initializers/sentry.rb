@@ -14,7 +14,7 @@ Sentry.init do |config|
   config.traces_sample_rate = ENV.fetch("SENTRY_TRACES_SAMPLE_RATE", 0.1).to_f
 
   # Breadcrumbs configuration
-  config.breadcrumbs_logger = [:active_support_logger, :http_logger]
+  config.breadcrumbs_logger = [ :active_support_logger, :http_logger ]
 
   # Filter sensitive data
   config.send_default_pii = false

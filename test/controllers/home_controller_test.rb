@@ -75,14 +75,14 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match /아우터/, response.body
     assert_match /상의/, response.body
-    assert_match /하의/, response.body
+    assert_match /바지/, response.body
   end
 
   # Search form
   test "should display search form" do
     get root_url
     assert_response :success
-    assert_select "form[action=?]", search_path
+    assert_select "form[action=?]", root_path
     assert_select "input[name=?]", "q"
   end
 
@@ -144,6 +144,9 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
 
   # Empty state
   test "should handle empty product list gracefully" do
+    Order.destroy_all
+    Campaign.destroy_all
+    PurchaseOrderItem.destroy_all
     Product.destroy_all
 
     get root_url

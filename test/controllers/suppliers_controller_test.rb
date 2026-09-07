@@ -7,7 +7,7 @@ class SuppliersControllerTest < ActionDispatch::IntegrationTest
       email: "supplier@kfashion.com",
       phone: "02-1234-5678",
       address: "Seoul, Dongdaemun",
-      status: "active"
+      active: true
     )
   end
 
@@ -32,12 +32,12 @@ class SuppliersControllerTest < ActionDispatch::IntegrationTest
           email: "new@supplier.com",
           phone: "010-9999-8888",
           address: "Busan",
-          status: "active"
+          active: true
         }
       }
     end
 
-    assert_redirected_to supplier_path(Supplier.last)
+    assert_redirected_to suppliers_path
   end
 
   # POST /suppliers - Validation failure
@@ -80,10 +80,11 @@ class SuppliersControllerTest < ActionDispatch::IntegrationTest
 
   # DELETE /suppliers/:id
   test "should destroy supplier" do
-    assert_difference "Supplier.count", -1 do
+    assert_no_difference "Supplier.count" do
       delete supplier_url(@supplier)
     end
 
+    assert_not @supplier.reload.active?
     assert_redirected_to suppliers_path
   end
 
@@ -94,12 +95,13 @@ class SuppliersControllerTest < ActionDispatch::IntegrationTest
       email: "inactive@supplier.com",
       phone: "010-0000-0000",
       address: "Seoul",
-      status: "inactive"
+      active: false
     )
 
     get suppliers_url
     assert_response :success
-    # active 상태 supplier만 표시되는지 확인
+    assert_select "a", text: @supplier.name
+    assert_select "a", text: inactive.name, count: 0
   end
 
   # Supplier with purchase orders
@@ -107,7 +109,7 @@ class SuppliersControllerTest < ActionDispatch::IntegrationTest
     PurchaseOrder.create!(
       supplier: @supplier,
       status: "draft",
-      delivery_date: 7.days.from_now
+      expected_delivery_date: 7.days.from_now
     )
 
     get supplier_url(@supplier)

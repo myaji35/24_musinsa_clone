@@ -55,24 +55,21 @@ jobs:
         ruby-version: '3.3'
         bundler-cache: true
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
     - name: Install dependencies
       run: |
         bundle install --jobs 4 --retry 3
-        yarn install --frozen-lockfile
 
     - name: Set up database
       run: |
         bin/rails db:create RAILS_ENV=test
         bin/rails db:schema:load RAILS_ENV=test
 
+    # 디렉터리 지정 실행은 test:prepare를 거치지 않으므로 CSS를 별도로 준비
+    - name: Build test assets
+      run: bin/rails tailwindcss:build RAILS_ENV=test
+
     - name: Run tests
-      continue-on-error: true  # Temporary: minitest 6.x compatibility issue
-      run: bin/rails test || echo "Tests skipped due to minitest compatibility"
+      run: bin/rails test test/models test/services test/controllers test/helpers
 
     - name: Upload coverage reports
       if: success()
@@ -94,15 +91,9 @@ jobs:
         ruby-version: '3.3'
         bundler-cache: true
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
     - name: Install dependencies
       run: |
         bundle install --jobs 4 --retry 3
-        yarn install --frozen-lockfile
 
     - name: Build Tailwind CSS
       run: bin/rails tailwindcss:build

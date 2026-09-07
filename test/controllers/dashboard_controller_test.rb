@@ -7,21 +7,21 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       zip_prefix: "060",
       phone_suffix: "1234",
       birth_year: 1990,
-      preference_tags: { "minimal" => 5, "casual" => 3 }.to_json
+      preference_tags: { "minimal" => 5, "casual" => 3 }
     )
 
     @customer2 = AnonyCustomer.create!(
       zip_prefix: "135",
       phone_suffix: "5678",
       birth_year: 1995,
-      preference_tags: { "modern" => 4, "minimal" => 2 }.to_json
+      preference_tags: { "modern" => 4, "minimal" => 2 }
     )
 
     @customer3 = AnonyCustomer.create!(
       zip_prefix: "060",
       phone_suffix: "9012",
       birth_year: 1988,
-      preference_tags: { "vintage" => 6, "delicate" => 4 }.to_json
+      preference_tags: { "vintage" => 6, "delicate" => 4 }
     )
   end
 
@@ -90,6 +90,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
   # Empty dashboard
   test "should handle empty dashboard gracefully" do
+    Order.destroy_all
     AnonyCustomer.destroy_all
 
     get dashboard_index_url

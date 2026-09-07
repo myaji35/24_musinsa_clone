@@ -1,8 +1,8 @@
 # Epic 8.2: 발주서 관리 컨트롤러
 class PurchaseOrdersController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:confirm] # 거래처 확인 페이지는 CSRF 제외
-  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy, :submit, :receive]
-  before_action :set_purchase_order_by_token, only: [:confirm]
+  skip_before_action :verify_authenticity_token, only: [ :confirm ] # 거래처 확인 페이지는 CSRF 제외
+  before_action :set_purchase_order, only: [ :show, :edit, :update, :destroy, :submit, :receive ]
+  before_action :set_purchase_order_by_token, only: [ :confirm ]
 
   def index
     @purchase_orders = PurchaseOrder.includes(:supplier).recent
@@ -63,7 +63,7 @@ class PurchaseOrdersController < ApplicationController
       # Slack 알림 (내부 모니터링)
       Notifications::SlackNotifier.call(
         channel: "#supply-chain",
-        text: "📋 발주서 제출: #{@purchase_order.po_number} - #{@purchase_order.supplier.name}"
+        text: "📋 발주서 제출: #{@purchase_order.order_number} - #{@purchase_order.supplier.name}"
       )
 
       redirect_to @purchase_order, notice: "발주서가 제출되었습니다. 거래처 확인 대기 중입니다."

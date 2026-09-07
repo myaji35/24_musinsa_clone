@@ -33,12 +33,12 @@ class Campaign < ApplicationRecord
     if target_segment["age_group"].present?
       current_year = Date.today.year
       age_range = case target_segment["age_group"]
-                  when "10대" then (current_year - 19)..(current_year - 10)
-                  when "20대" then (current_year - 29)..(current_year - 20)
-                  when "30대" then (current_year - 39)..(current_year - 30)
-                  when "40대" then (current_year - 49)..(current_year - 40)
-                  else (0)..(current_year - 50)
-                  end
+      when "10대" then (current_year - 19)..(current_year - 10)
+      when "20대" then (current_year - 29)..(current_year - 20)
+      when "30대" then (current_year - 39)..(current_year - 30)
+      when "40대" then (current_year - 49)..(current_year - 40)
+      else (0)..(current_year - 50)
+      end
 
       customers = customers.where(birth_year: age_range)
     end

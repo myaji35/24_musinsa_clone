@@ -3,7 +3,7 @@ module ImageHelper
   def webp_image_tag(attachment, alt: "", css_class: "", lazy: true, **options)
     return "" unless attachment.attached?
 
-    variant = attachment.variant(resize_to_limit: [800, 800], format: :webp)
+    variant = attachment.variant(resize_to_limit: [ 800, 800 ], format: :webp)
 
     if lazy
       image_tag(

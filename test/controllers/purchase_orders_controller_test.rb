@@ -7,7 +7,7 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
       email: "supplier@test.com",
       phone: "010-1234-5678",
       address: "Seoul, Korea",
-      status: "active"
+      active: true
     )
 
     @product = Product.create!(
@@ -27,7 +27,7 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     @purchase_order = PurchaseOrder.create!(
       supplier: @supplier,
       status: "draft",
-      delivery_date: 7.days.from_now
+      expected_delivery_date: 7.days.from_now
     )
 
     @purchase_order.purchase_order_items.create!(
@@ -55,7 +55,7 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
       post purchase_orders_url, params: {
         purchase_order: {
           supplier_id: @supplier.id,
-          delivery_date: 7.days.from_now,
+          expected_delivery_date: 7.days.from_now,
           purchase_order_items_attributes: {
             "0" => {
               variant_id: @variant.id,
@@ -86,7 +86,7 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
   test "should update purchase_order" do
     patch purchase_order_url(@purchase_order), params: {
       purchase_order: {
-        delivery_date: 10.days.from_now
+        expected_delivery_date: 10.days.from_now
       }
     }
 
@@ -157,7 +157,7 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
 
     # 재고가 증가했는지 확인
     @variant.reload
-    # Note: receive! 메서드가 재고를 증가시켜야 함
+    assert_equal 15, @variant.stock
   end
 
   # POST /purchase_orders/:id/receive - Fail (not confirmed)
@@ -174,7 +174,7 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
   test "should calculate total amount automatically" do
     po = PurchaseOrder.create!(
       supplier: @supplier,
-      delivery_date: 7.days.from_now,
+      expected_delivery_date: 7.days.from_now,
       purchase_order_items_attributes: {
         "0" => {
           variant_id: @variant.id,

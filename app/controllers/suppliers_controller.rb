@@ -1,6 +1,6 @@
 # Epic 8.1: 거래처 관리 컨트롤러
 class SuppliersController < ApplicationController
-  before_action :set_supplier, only: [:show, :edit, :update, :destroy]
+  before_action :set_supplier, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @suppliers = Supplier.active.recent

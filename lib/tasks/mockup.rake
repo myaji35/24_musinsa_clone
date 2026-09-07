@@ -17,7 +17,7 @@ namespace :mockup do
       "Shoes" => { bg: "#D8E8D4", text: "SHOES" }
     }
 
-    moods = ["minimal", "casual", "delicate", "vintage", "modern"]
+    moods = [ "minimal", "casual", "delicate", "vintage", "modern" ]
 
     # Generate 20 unique mockup images
     20.times do |i|

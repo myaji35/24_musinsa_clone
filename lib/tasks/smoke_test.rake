@@ -26,14 +26,14 @@ namespace :test do
           return false
         end
         puts "  ✅ #{name}: #{response.code}"
-        return true
+        true
       else
         puts "  ❌ #{name}: Expected #{expected_status}, got #{response.code}"
-        return false
+        false
       end
     rescue => e
       puts "  ❌ #{name}: #{e.message}"
-      return false
+      false
     end
 
     puts "\n📋 Scenario 1: Core Pages"

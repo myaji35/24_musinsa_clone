@@ -50,11 +50,11 @@
       "priority": "P0",
       "size": "M",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "렌더 importmap에 turbo/stimulus/controllers 포함",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:24:26.277128"
     },
     {
       "id": "ISS-031",
@@ -150,11 +150,11 @@
       "priority": "P1",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "bin/rubocop 0 offenses",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:31:10.880087"
     },
     {
       "id": "ISS-019",
@@ -163,7 +163,7 @@
       "priority": "P1",
       "size": "M",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-001",
         "ISS-002",
@@ -172,7 +172,7 @@
       ],
       "done_criteria": "bin/rails test 0F/0E",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:31:10.880087"
     },
     {
       "id": "ISS-003",
@@ -181,14 +181,14 @@
       "priority": "P0",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-019",
         "ISS-033"
       ],
       "done_criteria": "bin/ci 녹색",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:31:10.880087"
     },
     {
       "id": "ISS-026",
@@ -491,11 +491,11 @@
       "priority": "P0",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "입고 POST 성공 시 302 후 200, 재고 반영",
       "created_at": "2026-09-07T15:18:56.818174",
-      "updated_at": "2026-09-07T15:18:56.818174"
+      "updated_at": "2026-09-07T15:24:26.277128"
     },
     {
       "id": "ISS-035",
@@ -504,11 +504,24 @@
       "priority": "P2",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "stock=0일 때 alerts 1건(danger)",
       "created_at": "2026-09-07T15:18:56.818174",
-      "updated_at": "2026-09-07T15:18:56.818174"
+      "updated_at": "2026-09-07T15:24:26.277128"
+    },
+    {
+      "id": "ISS-036",
+      "title": "bin/rails test 전체 실행 시 tailwindcss 바이너리 SIGABRT(UTF-8) — CI에서 test/system 제외 중",
+      "type": "INFRA",
+      "priority": "P2",
+      "size": "S",
+      "phase": "0",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "bin/rails test 전체가 중단 없이 완주, CI에 system 테스트 포함",
+      "created_at": "2026-09-07T15:31:10.880087",
+      "updated_at": "2026-09-07T15:31:10.880087"
     }
   ],
   "hooks": {
@@ -524,8 +537,8 @@
     "meta_observations": []
   },
   "stats": {
-    "total_issues": 35,
-    "completed": 8,
+    "total_issues": 36,
+    "completed": 14,
     "failed": 0,
     "evolved": 0
   }

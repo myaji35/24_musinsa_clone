@@ -75,7 +75,7 @@ class InventoryController < ApplicationController
     if @variant
       @stock_logs = @variant.stock_logs.recent
     else
-      @stock_logs = StockLog.includes(:variant).recent.limit(100)
+      @stock_logs = StockLog.includes(variant: :product).recent.limit(100)
     end
 
     # 날짜 필터

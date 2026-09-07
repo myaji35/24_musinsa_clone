@@ -11,7 +11,7 @@ class CreateAnonyCustomers < ActiveRecord::Migration[7.2]
     end
 
     add_index :anony_customers, :uuid, unique: true
-    add_index :anony_customers, [:phone_suffix, :birth_year] # 중복 방지용
+    add_index :anony_customers, [ :phone_suffix, :birth_year ] # 중복 방지용
     add_index :anony_customers, :zip_prefix # 지역 분석용
   end
 end

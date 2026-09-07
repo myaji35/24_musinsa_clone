@@ -10,6 +10,6 @@ class CreatePurchaseOrderItems < ActiveRecord::Migration[7.2]
       t.timestamps
     end
 
-    add_index :purchase_order_items, [:purchase_order_id, :variant_id], unique: true, name: 'index_po_items_on_po_and_variant'
+    add_index :purchase_order_items, [ :purchase_order_id, :variant_id ], unique: true, name: 'index_po_items_on_po_and_variant'
   end
 end

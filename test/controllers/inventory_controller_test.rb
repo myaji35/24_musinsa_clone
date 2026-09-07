@@ -114,8 +114,8 @@ class InventoryControllerTest < ActionDispatch::IntegrationTest
   # GET /inventory/history with variant_id
   test "should get history for specific variant" do
     # Create some stock logs
-    @variant.stock_logs.create!(log_type: "in", quantity: 5, user_name: "Test")
-    @variant.stock_logs.create!(log_type: "out", quantity: 2, user_name: "Test")
+    @variant.stock_logs.create!(log_type: "in", quantity: 5)
+    @variant.stock_logs.create!(log_type: "out", quantity: 2)
 
     get inventory_history_url, params: { variant_id: @variant.id }
     assert_response :success
@@ -123,7 +123,7 @@ class InventoryControllerTest < ActionDispatch::IntegrationTest
 
   # POST /inventory/find_variant - Success (AJAX)
   test "should find variant by barcode via JSON" do
-    post find_variant_inventory_index_url, params: { barcode: @variant.barcode }, as: :json
+    post inventory_find_variant_url, params: { barcode: @variant.barcode }, as: :json
 
     assert_response :success
     json = JSON.parse(response.body)
@@ -136,7 +136,7 @@ class InventoryControllerTest < ActionDispatch::IntegrationTest
 
   # POST /inventory/find_variant - Not found (AJAX)
   test "should return 404 for non-existent barcode via JSON" do
-    post find_variant_inventory_index_url, params: { barcode: "NONEXISTENT" }, as: :json
+    post inventory_find_variant_url, params: { barcode: "NONEXISTENT" }, as: :json
 
     assert_response :not_found
     json = JSON.parse(response.body)
@@ -147,7 +147,7 @@ class InventoryControllerTest < ActionDispatch::IntegrationTest
   test "should show low stock alert in JSON response" do
     @variant.update(stock: 4, min_stock: 5) # Low stock
 
-    post find_variant_inventory_index_url, params: { barcode: @variant.barcode }, as: :json
+    post inventory_find_variant_url, params: { barcode: @variant.barcode }, as: :json
 
     assert_response :success
     json = JSON.parse(response.body)
@@ -162,7 +162,7 @@ class InventoryControllerTest < ActionDispatch::IntegrationTest
   test "should show out of stock alert in JSON response" do
     @variant.update(stock: 0)
 
-    post find_variant_inventory_index_url, params: { barcode: @variant.barcode }, as: :json
+    post inventory_find_variant_url, params: { barcode: @variant.barcode }, as: :json
 
     assert_response :success
     json = JSON.parse(response.body)

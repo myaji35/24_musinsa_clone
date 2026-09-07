@@ -45,7 +45,7 @@ namespace :server do
   end
 
   desc "Restart Rails server (stop and start)"
-  task restart: [:stop] do
+  task restart: [ :stop ] do
     puts "Starting Rails server..."
     exec "bin/rails server"
   end

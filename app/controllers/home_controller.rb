@@ -1,4 +1,5 @@
 class HomeController < ApplicationController
+  skip_before_action :require_admin, only: [ :index ]
   def index
     @products = Product.includes(:reviews)
 

@@ -1,5 +1,6 @@
 # Epic 8.2: 발주서 관리 컨트롤러
 class PurchaseOrdersController < ApplicationController
+  skip_before_action :require_admin, only: [ :confirm ]
   skip_before_action :verify_authenticity_token, only: [ :confirm ] # 거래처 확인 페이지는 CSRF 제외
   before_action :set_purchase_order, only: [ :show, :edit, :update, :destroy, :submit, :receive ]
   before_action :set_purchase_order_by_token, only: [ :confirm ]

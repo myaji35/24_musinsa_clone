@@ -107,8 +107,7 @@ class InventoryController < ApplicationController
   private
 
   def current_user_name
-    # TODO: 실제 사용자 인증 시스템 연동 시 수정
-    "Admin"
+    current_user.name.presence || current_user.email
   end
 
   def set_variant_by_barcode

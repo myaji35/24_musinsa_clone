@@ -7,11 +7,13 @@ class SnapsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get new" do
+    sign_in
     get new_snap_url
     assert_response :success
   end
 
   test "should post create" do
+    sign_in
     post snaps_url
     assert_response :success
   end

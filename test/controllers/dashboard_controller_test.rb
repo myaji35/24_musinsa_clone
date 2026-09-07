@@ -2,6 +2,7 @@ require "test_helper"
 
 class DashboardControllerTest < ActionDispatch::IntegrationTest
   def setup
+    sign_in
     # Create anonymous customers with different preferences
     @customer1 = AnonyCustomer.create!(
       zip_prefix: "060",

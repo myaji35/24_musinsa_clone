@@ -1,9 +1,11 @@
 # 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
+  password_digest: <%= BCrypt::Password.create("TestPassword!2026", cost: BCrypt::Engine::MIN_COST) %>
   email: minsu@example.com
   name: 김민수
 
 two:
+  password_digest: <%= BCrypt::Password.create("TestPassword!2026", cost: BCrypt::Engine::MIN_COST) %>
   email: jieun@example.com
   name: 이지은

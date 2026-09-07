@@ -2,6 +2,7 @@ require "test_helper"
 
 class SuppliersControllerTest < ActionDispatch::IntegrationTest
   def setup
+    sign_in
     @supplier = Supplier.create!(
       name: "Korea Fashion Wholesale",
       email: "supplier@kfashion.com",

@@ -3,6 +3,8 @@
 module Api
   module V1
     class UcpController < ApplicationController
+      skip_before_action :require_admin
+
       # CSRF 토큰 검증 제외 (API 엔드포인트)
       skip_before_action :verify_authenticity_token
 

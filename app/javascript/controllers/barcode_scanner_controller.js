@@ -22,13 +22,18 @@ export default class extends Controller {
   }
 
   // 스캔 시작
-  startScanning() {
+  async startScanning() {
     if (this.isScanning) return
 
     this.isScanning = true
     this.updateUI("scanning")
 
-    this.scanner = new Html5Qrcode(this.videoTarget.id)
+    this.scanner = new Html5Qrcode("interactive")
+
+    // 영상 영역이 레이아웃에 올라온 뒤에 start 해야 크기가 잡힌다
+    await new Promise(requestAnimationFrame)
+    if (!this.isScanning) return
+
     this.scanner.start(
       { facingMode: "environment" },
       { fps: 10, qrbox: undefined },
@@ -45,10 +50,15 @@ export default class extends Controller {
 
   // 스캔 중지
   stopScanning() {
+    if (!this.scanner) return
     if (!this.isScanning) return
 
     this.isScanning = false
-    this.scanner.stop().then(() => this.scanner.clear()).catch(() => {})
+    const scanner = this.scanner
+    Promise.resolve()
+      .then(() => (scanner.isScanning ? scanner.stop() : null))
+      .then(() => scanner.clear())
+      .catch(() => {})
     this.updateUI("idle")
     console.log("스캔 중지")
   }
@@ -145,7 +155,8 @@ export default class extends Controller {
 
   // UI 상태 업데이트
   updateUI(state) {
-    const videoContainer = this.videoTarget.parentElement
+    // hidden 은 videoTarget(#scanner-container) 자신에 붙어 있다
+    const videoContainer = this.videoTarget
 
     switch (state) {
       case "scanning":

@@ -2,6 +2,7 @@ require "test_helper"
 
 class InventoryControllerTest < ActionDispatch::IntegrationTest
   def setup
+    sign_in
     @product = Product.create!(
       name: "Test Product",
       price: 50000,

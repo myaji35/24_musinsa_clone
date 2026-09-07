@@ -50,7 +50,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
 
   # Product with reviews
   test "should show product with reviews" do
-    @user = User.create!(email: "test@example.com", name: "Test User")
+    @user = User.create!(email: "test@example.com", name: "Test User", password: "TestPassword!2026")
     @product.reviews.create!(
       user: @user,
       content: "Great product!",

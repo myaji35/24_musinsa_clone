@@ -150,8 +150,8 @@ end
 
 puts "Created #{Product.count} products (Attributes by AI Model Generation)"
 
-# Create a dummy user
-user = User.first_or_create!(email: "test@example.com", name: "Musinsa Lover")
+# 개발용 관리자 계정 (샘플 리뷰와 스냅 작성자)
+user = User.create!(email: "admin@jieun.test", name: "관리자", password: "JieunDev!2026")
 
 # Add sample reviews
 Product.all.each do |product|

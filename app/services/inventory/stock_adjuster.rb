@@ -1,14 +1,17 @@
 # Service for adjusting stock levels (입출고 처리)
 module Inventory
   class StockAdjuster < ApplicationService
-    attr_reader :variant, :quantity, :stock_type, :note, :user_name
+    attr_reader :variant, :quantity, :stock_type, :note, :user_name, :supplier, :unit_cost, :order_id
 
-    def initialize(barcode:, quantity:, stock_type:, note: nil, user_name: "System")
+    def initialize(barcode:, quantity:, stock_type:, note: nil, user_name: "System", supplier: nil, unit_cost: nil, order_id: nil)
       @barcode = barcode
       @quantity = quantity.to_i
       @stock_type = stock_type # "in" or "out"
       @note = note
       @user_name = user_name # 인증 도입 전까지 저장하지 않음
+      @supplier = supplier.presence
+      @unit_cost = unit_cost.presence
+      @order_id = Integer(order_id, exception: false)
     end
 
     def call
@@ -58,7 +61,10 @@ module Inventory
         variant: @variant,
         log_type: @stock_type,
         quantity: @quantity,
-        note: @note
+        note: @note,
+        supplier: @supplier,
+        unit_cost: @unit_cost,
+        order_id: @order_id
       )
     end
 

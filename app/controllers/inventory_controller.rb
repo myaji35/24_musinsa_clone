@@ -20,6 +20,8 @@ class InventoryController < ApplicationController
       quantity: stock_in_params[:quantity],
       stock_type: "in",
       note: stock_in_params[:note],
+      supplier: stock_in_params[:supplier],
+      unit_cost: stock_in_params[:unit_cost],
       user_name: current_user_name
     )
 
@@ -51,6 +53,7 @@ class InventoryController < ApplicationController
       quantity: stock_out_params[:quantity],
       stock_type: "out",
       note: stock_out_params[:note],
+      order_id: stock_out_params[:order_id],
       user_name: current_user_name
     )
 

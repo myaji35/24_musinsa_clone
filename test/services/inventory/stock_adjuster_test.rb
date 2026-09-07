@@ -125,6 +125,57 @@ module Inventory
       assert_equal "Test note", log.note
     end
 
+    test "should store supplier and unit cost when stocking in" do
+      result = StockAdjuster.call(
+        barcode: "TEST-001",
+        quantity: 5,
+        stock_type: "in",
+        supplier: "동대문 도매상",
+        unit_cost: "15000"
+      )
+
+      assert result.success?
+      log = @variant.stock_logs.last
+      assert_equal "동대문 도매상", log.supplier
+      assert_equal 15000, log.unit_cost
+    end
+
+    test "should store numeric order id when stocking out" do
+      result = StockAdjuster.call(
+        barcode: "TEST-001",
+        quantity: 3,
+        stock_type: "out",
+        order_id: "123"
+      )
+
+      assert result.success?
+      assert_equal 123, @variant.stock_logs.last.order_id
+    end
+
+    test "should store nil for nonnumeric order id" do
+      result = StockAdjuster.call(
+        barcode: "TEST-001",
+        quantity: 3,
+        stock_type: "out",
+        order_id: "ORDER-20240131-001"
+      )
+
+      assert result.success?
+      assert_nil @variant.stock_logs.last.order_id
+    end
+
+    test "should store nil for blank supplier" do
+      result = StockAdjuster.call(
+        barcode: "TEST-001",
+        quantity: 5,
+        stock_type: "in",
+        supplier: ""
+      )
+
+      assert result.success?
+      assert_nil @variant.stock_logs.last.supplier
+    end
+
     # 알림: 재고 부족 시 Job 큐잉
     test "should enqueue low stock alert job when stock is low" do
       @variant.update(stock: 6, min_stock: 5)

@@ -552,6 +552,21 @@
       "done_criteria": "바코드 입력 후 조회 버튼 또는 Enter → ?barcode=... 로 이동해 상품 정보가 표시된다",
       "created_at": "2026-09-07T17:39:23.204636",
       "updated_at": "2026-09-07T17:41:08.657878"
+    },
+    {
+      "id": "ISS-039",
+      "title": "입고 폼의 supplier/unit_cost가 저장되지 않음 — StockAdjuster 전달 누락",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "S",
+      "phase": "0",
+      "status": "COMPLETED",
+      "depends_on": [
+        "ISS-006"
+      ],
+      "done_criteria": "입고 폼에 공급사·단가 입력 후 저장하면 stock_logs.supplier/unit_cost에 값이 들어가고, 재고이력 CSV 내보내기의 '사입처'/'단가' 칼럼에 표시된다",
+      "created_at": "2026-09-07T17:59:13.141790",
+      "updated_at": "2026-09-07T18:03:39.855846"
     }
   ],
   "hooks": {

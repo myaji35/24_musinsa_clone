@@ -4,12 +4,8 @@ class SnapsController < ApplicationController
     @snaps = Snap.includes(:user).order(id: :desc)
   end
 
-  def new
-  end
-
-  def create
-  end
-
   def show
+    @snap = Snap.includes(:user).find(params[:id])
+    @products = Product.where(id: SnapProduct.where(snap_id: @snap.id).select(:product_id)).with_attached_image
   end
 end

@@ -32,14 +32,19 @@ class PurchaseOrder < ApplicationRecord
   def submit!
     return false unless status == "draft"
 
-    update(status: "submitted")
+    update(status: "submitted", confirmation_token_expires_at: 7.days.from_now)
   end
 
   # 거래처가 확정
   def confirm!
+    return false unless status == "submitted"
+    return false if confirmation_token_used_at.present?
+    return false if confirmation_token_expires_at.present? && confirmation_token_expires_at.past?
+
     update(
       status: "confirmed",
-      confirmed_at: Time.current
+      confirmed_at: Time.current,
+      confirmation_token_used_at: Time.current
     )
   end
 

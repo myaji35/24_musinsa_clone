@@ -25,23 +25,12 @@ class Order < ApplicationRecord
   # 주문 완료 처리
   def complete!
     update(status: "delivered")
-    update_customer_preferences
   end
 
   private
 
   def generate_order_number
     self.order_number ||= "ORD-#{Date.today.strftime('%Y%m%d')}-#{SecureRandom.hex(4).upcase}"
-  end
-
-  def update_customer_preferences
-    return unless product.present?
-
-    # 상품의 카테고리를 취향 태그로 추가
-    anony_customer.add_preference(product.category, quantity) if product.category.present?
-
-    # 상품의 브랜드를 취향 태그로 추가
-    anony_customer.add_preference(product.brand, quantity) if product.brand.present?
   end
 
   # Epic 4.2: 주문 생성 시 백그라운드로 취향 태그 학습

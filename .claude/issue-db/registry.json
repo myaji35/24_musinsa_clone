@@ -228,13 +228,15 @@
       "priority": "P1",
       "size": "M",
       "phase": "1",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-004"
       ],
       "done_criteria": "제출→submitted+메일프리뷰",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:03:23.919740",
+      "started_at": "2026-09-15T19:21:49.437081",
+      "completed_at": "2026-09-15T19:39:35.904882"
     },
     {
       "id": "ISS-010",
@@ -243,11 +245,13 @@
       "priority": "P1",
       "size": "S",
       "phase": "1",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "클릭시 POST, received+StockLog",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:03:23.919740",
+      "started_at": "2026-09-15T19:21:49.437081",
+      "completed_at": "2026-09-15T19:39:35.904882"
     },
     {
       "id": "ISS-011",
@@ -256,11 +260,13 @@
       "priority": "P1",
       "size": "S",
       "phase": "1",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "submitted 외 422",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:03:23.919740",
+      "started_at": "2026-09-15T19:21:49.437081",
+      "completed_at": "2026-09-15T19:39:35.904882"
     },
     {
       "id": "ISS-014",
@@ -269,13 +275,15 @@
       "priority": "P1",
       "size": "M",
       "phase": "1",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-007"
       ],
       "done_criteria": "source 컬럼 기록+화면 표기",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:03:23.919740",
+      "started_at": "2026-09-15T19:21:49.437081",
+      "completed_at": "2026-09-15T19:39:35.904882"
     },
     {
       "id": "ISS-022",
@@ -329,13 +337,15 @@
       "priority": "P2",
       "size": "S",
       "phase": "2",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-008"
       ],
       "done_criteria": "주문1건당 1회",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:03:23.919740",
+      "started_at": "2026-09-15T19:21:49.437081",
+      "completed_at": "2026-09-15T19:39:35.904882"
     },
     {
       "id": "ISS-017",
@@ -391,13 +401,15 @@
       "priority": "P2",
       "size": "S",
       "phase": "4",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-008"
       ],
       "done_criteria": "이스케이프+docs/ucp.md",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:03:23.919740",
+      "started_at": "2026-09-15T19:21:49.437081",
+      "completed_at": "2026-09-15T19:39:35.904882"
     },
     {
       "id": "ISS-024",
@@ -422,11 +434,13 @@
       "priority": "P2",
       "size": "S",
       "phase": "4",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "db:prepare 무오류",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:03:23.919740",
+      "started_at": "2026-09-15T19:21:49.437081",
+      "completed_at": "2026-09-15T19:39:35.904882"
     },
     {
       "id": "ISS-020",
@@ -435,13 +449,15 @@
       "priority": "P2",
       "size": "S",
       "phase": "4",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [
         "ISS-021"
       ],
       "done_criteria": "제거 또는 구현",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:03:23.919740",
+      "started_at": "2026-09-15T19:21:49.437081",
+      "completed_at": "2026-09-15T19:39:35.904882"
     },
     {
       "id": "ISS-021",
@@ -450,11 +466,13 @@
       "priority": "P2",
       "size": "M",
       "phase": "4",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "스텁 제거",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-09-07T15:03:23.919740",
+      "started_at": "2026-09-15T19:21:49.437081",
+      "completed_at": "2026-09-15T19:39:35.904882"
     },
     {
       "id": "ISS-027",
@@ -743,6 +761,17 @@
       "done_criteria": "stock 이 nil 인 variant 가 있어도 /api/v1/ucp/products 가 200 을 반환하고 in_stock 이 false 로 계산된다",
       "created_at": "2026-09-07T18:54:16.820830",
       "updated_at": "2026-09-07T18:57:19.543449"
+    },
+    {
+      "id": "ISS-052",
+      "status": "IN_PROGRESS",
+      "priority": "P0",
+      "type": "FIX_BUG",
+      "title": "Zeitwerk 상수 불일치로 production 부팅 실패 — CRM::PreferenceAnalyzer vs Crm::PreferenceAnalyzer",
+      "created_at": "2026-09-15T19:39:35.904882",
+      "started_at": "2026-09-15T19:39:35.904882",
+      "description": "app/services/crm/preference_analyzer.rb 가 module CRM 로 정의돼 Zeitwerk 가 기대하는 Crm 과 불일치. dev/test 는 lazy load 라 미검출, production 은 eager load 라 부팅 실패. bin/rails zeitwerk:check 로 재현. ISS-024 배포 구성의 선행 차단 요인. 참조처 0건(dead code).",
+      "depends_on": []
     }
   ],
   "hooks": {

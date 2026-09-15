@@ -95,7 +95,7 @@ class Campaign < ApplicationRecord
       ClaudeBot::MessageGenerator.generate_marketing_message(
         customer.preference_tags || {},
         product
-      )
+      )[:text]
     else
       # 기본 메시지
       "안녕하세요! 고객님을 위한 특별한 상품을 준비했습니다."

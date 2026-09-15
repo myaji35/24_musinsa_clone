@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   end
 
   # Snaps (Style Feed)
-  resources :snaps, only: [ :index, :new, :create, :show ]
+  resources :snaps, only: [ :index, :show ]
 
   # Search
   get "search", to: "search#index"

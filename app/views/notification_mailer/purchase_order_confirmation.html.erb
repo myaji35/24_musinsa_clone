@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body style="font-family: Arial, sans-serif; padding: 20px;">
+    <h2 style="color: #2563eb;">📋 발주서 확인 요청</h2>
+
+    <div style="background: #eff6ff; padding: 15px; border-left: 4px solid #2563eb; margin: 20px 0;">
+      <%= @supplier.name %> 담당자님, 아래 발주 내역을 확인해 주세요.
+    </div>
+
+    <h3>발주 정보</h3>
+    <table style="border-collapse: collapse; width: 100%;">
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>거래처명</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;"><%= @supplier.name %></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>발주번호</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;"><%= @purchase_order.order_number %></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>합계금액</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;">₩<%= number_with_delimiter(@purchase_order.total_amount) %></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;"><strong>납기예정일</strong></td>
+        <td style="padding: 8px; border: 1px solid #ddd;"><%= @purchase_order.expected_delivery_date&.strftime("%Y-%m-%d") || "-" %></td>
+      </tr>
+    </table>
+
+    <h3>발주 품목</h3>
+    <table style="border-collapse: collapse; width: 100%;">
+      <tr>
+        <th style="padding: 8px; border: 1px solid #ddd;">상품명</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">색상</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">사이즈</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">수량</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">단가</th>
+      </tr>
+      <% @purchase_order.purchase_order_items.each do |item| %>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd;"><%= item.variant.product.name %></td>
+          <td style="padding: 8px; border: 1px solid #ddd;"><%= item.variant.color %></td>
+          <td style="padding: 8px; border: 1px solid #ddd;"><%= item.variant.size %></td>
+          <td style="padding: 8px; border: 1px solid #ddd;"><%= item.quantity %></td>
+          <td style="padding: 8px; border: 1px solid #ddd;">₩<%= number_with_delimiter(item.unit_price) %></td>
+        </tr>
+      <% end %>
+    </table>
+
+    <p style="margin-top: 20px;">
+      <a href="<%= @purchase_order.confirmation_url %>" style="color: #2563eb;">발주서 확인하기</a>
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+    <p style="color: #666; font-size: 12px;">
+      JIEUN Fashion OS | AI-Native Inventory Management
+    </p>
+  </body>
+</html>

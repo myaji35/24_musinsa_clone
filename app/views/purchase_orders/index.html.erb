@@ -40,11 +40,11 @@
               <td class="px-6 py-4 whitespace-nowrap">₩<%= number_with_delimiter(po.total_amount) %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= po.expected_delivery_date&.strftime("%Y-%m-%d") || "-" %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= po.created_at.strftime("%Y-%m-%d") %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center gap-2">
                 <%= link_to "상세", purchase_order_path(po), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
                 <% if po.status == "draft" %>
                   <%= link_to "수정", edit_purchase_order_path(po), class: "text-blue-600 hover:text-blue-900 mr-3" %>
-                  <%= link_to "취소", purchase_order_path(po), method: :delete, data: { turbo_method: :delete, turbo_confirm: "정말 취소하시겠습니까?" }, class: "text-red-600 hover:text-red-900" %>
+                  <%= button_to "취소", purchase_order_path(po), method: :delete, form: { data: { turbo_confirm: "정말 취소하시겠습니까?" } }, class: "text-red-600 hover:text-red-900" %>
                 <% end %>
               </td>
             </tr>

@@ -3,7 +3,7 @@
 module ClaudeBot
   class MessageGenerator
     CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
-    MODEL = "claude-3-5-sonnet-20241022" # 최신 Sonnet 모델
+    MODEL = "claude-sonnet-4-5-20250929" # 최신 Sonnet 모델
 
     # 재고 부족 알림 메시지 생성
     def self.generate_low_stock_alert(variant)
@@ -60,11 +60,10 @@ module ClaudeBot
       api_key = ENV["ANTHROPIC_API_KEY"]
 
       # API 키가 없으면 Mock 메시지 반환 (개발 환경용)
-      return generate_mock_message(prompt) if api_key.blank?
+      return { text: generate_mock_message(prompt), source: "mock", error: "ANTHROPIC_API_KEY 미설정" } if api_key.blank?
 
       begin
-        response = HTTP.auth("Bearer #{api_key}")
-                       .headers("anthropic-version" => "2023-06-01", "content-type" => "application/json")
+        response = HTTP.headers("x-api-key" => api_key, "anthropic-version" => "2023-06-01", "content-type" => "application/json")
                        .post(CLAUDE_API_URL, json: {
                          model: MODEL,
                          max_tokens: 500,
@@ -78,14 +77,19 @@ module ClaudeBot
 
         if response.status.success?
           result = JSON.parse(response.body)
-          result.dig("content", 0, "text")
+          text = result.dig("content", 0, "text")
+          if text.blank?
+            { text: generate_mock_message(prompt), source: "mock", error: "응답 본문 없음" }
+          else
+            { text: text, source: "claude", error: nil }
+          end
         else
           Rails.logger.error "Claude API Error: #{response.status} - #{response.body}"
-          generate_mock_message(prompt)
+          { text: generate_mock_message(prompt), source: "mock", error: "API 오류: #{response.status}" }
         end
       rescue StandardError => e
         Rails.logger.error "Claude API Exception: #{e.message}"
-        generate_mock_message(prompt)
+        { text: generate_mock_message(prompt), source: "mock", error: "API 예외: #{e.message}" }
       end
     end
 

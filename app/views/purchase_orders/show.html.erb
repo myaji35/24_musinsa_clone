@@ -1,13 +1,13 @@
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold">발주서 상세 - <%= @purchase_order.order_number %></h1>
-    <div>
+    <div class="flex items-center gap-2">
       <% if @purchase_order.status == "draft" %>
         <%= link_to "수정", edit_purchase_order_path(@purchase_order), class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg mr-2" %>
-        <%= link_to "제출", submit_purchase_order_path(@purchase_order), method: :post, data: { turbo_method: :post, turbo_confirm: "발주서를 거래처에 제출하시겠습니까?" }, class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mr-2" %>
+        <%= button_to "제출", submit_purchase_order_path(@purchase_order), method: :post, form: { data: { turbo_confirm: "발주서를 거래처에 제출하시겠습니까?" } }, class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mr-2" %>
       <% end %>
       <% if @purchase_order.status == "confirmed" %>
-        <%= link_to "입고 처리", receive_purchase_order_path(@purchase_order), method: :post, data: { turbo_method: :post, turbo_confirm: "입고 처리하시겠습니까? 재고가 업데이트됩니다." }, class: "bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mr-2" %>
+        <%= button_to "입고 처리", receive_purchase_order_path(@purchase_order), method: :post, form: { data: { turbo_confirm: "입고 처리하시겠습니까? 재고가 업데이트됩니다." } }, class: "bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mr-2" %>
       <% end %>
       <%= link_to "목록", purchase_orders_path, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg" %>
     </div>

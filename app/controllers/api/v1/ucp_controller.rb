@@ -7,6 +7,7 @@ module Api
 
       # CSRF 토큰 검증 제외 (API 엔드포인트)
       skip_before_action :verify_authenticity_token
+      before_action :authenticate_api_key
 
       # GET /api/v1/ucp/products
       # Query parameters: mood, tpo, category, limit
@@ -74,6 +75,19 @@ module Api
       end
 
       private
+
+      def authenticate_api_key
+        expected = ENV["UCP_API_KEY"]
+        if expected.blank?
+          Rails.logger.error "UCP_API_KEY 미설정 — API 접근 거부"
+          render json: { status: "error", message: "API가 구성되지 않았습니다." }, status: :service_unavailable
+          return
+        end
+        provided = request.headers["X-API-Key"].presence || params[:api_key].presence
+        unless provided.present? && ActiveSupport::SecurityUtils.secure_compare(provided.to_s, expected.to_s)
+          render json: { status: "error", message: "유효하지 않은 API 키입니다." }, status: :unauthorized
+        end
+      end
 
       def build_cache_key
         # Normalize params for consistent cache keys

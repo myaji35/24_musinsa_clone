@@ -62,10 +62,14 @@ class PurchaseOrdersController < ApplicationController
       ).deliver_later
 
       # Slack 알림 (내부 모니터링)
-      Notifications::SlackNotifier.call(
-        channel: "#supply-chain",
-        text: "📋 발주서 제출: #{@purchase_order.order_number} - #{@purchase_order.supplier.name}"
-      )
+      begin
+        Notifications::SlackNotifier.call(
+          channel: "#supply-chain",
+          text: "📋 발주서 제출: #{@purchase_order.order_number} - #{@purchase_order.supplier.name}"
+        )
+      rescue StandardError => e
+        Rails.logger.error "PO submit Slack 알림 실패: #{e.message}"
+      end
 
       redirect_to @purchase_order, notice: "발주서가 제출되었습니다. 거래처 확인 대기 중입니다."
     else
@@ -84,7 +88,7 @@ class PurchaseOrdersController < ApplicationController
       if @purchase_order.confirm!
         render plain: "발주서가 확정되었습니다. 감사합니다!", status: :ok
       else
-        render plain: "발주서 확정에 실패했습니다.", status: :unprocessable_entity
+        render plain: "이미 처리되었거나 만료된 확인 링크입니다.", status: :unprocessable_entity
       end
     else
       # GET 요청 시 확인 페이지 렌더링
@@ -108,7 +112,7 @@ class PurchaseOrdersController < ApplicationController
   end
 
   def set_purchase_order_by_token
-    @purchase_order = PurchaseOrder.find_by(confirmation_token: params[:token])
+    @purchase_order = params[:token].blank? ? nil : PurchaseOrder.find_by(confirmation_token: params[:token])
   end
 
   def purchase_order_params

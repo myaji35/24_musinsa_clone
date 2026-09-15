@@ -188,6 +188,20 @@
       </div>
     </div>
 
+    <% if logged_in? %>
+      <%= form_with model: [@product, Review.new], class: "border border-black p-6 mb-8 space-y-4" do |form| %>
+        <div>
+          <%= form.label :rating, "별점", class: "block text-sm font-bold text-black mb-2" %>
+          <%= form.select :rating, (1..5).map { |rating| ["#{rating}점", rating] }, {}, class: "border border-black px-3 py-2 text-sm", required: true %>
+        </div>
+        <div>
+          <%= form.label :content, "리뷰 내용", class: "block text-sm font-bold text-black mb-2" %>
+          <%= form.text_area :content, rows: 4, maxlength: 1000, required: true, class: "w-full border border-black px-3 py-2 text-sm" %>
+        </div>
+        <%= form.submit "리뷰 등록", class: "px-5 py-3 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors cursor-pointer" %>
+      <% end %>
+    <% end %>
+
     <!-- 리뷰 카드 -->
     <div class="space-y-6">
       <% if @reviews.any? %>

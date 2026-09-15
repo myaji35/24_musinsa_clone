@@ -29,8 +29,8 @@ class Product < ApplicationRecord
   # AI 속성 필터링 Scopes (Story 1.2)
   scope :by_mood, ->(mood) { where("json_extract(ai_attributes, '$.mood') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(mood.to_s.to_json)}%") }
   scope :by_tpo, ->(tpo) { where("json_extract(ai_attributes, '$.tpo') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(tpo.to_s.to_json)}%") }
-  scope :by_fit_style, ->(fit_style) { where("json_extract(ai_attributes, '$.fit_style') LIKE ? ESCAPE '\\'", sanitize_sql_like(fit_style.to_s)) }
-  scope :by_material_feel, ->(material_feel) { where("json_extract(ai_attributes, '$.material_feel') LIKE ? ESCAPE '\\'", sanitize_sql_like(material_feel.to_s)) }
+  scope :by_fit_style, ->(fit_style) { where("json_extract(ai_attributes, '$.fit_style') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(fit_style.to_s)}%") }
+  scope :by_material_feel, ->(material_feel) { where("json_extract(ai_attributes, '$.material_feel') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(material_feel.to_s)}%") }
 
   # 배지 관련 헬퍼 메서드
   def badge_list

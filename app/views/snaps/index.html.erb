@@ -1,74 +1,29 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div class="flex justify-between items-end mb-8 border-b border-black pb-4">
     <div>
-        <h1 class="text-3xl font-black font-oswald uppercase tracking-tight">Street Snap</h1>
-        <p class="text-sm text-gray-500 mt-1 font-medium">실시간 거리 패션과 최신 트렌드를 확인하세요.</p>
+      <h1 class="text-3xl font-black font-oswald uppercase tracking-tight">Street Snap</h1>
+      <p class="text-sm text-gray-500 mt-1 font-medium">실시간 거리 패션과 최신 트렌드를 확인하세요.</p>
     </div>
-    <a href="#" class="px-5 py-2.5 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors">
-        스냅 올리기
-    </a>
   </div>
 
-  <!-- Masonry Grid -->
   <div class="columns-2 md:columns-3 lg:columns-4 gap-6 space-y-6">
-    <% @snaps.each_with_index do |snap, index| %>
-      <div class="break-inside-avoid mb-6 group cursor-pointer">
-        <div class="bg-gray-50 relative overflow-hidden mb-3">
-             <!-- Random aspect ratio for masonry feel -->
-             <% aspect_ratio = ["aspect-[3/4]", "aspect-[4/5]"].sample %>
-             <div class="w-full <%= aspect_ratio %> bg-gray-200 relative">
-                <!-- Use Unsplash Images based on ID to simulate variety -->
-                <% 
-                   image_id = (snap.id % 20) + 1 
-                   random_image = "https://images.unsplash.com/photo-15" + ["15886657613-9f3515b0c78f", "39008835657-9e8e9680c956", "52874869-952467d58308", "50614000-4b9519e095b3"][index % 4] + "?w=500&q=80"
-                %>
-                <img src="<%= random_image %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                
-                <!-- Overlay Gradient -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
-
-                <!-- User Info Overlay -->
-                <div class="absolute bottom-3 left-3 right-3 text-white">
-                    <div class="flex items-center gap-2 mb-1">
-                        <div class="w-6 h-6 rounded-full bg-gray-300 border border-white/30 overflow-hidden">
-                             <!-- Random Avatar -->
-                             <img src="https://ui-avatars.com/api/?name=<%= snap.user.name %>&background=random" class="w-full h-full object-cover">
-                        </div>
-                        <span class="text-xs font-bold shadow-black drop-shadow-sm"><%= snap.user.name %></span>
-                    </div>
-                </div>
-             </div>
+    <% @snaps.each do |snap| %>
+      <%= link_to snap_path(snap), class: "block break-inside-avoid mb-6 group" do %>
+        <div class="w-full aspect-[3/4] bg-gray-200 flex items-center justify-center mb-3">
+          <span class="text-sm text-gray-500">이미지 없음</span>
         </div>
-
-        <!-- Snap Interaction Info -->
         <div class="px-1">
-            <p class="text-sm font-medium text-gray-800 line-clamp-2 leading-snug mb-2 font-sans"><%= snap.content %></p>
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4 text-xs text-gray-500 font-bold">
-                    <button class="flex items-center gap-1 hover:text-red-500 group-hover/btn:text-red-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                        <span><%= rand(10..200) %></span>
-                    </button>
-                    <button class="flex items-center gap-1 hover:text-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                        <span><%= rand(0..50) %></span>
-                    </button>
-                </div>
-                <span class="text-[10px] text-gray-400"><%= time_ago_in_words(snap.created_at) %> 전</span>
-            </div>
-            
-            <!-- Tags -->
-            <div class="mt-2 flex flex-wrap gap-1">
-                 <% ["#데일리룩", "#OOTD", "#스트릿"].sample(2).each do |tag| %>
-                    <span class="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-sm">#<%= tag.delete('#') %></span>
-                 <% end %>
-            </div>
+          <div class="flex items-center gap-2 mb-2">
+            <img src="https://ui-avatars.com/api/?name=<%= ERB::Util.url_encode(snap.user.name.to_s) %>&amp;background=random" alt="<%= snap.user.name %> 아바타" class="w-6 h-6 rounded-full bg-gray-300 object-cover">
+            <span class="text-xs font-bold"><%= snap.user.name %></span>
+          </div>
+          <p class="text-sm font-medium text-gray-800 line-clamp-2 leading-snug mb-2 font-sans group-hover:underline"><%= snap.content.presence || "내용 없음" %></p>
+          <time datetime="<%= snap.created_at.iso8601 %>" class="text-[10px] text-gray-400"><%= time_ago_in_words(snap.created_at) %> 전</time>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
+  <% if @snaps.empty? %>
+    <p class="py-12 text-center text-sm text-gray-500">등록된 스냅이 없습니다.</p>
+  <% end %>
 </div>

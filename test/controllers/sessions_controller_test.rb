@@ -35,7 +35,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "공개 페이지는 로그인 없이 접근한다" do
     [ root_path, products_path, product_path(products(:one)), search_path,
-      snaps_path, snap_path(snaps(:one)), "/api/v1/ucp/products", rails_health_check_path,
+      snaps_path, snap_path(snaps(:one)), rails_health_check_path,
       pwa_manifest_path(format: :json), pwa_service_worker_path(format: :js), login_path ].each do |path|
       get path
       assert_response :success

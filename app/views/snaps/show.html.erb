@@ -1,4 +1,43 @@
-<div>
-  <h1 class="font-bold text-4xl">Snaps#show</h1>
-  <p>Find me in app/views/snaps/show.html.erb</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex justify-between items-end mb-8 border-b border-black pb-4">
+    <h1 class="text-3xl font-black font-oswald uppercase tracking-tight">Street Snap</h1>
+    <%= link_to "스냅 목록", snaps_path, class: "text-sm font-bold hover:underline" %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+    <div class="w-full aspect-[3/4] bg-gray-200 flex items-center justify-center">
+      <span class="text-sm text-gray-500">이미지 없음</span>
+    </div>
+    <div>
+      <div class="border-b border-black pb-4 mb-6">
+        <p class="text-lg font-bold"><%= @snap.user.name %></p>
+        <time datetime="<%= @snap.created_at.iso8601 %>" class="text-xs text-gray-500"><%= @snap.created_at.strftime("%Y.%m.%d %H:%M") %></time>
+      </div>
+      <p class="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap"><%= @snap.content.presence || "내용 없음" %></p>
+    </div>
+  </div>
+
+  <% if @products.any? %>
+    <section class="border-t border-black pt-6">
+      <h2 class="text-xl font-bold font-oswald mb-6">연결된 상품</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <% @products.each do |product| %>
+          <%= link_to product_path(product), class: "block border border-black p-3 group" do %>
+            <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden mb-3">
+              <% if (image_source = product_image_source(product)) %>
+                <%= image_tag image_source, alt: product.name, class: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" %>
+              <% else %>
+                <div class="w-full h-full flex items-center justify-center text-gray-500">
+                  <span class="text-xs">이미지 없음</span>
+                </div>
+              <% end %>
+            </div>
+            <p class="text-xs text-gray-500 uppercase"><%= product.brand %></p>
+            <p class="text-sm font-bold group-hover:underline"><%= product.name %></p>
+            <p class="text-sm font-bold mt-1"><%= number_to_currency(product.price, unit: "", precision: 0) %>원</p>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
 </div>

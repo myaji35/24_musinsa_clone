@@ -22,7 +22,9 @@ class LowStockAlertJob < ApplicationJob
       end
 
       # Claude AI로 알림 메시지 생성
-      message = ClaudeBot::MessageGenerator.generate_low_stock_alert(variant)
+      result = ClaudeBot::MessageGenerator.generate_low_stock_alert(variant)
+      message = result[:text]
+      message = "[AI 미연동] #{message}" if result[:source] == "mock"
 
       # Notification 생성
       notification = Notification.create!(

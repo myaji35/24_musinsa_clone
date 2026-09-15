@@ -20,6 +20,26 @@ class OrderTest < ActiveSupport::TestCase
     assert_equal number, order.reload.order_number
   end
 
+  test "주문 완료 시 생성 작업이 학습한 취향 태그를 중복 증가시키지 않는다" do
+    customer = anony_customers(:one)
+    product = products(:one)
+    product.update!(ai_attributes: { mood: [ "minimal" ], tpo: [ "daily" ], fit_style: "regular", material_feel: "soft" })
+    expected_tags = customer.preference_tags.deep_dup
+    [ product.category, product.brand, "mood:minimal", "tpo:daily", "fit:regular", "material:soft" ].each do |tag|
+      expected_tags[tag] = expected_tags.fetch(tag, 0) + 1
+    end
+
+    order = nil
+    perform_enqueued_jobs(only: UpdatePreferenceTagsJob) do
+      order = Order.create!(anony_customer: customer, product: product, variant: variants(:one), quantity: 3, total_price: 59700)
+    end
+    assert_equal expected_tags, customer.reload.preference_tags
+
+    assert_no_enqueued_jobs(only: UpdatePreferenceTagsJob) { assert order.complete! }
+    assert_equal "delivered", order.reload.status
+    assert_equal expected_tags, customer.reload.preference_tags
+  end
+
   test "상태 범위는 해당 주문만 반환한다" do
     paid = orders(:one)
     delivered = orders(:two)

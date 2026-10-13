@@ -764,14 +764,16 @@
     },
     {
       "id": "ISS-052",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "priority": "P0",
       "type": "FIX_BUG",
       "title": "Zeitwerk 상수 불일치로 production 부팅 실패 — CRM::PreferenceAnalyzer vs Crm::PreferenceAnalyzer",
       "created_at": "2026-09-15T19:39:35.904882",
       "started_at": "2026-09-15T19:39:35.904882",
       "description": "app/services/crm/preference_analyzer.rb 가 module CRM 로 정의돼 Zeitwerk 가 기대하는 Crm 과 불일치. dev/test 는 lazy load 라 미검출, production 은 eager load 라 부팅 실패. bin/rails zeitwerk:check 로 재현. ISS-024 배포 구성의 선행 차단 요인. 참조처 0건(dead code).",
-      "depends_on": []
+      "depends_on": [],
+      "completed_at": "2026-10-13T15:50:10.246853",
+      "result": "코드 변경 없음 — ba5474f(2026-09-15)에서 inflections.rb에 acronym \"CRM\" 추가로 이미 해소. 2026-10-13 실측: zeitwerk:check \"All is good\", RAILS_ENV=production runner로 CRM::PreferenceAnalyzer 로드 확인."
     },
     {
       "id": "ISS-053",
@@ -941,14 +943,17 @@
     },
     {
       "id": "ISS-066",
-      "status": "BACKLOG",
+      "status": "DONE",
       "priority": "P0",
       "type": "FIX_BUG",
       "title": "로컬 실행 환경 — .ruby-version 3.3.0 미설치(rbenv 3.3.10만)",
       "created_at": "2026-10-13T15:26:34.237338",
       "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 이 트리에서 bin/rails test 전체 통과 실측",
       "depends_on": [],
-      "source": "fable-review"
+      "source": "fable-review",
+      "started_at": "2026-10-13T15:50:10.246853",
+      "completed_at": "2026-10-13T15:53:37.723732",
+      "result": ".ruby-version·Dockerfile 3.3.0→3.3.10. 오버라이드 없이 bin/rails test 181/0 실패."
     },
     {
       "id": "ISS-067",
@@ -1072,6 +1077,17 @@
         "ISS-071"
       ],
       "source": "fable-review"
+    },
+    {
+      "id": "ISS-077",
+      "status": "IN_PROGRESS",
+      "priority": "P1",
+      "type": "FEATURE",
+      "title": "공급사 엑셀(이미지 포함) 상품 가져오기 + 상품분석(캐릭터·컨셉 배정) + KPI(목표 vs 실적 매출) 운영",
+      "created_at": "2026-10-13T15:44:36.670701",
+      "started_at": "2026-10-13T15:44:36.670701",
+      "description": "대표님 지시 2026-10-13 '공급사로부터 판매가능 상품 이미지를 받을거야. 상품분석 기능을 만들어서, 어떤캐릭터가 어떤컨셉으로 얼마의 매출을 올리까(kpi)를 가지고 운영하자. 이미지는 가능한 엑셀 파일로 받을거야.'",
+      "depends_on": []
     }
   ],
   "hooks": {

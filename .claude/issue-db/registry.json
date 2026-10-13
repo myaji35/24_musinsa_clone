@@ -832,6 +832,19 @@
       ],
       "completed_at": "2026-10-13T14:34:50.066818",
       "result": "끊김 원인: Seedance 2.0 Mini 출력의 4프레임 주기 움직임 불균일(위상별 1.4~3.1, jitter 0.36). kling3_0은 균일하나 얼굴 드리프트. kling_o3_image_reference(얼굴·상품 참조, 12.5c)로 균일(2.9~3.1, jitter 0.12)+얼굴 유지. f35-influencer 시트 9장($0.51). 산출물 persona/runway-02/runway_10s_final.mp4 (-16.1 LUFS/-1.5 dBTP). 크레딧 40.5 사용."
+    },
+    {
+      "id": "ISS-057",
+      "status": "DONE",
+      "priority": "P2",
+      "type": "FEATURE_PLAN",
+      "title": "JIEUN 홍보 전략 — 0017 홍보 OS(01 대상·02 경쟁·03 고객·04 브리프) 적용 분석 + 의견",
+      "created_at": "2026-10-13T14:43:40.870374",
+      "started_at": "2026-10-13T14:43:40.870374",
+      "description": "대표님 지시 2026-10-13 '../0017 브랜드 DNA분석 기법 돌려보고 의견줘'. 보고 요청 — 분석·브리프 제안까지만, 실행(발행·광고) 없음.",
+      "depends_on": [],
+      "completed_at": "2026-10-13T14:46:21.103878",
+      "result": "promo/jieun/01~04 산출(0053 루트, git 밖). 04 브리프 승인 대기 — 정체성·후보·판매경로 대표님 결정."
     }
   ],
   "hooks": {

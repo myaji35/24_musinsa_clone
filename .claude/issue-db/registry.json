@@ -802,6 +802,21 @@
       "depends_on": [
         "ISS-053"
       ]
+    },
+    {
+      "id": "ISS-055",
+      "status": "DONE",
+      "priority": "P2",
+      "type": "FIX_BUG",
+      "title": "런웨이 10초 영상 직접 검수 후 개선(v2)",
+      "created_at": "2026-10-13T13:35:08.963333",
+      "started_at": "2026-10-13T13:35:08.963333",
+      "description": "대표님 지시 2026-10-13 '영상 직접 보고 개선해봐'. runway-01 v1 프레임·음성 정밀 검수 → 결함 목록 → 재생성/후처리.",
+      "depends_on": [
+        "ISS-054"
+      ],
+      "completed_at": "2026-10-13T13:45:00.102677",
+      "result": "v1 결함(워킹 없음·발 잘림·광택·뒷판 없음) → v2(K0 원거리·무광, 걷기→포즈→퇴장) → v2 소매패치 타브랜드 배지 변형 → v3(상품·얼굴 참조 이미지 추가) 채택. 오디오 2-pass loudnorm -16.7 LUFS/-1.3 dBTP, 끝 0.48s 페이드. 산출물 persona/runway-01/runway_10s_final.mp4. 이번 개선 22크레딧."
     }
   ],
   "hooks": {

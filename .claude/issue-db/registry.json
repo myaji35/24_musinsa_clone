@@ -772,6 +772,36 @@
       "started_at": "2026-09-15T19:39:35.904882",
       "description": "app/services/crm/preference_analyzer.rb 가 module CRM 로 정의돼 Zeitwerk 가 기대하는 Crm 과 불일치. dev/test 는 lazy load 라 미검출, production 은 eager load 라 부팅 실패. bin/rails zeitwerk:check 로 재현. ISS-024 배포 구성의 선행 차단 요인. 참조처 0건(dead code).",
       "depends_on": []
+    },
+    {
+      "id": "ISS-053",
+      "status": "DONE",
+      "priority": "P2",
+      "type": "FEATURE",
+      "title": "인플루언서 아바타 페르소나(40대 여성) 분리 + 캐릭터 시트 02~09 생성",
+      "created_at": "2026-10-13T10:52:49.760721",
+      "started_at": "2026-10-13T10:52:49.760721",
+      "description": "0058_insuPro 보험설계사 캐릭터 c-40s-female 레퍼런스(ref.png, 01_full_front.png)를 JIEUN 전용 인플루언서 페르소나로 분리. 0053 루트 persona/ 아래 독립 생성 스크립트·README·비용로그. 시트 02~09(측면·후면·표정·눈·헤어) 생성. 대표님 지시 2026-10-13. ISS-045(고정 아바타 자산)의 선행 자산.",
+      "depends_on": [],
+      "related": [
+        "ISS-045"
+      ],
+      "completed_at": "2026-10-13T11:03:35.044570",
+      "result": "persona/f40-influencer 시트 9/9 생성, 육안 일관성 확인. 비용 $0.535 (cost-log.jsonl)."
+    },
+    {
+      "id": "ISS-054",
+      "status": "DONE",
+      "priority": "P2",
+      "type": "FEATURE",
+      "title": "첫 영상: f40-influencer 10초 런웨이(블랙 퍼후드 다운) — Nano Banana Pro K0 + Seedance 2.0 Mini",
+      "created_at": "2026-10-13T11:03:35.044570",
+      "started_at": "2026-10-13T11:03:35.044570",
+      "completed_at": "2026-10-13T11:03:35.044570",
+      "description": "대표님 지시 2026-10-13. 0017 라방 v4 조합(labang-video 스킬) 재사용. 산출물 persona/runway-01/runway_10s.mp4. 12크레딧(262.5→250.5).",
+      "depends_on": [
+        "ISS-053"
+      ]
     }
   ],
   "hooks": {

@@ -925,6 +925,153 @@
       "created_at": "2026-10-13T15:07:41.734294",
       "description": "대표님 결정 2026-10-13: 숏폼(유튜브·인스타·틱톡)→Rails 자사몰 직접 구축, PG 연결 예정, 20~50대 연령대별 5명 캐릭터, 글로벌 판매 대비.",
       "depends_on": []
+    },
+    {
+      "id": "ISS-065",
+      "status": "DONE",
+      "priority": "P1",
+      "type": "FEATURE",
+      "title": "홈페이지 인트로 화려하게 — 3D 스크롤 등 최신 기법, 캐릭터·런웨이 영상 활용",
+      "created_at": "2026-10-13T15:21:11.271277",
+      "started_at": "2026-10-13T15:21:11.271277",
+      "description": "대표님 지시 2026-10-13 '홈페이지 인트로를 화려하게 꾸몄으면 좋겠어. 3D스크롤등 최신 기법을 사용해서.'",
+      "depends_on": [],
+      "completed_at": "2026-10-13T15:40:45.770582",
+      "result": "3장면 스크롤 인트로(런웨이 3D 프레임·캐릭터 20명 3D 링·태그라인+CTA). 외부 라이브러리 0. 브라우저 실측 1440x900·390x844: 가로넘침 0, 4xx/5xx 0, AI 배지 전 단계 노출, CTA→#ranking(nav 아래 96px). bin/rails test 181/0 실패."
+    },
+    {
+      "id": "ISS-066",
+      "status": "BACKLOG",
+      "priority": "P0",
+      "type": "FIX_BUG",
+      "title": "로컬 실행 환경 — .ruby-version 3.3.0 미설치(rbenv 3.3.10만)",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 이 트리에서 bin/rails test 전체 통과 실측",
+      "depends_on": [],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-067",
+      "status": "BACKLOG",
+      "priority": "P1",
+      "type": "DOCS",
+      "title": "CLAUDE.md 알려진 결함 3건(fff053a에서 해소) 반영 + commerce-pivot.md 정정",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 낡은 결함 기술 제거, 남은 결함만 기재",
+      "depends_on": [
+        "ISS-066"
+      ],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-068",
+      "status": "BACKLOG",
+      "priority": "P0",
+      "type": "DECISION",
+      "title": "1차 판매 상품 확정·사입 — 상품명·색상·가격·소재·사이즈·재고·실사진·마진",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 상품별 product.json N개 + 마진 ≥ 영상 원가 10배",
+      "depends_on": [],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-069",
+      "status": "BACKLOG",
+      "priority": "P0",
+      "type": "DECISION",
+      "title": "영상 생성 경로 결정 — 10-29 Higgsfield 소멸 이후 + 월 예산",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 클립당 단가·월 상한 숫자 확정",
+      "depends_on": [],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-070",
+      "status": "BACKLOG",
+      "priority": "P1",
+      "type": "FEATURE",
+      "title": "유입원 추적 — 캐릭터·플랫폼·영상별 링크 + 주문에 유입원 저장",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 주문 1건에 캐릭터·플랫폼·영상 ID 기록·집계",
+      "depends_on": [
+        "ISS-059"
+      ],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-071",
+      "status": "BACKLOG",
+      "priority": "P1",
+      "type": "RESEARCH",
+      "title": "판매 법적 요건 — 통신판매업 신고, 약관·개인정보처리방침, 청약철회·반품, 거래기록 법정 보존",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 결과가 ISS-058 결정문·몰 하단 고지에 반영",
+      "depends_on": [],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-072",
+      "status": "BACKLOG",
+      "priority": "P1",
+      "type": "FEATURE",
+      "title": "강유나 1호 확정 — 32세 인상 시트 재조정, 키·사이즈·직업·스타일 키워드",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: PROFILE.md 미정 0, 시트 9장 재승인",
+      "depends_on": [],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-073",
+      "status": "BACKLOG",
+      "priority": "P1",
+      "type": "DECISION",
+      "title": "SNS 계정 구조 — 브랜드 1계정 vs 캐릭터별 계정 + 1차 캐릭터 핸들 중복 확인",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 플랫폼 3곳 계정 목록·노출 방식 문서화",
+      "depends_on": [
+        "ISS-072"
+      ],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-074",
+      "status": "BACKLOG",
+      "priority": "P1",
+      "type": "FEATURE",
+      "title": "JIEUN 영상 제작 파이프라인 — K0+상품 참조 → kling_o3_image_reference 3클립 → 재합성",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 상품 1개 생성 1회로 변형 3편·가격 재합성 통과, 원가 보고",
+      "depends_on": [
+        "ISS-068",
+        "ISS-069",
+        "ISS-072"
+      ],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-075",
+      "status": "BACKLOG",
+      "priority": "P2",
+      "type": "RESEARCH",
+      "title": "플랫폼별 AI 생성 콘텐츠 표시 정책 + 공정위 심사지침 시행일 원문 대조",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 플랫폼별 체크리스트 1장",
+      "depends_on": [],
+      "source": "fable-review"
+    },
+    {
+      "id": "ISS-076",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "type": "FEATURE",
+      "title": "(나중) 상품 카탈로그 피드 — 인스타 쇼핑태그·유튜브 쇼핑 공통",
+      "created_at": "2026-10-13T15:26:34.237338",
+      "description": "Fable 검토 제안(docs/plan/fable-review-2026-10-13.md). 완료 조건: 피드 URL 1개 두 플랫폼 검증 통과",
+      "depends_on": [
+        "ISS-059",
+        "ISS-071"
+      ],
+      "source": "fable-review"
     }
   ],
   "hooks": {

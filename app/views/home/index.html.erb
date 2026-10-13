@@ -1,3 +1,7 @@
+<% if params[:category].blank? && params[:q].blank? && params[:sort].blank? %>
+  <%= render 'home/intro' %>
+<% end %>
+
 <div class="max-w-[1600px] mx-auto px-4 md:px-8 py-6">
   <%# 29cm 스타일 큐레이션 섹션 %>
   <% if @curated_collections.present? %>
@@ -7,7 +11,7 @@
   <% end %>
 
   <%# 랭킹 섹션 %>
-  <div class="mt-16">
+  <div class="mt-16" id="ranking">
     <div class="flex items-center justify-between mb-4 border-b border-black pb-3">
         <h2 class="text-xl font-bold font-oswald text-black tracking-tight">무신사 랭킹</h2>
         <div class="text-[11px] text-gray-500 font-medium">

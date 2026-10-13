@@ -48,6 +48,9 @@ class ProductAnalysesAnalyzerTest < ActiveSupport::TestCase
     assert_equal [ "server-side-fallback-2026-07-01" ], messages.options[:betas]
     assert_equal "default", messages.options[:fallbacks]
     assert_equal "json_schema", messages.options.dig(:output_config, :format, :type)
+    schema = messages.options.dig(:output_config, :format, :schema).to_json
+    assert_not_includes schema, '"minimum"'
+    assert_not_includes schema, '"maximum"'
     assert_not messages.options.key?(:thinking)
     assert_not messages.options.key?(:temperature)
     assert_equal "image", messages.options[:messages][0][:content][1][:type]
@@ -63,6 +66,15 @@ class ProductAnalysesAnalyzerTest < ActiveSupport::TestCase
     result, = analyze(response(payload.merge("character_handle" => "missing")))
     assert result.failure?
     assert_equal "로스터에 없는 캐릭터", @analysis.reload.error_message
+  end
+
+  test "범위 밖 확신도는 실패한다" do
+    [ -0.1, 1.1 ].each do |confidence|
+      result, = analyze(response(payload.merge("confidence" => confidence)))
+      assert result.failure?
+      assert_equal "failed", @analysis.reload.status
+      assert_equal "확신도 범위 오류(0~1 밖)", @analysis.error_message
+    end
   end
 
   test "JSON 파싱 실패를 기록한다" do

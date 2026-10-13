@@ -26,7 +26,7 @@ module ProductAnalyses
             tpo: { type: "array", items: { type: "string" } },
             material_guess: { type: [ "string", "null" ] } },
           required: %w[colors silhouette tpo material_guess] },
-        reasoning: { type: "string" }, confidence: { type: "number", minimum: 0, maximum: 1 }
+        reasoning: { type: "string" }, confidence: { type: "number", description: "0~1 사이 확신도" }
       },
       required: %w[style_axis target_age_band season character_handle alt_character_handle concept_angle concept_title hook_line attributes reasoning confidence]
     }.freeze
@@ -55,6 +55,8 @@ module ProductAnalyses
       primary = characters[data.fetch("character_handle")]
       alternate = characters[data.fetch("alt_character_handle")]
       return fail_analysis("로스터에 없는 캐릭터") unless primary && alternate
+      confidence = data.fetch("confidence")
+      return fail_analysis("확신도 범위 오류(0~1 밖)") unless confidence.is_a?(Numeric) && confidence.between?(0, 1)
 
       usage = response.usage
       input = usage.input_tokens.to_i
@@ -64,7 +66,7 @@ module ProductAnalyses
         hook_line: data.fetch("hook_line"), season: data.fetch("season"),
         style_axis: data.fetch("style_axis"), target_age_band: data.fetch("target_age_band"),
         attributes_json: data.fetch("attributes").to_json, reasoning: data.fetch("reasoning"),
-        confidence: data.fetch("confidence"), model: response.model.to_s,
+        confidence: confidence, model: response.model.to_s,
         input_tokens: input, output_tokens: output,
         cost_usd: (input * 4 + output * 20) / 1_000_000.0, analyzed_at: Time.current)
       Kpi::Calculator.new.assign_target!(@analysis)

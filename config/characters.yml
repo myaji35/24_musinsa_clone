@@ -1,0 +1,180 @@
+- name: 서하린
+  handle: SeoHARIN
+  age: 27
+  birthplace: 서울
+  age_band: 20
+  style_axis: 미니멀·오피스
+  wardrobe: 셔츠·슬랙스·코트
+  personality: 차분하고 정돈된 성격. 직장 3년차, 출근룩 고민 담당
+  status: planned
+- name: 타나카 미오
+  handle: TanakaMIO
+  age: 24
+  birthplace: 일본 후쿠오카
+  age_band: 20
+  style_axis: 캐주얼·데일리
+  wardrobe: 니트·데님·패딩
+  personality: 호기심 많고 수다스러움. 서울 유학 중
+  status: planned
+- name: 제이드 박
+  handle: ParkJADE
+  age: 22
+  birthplace: 미국 LA
+  age_band: 20
+  style_axis: 스트리트·스포티
+  wardrobe: 후디·트랙·애슬레저
+  personality: 장난기 많은 댄서
+  status: planned
+- name: 윤채이
+  handle: YunCHAEI
+  age: 25
+  birthplace: 부산
+  age_band: 20
+  style_axis: 페미닌·로맨틱
+  wardrobe: 원피스·블라우스·스커트
+  personality: 다정하고 수줍음
+  status: planned
+- name: 레아 모로
+  handle: MoreauLEA
+  age: 26
+  birthplace: 프랑스 리옹
+  age_band: 20
+  style_axis: 트렌드·하이패션
+  wardrobe: 시즌 키 아이템
+  personality: 직설적이고 쿨함. 파리 감성
+  status: planned
+- name: 한소율
+  handle: HanSOYUL
+  age: 36
+  birthplace: 서울
+  age_band: 30
+  style_axis: 미니멀·오피스
+  wardrobe: 셔츠·슬랙스·코트
+  personality: 이성적인 팀장
+  status: planned
+- name: 강유나
+  handle: KangUNA
+  age: 32
+  birthplace: 서울
+  age_band: 30
+  style_axis: 캐주얼·데일리
+  wardrobe: 니트·데님·패딩
+  personality: 밝고 경쾌
+  status: active
+- name: 마야 첸
+  handle: ChenMAYA
+  age: 34
+  birthplace: 대만 타이베이
+  age_band: 30
+  style_axis: 스트리트·스포티
+  wardrobe: 후디·트랙·애슬레저
+  personality: 에너지 넘치는 러너
+  status: planned
+- name: 오다은
+  handle: OhDAEUN
+  age: 38
+  birthplace: 대구
+  age_band: 30
+  style_axis: 페미닌·로맨틱
+  wardrobe: 원피스·블라우스·스커트
+  personality: 따뜻하고 섬세함
+  status: planned
+- name: 에린 소
+  handle: SoERIN
+  age: 33
+  birthplace: 미국 뉴욕
+  age_band: 30
+  style_axis: 트렌드·하이패션
+  wardrobe: 시즌 키 아이템
+  personality: 감각적인 전직 패션 에디터
+  status: planned
+- name: 문서진
+  handle: MoonSEOJIN
+  age: 45
+  birthplace: 서울
+  age_band: 40
+  style_axis: 미니멀·오피스
+  wardrobe: 셔츠·슬랙스·코트
+  personality: 단정한 건축가
+  status: planned
+- name: 배연희
+  handle: BaeYEONHEE
+  age: 43
+  birthplace: 인천
+  age_band: 40
+  style_axis: 캐주얼·데일리
+  wardrobe: 니트·데님·패딩
+  personality: 털털하고 유쾌함
+  status: planned
+- name: 줄리아 페리
+  handle: FerriGIULIA
+  age: 47
+  birthplace: 이탈리아 밀라노
+  age_band: 40
+  style_axis: 스트리트·스포티
+  wardrobe: 후디·트랙·애슬레저
+  personality: 활동적. 골프·테니스
+  status: planned
+- name: 권미래
+  handle: KwonMIRAE
+  age: 41
+  birthplace: 광주
+  age_band: 40
+  style_axis: 페미닌·로맨틱
+  wardrobe: 원피스·블라우스·스커트
+  personality: 우아한 플로리스트
+  status: planned
+- name: 모리 아야
+  handle: MoriAYA
+  age: 46
+  birthplace: 일본 도쿄
+  age_band: 40
+  style_axis: 트렌드·하이패션
+  wardrobe: 시즌 키 아이템
+  personality: 갤러리 디렉터. 대담한 실루엣
+  status: planned
+- name: 정혜원
+  handle: JungHYEWON
+  age: 54
+  birthplace: 서울
+  age_band: 50
+  style_axis: 미니멀·오피스
+  wardrobe: 셔츠·슬랙스·코트
+  personality: 품격 있는 대학교수
+  status: planned
+- name: 남궁선
+  handle: NamgungSUN
+  age: 52
+  birthplace: 제주
+  age_band: 50
+  style_axis: 캐주얼·데일리
+  wardrobe: 니트·데님·패딩
+  personality: 유쾌한 카페 사장
+  status: planned
+- name: 노라 휫필드
+  handle: WhitfieldNORA
+  age: 56
+  birthplace: 호주 시드니
+  age_band: 50
+  style_axis: 스트리트·스포티
+  wardrobe: 후디·트랙·애슬레저
+  personality: 등산과 여행
+  status: planned
+- name: 이정란
+  handle: LeeJEONGRAN
+  age: 58
+  birthplace: 전주
+  age_band: 50
+  style_axis: 페미닌·로맨틱
+  wardrobe: 원피스·블라우스·스커트
+  personality: 다정하고 꽃을 좋아함
+  status: planned
+- name: 사라 린드
+  handle: LindSARA
+  age: 55
+  birthplace: 스웨덴 스톡홀름
+  age_band: 50
+  style_axis: 트렌드·하이패션
+  wardrobe: 시즌 키 아이템
+  personality: 은발의 컬러 실험가
+  status: planned

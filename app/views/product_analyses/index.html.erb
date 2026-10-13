@@ -1,0 +1,33 @@
+<div class="max-w-7xl mx-auto p-6">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">상품분석</h1>
+    <%= button_to analyze_pending_product_analyses_path(supplier_import_id: params[:supplier_import_id]), class: "flex items-center gap-2 rounded bg-black px-4 py-2 text-white" do %>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M12 5v14M5 12h14" stroke-width="2"/></svg>미분석 전체 분석 (최대 50건)
+    <% end %>
+  </div>
+  <%= form_with url: product_analyses_path, method: :get, class: "mb-5 flex flex-wrap gap-3" do |f| %>
+    <%= f.select :character_id, options_from_collection_for_select(@characters, :id, :name, params[:character_id]), { include_blank: "전체 캐릭터" }, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
+    <%= f.select :status, options_for_select([["전체 상태", ""], ["미분석", "unanalysed"], ["대기", "pending"], ["실행 중", "running"], ["완료", "done"], ["실패", "failed"]], params[:status]), {}, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
+    <%= f.select :supplier_import_id, options_from_collection_for_select(SupplierImport.order(created_at: :desc).limit(50), :id, :id, params[:supplier_import_id]), { include_blank: "전체 가져오기" }, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
+    <%= f.submit "필터", class: "rounded bg-gray-900 px-4 py-2 text-white" %>
+  <% end %>
+  <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+    <table class="w-full min-w-[1100px] text-sm text-left">
+      <thead class="bg-gray-50"><tr><th class="p-3">상품</th><th class="p-3">판매가 / 공급가 / 마진</th><th class="p-3">상태</th><th class="p-3">캐릭터</th><th class="p-3">컨셉 / 훅</th><th class="p-3">목표 / 실적 / 달성률</th><th class="p-3">작업</th></tr></thead>
+      <tbody>
+        <% @rows.each do |row| %>
+          <% product = row.product %><% analysis = row.analysis %>
+          <tr class="border-t border-gray-200">
+            <td class="p-3"><div class="flex items-center gap-3"><% if product.image.attached? %><%= image_tag product.image.variant(resize_to_limit: [64, 64]), class: "w-12 h-12 object-cover" %><% elsif product.image_url.present? %><%= image_tag product.image_url, class: "w-12 h-12 object-cover" %><% end %><span><%= product.name %></span></div></td>
+            <td class="p-3"><%= won(product.price) %> / <%= won(product.supply_price) %> / <%= won(row.unit_margin) %></td>
+            <td class="p-3"><%= analysis_badge(analysis&.status) %> <%= manual_assignment_badge(analysis) %></td>
+            <td class="p-3"><%= analysis&.character&.name %><% if analysis&.character %><br><span class="text-gray-500">@<%= analysis.character.handle %></span><% end %></td>
+            <td class="p-3"><%= analysis&.concept_title %><br><span class="text-gray-500"><%= analysis&.hook_line %></span></td>
+            <td class="p-3"><%= won(row.target_revenue) %> / <%= won(row.actual_revenue) %> / <%= percent(row.achievement) %></td>
+            <td class="p-3"><div class="flex gap-2"><% if analysis %><%= link_to "상세", product_analysis_path(analysis), class: "underline" %><% end %><%= button_to "분석", product_analyses_path(product_id: product.id), class: "underline" %></div></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

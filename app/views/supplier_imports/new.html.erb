@@ -1,0 +1,11 @@
+<div class="max-w-xl mx-auto p-6">
+  <h1 class="text-2xl font-bold text-gray-900 mb-6">상품 입고 엑셀 업로드</h1>
+  <div class="border border-gray-200 rounded-lg bg-white p-6">
+    <% if @supplier_import.errors.any? %><div class="mb-4 text-sm text-red-700"><%= @supplier_import.errors.full_messages.join(", ") %></div><% end %>
+    <%= form_with model: @supplier_import do |form| %>
+      <div class="mb-5"><%= form.label :supplier_id, "공급사 (선택)", class: "block text-xs font-semibold text-gray-600 mb-1.5" %><%= form.select :supplier_id, options_from_collection_for_select(@suppliers, :id, :name), { include_blank: "선택하지 않음" }, class: "w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 bg-white" %></div>
+      <div class="mb-6"><%= form.label :file, "엑셀 파일 (.xlsx)", class: "block text-xs font-semibold text-gray-600 mb-1.5" %><%= form.file_field :file, accept: ".xlsx", class: "w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900" %></div>
+      <%= form.submit "업로드", class: "bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm cursor-pointer" %>
+    <% end %>
+  </div>
+</div>

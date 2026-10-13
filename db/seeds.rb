@@ -434,3 +434,4 @@ puts "  - Supplier: #{Supplier.count}개"
 puts "  - PurchaseOrder: #{PurchaseOrder.count}개"
 puts "  - PurchaseOrderItem: #{PurchaseOrderItem.count}개"
 puts "=" * 50
+Rake::Task["characters:sync"].invoke

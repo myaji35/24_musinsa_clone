@@ -1080,14 +1080,16 @@
     },
     {
       "id": "ISS-077",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "priority": "P1",
       "type": "FEATURE",
       "title": "공급사 엑셀(이미지 포함) 상품 가져오기 + 상품분석(캐릭터·컨셉 배정) + KPI(목표 vs 실적 매출) 운영",
       "created_at": "2026-10-13T15:44:36.670701",
       "started_at": "2026-10-13T15:44:36.670701",
       "description": "대표님 지시 2026-10-13 '공급사로부터 판매가능 상품 이미지를 받을거야. 상품분석 기능을 만들어서, 어떤캐릭터가 어떤컨셉으로 얼마의 매출을 올리까(kpi)를 가지고 운영하자. 이미지는 가능한 엑셀 파일로 받을거야.'",
-      "depends_on": []
+      "depends_on": [],
+      "completed_at": "2026-10-13T19:22:37.059624",
+      "result": "공급사 xlsx(떠있는 그림·셀 안 이미지) 가져오기→상품 upsert, 캐릭터 20명, Claude(opus-5-5) 비전 분석→캐릭터·컨셉, KPI(가정값 목표 vs 실적, 수동 배정 포함). SQLite IMMEDIATE 트랜잭션 이니셜라이저로 BusyException 220→0. 테스트 211/0. 브라우저 저니 PASS(업로드 5초, 등록3·실패1, 재업로드 갱신3, 키 미설정 정직 실패, 수동배정→KPI ₩250,000). 실제 Claude 호출은 ANTHROPIC_API_KEY 미설정으로 미검증."
     }
   ],
   "hooks": {

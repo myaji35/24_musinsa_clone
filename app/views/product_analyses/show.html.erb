@@ -1,0 +1,25 @@
+<div class="max-w-5xl mx-auto p-6">
+  <div class="flex justify-between items-center mb-6"><h1 class="text-2xl font-bold"><%= @analysis.product.name %> 분석</h1><%= link_to "목록", product_analyses_path, class: "underline" %></div>
+  <div class="rounded-lg border border-gray-200 bg-white p-5 mb-5 space-y-3">
+    <div><%= analysis_badge(@analysis.status) %> <%= manual_assignment_badge(@analysis) %> · <%= seoul_datetime(@analysis.created_at) %></div>
+    <p>캐릭터: <%= @analysis.character&.name || "—" %> <% if @analysis.character %>(@<%= @analysis.character.handle %>)<% end %><% if @analysis.status == "done" %> · 차선: <%= @analysis.alt_character&.name || "—" %><% end %></p>
+    <% if @analysis.status == "done" %>
+      <p>컨셉: <%= @analysis.concept_angle %> · <%= @analysis.concept_title %> · 훅: <%= @analysis.hook_line %></p>
+      <p>시즌: <%= @analysis.season %> · 스타일: <%= @analysis.style_axis %> · 연령대: <%= @analysis.target_age_band %> · 신뢰도: <%= @analysis.confidence %></p>
+      <p>근거: <%= @analysis.reasoning %></p>
+      <p>속성: <%= @analysis.attributes_json %></p>
+      <p>가정값 스냅샷: <%= @analysis.assumptions_json %></p>
+    <% end %>
+    <p>목표 수량: <%= @analysis.effective_target_units || "—" %> · 목표 매출: <%= won(@analysis.target_revenue) %> · 실적: <%= won(@row.actual_revenue) %> · 달성률: <%= percent(@row.achievement) %></p>
+    <p>단위 마진: <%= won(@row.unit_margin) %> · 영상 비용: <%= won(@row.video_cost) %> · 손익분기 수량: <%= @row.breakeven_units || "—" %></p>
+    <% if @analysis.status == "done" %><p>모델: <%= @analysis.model %> · 입력/출력 토큰: <%= @analysis.input_tokens || 0 %>/<%= @analysis.output_tokens || 0 %> · 비용: $<%= @analysis.cost_usd || 0 %></p><% end %>
+  </div>
+  <% if @analysis.status == "failed" && @analysis.error_message.present? %><div class="rounded-lg border border-red-300 bg-red-50 p-5 mb-5 text-red-800 whitespace-pre-wrap"><%= @analysis.error_message %></div><% end %>
+  <%= form_with model: @analysis, class: "rounded-lg border border-gray-200 bg-white p-5 mb-5 flex flex-wrap items-end gap-3" do |f| %>
+    <div><%= f.label :target_units_override, "목표 수량 직접 입력", class: "block text-sm mb-1" %><%= f.number_field :target_units_override, min: 0, class: "border border-gray-200 rounded px-3 py-2" %></div>
+    <div><%= f.label :character_id, "배정 캐릭터", class: "block text-sm mb-1" %><%= f.select :character_id, options_from_collection_for_select(@characters, :id, :name, @analysis.character_id), { include_blank: "미배정" }, class: "border border-gray-200 rounded px-3 py-2" %></div>
+    <%= f.submit "저장", class: "rounded bg-black text-white px-4 py-2" %>
+  <% end %>
+  <h2 class="font-bold mb-2">분석 이력</h2>
+  <div class="rounded-lg border border-gray-200 bg-white divide-y divide-gray-200"><% @history.each do |item| %><div class="p-3"><%= link_to seoul_datetime(item.created_at), product_analysis_path(item), class: "underline" %> · <%= analysis_badge(item.status) %> · <%= item.character&.name %> · <%= item.concept_title %></div><% end %></div>
+</div>

@@ -1,10 +1,14 @@
 class Product < ApplicationRecord
+  belongs_to :supplier_import, optional: true
+  belongs_to :supplier, optional: true
   has_many :reviews, dependent: :destroy
   has_many :snap_products, dependent: :destroy
   has_many :snaps, through: :snap_products
   has_many :variants, dependent: :destroy
   has_many :orders
   has_many :campaigns # Epic 6.1
+  has_many :product_analyses, dependent: :destroy
+  has_one :latest_analysis, -> { order(created_at: :desc) }, class_name: "ProductAnalysis"
 
   # Active Storage 이미지 첨부 (Story 1.1)
   has_one_attached :image

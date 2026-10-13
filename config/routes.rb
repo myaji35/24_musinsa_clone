@@ -37,6 +37,13 @@ Rails.application.routes.draw do
 
   # Epic 8: 거래처 및 발주 관리
   resources :suppliers
+  resources :supplier_imports, only: [ :index, :new, :create, :show ] do
+    member { post :retry }
+  end
+  resources :product_analyses, only: [ :index, :show, :create, :update ] do
+    collection { post :analyze_pending }
+  end
+  get "kpi", to: "kpi#index", as: :kpi
   resources :purchase_orders do
     member do
       post :submit # 발주서 제출

@@ -41,6 +41,8 @@ gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
+gem "anthropic" # Claude API 공식 Ruby SDK (ISS-077 상품분석)
+gem "rubyzip", "~> 3.2" # 공급사 xlsx 이미지 추출 (ISS-077)
 
 # HTTP client for Claude API [Epic 5.1]
 gem "http", "~> 5.0"

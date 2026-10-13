@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_15_000000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_13_000004) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -71,6 +71,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_15_000000) do
     t.index ["status"], name: "index_campaigns_on_status"
   end
 
+  create_table "characters", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "handle", null: false
+    t.integer "age"
+    t.string "birthplace"
+    t.integer "age_band"
+    t.string "style_axis"
+    t.string "wardrobe"
+    t.text "personality"
+    t.string "status", default: "planned"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["handle"], name: "index_characters_on_handle", unique: true
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.integer "variant_id", null: false
     t.string "notification_type", null: false
@@ -103,6 +118,38 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_15_000000) do
     t.index ["variant_id"], name: "index_orders_on_variant_id"
   end
 
+  create_table "product_analyses", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.string "status", default: "pending", null: false
+    t.integer "character_id"
+    t.integer "alt_character_id"
+    t.string "concept_angle"
+    t.string "concept_title"
+    t.string "hook_line"
+    t.string "season"
+    t.string "style_axis"
+    t.integer "target_age_band"
+    t.text "attributes_json"
+    t.text "reasoning"
+    t.float "confidence"
+    t.integer "target_units"
+    t.integer "target_units_override"
+    t.decimal "target_revenue", precision: 12, scale: 2
+    t.text "assumptions_json"
+    t.string "model"
+    t.integer "input_tokens"
+    t.integer "output_tokens"
+    t.decimal "cost_usd", precision: 10, scale: 6
+    t.text "error_message"
+    t.datetime "analyzed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "manually_assigned", default: false, null: false
+    t.index ["alt_character_id"], name: "index_product_analyses_on_alt_character_id"
+    t.index ["character_id"], name: "index_product_analyses_on_character_id"
+    t.index ["product_id"], name: "index_product_analyses_on_product_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -120,6 +167,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_15_000000) do
     t.text "badges"
     t.boolean "is_new", default: false
     t.datetime "restocked_at"
+    t.decimal "supply_price", precision: 10, scale: 2
+    t.integer "supplier_import_id"
+    t.string "supplier_product_code"
+    t.integer "supplier_id"
+    t.index ["supplier_id", "supplier_product_code"], name: "index_products_on_supplier_id_and_supplier_product_code"
+    t.index ["supplier_id"], name: "index_products_on_supplier_id"
+    t.index ["supplier_import_id"], name: "index_products_on_supplier_import_id"
   end
 
   create_table "purchase_order_items", force: :cascade do |t|
@@ -202,6 +256,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_15_000000) do
     t.index ["variant_id"], name: "index_stock_logs_on_variant_id"
   end
 
+  create_table "supplier_imports", force: :cascade do |t|
+    t.integer "supplier_id"
+    t.string "status", default: "pending"
+    t.integer "total_rows", default: 0
+    t.integer "imported_rows", default: 0
+    t.integer "updated_rows", default: 0
+    t.integer "failed_rows", default: 0
+    t.text "row_results"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["supplier_id"], name: "index_supplier_imports_on_supplier_id"
+  end
+
   create_table "suppliers", force: :cascade do |t|
     t.string "name", null: false
     t.string "contact_person"
@@ -246,6 +314,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_15_000000) do
   add_foreign_key "orders", "anony_customers"
   add_foreign_key "orders", "products"
   add_foreign_key "orders", "variants"
+  add_foreign_key "product_analyses", "characters"
+  add_foreign_key "product_analyses", "products"
   add_foreign_key "purchase_order_items", "purchase_orders"
   add_foreign_key "purchase_order_items", "variants"
   add_foreign_key "purchase_orders", "suppliers"

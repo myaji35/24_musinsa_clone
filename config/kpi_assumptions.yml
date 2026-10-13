@@ -1,0 +1,7 @@
+# ⚠️ 임시 가정값 — 실측 아님. 실적 데이터가 쌓이면 교체한다.
+period_days: 30
+videos_per_product: 3
+views_per_video: 3000
+click_through_rate: 0.01
+conversion_rate: 0.02
+video_cost_krw_per_clip: 920

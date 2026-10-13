@@ -817,6 +817,21 @@
       ],
       "completed_at": "2026-10-13T13:45:00.102677",
       "result": "v1 결함(워킹 없음·발 잘림·광택·뒷판 없음) → v2(K0 원거리·무광, 걷기→포즈→퇴장) → v2 소매패치 타브랜드 배지 변형 → v3(상품·얼굴 참조 이미지 추가) 채택. 오디오 2-pass loudnorm -16.7 LUFS/-1.3 dBTP, 끝 0.48s 페이드. 산출물 persona/runway-01/runway_10s_final.mp4. 이번 개선 22크레딧."
+    },
+    {
+      "id": "ISS-056",
+      "status": "DONE",
+      "priority": "P2",
+      "type": "FEATURE",
+      "title": "페르소나 10살 젊게(30대 중반) + 런웨이 영상 끊김 해소 재제작",
+      "created_at": "2026-10-13T14:21:08.722552",
+      "started_at": "2026-10-13T14:21:08.722552",
+      "description": "대표님 지시 2026-10-13 '동작이 끊겨보여. 같은 인물이 10살쯤 더 젊은 캐릭터로 진행하자.' 끊김 원인 실측 → 젊은 ref·시트 생성 → 런웨이 재생성.",
+      "depends_on": [
+        "ISS-055"
+      ],
+      "completed_at": "2026-10-13T14:34:50.066818",
+      "result": "끊김 원인: Seedance 2.0 Mini 출력의 4프레임 주기 움직임 불균일(위상별 1.4~3.1, jitter 0.36). kling3_0은 균일하나 얼굴 드리프트. kling_o3_image_reference(얼굴·상품 참조, 12.5c)로 균일(2.9~3.1, jitter 0.12)+얼굴 유지. f35-influencer 시트 9장($0.51). 산출물 persona/runway-02/runway_10s_final.mp4 (-16.1 LUFS/-1.5 dBTP). 크레딧 40.5 사용."
     }
   ],
   "hooks": {

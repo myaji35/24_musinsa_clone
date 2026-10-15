@@ -1766,7 +1766,7 @@
         "approved_by": "자동 승인(추천: 승인 권장)",
         "started_by": "factory-runner"
       },
-      "last_ci_run": "38701343570 (9436acd) 동일 원인 실패 재확인",
+      "last_ci_run": "38705901709 (ea44600) Test Suite success — system 포함",
       "result": {
         "summary": "ci.yml test 잡에 libvips·imagemagick 설치 단계 추가 (53037c9)",
         "verification": "YAML 파싱 OK, 최종 확인은 push 후 CI Test Suite",
@@ -1813,7 +1813,7 @@
           "at": "2026-10-15T07:56:02.390825+00:00"
         }
       },
-      "last_ci_run": "38701343570 (9436acd) 동일 원인 실패 재확인",
+      "last_ci_run": "38705901709 (ea44600) Brakeman 통과, 후속 bundler-audit 실패 → ISS-095",
       "result": {
         "summary": "config/brakeman.ignore EOLRails 기한부 무시(2026-12-31) (3bf492c)",
         "verification": "bundle exec brakeman exit 0, Security Warnings 0, Ignored 1",
@@ -1963,6 +1963,31 @@
           "effort": "S",
           "by": "factory-runner",
           "at": "2026-10-15T08:28:13.793292+00:00"
+        }
+      }
+    },
+    {
+      "id": "ISS-095",
+      "title": "CI bundler-audit 실패: 취약 gem 21종(rails 7.2.3·rack·nokogiri·sqlite3·puma·bcrypt 등) — 패치 버전으로 bundle update",
+      "type": "SECURITY",
+      "priority": "P1",
+      "size": "M",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "bundle exec bundler-audit --update 0건(또는 근거 있는 ignore), 전체 테스트·RuboCop·Brakeman 통과, CI Security Checks 녹색",
+      "created_at": "2026-10-15T08:29:51.080189+00:00",
+      "updated_at": "2026-10-15T08:29:51.080189+00:00",
+      "payload": {
+        "origin": "factory-runner CI 확인",
+        "source_run": "38705901709",
+        "evidence": "ISS-089 로 Brakeman 이 통과하자 뒤 단계 bundler-audit 가 처음 실행되어 드러남. rails 7.2.3 → 7.2.3.1 이상, rack 15건, nokogiri 96건, sqlite3 24건 등",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "실제 공개 CVE(XSS·경로 탐색·DoS). 대부분 같은 마이너 안의 패치 버전이라 bundle update --conservative 로 범위 작게 해결 가능. Rails 8 업그레이드(ISS-091)와 별개로 먼저 처리",
+          "risk": "medium",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-15T08:29:51.080189+00:00"
         }
       }
     }

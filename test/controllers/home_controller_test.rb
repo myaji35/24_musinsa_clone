@@ -69,6 +69,34 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select ".grid", minimum: 1
   end
 
+  test "search results do not reuse another query's ranking grid cache" do
+    timestamp = Time.current.change(usec: 0)
+    @product1.update_column(:updated_at, timestamp)
+    @product2.update_column(:updated_at, timestamp)
+
+    original_cache_store = ActionController::Base.cache_store
+    original_perform_caching = ActionController::Base.perform_caching
+    original_bullet_enabled = Bullet.enable?
+    ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+    ActionController::Base.perform_caching = true
+    Bullet.enable = false
+
+    begin
+      get root_path, params: { q: @product1.name }
+      assert_response :success
+      assert_select "#ranking .grid h3", text: @product1.name
+
+      get root_path, params: { q: @product2.name }
+      assert_response :success
+      assert_select "#ranking .grid h3", text: @product2.name
+      assert_select "#ranking .grid h3", text: @product1.name, count: 0
+    ensure
+      ActionController::Base.perform_caching = original_perform_caching
+      ActionController::Base.cache_store = original_cache_store
+      Bullet.enable = original_bullet_enabled
+    end
+  end
+
   # Category filter links
   test "should display category filter links" do
     get root_url

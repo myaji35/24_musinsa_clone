@@ -32,7 +32,7 @@
     <%= render 'home/filter_section' %>
 
     <%# 상품 그리드 (ProductCard partial 사용) - Russian Doll Caching %>
-    <% cache(["ranked-products-grid", @ranked_products.maximum(:updated_at), params[:category], params[:sort]], expires_in: 10.minutes) do %>
+    <% cache(["ranked-products-grid", @ranked_products.maximum(:updated_at), params[:category], params[:sort], params[:q]], expires_in: 10.minutes) do %>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-8 sm:gap-x-4">
         <% @ranked_products.each_with_index do |product, index| %>
           <div class="relative">

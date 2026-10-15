@@ -414,7 +414,12 @@
           "by": "factory-runner",
           "at": "2026-10-15T08:32:27.372397+00:00"
         },
-        "user_test": "PASS — 7/30/90 수치·aria-current·빈 기간 안내·1440/390 확인, 콘솔·네트워크 오류 0. docs/user-test/2026-10-15/review-iss017-*.png"
+        "user_test": "PASS — 7/30/90 수치·aria-current·빈 기간 안내·1440/390 확인, 콘솔·네트워크 오류 0. docs/user-test/2026-10-15/review-iss017-*.png",
+        "ci": {
+          "run": "38709196048",
+          "result": "Lint·Security·Build Assets·Test Suite·Deploy 전부 success",
+          "note": "Deploy 잡은 placeholder(Kamal 미설정) — 실제 운영 반영 없음"
+        }
       },
       "last_dispatched_at": "2026-10-15T17:16:42",
       "started_at": "2026-10-15T08:32:27.372397+00:00",
@@ -1975,7 +1980,12 @@
         ],
         "approved_at": "2026-10-15T08:31:30.261Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
-        "user_test": "PASS — dev:cache ON 에서 q=Coat→Sweater 결과 섞임 0, fragment 키 끝 q 만 상이. docs/user-test/2026-10-15/review-iss093-*.png"
+        "user_test": "PASS — dev:cache ON 에서 q=Coat→Sweater 결과 섞임 0, fragment 키 끝 q 만 상이. docs/user-test/2026-10-15/review-iss093-*.png",
+        "ci": {
+          "run": "38709196048",
+          "result": "Lint·Security·Build Assets·Test Suite·Deploy 전부 success",
+          "note": "Deploy 잡은 placeholder(Kamal 미설정) — 실제 운영 반영 없음"
+        }
       },
       "started_at": "2026-10-15T08:32:27.372397+00:00",
       "result": {
@@ -2052,7 +2062,12 @@
         ],
         "approved_at": "2026-10-15T08:31:30.261Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
-        "user_test": "화면 변경 없음 — 생략. 직접 검증: bundler-audit 0, 테스트 245+system 8 통과, rubocop 0, brakeman 0"
+        "user_test": "화면 변경 없음 — 생략. 직접 검증: bundler-audit 0, 테스트 245+system 8 통과, rubocop 0, brakeman 0",
+        "ci": {
+          "run": "38709196048",
+          "result": "Lint·Security·Build Assets·Test Suite·Deploy 전부 success",
+          "note": "Deploy 잡은 placeholder(Kamal 미설정) — 실제 운영 반영 없음"
+        }
       },
       "started_at": "2026-10-15T08:32:27.372397+00:00",
       "result": {

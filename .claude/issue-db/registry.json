@@ -1723,9 +1723,9 @@
       "size": "S",
       "status": "READY",
       "depends_on": [],
-      "done_criteria": "ci.yml 에 libvips 설치(apt-get install -y libvips) 추가 후 Test Suite 통과",
+      "done_criteria": "ci.yml 에 libvips·imagemagick 설치(apt-get install -y libvips imagemagick) 추가 후 Test Suite 통과 — ISS-084 이미지 게이트 테스트가 identify(JPEG 품질)를 사용",
       "created_at": "2026-10-15T07:23:51.243001Z",
-      "updated_at": "2026-10-15T07:26:11.487Z",
+      "updated_at": "2026-10-15T07:50:42.380681+00:00",
       "payload": {
         "origin": "factory-runner CI 확인",
         "source_run": "38698328689",
@@ -1747,7 +1747,8 @@
         ],
         "approved_at": "2026-10-15T07:26:11.487Z",
         "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+      },
+      "last_ci_run": "38701343570 (9436acd) 동일 원인 실패 재확인"
     },
     {
       "id": "ISS-089",
@@ -1759,7 +1760,7 @@
       "depends_on": [],
       "done_criteria": "Rails 지원 버전으로 올리거나, 업그레이드 일정 확정 시까지 brakeman.ignore 에 근거와 기한을 남겨 CI 통과",
       "created_at": "2026-10-15T07:23:51.243001Z",
-      "updated_at": "2026-10-15T07:26:11.487Z",
+      "updated_at": "2026-10-15T07:50:42.380681+00:00",
       "payload": {
         "origin": "factory-runner CI 확인",
         "source_run": "38698328689",
@@ -1781,7 +1782,8 @@
         ],
         "approved_at": "2026-10-15T07:26:11.487Z",
         "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+      },
+      "last_ci_run": "38701343570 (9436acd) 동일 원인 실패 재확인"
     },
     {
       "id": "ISS-090",

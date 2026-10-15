@@ -3,18 +3,26 @@
 class DashboardController < ApplicationController
   # 대시보드 메인 페이지
   def index
-    @total_customers = AnonyCustomer.count
-    @total_orders = Order.count
-    @total_revenue = Order.sum(:total_price)
+    @period = %w[7 30 90].include?(params[:period]) ? params[:period].to_i : 30
+    period_start = @period.days.ago
+    period_orders = Order.where("created_at >= ?", period_start)
 
-    # 최근 7일 주문
-    @recent_orders = Order.includes(:product, :variant, :anony_customer)
-                          .where("created_at > ?", 7.days.ago)
-                          .order(created_at: :desc)
-                          .limit(10)
+    @total_customers = AnonyCustomer.count
+    @total_orders = period_orders.count
+    @total_revenue = period_orders.sum(:total_price)
+
+    @recent_orders = period_orders.includes(:product, :variant, :anony_customer)
+                                  .order(created_at: :desc)
+                                  .limit(10)
 
     # 지역별 판매 Top 5
-    @regional_sales = regional_sales_data.first(5)
+    @regional_sales = regional_sales_data(since: period_start).first(5)
+
+    sales_by_date = period_orders.group("DATE(created_at)").sum(:total_price)
+    @daily_sales = (period_start.to_date..Date.current).map do |date|
+      { date: date, revenue: sales_by_date.fetch(date.iso8601, 0) }
+    end
+    @max_daily_revenue = @daily_sales.map { |day| day[:revenue] }.max.to_f
 
     # 인기 취향 태그 Top 10
     @top_preferences = top_preferences_data.first(10)
@@ -45,15 +53,16 @@ class DashboardController < ApplicationController
   private
 
   # 지역별 판매 집계 (우편번호 앞 3자리)
-  def regional_sales_data
-    AnonyCustomer.joins(:orders)
-                 .select("anony_customers.zip_prefix,
-                          COUNT(orders.id) as order_count,
-                          SUM(orders.total_price) as total_sales")
-                 .where.not(zip_prefix: nil)
-                 .group("anony_customers.zip_prefix")
-                 .order("total_sales DESC")
-                 .map do |record|
+  def regional_sales_data(since: nil)
+    customers = AnonyCustomer.joins(:orders).where.not(zip_prefix: nil)
+    customers = customers.where("orders.created_at >= ?", since) if since
+
+    customers.select("anony_customers.zip_prefix,
+                      COUNT(orders.id) as order_count,
+                      SUM(orders.total_price) as total_sales")
+             .group("anony_customers.zip_prefix")
+             .order("total_sales DESC")
+             .map do |record|
       {
         zip_prefix: record.zip_prefix,
         order_count: record.order_count,

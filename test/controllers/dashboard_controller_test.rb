@@ -30,6 +30,38 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get dashboard_index_url
     assert_response :success
+    assert_select 'nav[aria-label="조회 기간"] a[aria-current="page"]', text: "30일"
+  end
+
+  test "period filters orders and revenue, including invalid period fallback" do
+    travel_to Time.zone.local(2026, 10, 15, 12) do
+      orders(:one).update_columns(created_at: 3.days.ago)
+      orders(:two).update_columns(created_at: 60.days.ago)
+
+      get dashboard_index_url(period: 7)
+      assert_response :success
+      assert_select 'nav[aria-label="조회 기간"] a[aria-current="page"]', text: "7일"
+      assert_select "#total-orders", text: "1"
+      assert_select "#total-revenue", text: "₩39,800"
+      assert_select 'div[title="2026-10-12 · ₩39,800"]', count: 1
+      assert_select 'div[title="2026-10-11 · ₩0"]', count: 1
+      assert_select "h2", text: "최근 7일 주문"
+      assert_no_match(/우편번호 061xxx/, response.body)
+      assert_no_match(/ORD-20260901-0002/, response.body)
+
+      get dashboard_index_url(period: 90)
+      assert_response :success
+      assert_select 'nav[aria-label="조회 기간"] a[aria-current="page"]', text: "90일"
+      assert_select "#total-orders", text: "2"
+      assert_select "#total-revenue", text: "₩98,800"
+      assert_match(/우편번호 061xxx/, response.body)
+
+      get dashboard_index_url(period: "invalid")
+      assert_response :success
+      assert_select 'nav[aria-label="조회 기간"] a[aria-current="page"]', text: "30일"
+      assert_select "#total-orders", text: "1"
+      assert_select "#total-revenue", text: "₩39,800"
+    end
   end
 
   # Dashboard should show customer count
@@ -96,7 +128,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
     get dashboard_index_url
     assert_response :success
-    # 데이터가 없을 때 에러가 발생하지 않는지 확인
+    assert_select "p", text: "선택 기간에 주문이 없습니다"
   end
 
   # Age group analysis (if implemented)

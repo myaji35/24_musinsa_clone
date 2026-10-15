@@ -6,6 +6,15 @@
     <p class="text-gray-600">Privacy-First 고객 인사이트 분석</p>
   </div>
 
+  <%# 기간 선택 %>
+  <nav aria-label="조회 기간" class="flex gap-1 mb-8 p-1 bg-gray-100 rounded-lg w-fit">
+    <% [7, 30, 90].each do |days| %>
+      <%= link_to "#{days}일", dashboard_index_path(period: days),
+                  class: "px-4 py-2 rounded-md text-sm font-medium #{days == @period ? 'bg-white text-gray-900 shadow' : 'text-gray-700 hover:bg-gray-200'}",
+                  "aria-current": ("page" if days == @period) %>
+    <% end %>
+  </nav>
+
   <%# 주요 지표 카드 %>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
@@ -15,14 +24,37 @@
 
     <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
       <div class="text-sm text-gray-600 mb-1">총 주문 수</div>
-      <div class="text-3xl font-bold text-green-600"><%= number_with_delimiter(@total_orders) %></div>
+      <div id="total-orders" class="text-3xl font-bold text-green-600"><%= number_with_delimiter(@total_orders) %></div>
     </div>
 
     <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
       <div class="text-sm text-gray-600 mb-1">총 매출</div>
-      <div class="text-3xl font-bold text-purple-600">₩<%= number_with_delimiter(@total_revenue.to_i) %></div>
+      <div id="total-revenue" class="text-3xl font-bold text-purple-600">₩<%= number_with_delimiter(@total_revenue.to_i) %></div>
     </div>
   </div>
+
+  <%# 기간 내 일별 매출 %>
+  <section class="bg-white rounded-lg shadow p-6 border border-gray-200 mb-8" aria-labelledby="daily-sales-heading">
+    <h2 id="daily-sales-heading" class="text-xl font-bold mb-4">일별 매출</h2>
+    <% if @total_orders.zero? %>
+      <p class="text-gray-600 text-center py-8">선택 기간에 주문이 없습니다</p>
+    <% else %>
+      <div class="overflow-x-auto">
+        <div class="flex items-end gap-1 h-48 min-w-max border-b border-gray-300" aria-label="일별 매출 막대 차트">
+          <% @daily_sales.each do |day| %>
+            <% height = @max_daily_revenue.positive? ? day[:revenue].to_f / @max_daily_revenue * 100 : 0 %>
+            <div class="flex flex-col items-center justify-end h-full min-w-4 flex-1" title="<%= day[:date].iso8601 %> · ₩<%= number_with_delimiter(day[:revenue].to_i) %>">
+              <div class="w-full bg-blue-600 rounded-t" style="height: <%= height %>%"></div>
+            </div>
+          <% end %>
+        </div>
+        <div class="flex justify-between mt-2 text-xs text-gray-600">
+          <span><%= @daily_sales.first[:date].strftime("%m/%d") %></span>
+          <span><%= @daily_sales.last[:date].strftime("%m/%d") %></span>
+        </div>
+      </div>
+    <% end %>
+  </section>
 
   <%# 두 컬럼 레이아웃 %>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -53,7 +85,7 @@
           <% end %>
         </div>
       <% else %>
-        <p class="text-gray-500 text-center py-8">아직 주문 데이터가 없습니다.</p>
+        <p class="text-gray-600 text-center py-8">선택 기간에 주문이 없습니다</p>
       <% end %>
     </div>
 
@@ -69,7 +101,7 @@
           <% @top_preferences.each_with_index do |pref, index| %>
             <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
               <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-500"><%= index + 1 %>.</span>
+                <span class="text-sm text-gray-600"><%= index + 1 %>.</span>
                 <span class="font-medium"><%= pref[:tag] %></span>
               </div>
               <span class="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded"><%= pref[:count] %>회</span>
@@ -77,7 +109,7 @@
           <% end %>
         </div>
       <% else %>
-        <p class="text-gray-500 text-center py-8">아직 취향 데이터가 없습니다.</p>
+        <p class="text-gray-600 text-center py-8">아직 취향 데이터가 없습니다.</p>
       <% end %>
     </div>
   </div>
@@ -85,7 +117,7 @@
   <%# 최근 주문 테이블 %>
   <div class="bg-white rounded-lg shadow border border-gray-200">
     <div class="p-6 border-b border-gray-200">
-      <h2 class="text-xl font-bold">최근 7일 주문</h2>
+      <h2 class="text-xl font-bold">최근 <%= @period %>일 주문</h2>
     </div>
 
     <% if @recent_orders.any? %>
@@ -93,13 +125,13 @@
         <table class="w-full">
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">주문번호</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상품</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">수량</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">금액</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지역</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상태</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">주문일</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">주문번호</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">상품</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">수량</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">금액</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">지역</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">상태</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">주문일</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
@@ -108,7 +140,7 @@
                 <td class="px-6 py-4 text-sm font-mono"><%= order.order_number %></td>
                 <td class="px-6 py-4 text-sm">
                   <div class="font-medium"><%= order.product.name %></div>
-                  <div class="text-gray-500"><%= order.variant.color %> / <%= order.variant.size %></div>
+                  <div class="text-gray-600"><%= order.variant.color %> / <%= order.variant.size %></div>
                 </td>
                 <td class="px-6 py-4 text-sm"><%= order.quantity %></td>
                 <td class="px-6 py-4 text-sm font-medium">₩<%= number_with_delimiter(order.total_price.to_i) %></td>
@@ -116,7 +148,7 @@
                   <% if order.anony_customer.zip_prefix.present? %>
                     <%= order.anony_customer.zip_prefix %>xxx
                   <% else %>
-                    <span class="text-gray-400">-</span>
+                    <span class="text-gray-600">-</span>
                   <% end %>
                 </td>
                 <td class="px-6 py-4 text-sm">
@@ -138,8 +170,8 @@
         </table>
       </div>
     <% else %>
-      <div class="p-12 text-center text-gray-500">
-        최근 7일간 주문이 없습니다.
+      <div class="p-12 text-center text-gray-600">
+        선택 기간에 주문이 없습니다.
       </div>
     <% end %>
   </div>

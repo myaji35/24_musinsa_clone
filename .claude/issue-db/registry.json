@@ -311,7 +311,19 @@
       ],
       "done_criteria": "Variant별 최근20건",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-10-15T06:47:51.600Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T06:47:51.600Z",
+            "by": "대표님(관제실)",
+            "note": ""
+          }
+        ],
+        "approved_at": "2026-10-15T06:47:51.600Z",
+        "approved_by": "대표님(관제실)"
+      }
     },
     {
       "id": "ISS-015",
@@ -320,7 +332,7 @@
       "priority": "P1",
       "size": "L",
       "phase": "2",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-006",
         "ISS-008",
@@ -328,7 +340,28 @@
       ],
       "done_criteria": "grep 주소 0건",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-10-15T07:03:46.873848Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T06:47:55.223Z",
+            "by": "대표님(관제실)",
+            "note": ""
+          }
+        ],
+        "approved_at": "2026-10-15T06:47:55.223Z",
+        "approved_by": "대표님(관제실)",
+        "recommendation": {
+          "verdict": "보류",
+          "reason": "'주소 폐기'가 10-13 결정(자사몰 배송지 저장·해외 배송)과 정면 충돌. ISS-058 개인정보 정책 결정 후 범위 재정의 필요",
+          "risk": "high",
+          "effort": "L",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:03:46.873848Z"
+        }
+      },
+      "blocked_reason": "'주소 폐기'가 10-13 결정(자사몰 배송지 저장·해외 배송)과 정면 충돌. ISS-058 개인정보 정책 결정 후 범위 재정의 필요"
     },
     {
       "id": "ISS-016",
@@ -361,7 +394,19 @@
       ],
       "done_criteria": "7/30/90일+차트",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-10-15T06:48:01.112Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T06:48:01.112Z",
+            "by": "대표님(관제실)",
+            "note": ""
+          }
+        ],
+        "approved_at": "2026-10-15T06:48:01.112Z",
+        "approved_by": "대표님(관제실)"
+      }
     },
     {
       "id": "ISS-013",
@@ -376,7 +421,19 @@
       ],
       "done_criteria": "전용 이력모델+failed 사유",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-10-15T06:48:07.453Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T06:48:07.453Z",
+            "by": "대표님(관제실)",
+            "note": ""
+          }
+        ],
+        "approved_at": "2026-10-15T06:48:07.453Z",
+        "approved_by": "대표님(관제실)"
+      }
     },
     {
       "id": "ISS-029",
@@ -392,7 +449,19 @@
       ],
       "done_criteria": "보류",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-10-15T06:48:11.891Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T06:48:11.891Z",
+            "by": "대표님(관제실)",
+            "note": ""
+          }
+        ],
+        "approved_at": "2026-10-15T06:48:11.891Z",
+        "approved_by": "대표님(관제실)"
+      }
     },
     {
       "id": "ISS-025",
@@ -418,14 +487,35 @@
       "priority": "P1",
       "size": "M",
       "phase": "4",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-003",
         "ISS-012"
       ],
       "done_criteria": "kamal deploy 성공",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-10-15T07:03:46.873848Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.132Z",
+            "by": "auto",
+            "reason": "「배포 구성」(INFRA, P1)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.132Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "보류",
+          "reason": "config/deploy.yml 서버가 자리표시값(192.168.0.1). 실제 서버 주소·도메인·kamal secrets 를 대표님이 정해야 함",
+          "risk": "medium",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:03:46.873848Z"
+        }
+      },
+      "blocked_reason": "config/deploy.yml 서버가 자리표시값(192.168.0.1). 실제 서버 주소·도메인·kamal secrets 를 대표님이 정해야 함"
     },
     {
       "id": "ISS-023",
@@ -481,11 +571,40 @@
       "priority": "P1",
       "size": "M",
       "phase": "4",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "docs/PRD_v2.md",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-10-15T07:03:46.873848Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.132Z",
+            "by": "auto",
+            "reason": "「PRD v2+EPIC v2 재작성」(DOC, P1)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.132Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "대표님 10-13·10-15 결정(자사몰·캐릭터·시트 파이프라인)이 흩어져 있어 PRD v2로 묶을 시점. 코드 영향 없음",
+          "risk": "low",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:03:46.873848Z"
+        },
+        "runner": "factory-runner"
+      },
+      "started_at": "2026-10-15T07:03:46.873848Z",
+      "result": {
+        "files": [
+          "docs/PRD_v2.md",
+          "docs/EPIC_v2.md"
+        ]
+      },
+      "completed_at": "2026-10-15T16:22:10.818921"
     },
     {
       "id": "ISS-030",
@@ -500,7 +619,19 @@
       ],
       "done_criteria": "스파이크 문서",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-09-07T15:03:23.919740"
+      "updated_at": "2026-10-15T07:01:58.133Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.133Z",
+            "by": "auto",
+            "reason": "「외부채널 수집 스파이크」(FEATURE, P3)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.133Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      }
     },
     {
       "id": "ISS-034",
@@ -539,7 +670,19 @@
       "depends_on": [],
       "done_criteria": "bin/rails test 전체가 중단 없이 완주, CI에 system 테스트 포함",
       "created_at": "2026-09-07T15:31:10.880087",
-      "updated_at": "2026-09-07T15:31:10.880087"
+      "updated_at": "2026-10-15T07:01:58.133Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.133Z",
+            "by": "auto",
+            "reason": "「bin/rails test 전체 실행 시 tailwindcss 바이너리 SIGABRT(UTF-8) — CI에서 test/system 제외 중」(INFRA, P2)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.133Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      }
     },
     {
       "id": "ISS-037",
@@ -608,13 +751,34 @@
       "priority": "P1",
       "size": "S",
       "phase": "2",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-022"
       ],
       "done_criteria": "10장 결과 PNG와 실측표(초·달러)를 docs/spikes/에 남기고 1차 공급사를 확정한다",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-09-07T18:34:06.678521"
+      "updated_at": "2026-10-15T07:03:46.873848Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.133Z",
+            "by": "auto",
+            "reason": "「누끼 품질 스파이크: 실제 사입 사진 10장으로 fal BiRefNet vs Photoroom 비교(경계 품질·처리시간·장당 단가 실측)」(FEATURE, P1)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.133Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "보류",
+          "reason": "실제 사입 사진 10장과 fal·Photoroom 유료 호출(외부 과금)이 필요. 공장 실행에서는 과금 금지",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:03:46.873848Z"
+        }
+      },
+      "blocked_reason": "실제 사입 사진 10장과 fal·Photoroom 유료 호출(외부 과금)이 필요. 공장 실행에서는 과금 금지"
     },
     {
       "id": "ISS-042",
@@ -623,13 +787,42 @@
       "priority": "P1",
       "size": "M",
       "phase": "2",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [
         "ISS-022"
       ],
       "done_criteria": "실패 job이 status=failed와 error_message로 남고 Sentry에 잡힌다. 월 상한 초과 시 외부 호출 0건",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-09-07T18:34:06.678521"
+      "updated_at": "2026-10-15T07:03:46.873848Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.133Z",
+            "by": "auto",
+            "reason": "「이미지 가공 파이프라인 기반: image_processings(product_id, kind, status, provider, cost_cents, error_message) + Solid Queue job 골격 + 월 호출 상한(ENV)」(INFRA, P1)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.133Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "선행 ISS-022 완료. 추가형 마이그레이션+job 골격+ENV 상한이라 외부 호출 없이 구현·테스트 가능",
+          "risk": "low",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:03:46.873848Z"
+        },
+        "runner": "factory-runner"
+      },
+      "started_at": "2026-10-15T07:03:46.873848Z",
+      "result": {
+        "tests": "227 runs 0 failures",
+        "rubocop": "0 offenses",
+        "model": "ProductImageProcessing(table image_processings)",
+        "note": "image_processing gem 이름 충돌로 Product 접두"
+      },
+      "completed_at": "2026-10-15T16:22:04.090241"
     },
     {
       "id": "ISS-043",
@@ -645,7 +838,20 @@
       ],
       "done_criteria": "업로드 이미지가 job을 거쳐 cutout_image로 첨부된다. API 실패 시 cutout_image는 nil 유지(원본으로 대체 금지)",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-09-07T18:34:06.678521"
+      "updated_at": "2026-10-15T07:01:58.133Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.133Z",
+            "by": "auto",
+            "reason": "「누끼 어댑터(1차 공급사) + Product has_one_attached :cutout_image 저장」(FEATURE, P1)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.133Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "last_dispatched_at": "2026-10-15T16:22:04"
     },
     {
       "id": "ISS-044",
@@ -660,7 +866,20 @@
       ],
       "done_criteria": "저니 통과: 업로드→클릭→PNG 표시→채택→상세 반영. 실패 시나리오에서 상태 배지 노출",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-09-07T18:34:06.678521"
+      "updated_at": "2026-10-15T07:01:58.133Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.133Z",
+            "by": "auto",
+            "reason": "「상품 편집 UI: '배경 제거' 버튼 → 처리중/성공/실패 상태(Turbo) → 원본·누끼 전환 및 대표 이미지 채택」(FEATURE, P1)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.133Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "last_dispatched_at": "2026-10-15T16:22:10"
     },
     {
       "id": "ISS-045",
@@ -673,7 +892,19 @@
       "depends_on": [],
       "done_criteria": "라이선스 출처를 기록하고 아바타 선택 파셜이 렌더된다",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-09-07T18:34:06.678521"
+      "updated_at": "2026-10-15T07:01:58.133Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.133Z",
+            "by": "auto",
+            "reason": "「고정 아바타 자산 3~4종 확보(라이선스 확인된 스톡 또는 AI 생성) + app/assets/avatars/ 등록 + 메타(성별·체형)」(FEATURE, P2)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.133Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      }
     },
     {
       "id": "ISS-046",
@@ -689,7 +920,19 @@
       ],
       "done_criteria": "아바타와 누끼 PNG로 착용컷이 첨부된다. 매핑 불가 카테고리(신발·가방)는 버튼 비활성화 + 사유 표시",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-09-07T18:34:06.678521"
+      "updated_at": "2026-10-15T07:01:58.133Z",
+      "payload": {
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:01:58.133Z",
+            "by": "auto",
+            "reason": "「착용컷 어댑터(fal Kling Kolors v1.5) + try_on_image 첨부 + category 매핑(product.category → tops/bottoms/one-piece)」(FEATURE, P2)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:01:58.133Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      }
     },
     {
       "id": "ISS-047",
@@ -850,13 +1093,25 @@
     },
     {
       "id": "ISS-058",
-      "status": "READY",
+      "status": "BLOCKED",
       "priority": "P1",
       "type": "DECISION",
       "title": "개인정보 정책 재정의 — 익명 CRM(주소 미보관) vs 자사몰·해외 배송지 저장 충돌. 보관기간·파기 시점 결정",
       "created_at": "2026-10-13T15:07:41.734294",
       "description": "대표님 결정 2026-10-13: 숏폼(유튜브·인스타·틱톡)→Rails 자사몰 직접 구축, PG 연결 예정, 20~50대 연령대별 5명 캐릭터, 글로벌 판매 대비.",
-      "depends_on": []
+      "depends_on": [],
+      "payload": {
+        "recommendation": {
+          "verdict": "대표님 결정 필요",
+          "reason": "DECISION 이슈 — 배송지 보관기간·파기 시점은 대표님 정책 결정 사항. 결정 전엔 ISS-015·059 착수 불가",
+          "risk": "high",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:03:46.873848Z"
+        }
+      },
+      "blocked_reason": "DECISION 이슈 — 배송지 보관기간·파기 시점은 대표님 정책 결정 사항. 결정 전엔 ISS-015·059 착수 불가",
+      "updated_at": "2026-10-15T07:03:46.873848Z"
     },
     {
       "id": "ISS-059",
@@ -869,11 +1124,12 @@
       "depends_on": [
         "ISS-052",
         "ISS-058"
-      ]
+      ],
+      "last_dispatched_at": "2026-10-15T16:22:10"
     },
     {
       "id": "ISS-060",
-      "status": "READY",
+      "status": "BLOCKED",
       "priority": "P1",
       "type": "FEATURE",
       "title": "PG 연동 어댑터 — 국내 카드 + 해외 카드 지원 PG 선정(대표님) 후 연결, 결제 실패·취소·환불 경로",
@@ -881,7 +1137,19 @@
       "description": "대표님 결정 2026-10-13: 숏폼(유튜브·인스타·틱톡)→Rails 자사몰 직접 구축, PG 연결 예정, 20~50대 연령대별 5명 캐릭터, 글로벌 판매 대비.",
       "depends_on": [
         "ISS-059"
-      ]
+      ],
+      "payload": {
+        "recommendation": {
+          "verdict": "대표님 결정 필요",
+          "reason": "PG사 선정·계약은 대표님 몫이고 돈 경로라 자동 착수 대상 아님. 선행 ISS-059도 미완",
+          "risk": "high",
+          "effort": "L",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:03:46.873848Z"
+        }
+      },
+      "blocked_reason": "PG사 선정·계약은 대표님 몫이고 돈 경로라 자동 착수 대상 아님. 선행 ISS-059도 미완",
+      "updated_at": "2026-10-15T07:03:46.873848Z"
     },
     {
       "id": "ISS-061",
@@ -1090,12 +1358,193 @@
       "depends_on": [],
       "completed_at": "2026-10-13T19:22:37.059624",
       "result": "공급사 xlsx(떠있는 그림·셀 안 이미지) 가져오기→상품 upsert, 캐릭터 20명, Claude(opus-5-5) 비전 분석→캐릭터·컨셉, KPI(가정값 목표 vs 실적, 수동 배정 포함). SQLite IMMEDIATE 트랜잭션 이니셜라이저로 BusyException 220→0. 테스트 211/0. 브라우저 저니 PASS(업로드 5초, 등록3·실패1, 재업로드 갱신3, 키 미설정 정직 실패, 수동배정→KPI ₩250,000). 실제 Claude 호출은 ANTHROPIC_API_KEY 미설정으로 미검증."
+    },
+    {
+      "id": "ISS-078",
+      "title": "MZ세대 캐릭터 15초 런웨이 영상(모델소개 자막·다양한 카메라 각도)",
+      "type": "FEATURE",
+      "priority": "P1",
+      "status": "DONE",
+      "created_at": "2026-10-14T10:09:39.442975",
+      "raw_prompt": "MZ세대 활기찬 런웨이를 연상할수 있게. 모델소개 자막과 함께 1명당 15초 런웨이 영상을 다양한 카메라 각도로 만들어줘. 하려는 기획 보고하고 진행해.",
+      "completed_at": "2026-10-14T12:24:25.487141",
+      "result": "MZ 10명 15초 런웨이(Kling O3 pro, 1080p) + 150초 연속본, 유나 코트 영상 타운인 비공개 업로드(m6Iu52cEjGg). 엔진 6종 비교 후 O3 pro 채택."
+    },
+    {
+      "id": "ISS-079",
+      "type": "DESIGN",
+      "priority": "P1",
+      "status": "DONE",
+      "title": "타운인 로고 시안 3안 (브랜드 DNA v4, 타운+人)",
+      "created_at": "2026-10-15T09:51:21",
+      "payload": {
+        "ref": "대표님 2026-10-15 로고 디자인 지시"
+      },
+      "result": "글로벌 3안(6크레딧) → 대표님 B안 채택. 가로(펼침)·세로·심볼 3종 brand/townin-logo/final/ (원본 크롭 재배치, 0크레딧) / SVG 4종(Codex, 2회 보정) → 0014 docs/brand/ci, 유튜브 프로필·워터마크 적용"
+    },
+    {
+      "id": "ISS-080",
+      "type": "DESIGN",
+      "priority": "P2",
+      "status": "DONE",
+      "title": "타운인 동네 배너 3안 제안",
+      "created_at": "2026-10-15T10:23:03",
+      "result": "Nano Banana Pro 3장(6크레딧)+로고 합성 2560x1440, 선택 대기"
+    },
+    {
+      "id": "ISS-081",
+      "type": "DESIGN",
+      "priority": "P1",
+      "status": "DONE",
+      "title": "구글시트 입수 → 모델 3명 추천 → 컷·영상 로컬 생성 → 배포서버 업로드 구조 설계",
+      "created_at": "2026-10-15T14:00:00",
+      "raw_prompt": "구글시트를 공유해서 하는 작업이니까 로컬에서 이미지, 영상 만들어서 배포 서버로 올리는 것으로 하자.",
+      "result": "설계 확정 문서 docs/plan/sheet-to-content-pipeline.md, 선결: 배포서버 미구성·공유시트 미정·10/29 이후 생성경로"
+    },
+    {
+      "id": "ISS-082",
+      "type": "DESIGN",
+      "priority": "P1",
+      "status": "DONE",
+      "title": "시트 입수 이미지 품질 판정 게이트 + 시트 판정 컬럼 운영 설계",
+      "created_at": "2026-10-15T14:30:00",
+      "raw_prompt": "시트에 받아온 이미지의 퀄리티를 검증하는 프로세스 / 최소 기준 수치 / 시트내에 이미지에 대한 판정 컬럼을 만들어 운영하자.",
+      "result": "판정 기준(짧은변512/800, Q70/85, 선명100/300, 날림5/15%)+비전 판정+시트 판정컬럼 6개 설계, 임시기준(실이미지 20장 후 재보정)"
+    },
+    {
+      "id": "ISS-083",
+      "type": "GENERATE_CODE",
+      "priority": "P1",
+      "status": "DONE",
+      "title": "[JIEUN] 공유 구글시트 연동 로컬 워커 — 5분 폴링·상태/결과 칸 회신·시트 양식",
+      "created_at": "2026-10-15T15:00:00+09:00",
+      "updated_at": "2026-10-15T07:03:46.873848Z",
+      "raw_prompt": "이슈로만 등록해줘. ../0000/factory에서 하는지 지켜 보고 싶어.",
+      "payload": {
+        "scope_dir": "musinsa_clone",
+        "ref": "musinsa_clone/docs/plan/sheet-to-content-pipeline.md",
+        "note": "gws(대표님 계정)로 시트 읽기/쓰기. 문서의 '시트 양식(안)' 칸 사용. launchd 자동 실행. 실패는 시트 상태 칸에 '실패:사유'.",
+        "depends_on": [],
+        "origin": "대표님 지시 2026-10-15",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "대표님이 공장 처리 여부를 지켜보겠다고 지시한 건. 시트 ID는 ENV로 받고 gws 호출은 테스트에서 대체해 실시트 없이 검증",
+          "risk": "medium",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:03:46.873848Z"
+        },
+        "runner": "factory-runner"
+      },
+      "started_at": "2026-10-15T07:03:46.873848Z",
+      "result": {
+        "tests": "227 runs 0 failures",
+        "rubocop": "0 offenses",
+        "gws_dry_run": "ok",
+        "launchd": "template only, not installed"
+      },
+      "completed_at": "2026-10-15T16:22:10.635062"
+    },
+    {
+      "id": "ISS-084",
+      "type": "GENERATE_CODE",
+      "priority": "P1",
+      "status": "READY",
+      "title": "[JIEUN] 시트 입수 이미지 품질 판정 게이트 — 수치 1차 + Claude 비전 2차 + 판정 컬럼 6개",
+      "created_at": "2026-10-15T15:00:00+09:00",
+      "updated_at": "2026-10-15T15:00:00+09:00",
+      "raw_prompt": "이슈로만 등록해줘. ../0000/factory에서 하는지 지켜 보고 싶어.",
+      "payload": {
+        "scope_dir": "musinsa_clone",
+        "ref": "musinsa_clone/docs/plan/sheet-to-content-pipeline.md",
+        "note": "문서 '이미지 품질 게이트' 기준(짧은변 512/800, Q 70/85, 선명 100/300, 날림 5/15%). 반려는 이후 단계 차단, 보완은 MD확인='진행'일 때만. 이미지 해시 변경 시 재판정.",
+        "depends_on": [
+          "ISS-083"
+        ],
+        "origin": "대표님 지시 2026-10-15"
+      }
+    },
+    {
+      "id": "ISS-085",
+      "type": "GENERATE_CODE",
+      "priority": "P1",
+      "status": "READY",
+      "title": "[JIEUN] 모델 3명 순위 추천 — Analyzer 1+차선 → 3명·이유, 소구포인트 입력",
+      "created_at": "2026-10-15T15:00:00+09:00",
+      "updated_at": "2026-10-15T15:00:00+09:00",
+      "raw_prompt": "이슈로만 등록해줘. ../0000/factory에서 하는지 지켜 보고 싶어.",
+      "payload": {
+        "scope_dir": "musinsa_clone",
+        "ref": "musinsa_clone/docs/plan/sheet-to-content-pipeline.md",
+        "note": "app/services/product_analyses/analyzer.rb 확장. 실존 인물 후보(초이) 제외. 결과를 시트 '추천 모델' 칸에 기록.",
+        "depends_on": [
+          "ISS-084"
+        ],
+        "origin": "대표님 지시 2026-10-15"
+      }
+    },
+    {
+      "id": "ISS-086",
+      "type": "FEATURE_PLAN",
+      "priority": "P2",
+      "status": "BACKLOG",
+      "title": "[JIEUN] 컷 이미지 3명×3컷 로컬 생성 + 서버 업로드 API + 1명 선택 화면",
+      "created_at": "2026-10-15T15:00:00+09:00",
+      "updated_at": "2026-10-15T15:00:00+09:00",
+      "raw_prompt": "이슈로만 등록해줘. ../0000/factory에서 하는지 지켜 보고 싶어.",
+      "payload": {
+        "scope_dir": "musinsa_clone",
+        "ref": "musinsa_clone/docs/plan/sheet-to-content-pipeline.md",
+        "note": "선결: 배포 서버 미구성(deploy.yml 192.168.0.1 자리값). 업로드 토큰은 .env·kamal secrets만.",
+        "depends_on": [
+          "ISS-085"
+        ],
+        "origin": "대표님 지시 2026-10-15"
+      }
+    },
+    {
+      "id": "ISS-087",
+      "type": "FEATURE_PLAN",
+      "priority": "P2",
+      "status": "BACKLOG",
+      "title": "[JIEUN] 선택 모델 영상 3클립 로컬 생성·업로드 (라방 3클립 방식)",
+      "created_at": "2026-10-15T15:00:00+09:00",
+      "updated_at": "2026-10-15T15:00:00+09:00",
+      "raw_prompt": "이슈로만 등록해줘. ../0000/factory에서 하는지 지켜 보고 싶어.",
+      "payload": {
+        "scope_dir": "musinsa_clone",
+        "ref": "musinsa_clone/docs/plan/sheet-to-content-pipeline.md",
+        "note": "선결: 2026-10-29 Higgsfield 구독 종료 이후 생성 경로 미정.",
+        "depends_on": [
+          "ISS-086"
+        ],
+        "origin": "대표님 지시 2026-10-15"
+      }
     }
   ],
   "hooks": {
     "on_create": [],
     "on_start": [],
-    "on_complete": [],
+    "on_complete": [
+      {
+        "issue_id": "ISS-042",
+        "issue_type": "INFRA",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T16:22:04.090241"
+      },
+      {
+        "issue_id": "ISS-083",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T16:22:10.635062"
+      },
+      {
+        "issue_id": "ISS-027",
+        "issue_type": "DOC",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T16:22:10.818921"
+      }
+    ],
     "on_fail": [],
     "on_learn": []
   },
@@ -1106,8 +1555,21 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 14,
+    "completed": 17,
     "failed": 0,
     "evolved": 0
+  },
+  "background_state": {
+    "active": 0,
+    "issues": []
+  },
+  "issue_budget": {
+    "date": "2026-10-15",
+    "created_today": 0
+  },
+  "rewake_state": {
+    "ISS-043:READY": 1,
+    "ISS-044:READY": 1,
+    "ISS-059:READY": 1
   }
 }

@@ -1,6 +1,6 @@
 module SheetPipeline
   class SheetLayout
-    HEADERS = [ "상품코드", "상품명", "이미지", "소구포인트1", "소구포인트2", "소구포인트3", "가격·색상", "상태", "추천 모델", "결과 링크" ].freeze
+    HEADERS = [ "상품코드", "상품명", "이미지", "소구포인트1", "소구포인트2", "소구포인트3", "가격·색상", "상태", "추천 모델", "결과 링크", "이미지판정", "판정점수", "판정사유", "수치", "판정시각", "MD확인" ].freeze
 
     class MissingHeader < StandardError; end
 

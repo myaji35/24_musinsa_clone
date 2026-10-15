@@ -5,8 +5,16 @@ class SheetPipeline::SheetLayoutTest < ActiveSupport::TestCase
     headers = SheetPipeline::SheetLayout::HEADERS.reverse
     layout = SheetPipeline::SheetLayout.new(sheet_name: "입수", headers: headers)
 
-    assert_equal "입수!C5", layout.cell_ref(5, "상태")
-    assert_equal 3, layout.column_index("상태")
+    assert_equal "입수!I5", layout.cell_ref(5, "상태")
+    assert_equal 9, layout.column_index("상태")
+  end
+
+  test "기존 상태와 결과 열 위치를 유지한다" do
+    layout = SheetPipeline::SheetLayout.new(sheet_name: "입수", headers: SheetPipeline::SheetLayout::HEADERS)
+
+    assert_equal "입수!H5", layout.cell_ref(5, "상태")
+    assert_equal "입수!I5", layout.cell_ref(5, "추천 모델")
+    assert_equal "입수!J5", layout.cell_ref(5, "결과 링크")
   end
 
   test "필수 헤더가 없으면 이름을 알린다" do

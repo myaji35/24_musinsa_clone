@@ -66,6 +66,21 @@ class SheetPipeline::PollerTest < ActiveSupport::TestCase
     assert_empty client.updates
   end
 
+  test "halt는 시트에 쓰지 않고 변경 기록 후 남은 스텝을 건너뛴다" do
+    client = FakeClient.new([ headers, row("A-1", "셔츠", "url") ])
+    calls = 0
+    first_step = ->(_row) { { "이미지판정" => "보완", "상태" => "MD확인 대기", :halt => true } }
+    second_step = ->(_row) { calls += 1 }
+
+    result = SheetPipeline::Poller.new(client: client, steps: [ first_step, second_step ]).run_once
+
+    assert_equal({ read: 1, queued: 1, failed: 0 }, result)
+    assert_equal 0, calls
+    cells = client.updates.first.to_h { |update| [ update[:range], update[:values].first.first ] }
+    assert_equal "MD확인 대기", cells["입수!H2"]
+    assert_equal "보완", cells["입수!K2"]
+  end
+
   test "헤더 누락은 호출자에게 올린다" do
     client = FakeClient.new([ headers - [ "상태" ] ])
 

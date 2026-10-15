@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_15_000001) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_15_000002) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -100,6 +100,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_15_000001) do
     t.index ["created_at"], name: "index_image_processings_on_created_at"
     t.index ["product_id", "kind"], name: "index_image_processings_on_product_id_and_kind"
     t.index ["status"], name: "index_image_processings_on_status"
+  end
+
+  create_table "image_quality_checks", force: :cascade do |t|
+    t.string "product_code", null: false
+    t.text "image_url"
+    t.string "image_sha256"
+    t.string "verdict"
+    t.integer "score"
+    t.text "reason"
+    t.text "metrics_json"
+    t.string "vision_model"
+    t.datetime "checked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_code", "image_sha256"], name: "index_image_quality_checks_on_product_code_and_image_sha256"
   end
 
   create_table "notifications", force: :cascade do |t|

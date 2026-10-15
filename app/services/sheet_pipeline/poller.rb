@@ -31,10 +31,13 @@ module SheetPipeline
           next unless result.is_a?(Hash)
 
           result.each do |header, value|
+            next unless header.is_a?(String)
+
             layout.column_index(header)
             changes[header] = value
             row[header] = value
           end
+          break if result[:halt] == true
         rescue StandardError => error
           failed += 1
           changes["상태"] = "실패:#{error.message.to_s[0, 80]}"

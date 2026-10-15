@@ -407,7 +407,7 @@
         "approved_at": "2026-10-15T06:48:01.112Z",
         "approved_by": "대표님(관제실)"
       },
-      "last_dispatched_at": "2026-10-15T16:45:55"
+      "last_dispatched_at": "2026-10-15T17:16:42"
     },
     {
       "id": "ISS-013",
@@ -435,7 +435,7 @@
         "approved_at": "2026-10-15T06:48:07.453Z",
         "approved_by": "대표님(관제실)"
       },
-      "last_dispatched_at": "2026-10-15T16:49:05"
+      "last_dispatched_at": "2026-10-15T17:16:42"
     },
     {
       "id": "ISS-029",
@@ -668,11 +668,11 @@
       "priority": "P2",
       "size": "S",
       "phase": "0",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "bin/rails test 전체가 중단 없이 완주, CI에 system 테스트 포함",
       "created_at": "2026-09-07T15:31:10.880087",
-      "updated_at": "2026-10-15T07:01:58.133Z",
+      "updated_at": "2026-10-15T07:56:02.390825+00:00",
       "payload": {
         "decisions": [
           {
@@ -683,8 +683,23 @@
           }
         ],
         "approved_at": "2026-10-15T07:01:58.133Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "started_by": "factory-runner",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "CI 에서 system 테스트가 빠져 화면 회귀가 무방비. 원인(tailwindcss 바이너리 UTF-8 로케일) 재현 후 환경변수/빌드 순서로 해결 가능한 되돌리기 쉬운 수정",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:56:02.390825+00:00"
+        }
+      },
+      "result": {
+        "summary": "원인=macOS objc fork-safety(테일윈드 아님). darwin 워커1, ApplicationSystemTestCase 추가, CI 에 test/system 포함 (cba631d)",
+        "verification": "로컬 models+services+controllers+helpers+system 251 runs 0F 0E, rubocop 0",
+        "commit": "cba631d"
+      },
+      "completed_at": "2026-10-15T17:28:13.249550"
     },
     {
       "id": "ISS-037",
@@ -924,7 +939,8 @@
         ],
         "approved_at": "2026-10-15T07:01:58.133Z",
         "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+      },
+      "last_dispatched_at": "2026-10-15T17:28:13"
     },
     {
       "id": "ISS-046",
@@ -952,7 +968,8 @@
         ],
         "approved_at": "2026-10-15T07:01:58.133Z",
         "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+      },
+      "last_dispatched_at": "2026-10-15T17:28:13"
     },
     {
       "id": "ISS-047",
@@ -1721,11 +1738,11 @@
       "type": "FIX_BUG",
       "priority": "P2",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "ci.yml 에 libvips·imagemagick 설치(apt-get install -y libvips imagemagick) 추가 후 Test Suite 통과 — ISS-084 이미지 게이트 테스트가 identify(JPEG 품질)를 사용",
       "created_at": "2026-10-15T07:23:51.243001Z",
-      "updated_at": "2026-10-15T07:50:42.380681+00:00",
+      "updated_at": "2026-10-15T07:56:02.390825+00:00",
       "payload": {
         "origin": "factory-runner CI 확인",
         "source_run": "38698328689",
@@ -1746,9 +1763,16 @@
           }
         ],
         "approved_at": "2026-10-15T07:26:11.487Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "started_by": "factory-runner"
       },
-      "last_ci_run": "38701343570 (9436acd) 동일 원인 실패 재확인"
+      "last_ci_run": "38701343570 (9436acd) 동일 원인 실패 재확인",
+      "result": {
+        "summary": "ci.yml test 잡에 libvips·imagemagick 설치 단계 추가 (53037c9)",
+        "verification": "YAML 파싱 OK, 최종 확인은 push 후 CI Test Suite",
+        "commit": "53037c9"
+      },
+      "completed_at": "2026-10-15T17:16:41.871328"
     },
     {
       "id": "ISS-089",
@@ -1756,11 +1780,11 @@
       "type": "INFRA",
       "priority": "P2",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "Rails 지원 버전으로 올리거나, 업그레이드 일정 확정 시까지 brakeman.ignore 에 근거와 기한을 남겨 CI 통과",
       "created_at": "2026-10-15T07:23:51.243001Z",
-      "updated_at": "2026-10-15T07:50:42.380681+00:00",
+      "updated_at": "2026-10-15T07:56:02.390825+00:00",
       "payload": {
         "origin": "factory-runner CI 확인",
         "source_run": "38698328689",
@@ -1781,9 +1805,21 @@
           }
         ],
         "approved_at": "2026-10-15T07:26:11.487Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "started_by": "factory-runner",
+        "factory_decision": {
+          "choice": "기한부 brakeman.ignore",
+          "reason": "되돌리기 쉬움. Rails 7.2→8 업그레이드는 대형이라 별도 이슈로 분리",
+          "at": "2026-10-15T07:56:02.390825+00:00"
+        }
       },
-      "last_ci_run": "38701343570 (9436acd) 동일 원인 실패 재확인"
+      "last_ci_run": "38701343570 (9436acd) 동일 원인 실패 재확인",
+      "result": {
+        "summary": "config/brakeman.ignore EOLRails 기한부 무시(2026-12-31) (3bf492c)",
+        "verification": "bundle exec brakeman exit 0, Security Warnings 0, Ignored 1",
+        "commit": "3bf492c"
+      },
+      "completed_at": "2026-10-15T17:16:42.236194"
     },
     {
       "id": "ISS-090",
@@ -1791,7 +1827,7 @@
       "type": "FEATURE",
       "priority": "P2",
       "size": "M",
-      "status": "BLOCKED",
+      "status": "READY",
       "depends_on": [
         "ISS-062"
       ],
@@ -1806,10 +1842,129 @@
           "effort": "M",
           "by": "factory-runner",
           "at": "2026-10-15T07:49:05.509032+00:00"
-        }
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T07:54:26.870Z",
+            "by": "auto",
+            "reason": "「캐릭터 시트 이미지 19명 생성(외형 고정값) — persona/generate_sheet.mjs 확장」(FEATURE, P2)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T07:54:26.870Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
       },
       "created_at": "2026-10-15T07:49:05.509032+00:00",
-      "updated_at": "2026-10-15T07:49:05.509032+00:00"
+      "updated_at": "2026-10-15T07:54:26.870Z"
+    },
+    {
+      "id": "ISS-091",
+      "title": "Rails 7.2.3 → 8.x 업그레이드 (지원 종료, brakeman.ignore 기한 2026-12-31)",
+      "type": "INFRA",
+      "priority": "P2",
+      "size": "M",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "Rails 지원 버전으로 상향, 전체 테스트·RuboCop·Brakeman 통과, config/brakeman.ignore 의 EOLRails 항목 제거",
+      "created_at": "2026-10-15T08:16:53.615239+00:00",
+      "updated_at": "2026-10-15T08:16:53.615239+00:00",
+      "payload": {
+        "origin": "factory-runner ISS-089 분리",
+        "source_issue": "ISS-089",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "ISS-089 에서 EOLRails 경고를 2026-12-31 기한으로 임시 무시. 보안 패치가 끊긴 상태라 기한 전 업그레이드 필요",
+          "risk": "medium",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-15T08:16:53.615239+00:00"
+        }
+      }
+    },
+    {
+      "id": "ISS-092",
+      "title": "홈·상품목록 검색(?q=) 500 — includes/with_attached_image 조인 시 'ambiguous column name: name'",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "S",
+      "status": "DONE",
+      "depends_on": [],
+      "done_criteria": "home#index·products#index 검색 조건을 products.name/products.brand 로 한정, 검색 시 200 + 결과 표시, system 검색 테스트 통과",
+      "created_at": "2026-10-15T08:23:35.380038+00:00",
+      "updated_at": "2026-10-15T08:23:35.380038+00:00",
+      "payload": {
+        "origin": "factory-runner ISS-036 system 테스트 복구 중 발견",
+        "source_issue": "ISS-036",
+        "evidence": "GET /?q=coat → SQLite3::SQLException ambiguous column name: name (app/controllers/home_controller.rb:29, products_controller.rb:16)",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "사용자 검색이 그대로 500. 컬럼명 테이블 한정 1줄씩 수정으로 되돌리기 쉬움",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-15T08:23:35.380038+00:00"
+        }
+      },
+      "result": {
+        "summary": "검색 where 를 products.name/brand 로 한정 (ca1eb61)",
+        "verification": "user-journey-tester review PASS 7/7, 전체 테스트 251 0F",
+        "screenshots": [
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/musinsa_clone/docs/user-test/2026-10-15/1-home-search-name-1440.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/musinsa_clone/docs/user-test/2026-10-15/4a-products-q-name-1440.png"
+        ],
+        "commit": "ca1eb61"
+      },
+      "completed_at": "2026-10-15T17:28:13.578094"
+    },
+    {
+      "id": "ISS-093",
+      "title": "홈 랭킹 그리드 캐시 키에 검색어(params[:q]) 누락 — 운영 캐시 활성 시 다른 검색어 결과 노출 위험",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "home/index 랭킹 캐시 키에 params[:q] 포함, 캐시 켠 상태(dev:cache)에서 서로 다른 검색어 결과가 섞이지 않음",
+      "created_at": "2026-10-15T08:28:13.793292+00:00",
+      "updated_at": "2026-10-15T08:28:13.793292+00:00",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-092",
+        "evidence": "app/views/home/index.html.erb 랭킹 캐시 키 [maximum(:updated_at), category, sort] — q 없음 (user-journey-tester 코드 확인)",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "운영(캐시 ON)에서 검색 결과가 틀리게 보일 수 있는 정합성 버그. 캐시 키 1개 추가로 해결",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-15T08:28:13.793292+00:00"
+        }
+      }
+    },
+    {
+      "id": "ISS-094",
+      "title": "검색 결과 0건 안내 부재 — 홈은 큐레이션이 그대로 보이고 /products 는 '첫 상품을 등록해보세요' 문구 + 게스트에게 '신규 상품 등록' 버튼 노출",
+      "type": "UX_FIX",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "검색 0건일 때 '검색 결과가 없습니다'+초기화 안내, /products 게스트에게 관리 버튼 비노출",
+      "created_at": "2026-10-15T08:28:13.793292+00:00",
+      "updated_at": "2026-10-15T08:28:13.793292+00:00",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-092",
+        "evidence": "docs/user-test/2026-10-15/3-home-search-empty-1440.png, 3b-home-empty-ranking-1440.png, 4c-products-q-empty-1440.png",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "사용자가 검색 실패를 인지 못함(FRICTION). 문구·조건부 렌더만이라 되돌리기 쉬움. 게스트 관리 버튼은 링크만 보이고 실제 접근은 require_admin 으로 막혀 있는지 함께 확인",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-15T08:28:13.793292+00:00"
+        }
+      }
     }
   ],
   "hooks": {
@@ -1851,6 +2006,30 @@
         "issue_type": "FEATURE",
         "plan_created": 0,
         "timestamp": "2026-10-15T16:49:05.687474"
+      },
+      {
+        "issue_id": "ISS-088",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T17:16:41.871328"
+      },
+      {
+        "issue_id": "ISS-089",
+        "issue_type": "INFRA",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T17:16:42.236194"
+      },
+      {
+        "issue_id": "ISS-036",
+        "issue_type": "INFRA",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T17:28:13.249550"
+      },
+      {
+        "issue_id": "ISS-092",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T17:28:13.578094"
       }
     ],
     "on_fail": [],
@@ -1863,7 +2042,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 20,
+    "completed": 24,
     "failed": 0,
     "evolved": 0
   },
@@ -1876,7 +2055,9 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-017:READY": 1,
-    "ISS-013:READY": 1
+    "ISS-017:READY": 2,
+    "ISS-013:READY": 2,
+    "ISS-045:READY": 1,
+    "ISS-046:READY": 1
   }
 }

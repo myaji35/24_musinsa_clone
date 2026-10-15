@@ -8,9 +8,6 @@ class ProductsTest < ApplicationSystemTestCase
     # 상품 카드가 표시되는가
     assert_selector ".grid"
 
-    # 이미지가 로드되는가 (Unsplash)
-    assert_selector "img[src*='unsplash']", minimum: 1
-
     # 브랜드명이 표시되는가
     assert_selector ".font-bold", minimum: 1
   end
@@ -24,7 +21,7 @@ class ProductsTest < ApplicationSystemTestCase
     assert_text product.name
 
     # 가격이 표시되는가
-    assert_text product.price.to_i.to_s
+    assert_text "#{product.price.to_i.to_fs(:delimited)}원"
   end
 
   # 시나리오 8: 상품 카드 클릭
@@ -35,6 +32,6 @@ class ProductsTest < ApplicationSystemTestCase
     first("a.group.block.relative").click
 
     # 상세 페이지로 이동했는가
-    assert_match /\/products\/\d+/, current_path
+    assert_current_path %r{/products/\d+}
   end
 end

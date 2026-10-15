@@ -63,7 +63,7 @@ class HomepageTest < ApplicationSystemTestCase
     end
 
     # URL에 category 파라미터가 있는가
-    assert_match /category=%EC%95%84%EC%9A%B0%ED%84%B0/, current_url
+    assert_current_path root_path(category: "아우터")
 
     # 상품이 표시되는가
     assert_selector ".grid"

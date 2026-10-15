@@ -72,7 +72,7 @@ jobs:
       run: bin/rails tailwindcss:build RAILS_ENV=test
 
     - name: Run tests
-      run: bin/rails test test/models test/services test/controllers test/helpers
+      run: bin/rails test test/models test/services test/controllers test/helpers test/system
 
     - name: Upload coverage reports
       if: success()

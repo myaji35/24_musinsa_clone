@@ -29,8 +29,8 @@ require "rails/test_help"
 
 module ActiveSupport
   class TestCase
-    # Run tests in parallel with specified workers
-    parallelize(workers: :number_of_processors)
+    # macOS에서 fork 시 objc NSNumber initialize 안전장치로 워커가 죽어 bin/rails test가 멈춤(ISS-036).
+    parallelize(workers: RUBY_PLATFORM.include?("darwin") ? 1 : :number_of_processors)
 
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all

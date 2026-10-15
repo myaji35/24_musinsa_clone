@@ -16,23 +16,14 @@ class HomepageTest < ApplicationSystemTestCase
 
     # 상품 카드가 표시되는가
     assert_selector ".grid", minimum: 1
-
-    # 스크린샷 저장 (디버깅용)
-    take_screenshot
   end
 
-  # 시나리오 2: 29cm 큐레이션 섹션 확인
-  test "29cm 스타일 큐레이션 섹션이 표시되는가" do
+  # 시나리오 2: 현재 홈 인트로 확인
+  test "홈 인트로가 표시되는가" do
     visit root_url
 
-    # 큐레이션 섹션 헤더 확인
-    assert_text "미니멀 컬렉션", count: 1
-
-    # 큐레이션 상품 카드가 있는가
-    within first(".mb-16") do
-      assert_selector ".grid", minimum: 1
-      assert_selector "img[src*='unsplash']", minimum: 1
-    end
+    assert_selector ".intro-characters h2", text: "20명의 캐릭터, 20개의 옷장"
+    assert_selector ".intro-card", count: 20
   end
 
   # 시나리오 3: 네비게이션 테스트
@@ -53,10 +44,10 @@ class HomepageTest < ApplicationSystemTestCase
     visit root_path
 
     # 검색어 입력
-    fill_in "q", with: "coat"
-
-    # 검색 실행
-    find("button[type='submit']").click
+    within ".max-w-md form" do
+      fill_in "q", with: "coat"
+      find("button[type='submit']").click
+    end
 
     # 검색 결과 확인
     assert_selector ".grid"
@@ -67,7 +58,9 @@ class HomepageTest < ApplicationSystemTestCase
     visit root_path
 
     # 아우터 카테고리 클릭
-    click_link "아우터"
+    within "#ranking" do
+      click_link "아우터"
+    end
 
     # URL에 category 파라미터가 있는가
     assert_match /category=%EC%95%84%EC%9A%B0%ED%84%B0/, current_url

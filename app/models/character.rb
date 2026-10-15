@@ -4,6 +4,8 @@ class Character < ApplicationRecord
   validates :handle, uniqueness: true
   validates :age, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validates :age_band, inclusion: { in: [ 20, 30, 40, 50 ] }, allow_nil: true
+  validates :height_cm, numericality: { only_integer: true, in: 140..190 }, allow_nil: true
+  validates :shoe_mm, numericality: { only_integer: true, in: 210..280 }, allow_nil: true
   validates :status, inclusion: { in: %w[active planned] }
 
   scope :active, -> { where(status: "active") }

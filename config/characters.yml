@@ -1,5 +1,10 @@
 - name: 서하린
   handle: SeoHARIN
+  height_cm: 164
+  top_size: S(55)
+  bottom_size: "26"
+  shoe_mm: 235
+  body_type: 슬림 스트레이트
   age: 27
   birthplace: 서울
   age_band: 20
@@ -9,6 +14,11 @@
   status: planned
 - name: 타나카 미오
   handle: TanakaMIO
+  height_cm: 158
+  top_size: S(55)
+  bottom_size: "25"
+  shoe_mm: 230
+  body_type: 아담한 체형
   age: 24
   birthplace: 일본 후쿠오카
   age_band: 20
@@ -18,6 +28,11 @@
   status: planned
 - name: 제이드 박
   handle: ParkJADE
+  height_cm: 166
+  top_size: M(66)
+  bottom_size: "27"
+  shoe_mm: 240
+  body_type: 탄탄한 애슬레틱
   age: 22
   birthplace: 미국 LA
   age_band: 20
@@ -27,6 +42,11 @@
   status: planned
 - name: 윤채이
   handle: YunCHAEI
+  height_cm: 160
+  top_size: S(55)
+  bottom_size: "25"
+  shoe_mm: 230
+  body_type: 가녀린 슬림
   age: 25
   birthplace: 부산
   age_band: 20
@@ -36,6 +56,11 @@
   status: planned
 - name: 레아 모로
   handle: MoreauLEA
+  height_cm: 171
+  top_size: S(55)
+  bottom_size: "26"
+  shoe_mm: 245
+  body_type: 긴 팔다리 슬림
   age: 26
   birthplace: 프랑스 리옹
   age_band: 20
@@ -45,6 +70,11 @@
   status: planned
 - name: 한소율
   handle: HanSOYUL
+  height_cm: 165
+  top_size: M(66)
+  bottom_size: "27"
+  shoe_mm: 240
+  body_type: 스트레이트
   age: 36
   birthplace: 서울
   age_band: 30
@@ -54,6 +84,11 @@
   status: planned
 - name: 강유나
   handle: KangUNA
+  height_cm: 163
+  top_size: M(66)
+  bottom_size: "26"
+  shoe_mm: 235
+  body_type: 균형형
   age: 32
   birthplace: 서울
   age_band: 30
@@ -63,6 +98,11 @@
   status: active
 - name: 마야 첸
   handle: ChenMAYA
+  height_cm: 162
+  top_size: S(55)
+  bottom_size: "25"
+  shoe_mm: 235
+  body_type: 탄탄한 러너형
   age: 34
   birthplace: 대만 타이베이
   age_band: 30
@@ -72,6 +112,11 @@
   status: planned
 - name: 오다은
   handle: OhDAEUN
+  height_cm: 161
+  top_size: M(66)
+  bottom_size: "27"
+  shoe_mm: 235
+  body_type: 부드러운 곡선형
   age: 38
   birthplace: 대구
   age_band: 30
@@ -81,6 +126,11 @@
   status: planned
 - name: 에린 소
   handle: SoERIN
+  height_cm: 168
+  top_size: S(55)
+  bottom_size: "26"
+  shoe_mm: 240
+  body_type: 롱 슬림
   age: 33
   birthplace: 미국 뉴욕
   age_band: 30
@@ -90,6 +140,11 @@
   status: planned
 - name: 문서진
   handle: MoonSEOJIN
+  height_cm: 165
+  top_size: M(66)
+  bottom_size: "27"
+  shoe_mm: 240
+  body_type: 스트레이트
   age: 45
   birthplace: 서울
   age_band: 40
@@ -99,6 +154,11 @@
   status: planned
 - name: 배연희
   handle: BaeYEONHEE
+  height_cm: 160
+  top_size: L(77)
+  bottom_size: "29"
+  shoe_mm: 235
+  body_type: 건강한 보통 체형
   age: 43
   birthplace: 인천
   age_band: 40
@@ -108,6 +168,11 @@
   status: planned
 - name: 줄리아 페리
   handle: FerriGIULIA
+  height_cm: 169
+  top_size: M(66)
+  bottom_size: "27"
+  shoe_mm: 245
+  body_type: 탄탄한 애슬레틱
   age: 47
   birthplace: 이탈리아 밀라노
   age_band: 40
@@ -117,6 +182,11 @@
   status: planned
 - name: 권미래
   handle: KwonMIRAE
+  height_cm: 162
+  top_size: M(66)
+  bottom_size: "27"
+  shoe_mm: 235
+  body_type: 부드러운 곡선형
   age: 41
   birthplace: 광주
   age_band: 40
@@ -126,6 +196,11 @@
   status: planned
 - name: 모리 아야
   handle: MoriAYA
+  height_cm: 167
+  top_size: S(55)
+  bottom_size: "26"
+  shoe_mm: 240
+  body_type: 마른 롱 실루엣
   age: 46
   birthplace: 일본 도쿄
   age_band: 40
@@ -135,6 +210,11 @@
   status: planned
 - name: 정혜원
   handle: JungHYEWON
+  height_cm: 162
+  top_size: M(66)
+  bottom_size: "28"
+  shoe_mm: 235
+  body_type: 단정한 보통 체형
   age: 54
   birthplace: 서울
   age_band: 50
@@ -144,6 +224,11 @@
   status: planned
 - name: 남궁선
   handle: NamgungSUN
+  height_cm: 158
+  top_size: L(77)
+  bottom_size: "29"
+  shoe_mm: 235
+  body_type: 편안한 보통 체형
   age: 52
   birthplace: 제주
   age_band: 50
@@ -153,6 +238,11 @@
   status: planned
 - name: 노라 휫필드
   handle: WhitfieldNORA
+  height_cm: 170
+  top_size: M(66)
+  bottom_size: "28"
+  shoe_mm: 245
+  body_type: 활동적인 장신
   age: 56
   birthplace: 호주 시드니
   age_band: 50
@@ -162,6 +252,11 @@
   status: planned
 - name: 이정란
   handle: LeeJEONGRAN
+  height_cm: 157
+  top_size: M(66)
+  bottom_size: "28"
+  shoe_mm: 230
+  body_type: 부드러운 곡선형
   age: 58
   birthplace: 전주
   age_band: 50
@@ -171,6 +266,11 @@
   status: planned
 - name: 사라 린드
   handle: LindSARA
+  height_cm: 172
+  top_size: M(66)
+  bottom_size: "27"
+  shoe_mm: 250
+  body_type: 장신 슬림
   age: 55
   birthplace: 스웨덴 스톡홀름
   age_band: 50

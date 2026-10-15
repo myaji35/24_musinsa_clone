@@ -1520,6 +1520,54 @@
         ],
         "origin": "대표님 지시 2026-10-15"
       }
+    },
+    {
+      "id": "ISS-088",
+      "title": "CI Test Suite 실패: runner 에 libvips 없음 — analyzer_test.rb:36 LoadError(vips.so.42)",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "ci.yml 에 libvips 설치(apt-get install -y libvips) 추가 후 Test Suite 통과",
+      "created_at": "2026-10-15T07:23:51.243001Z",
+      "updated_at": "2026-10-15T07:23:51.243001Z",
+      "payload": {
+        "origin": "factory-runner CI 확인",
+        "source_run": "38698328689",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "ISS-077 이후 모든 main push 의 CI 가 이 1건으로 실패(run 38692354750, 38698328689). ci.yml 한 줄 추가로 해결되는 되돌리기 쉬운 수정",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:23:51.243001Z"
+        }
+      }
+    },
+    {
+      "id": "ISS-089",
+      "title": "CI Security Checks 실패: Brakeman EOLRails(Rails 7.2 지원 종료 경고)로 exit 3",
+      "type": "INFRA",
+      "priority": "P2",
+      "size": "M",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "Rails 지원 버전으로 올리거나, 업그레이드 일정 확정 시까지 brakeman.ignore 에 근거와 기한을 남겨 CI 통과",
+      "created_at": "2026-10-15T07:23:51.243001Z",
+      "updated_at": "2026-10-15T07:23:51.243001Z",
+      "payload": {
+        "origin": "factory-runner CI 확인",
+        "source_run": "38698328689",
+        "recommendation": {
+          "verdict": "대표님 확인 후 진행",
+          "reason": "코드 결함이 아니라 프레임워크 지원 종료 경고. 업그레이드(대형) vs 기한부 ignore 중 선택 필요. 권장: 기한부 ignore 로 CI 를 먼저 살리고 업그레이드는 별도 이슈",
+          "risk": "medium",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-15T07:23:51.243001Z"
+        }
+      }
     }
   ],
   "hooks": {

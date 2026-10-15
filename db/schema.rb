@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_13_000004) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_15_000001) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -84,6 +84,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_13_000004) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["handle"], name: "index_characters_on_handle", unique: true
+  end
+
+  create_table "image_processings", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.string "kind", null: false
+    t.string "status", default: "pending", null: false
+    t.string "provider"
+    t.integer "cost_cents", default: 0, null: false
+    t.text "error_message"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_image_processings_on_created_at"
+    t.index ["product_id", "kind"], name: "index_image_processings_on_product_id_and_kind"
+    t.index ["status"], name: "index_image_processings_on_status"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -310,6 +326,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_13_000004) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "campaigns", "products"
+  add_foreign_key "image_processings", "products"
   add_foreign_key "notifications", "variants"
   add_foreign_key "orders", "anony_customers"
   add_foreign_key "orders", "products"

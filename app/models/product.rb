@@ -8,6 +8,7 @@ class Product < ApplicationRecord
   has_many :orders
   has_many :campaigns # Epic 6.1
   has_many :product_analyses, dependent: :destroy
+  has_many :image_processings, class_name: "ProductImageProcessing", dependent: :destroy
   has_one :latest_analysis, -> { order(created_at: :desc) }, class_name: "ProductAnalysis"
 
   # Active Storage 이미지 첨부 (Story 1.1)

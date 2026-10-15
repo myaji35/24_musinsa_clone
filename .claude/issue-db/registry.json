@@ -387,14 +387,14 @@
       "priority": "P2",
       "size": "M",
       "phase": "2",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [
         "ISS-004",
         "ISS-008"
       ],
       "done_criteria": "7/30/90일+차트",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-15T06:48:01.112Z",
+      "updated_at": "2026-10-15T08:32:27.372397+00:00",
       "payload": {
         "decisions": [
           {
@@ -405,9 +405,25 @@
           }
         ],
         "approved_at": "2026-10-15T06:48:01.112Z",
-        "approved_by": "대표님(관제실)"
+        "approved_by": "대표님(관제실)",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "대시보드에 기간 필터(7/30/90일)와 일별 매출 차트만 추가. 기존 집계에 기간 조건을 거는 범위라 되돌리기 쉬움. 차트는 외부 CDN 없이 서버 렌더 막대로 구현",
+          "risk": "low",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-15T08:32:27.372397+00:00"
+        },
+        "user_test": "PASS — 7/30/90 수치·aria-current·빈 기간 안내·1440/390 확인, 콘솔·네트워크 오류 0. docs/user-test/2026-10-15/review-iss017-*.png"
       },
-      "last_dispatched_at": "2026-10-15T17:16:42"
+      "last_dispatched_at": "2026-10-15T17:16:42",
+      "started_at": "2026-10-15T08:32:27.372397+00:00",
+      "result": {
+        "tests": "pass",
+        "user_test": "PASS",
+        "screens": "docs/user-test/2026-10-15/review-iss017-*.png"
+      },
+      "completed_at": "2026-10-15T17:55:21.735543"
     },
     {
       "id": "ISS-013",
@@ -435,7 +451,7 @@
         "approved_at": "2026-10-15T06:48:07.453Z",
         "approved_by": "대표님(관제실)"
       },
-      "last_dispatched_at": "2026-10-15T17:16:42"
+      "last_dispatched_at": "2026-10-15T17:55:21"
     },
     {
       "id": "ISS-029",
@@ -940,7 +956,7 @@
         "approved_at": "2026-10-15T07:01:58.133Z",
         "approved_by": "자동 승인(추천: 승인 권장)"
       },
-      "last_dispatched_at": "2026-10-15T17:28:13"
+      "last_dispatched_at": "2026-10-15T17:55:21"
     },
     {
       "id": "ISS-046",
@@ -969,7 +985,7 @@
         "approved_at": "2026-10-15T07:01:58.133Z",
         "approved_by": "자동 승인(추천: 승인 권장)"
       },
-      "last_dispatched_at": "2026-10-15T17:28:13"
+      "last_dispatched_at": "2026-10-15T17:55:21"
     },
     {
       "id": "ISS-047",
@@ -1827,21 +1843,21 @@
       "type": "FEATURE",
       "priority": "P2",
       "size": "M",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-062"
       ],
       "done_criteria": "강유나 외 19명 시트 01~09 생성, cost-log 기록, 체형 수치(config/characters.yml)와 외형 일치",
-      "blocked_reason": "OpenAI 이미지 API 과금 필요(인당 약 $0.6 × 19명 ≈ $12, $10 초과) — 공장 실행 과금 금지. 대표님 집행 승인 필요",
+      "blocked_reason": "외부 이미지 API 과금 약 $12 (>$10) — 공장 실행은 외부 과금 금지. 자동 승인으로 READY 가 되었으나 대표님 집행 승인 필요",
       "payload": {
         "origin": "factory-runner ISS-062 분리",
         "recommendation": {
-          "verdict": "대표님 승인 후 진행",
-          "reason": "ISS-062 중 시트 이미지 생성 부분. 예상 $12로 $10 기준 초과, 공장 실행은 과금 금지라 분리해 대기",
+          "verdict": "대표님 집행 승인 후 진행",
+          "reason": "자동 승인(승인 권장)은 과금 승인이 아님. 예상 $12로 $10 초과 + 공장 규칙상 외부 과금 금지라 BLOCKED 로 되돌림",
           "risk": "low",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-10-15T07:49:05.509032+00:00"
+          "at": "2026-10-15T08:32:27.372397+00:00"
         },
         "decisions": [
           {
@@ -1855,7 +1871,7 @@
         "approved_by": "자동 승인(추천: 승인 권장)"
       },
       "created_at": "2026-10-15T07:49:05.509032+00:00",
-      "updated_at": "2026-10-15T07:54:26.870Z"
+      "updated_at": "2026-10-15T08:32:27.372397+00:00"
     },
     {
       "id": "ISS-091",
@@ -1867,7 +1883,7 @@
       "depends_on": [],
       "done_criteria": "Rails 지원 버전으로 상향, 전체 테스트·RuboCop·Brakeman 통과, config/brakeman.ignore 의 EOLRails 항목 제거",
       "created_at": "2026-10-15T08:16:53.615239+00:00",
-      "updated_at": "2026-10-15T08:16:53.615239+00:00",
+      "updated_at": "2026-10-15T08:31:30.261Z",
       "payload": {
         "origin": "factory-runner ISS-089 분리",
         "source_issue": "ISS-089",
@@ -1878,7 +1894,17 @@
           "effort": "M",
           "by": "factory-runner",
           "at": "2026-10-15T08:16:53.615239+00:00"
-        }
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T08:31:30.261Z",
+            "by": "auto",
+            "reason": "「Rails 7.2.3 → 8.x 업그레이드 (지원 종료, brakeman.ignore 기한 2026-12-31)」(INFRA, P2)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T08:31:30.261Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
       }
     },
     {
@@ -1922,11 +1948,11 @@
       "type": "FIX_BUG",
       "priority": "P2",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "home/index 랭킹 캐시 키에 params[:q] 포함, 캐시 켠 상태(dev:cache)에서 서로 다른 검색어 결과가 섞이지 않음",
       "created_at": "2026-10-15T08:28:13.793292+00:00",
-      "updated_at": "2026-10-15T08:28:13.793292+00:00",
+      "updated_at": "2026-10-15T08:32:27.372397+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-092",
@@ -1938,8 +1964,25 @@
           "effort": "S",
           "by": "factory-runner",
           "at": "2026-10-15T08:28:13.793292+00:00"
-        }
-      }
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T08:31:30.261Z",
+            "by": "auto",
+            "reason": "「홈 랭킹 그리드 캐시 키에 검색어(params[:q]) 누락 — 운영 캐시 활성 시 다른 검색어 결과 노출 위험」은 사용자 테스트에서 실제로 막힌 곳으로 기록되었습니다."
+          }
+        ],
+        "approved_at": "2026-10-15T08:31:30.261Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "user_test": "PASS — dev:cache ON 에서 q=Coat→Sweater 결과 섞임 0, fragment 키 끝 q 만 상이. docs/user-test/2026-10-15/review-iss093-*.png"
+      },
+      "started_at": "2026-10-15T08:32:27.372397+00:00",
+      "result": {
+        "tests": "pass, 회귀테스트가 수정 전 실패 확인",
+        "user_test": "PASS"
+      },
+      "completed_at": "2026-10-15T17:55:21.462314"
     },
     {
       "id": "ISS-094",
@@ -1951,7 +1994,7 @@
       "depends_on": [],
       "done_criteria": "검색 0건일 때 '검색 결과가 없습니다'+초기화 안내, /products 게스트에게 관리 버튼 비노출",
       "created_at": "2026-10-15T08:28:13.793292+00:00",
-      "updated_at": "2026-10-15T08:28:13.793292+00:00",
+      "updated_at": "2026-10-15T08:31:30.261Z",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-092",
@@ -1963,7 +2006,17 @@
           "effort": "S",
           "by": "factory-runner",
           "at": "2026-10-15T08:28:13.793292+00:00"
-        }
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T08:31:30.261Z",
+            "by": "auto",
+            "reason": "「검색 결과 0건 안내 부재 — 홈은 큐레이션이 그대로 보이고 /products 는 '첫 상품을 등록해보세요' 문구 + 게스트에게 '신규 상품 등록' 버튼 노출」은 P3 표기 결함으로, 작은 수정으로 화면 품질을 개선할 수 있습니다."
+          }
+        ],
+        "approved_at": "2026-10-15T08:31:30.261Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
       }
     },
     {
@@ -1972,11 +2025,11 @@
       "type": "SECURITY",
       "priority": "P1",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "bundle exec bundler-audit --update 0건(또는 근거 있는 ignore), 전체 테스트·RuboCop·Brakeman 통과, CI Security Checks 녹색",
       "created_at": "2026-10-15T08:29:51.080189+00:00",
-      "updated_at": "2026-10-15T08:29:51.080189+00:00",
+      "updated_at": "2026-10-15T08:32:27.372397+00:00",
       "payload": {
         "origin": "factory-runner CI 확인",
         "source_run": "38705901709",
@@ -1988,6 +2041,53 @@
           "effort": "M",
           "by": "factory-runner",
           "at": "2026-10-15T08:29:51.080189+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-15T08:31:30.261Z",
+            "by": "auto",
+            "reason": "「CI bundler-audit 실패: 취약 gem 21종(rails 7.2.3·rack·nokogiri·sqlite3·puma·bcrypt 등) — 패치 버전으로 bundle update」(SECURITY, P1)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-10-15T08:31:30.261Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "user_test": "화면 변경 없음 — 생략. 직접 검증: bundler-audit 0, 테스트 245+system 8 통과, rubocop 0, brakeman 0"
+      },
+      "started_at": "2026-10-15T08:32:27.372397+00:00",
+      "result": {
+        "tests": "245 runs 0 fail, system 8/8",
+        "bundler_audit": "0",
+        "rubocop": "0",
+        "brakeman": "0",
+        "rails": "7.2.3.2"
+      },
+      "completed_at": "2026-10-15T17:55:21.233850"
+    },
+    {
+      "id": "ISS-096",
+      "title": "대시보드 일별 매출 차트 — 매출 집중일이 있으면 나머지 막대가 1px 로 안 보임 + 모바일에서 금액 확인 수단 없음(title 툴팁만)",
+      "type": "UX_FIX",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [
+        "ISS-017"
+      ],
+      "done_criteria": "최소 막대 높이 보장(값>0이면 최소 2~4px) 또는 로그/상한 스케일, 터치 환경에서 탭/포커스로 날짜·금액 확인 가능",
+      "created_at": "2026-10-15T08:55:39.666963+00:00",
+      "updated_at": "2026-10-15T08:55:39.666963+00:00",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-017",
+        "evidence": "docs/user-test/2026-10-15/review-iss017-90d-1440.png (9/7 ₩7.8M 대비 ₩33,000 막대 1px)",
+        "recommendation": {
+          "verdict": "진행",
+          "reason": "차트 가독성 FRICTION. 뷰 내 스케일·접근성 보완만이라 되돌리기 쉬움. 실데이터가 쌓이면 바로 체감됨",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-15T08:55:39.666963+00:00"
         }
       }
     }
@@ -2055,6 +2155,24 @@
         "issue_type": "FIX_BUG",
         "plan_created": 0,
         "timestamp": "2026-10-15T17:28:13.578094"
+      },
+      {
+        "issue_id": "ISS-095",
+        "issue_type": "SECURITY",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T17:55:21.233850"
+      },
+      {
+        "issue_id": "ISS-093",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T17:55:21.462314"
+      },
+      {
+        "issue_id": "ISS-017",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-15T17:55:21.735543"
       }
     ],
     "on_fail": [],
@@ -2067,7 +2185,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 24,
+    "completed": 27,
     "failed": 0,
     "evolved": 0
   },
@@ -2080,9 +2198,8 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-017:READY": 2,
-    "ISS-013:READY": 2,
-    "ISS-045:READY": 1,
-    "ISS-046:READY": 1
+    "ISS-013:READY": 3,
+    "ISS-045:READY": 2,
+    "ISS-046:READY": 2
   }
 }

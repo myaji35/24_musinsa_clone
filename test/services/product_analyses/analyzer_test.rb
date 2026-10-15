@@ -26,6 +26,7 @@ class ProductAnalysesAnalyzerTest < ActiveSupport::TestCase
     ENV["ANTHROPIC_API_KEY"] = "test-key"
     @first = Character.create!(name: "첫째", handle: "first", status: "active")
     @second = Character.create!(name: "둘째", handle: "second", status: "planned")
+    @third = Character.create!(name: "셋째", handle: "third", status: "active")
     @analysis = products(:one).product_analyses.create!
   end
 
@@ -35,11 +36,13 @@ class ProductAnalysesAnalyzerTest < ActiveSupport::TestCase
 
   test "성공 응답을 저장하고 요청 옵션과 이미지 블록을 확인한다" do
     products(:one).image.attach(io: File.open(file_fixture("product.png")), filename: "product.png", content_type: "image/png")
-    result, messages = analyze(response(payload))
+    result, messages = analyze(response(payload), appeal_points: [ "가벼운 착용감" ])
     assert result.success?
     assert_equal "done", @analysis.reload.status
     assert_equal @first, @analysis.character
     assert_equal @second, @analysis.alt_character
+    assert_equal [ "first", "second", "third" ], JSON.parse(@analysis.ranking_json).map { |entry| entry["handle"] }
+    assert_equal [ 1, 2, 3 ], JSON.parse(@analysis.ranking_json).map { |entry| entry["rank"] }
     assert_equal "peer_fit", @analysis.concept_angle
     assert_equal 2, @analysis.target_units
     assert_equal 39_800, @analysis.target_revenue
@@ -54,6 +57,8 @@ class ProductAnalysesAnalyzerTest < ActiveSupport::TestCase
     assert_not messages.options.key?(:thinking)
     assert_not messages.options.key?(:temperature)
     assert_equal "image", messages.options[:messages][0][:content][1][:type]
+    request = JSON.parse(messages.options[:messages][0][:content][0][:text])
+    assert_equal [ "가벼운 착용감" ], request["appeal_points"]
   end
 
   test "거절은 실패 이력으로 남는다" do
@@ -63,9 +68,42 @@ class ProductAnalysesAnalyzerTest < ActiveSupport::TestCase
   end
 
   test "로스터 밖 캐릭터는 실패한다" do
-    result, = analyze(response(payload.merge("character_handle" => "missing")))
+    result, = analyze(response(payload.merge("ranked_characters" => ranking("first", "second", "missing"))))
     assert result.failure?
-    assert_equal "로스터에 없는 캐릭터", @analysis.reload.error_message
+    assert_match(/추천 3명 검증 실패: 로스터 밖 handle/, @analysis.reload.error_message)
+  end
+
+  test "중복과 두 명 추천은 실패한다" do
+    [ ranking("first", "first", "third"), ranking("first", "second") ].each do |entries|
+      result, = analyze(response(payload.merge("ranked_characters" => entries)))
+      assert result.failure?
+      assert_match(/추천 3명 검증 실패:/, @analysis.reload.error_message)
+    end
+  end
+
+  test "초이는 로스터에서 제외되고 응답에 있어도 실패한다" do
+    Character.create!(name: "초이", handle: "ChOi", status: "active")
+    result, messages = analyze(response(payload))
+    assert result.success?
+    request = JSON.parse(messages.options[:messages][0][:content][0][:text])
+    assert_not_includes request["characters"].map { |entry| entry["handle"] }, "ChOi"
+
+    result, = analyze(response(payload.merge("ranked_characters" => ranking("first", "second", "ChOi"))))
+    assert result.failure?
+    assert_match(/추천 3명 검증 실패:/, @analysis.reload.error_message)
+  end
+
+  test "시트 추천은 같은 순위를 반환하고 분석 행을 저장하지 않는다" do
+    messages = FakeMessages.new(response(payload))
+    client = Struct.new(:beta).new(Struct.new(:messages).new(messages))
+    before_count = ProductAnalysis.count
+
+    ranking = ProductAnalyses::Analyzer.rank_for_sheet(details: { code: "P-1" }, image_jpeg: "jpeg",
+      appeal_points: [ "가벼움" ], client: client)
+
+    assert_equal [ "first", "second", "third" ], ranking.map { |entry| entry[:handle] }
+    assert_equal before_count, ProductAnalysis.count
+    assert_equal [ "가벼움" ], JSON.parse(messages.options[:messages][0][:content][0][:text])["appeal_points"]
   end
 
   test "범위 밖 확신도는 실패한다" do
@@ -100,10 +138,10 @@ class ProductAnalysesAnalyzerTest < ActiveSupport::TestCase
 
   private
 
-  def analyze(res)
+  def analyze(res, appeal_points: [])
     messages = FakeMessages.new(res)
     client = Struct.new(:beta).new(Struct.new(:messages).new(messages))
-    [ ProductAnalyses::Analyzer.new(@analysis, client: client).call, messages ]
+    [ ProductAnalyses::Analyzer.new(@analysis, client: client, appeal_points: appeal_points).call, messages ]
   end
 
   def response(data, stop_reason: :end_turn, stop_details: nil)
@@ -113,9 +151,13 @@ class ProductAnalysesAnalyzerTest < ActiveSupport::TestCase
 
   def payload
     { "style_axis" => "캐주얼·데일리", "target_age_band" => 20, "season" => "사계절",
-      "character_handle" => "first", "alt_character_handle" => "second",
+      "ranked_characters" => ranking("first", "second", "third"),
       "concept_angle" => "peer_fit", "concept_title" => "일상 핏", "hook_line" => "오늘의 핏",
       "attributes" => { "colors" => [ "흰색" ], "silhouette" => nil, "tpo" => [ "일상" ], "material_guess" => nil },
       "reasoning" => "잘 어울립니다.", "confidence" => 0.8 }
+  end
+
+  def ranking(*handles)
+    handles.map { |handle| { "handle" => handle, "reason" => "잘 어울립니다." } }
   end
 end

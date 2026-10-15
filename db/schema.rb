@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_15_000002) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_15_000003) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -176,6 +176,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_15_000002) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "manually_assigned", default: false, null: false
+    t.text "ranking_json"
     t.index ["alt_character_id"], name: "index_product_analyses_on_alt_character_id"
     t.index ["character_id"], name: "index_product_analyses_on_character_id"
     t.index ["product_id"], name: "index_product_analyses_on_product_id"

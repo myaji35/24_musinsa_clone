@@ -13,7 +13,8 @@ log = Logger.new(Rails.root.join("log/sheet_worker.log"))
 
 loop do
   begin
-    poller = SheetPipeline::Poller.new(client: SheetPipeline::GwsClient.new, steps: [ SheetPipeline::ImageQualityGate.new ])
+    poller = SheetPipeline::Poller.new(client: SheetPipeline::GwsClient.new,
+      steps: [ SheetPipeline::ImageQualityGate.new, SheetPipeline::ModelRecommender.new ])
     result = poller.run_once
     line = "#{Time.now.iso8601} read=#{result[:read]} queued=#{result[:queued]} failed=#{result[:failed]}"
     log.info(line)

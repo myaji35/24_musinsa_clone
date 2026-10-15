@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- __APP_DIR__를 앱 절대 경로로 치환한다. -->
+<!-- ~/Library/LaunchAgents/에 복사한다. -->
+<!-- launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.gagahoho.jieun.sheet-worker.plist 로 실행한다. -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.gagahoho.jieun.sheet-worker</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__APP_DIR__/bin/sheet_worker</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__APP_DIR__</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>__APP_DIR__/log/sheet_worker.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>__APP_DIR__/log/sheet_worker.stderr.log</string>
+</dict>
+</plist>

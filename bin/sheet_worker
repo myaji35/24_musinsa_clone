@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+require_relative "../config/environment"
+require "logger"
+require "time"
+
+if ARGV.include?("--print-header")
+  puts SheetPipeline::SheetLayout::HEADERS.join("\t")
+  exit
+end
+
+INTERVAL = Integer(ENV.fetch("SHEET_POLL_SECONDS", "300"))
+log = Logger.new(Rails.root.join("log/sheet_worker.log"))
+
+loop do
+  begin
+    poller = SheetPipeline::Poller.new(client: SheetPipeline::GwsClient.new)
+    result = poller.run_once
+    line = "#{Time.now.iso8601} read=#{result[:read]} queued=#{result[:queued]} failed=#{result[:failed]}"
+    log.info(line)
+    puts line
+  rescue StandardError => error
+    line = "#{Time.now.iso8601} #{error.class}: #{error.message}"
+    log.error(line)
+    warn line
+    exit 1 if ARGV.include?("--once")
+  end
+
+  break if ARGV.include?("--once")
+
+  sleep INTERVAL
+end

@@ -23,7 +23,7 @@ class SendCampaignJob < ApplicationJob
         Rails.logger.info "✅ 캠페인 발송 완료: #{campaign.name} - #{campaign.sent_count}명 발송"
       rescue StandardError => e
         Rails.logger.error "❌ 캠페인 발송 실패: #{campaign.name} - #{e.message}"
-        campaign.update(status: "cancelled")
+        campaign.update!(status: "failed", failure_reason: "#{e.class}: #{e.message}".truncate(500))
       end
     end
 

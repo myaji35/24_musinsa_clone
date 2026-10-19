@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_15_000004) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_18_000000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -52,6 +52,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_15_000004) do
     t.index ["zip_prefix"], name: "index_anony_customers_on_zip_prefix"
   end
 
+  create_table "campaign_deliveries", force: :cascade do |t|
+    t.integer "campaign_id", null: false
+    t.integer "anony_customer_id", null: false
+    t.string "status", default: "pending", null: false
+    t.string "channel", default: "internal", null: false
+    t.text "message"
+    t.text "failure_reason"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["anony_customer_id"], name: "index_campaign_deliveries_on_anony_customer_id"
+    t.index ["campaign_id", "anony_customer_id"], name: "index_campaign_deliveries_on_campaign_id_and_anony_customer_id", unique: true
+    t.index ["campaign_id"], name: "index_campaign_deliveries_on_campaign_id"
+    t.index ["status"], name: "index_campaign_deliveries_on_status"
+  end
+
   create_table "campaigns", force: :cascade do |t|
     t.string "name", null: false
     t.string "campaign_type", null: false
@@ -65,6 +81,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_15_000004) do
     t.integer "sent_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "failure_reason"
     t.index ["campaign_type"], name: "index_campaigns_on_campaign_type"
     t.index ["product_id"], name: "index_campaigns_on_product_id"
     t.index ["scheduled_at"], name: "index_campaigns_on_scheduled_at"
@@ -346,6 +363,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_15_000004) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "campaign_deliveries", "anony_customers"
+  add_foreign_key "campaign_deliveries", "campaigns"
   add_foreign_key "campaigns", "products"
   add_foreign_key "image_processings", "products"
   add_foreign_key "notifications", "variants"

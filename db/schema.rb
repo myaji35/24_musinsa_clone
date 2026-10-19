@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_18_006400) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_18_006500) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -163,10 +163,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_18_006400) do
     t.string "order_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "shipping_address_id"
+    t.datetime "delivered_at"
+    t.string "checkout_number"
     t.index ["anony_customer_id"], name: "index_orders_on_anony_customer_id"
+    t.index ["checkout_number"], name: "index_orders_on_checkout_number"
     t.index ["created_at"], name: "index_orders_on_created_at"
     t.index ["order_number"], name: "index_orders_on_order_number", unique: true
     t.index ["product_id"], name: "index_orders_on_product_id"
+    t.index ["shipping_address_id"], name: "index_orders_on_shipping_address_id"
     t.index ["status"], name: "index_orders_on_status"
     t.index ["variant_id"], name: "index_orders_on_variant_id"
   end
@@ -276,6 +281,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_18_006400) do
     t.string "photo_url"
     t.index ["product_id"], name: "index_reviews_on_product_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
+  create_table "shipping_addresses", force: :cascade do |t|
+    t.string "recipient_name", null: false
+    t.string "phone", null: false
+    t.string "postal_code", null: false
+    t.string "address1", null: false
+    t.string "address2"
+    t.string "country_code", default: "KR", null: false
+    t.boolean "save_consent", default: false, null: false
+    t.datetime "consented_at"
+    t.datetime "purge_after"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["purge_after"], name: "index_shipping_addresses_on_purge_after"
   end
 
   create_table "snap_products", force: :cascade do |t|

@@ -48,4 +48,57 @@ class OrderTest < ActiveSupport::TestCase
     assert_includes Order.delivered, delivered
     assert_not_includes Order.pending, paid
   end
+  test "완료와 직접 상태 변경은 배송 완료 시각 기준 90일 파기를 예약한다" do
+    [ :complete!, :update! ].each do |method|
+      order = orders(:one)
+      order.update!(status: "paid", shipping_address: shipping_addresses(:one))
+      freeze_time do
+        method == :complete! ? order.complete! : order.update!(status: "delivered")
+        assert_equal Time.current, order.reload.delivered_at
+        assert_equal order.delivered_at + 90.days, order.shipping_address.reload.purge_after
+      end
+      delivered_at = order.delivered_at
+      travel 1.day do
+        order.update!(quantity: 3)
+        assert_equal delivered_at, order.reload.delivered_at
+      end
+    end
+  end
+
+  test "동의 배송지는 주문 완료 후에도 파기 예정일이 없다" do
+    address = shipping_addresses(:one)
+    address.update!(save_consent: true, consented_at: Time.current)
+    order = orders(:one)
+    order.update!(shipping_address: address)
+    order.complete!
+    assert_not_nil order.reload.delivered_at
+    assert_nil address.reload.purge_after
+  end
+
+  test "같은 배송지의 주문이 모두 종결된 뒤에만 파기를 예약한다" do
+    address = shipping_addresses(:one)
+    first = orders(:one)
+    second = orders(:two)
+    first.update!(status: "paid", shipping_address: address)
+    second.update!(status: "paid", shipping_address: address)
+
+    first.complete!
+    assert_nil address.reload.purge_after
+
+    freeze_time do
+      second.update!(status: "cancelled")
+      assert_equal Time.current + 90.days, address.reload.purge_after
+    end
+  end
+
+  test "취소만 된 주문의 배송지도 파기를 예약한다" do
+    address = shipping_addresses(:one)
+    order = orders(:one)
+    order.update!(status: "pending", shipping_address: address)
+    freeze_time do
+      order.update!(status: "cancelled")
+      assert_nil order.reload.delivered_at
+      assert_equal Time.current + 90.days, address.reload.purge_after
+    end
+  end
 end

@@ -285,4 +285,12 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match @product.image_url, response.body
   end
+
+  test "100원 단위가 아닌 가격도 편집 폼에서 막히지 않는다" do
+    sign_in
+
+    get edit_product_path(@product)
+
+    assert_select "input[name='product[price]'][step='1']"
+  end
 end

@@ -5289,11 +5289,11 @@
       "type": "FIX_BUG",
       "priority": "P1",
       "size": "S",
-      "status": "READY",
+      "status": "COMPLETED",
       "depends_on": [],
       "done_criteria": "가격이 100원 단위가 아닌 기존 상품도 편집 화면에서 저장된다(시스템/통합 테스트)",
       "created_at": "2026-10-19T04:47:28.281959+00:00",
-      "updated_at": "2026-10-19T04:47:28.281959+00:00",
+      "updated_at": "2026-10-19T04:47:53.354283+00:00",
       "payload": {
         "found_by": "ISS-043 저니 검증(2026-10-18)",
         "evidence": "app/views/products/_form.html.erb:45 number_field step: 100 — 시드 상품 203(39520원) 저장 시 브라우저 검증 '가장 근접한 유효 값 39500 및 39600'으로 제출 차단",
@@ -5304,7 +5304,27 @@
           "effort": "S",
           "by": "factory-runner",
           "at": "2026-10-19T04:47:28.281959+00:00"
-        }
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T04:47:30.717Z",
+            "by": "auto",
+            "reason": "한 줄 수정(step: 1 또는 any)으로 저장 불가 버그 해소"
+          }
+        ],
+        "approved_at": "2026-10-19T04:47:30.717Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "result_note": "main 직접 반영(마이그레이션 없음)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "COMPLETED",
+            "at": "2026-10-19T04:47:53.354283+00:00",
+            "by": "factory-runner",
+            "note": "step: 100 → step: 1, 편집 폼 테스트 추가. 전체 320 runs 0 failures"
+          }
+        ]
       }
     },
     {
@@ -5313,17 +5333,26 @@
       "type": "INFRA",
       "priority": "P2",
       "size": "S",
-      "status": "BLOCKED",
+      "status": "BACKLOG",
       "depends_on": [
         "ISS-024",
         "ISS-043"
       ],
       "done_criteria": "운영 앱이 REMBG_URL 로 rembg 서버를 호출해 누끼가 생성된다. 모델 캐시가 볼륨에 유지된다",
       "created_at": "2026-10-19T04:47:28.281959+00:00",
-      "updated_at": "2026-10-19T04:47:28.281959+00:00",
+      "updated_at": "2026-10-19T04:47:30.717Z",
       "payload": {
         "blocked_reason": "선행 ISS-024(kamal 배포 열쇠·docker) 미완",
-        "note": "rembg 는 CPU 기준 장당 약 5초·메모리 약 2GB(birefnet). 서버 사양 확인 필요"
+        "note": "rembg 는 CPU 기준 장당 약 5초·메모리 약 2GB(birefnet). 서버 사양 확인 필요",
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-10-19T04:47:30.717Z",
+            "by": "auto",
+            "reason": "「운영 서버에 rembg(BiRefNet) 컨테이너 배치 + REMBG_URL 설정 (kamal accessory)」의 선행 조건: “선행 ISS-024(kamal 배포 열쇠·docker) 미완”"
+          }
+        ],
+        "deferred_at": "2026-10-19T04:47:30.717Z"
       }
     }
   ],

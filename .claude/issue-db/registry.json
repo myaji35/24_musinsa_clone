@@ -1617,7 +1617,7 @@
       ],
       "done_criteria": "저니 통과: 업로드→클릭→PNG 표시→채택→상세 반영. 실패 시나리오에서 상태 배지 노출",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-19T00:30:49.052659+00:00",
+      "updated_at": "2026-10-19T04:16:57.941125+00:00",
       "payload": {
         "decisions": [
           {
@@ -1646,7 +1646,8 @@
             "by": "factory-runner",
             "at": "2026-10-15T07:28:11.388199+00:00"
           }
-        ]
+        ],
+        "blocked_reason": "선행 ISS-043(누끼 어댑터) BLOCKED — ISS-041 실측 자료(사입 사진 10장·Photoroom 키) 미도착"
       },
       "last_dispatched_at": "2026-10-15T16:22:10",
       "blocked_reason": "선행 ISS-043 BLOCKED"
@@ -2303,10 +2304,11 @@
         "if_not_decided": "결제 연결이 시작되지 않아 출시 후 매출을 받을 수 없지만, 이 카드를 직접 기다리는 카드는 없습니다.",
         "reversible": "계약 전에는 자유롭게 바꿀 수 있고, 계약·연동 후에는 PG 교체에 개발 비용과 시간이 듭니다.",
         "explained_by": "decision-explain",
-        "explained_at": "2026-10-18T20:12:38.414384-07:00"
+        "explained_at": "2026-10-18T20:12:38.414384-07:00",
+        "blocked_reason": "PG(결제사) 선택 대표님 결정 대기 + 선행 ISS-059 배포 전 검토 대기"
       },
       "blocked_reason": "PG사 선정·계약은 대표님 몫이고 돈 경로라 자동 착수 대상 아님. 선행 ISS-059도 미완",
-      "updated_at": "2026-10-15T07:03:46.873848Z"
+      "updated_at": "2026-10-19T04:16:57.941125+00:00"
     },
     {
       "id": "ISS-061",
@@ -3080,7 +3082,7 @@
     },
     {
       "id": "ISS-074",
-      "status": "BLOCKED",
+      "status": "BACKLOG",
       "priority": "P1",
       "type": "FEATURE",
       "title": "JIEUN 영상 제작 파이프라인 — K0+상품 참조 → kling_o3_image_reference 3클립 → 재합성",
@@ -3100,6 +3102,12 @@
             "at": "2026-10-19T04:01:58.960Z",
             "by": "auto",
             "reason": "「JIEUN 영상 제작 파이프라인 — K0+상품 참조 → kling_o3_image_reference 3클립 → 재합성」(FEATURE, P1)을 다음 실행에 착수할 만합니다."
+          },
+          {
+            "action": "defer",
+            "at": "2026-10-19T04:15:55.014Z",
+            "by": "auto",
+            "reason": "영상에 쓸 상품(ISS-068)과 생성 경로·예산(ISS-069)이 정해지지 않아 파이프라인을 만들면 다시 고쳐야 함. 두 결정 후 착수"
           }
         ],
         "approved_at": null,
@@ -3126,9 +3134,10 @@
           }
         ],
         "blocked_reason": "선행 ISS-068(1차 판매 상품)·ISS-069(영상 생성 경로) 대표님 결정 대기, ISS-072 진행 중",
-        "note_from_ISS-075": "영상 대본·자막에 '입어보니' 같은 체험담 금지, 강유나 등장 내내 '가상 인물' 표기 — docs/plan/ai-content-labeling-2026-10.md"
+        "note_from_ISS-075": "영상 대본·자막에 '입어보니' 같은 체험담 금지, 강유나 등장 내내 '가상 인물' 표기 — docs/plan/ai-content-labeling-2026-10.md",
+        "deferred_at": "2026-10-19T04:15:55.014Z"
       },
-      "updated_at": "2026-10-19T04:13:42.472328+00:00"
+      "updated_at": "2026-10-19T04:15:55.014Z"
     },
     {
       "id": "ISS-075",
@@ -3725,10 +3734,11 @@
         "if_not_decided": "이 카드는 멈춘 상태로 남고 캐릭터 시트 이미지는 만들어지지 않습니다(이 카드를 기다리는 다른 카드는 없음).",
         "reversible": "생성된 이미지는 버리고 다시 만들 수 있지만, 이미 쓴 AI 과금(약 $12)은 돌려받을 수 없습니다.",
         "explained_by": "decision-explain",
-        "explained_at": "2026-10-18T20:12:55.982496-07:00"
+        "explained_at": "2026-10-18T20:12:55.982496-07:00",
+        "blocked_reason": "예상 과금 약 $12(1회 한도 $10 초과) 대표님 집행 승인 대기 + OpenAI 이미지 크레딧 0(ISS-108 결정 대기)"
       },
       "created_at": "2026-10-15T07:49:05.509032+00:00",
-      "updated_at": "2026-10-19T00:30:49.052659+00:00"
+      "updated_at": "2026-10-19T04:16:57.941125+00:00"
     },
     {
       "id": "ISS-091",
@@ -4728,24 +4738,60 @@
       "type": "FEATURE",
       "priority": "P2",
       "size": "L",
-      "status": "BACKLOG",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-059"
       ],
       "done_criteria": "고객 회원가입/로그인(관리자 User 와 분리), 주문서에서 '배송지 저장' 선택 동의 시 save_consent true, 마이페이지에서 동의 철회 → revoke_consent! 로 즉시 파기 대상, 탈퇴 시 배송지 파기, 테스트 통과",
       "created_at": "2026-10-19T02:08:05.907965+00:00",
-      "updated_at": "2026-10-19T02:08:05.907965+00:00",
+      "updated_at": "2026-10-19T04:16:43.881497+00:00",
       "payload": {
         "origin": "factory-runner ISS-059 분리",
         "gate": "deploy",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "PRD v2 '고객 계정은 2차'에 따라 ISS-059 1차(비회원 주문)에서 분리. C안의 '회원 동의 보관' 절반을 담당. 인증·개인정보라 구현은 브랜치, 배포는 대표님 확인(gate=deploy). ISS-059 병합 후 착수",
-          "risk": "중간",
+          "verdict": "보류 권장",
+          "reason": "선행 ISS-059가 배포 전 검토(대표님 결정) 대기 중이고, ISS-106 배송지 보관 결정(90일 파기 vs 5년 보존)이 이 카드의 동의·파기 설계를 좌우함. 두 건이 정해지면 factory/ISS-059 기반 브랜치에서 gate=deploy 로 구현",
+          "risk": "중 — 인증·개인정보(고객 계정·배송지) 변경",
           "effort": "L",
           "by": "factory-runner",
-          "at": "2026-10-19T02:08:05.907965+00:00"
-        }
+          "at": "2026-10-19T04:16:43.881497+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T04:15:55.014Z",
+            "by": "auto",
+            "reason": "PRD v2 '고객 계정은 2차'에 따라 ISS-059 1차(비회원 주문)에서 분리. C안의 '회원 동의 보관' 절반을 담당. 인증·개인정보라 구현은 브랜치, 배포는 대표님 확인(gate=deploy). ISS-059 병합 후 착수"
+          }
+        ],
+        "approved_at": null,
+        "approved_by": null,
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "PRD v2 '고객 계정은 2차'에 따라 ISS-059 1차(비회원 주문)에서 분리. C안의 '회원 동의 보관' 절반을 담당. 인증·개인정보라 구현은 브랜치, 배포는 대표님 확인(gate=deploy). ISS-059 병합 후 착수",
+            "risk": "중간",
+            "effort": "L",
+            "by": "factory-runner",
+            "at": "2026-10-19T02:08:05.907965+00:00"
+          }
+        ],
+        "auto_approval_ignored": {
+          "approved_at": "2026-10-19T04:15:55.014Z",
+          "approved_by": "자동 승인(백로그 승격)",
+          "ignored_by": "factory-runner",
+          "reason": "depends_on ISS-059 미완 상태에서 백로그 일괄 승격 — 착수 조건 불충족"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-19T04:16:43.881497+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-059(커머스 코어, 배포 전 대표님 검토 대기) 미완 — 이 카드는 factory/ISS-059 위에 쌓아야 하고, ISS-106(배송지 보관 방식) 결정에 따라 '저장 동의·파기' 규칙이 바뀔 수 있어 지금 착수하면 재작업"
+          }
+        ],
+        "blocked_reason": "선행 ISS-059(커머스 코어, 배포 전 대표님 검토 대기) 미완 — 이 카드는 factory/ISS-059 위에 쌓아야 하고, ISS-106(배송지 보관 방식) 결정에 따라 '저장 동의·파기' 규칙이 바뀔 수 있어 지금 착수하면 재작업"
       }
     },
     {
@@ -4891,14 +4937,14 @@
     },
     {
       "id": "ISS-109",
-      "status": "BLOCKED",
+      "status": "BACKLOG",
       "priority": "P2",
       "type": "FEATURE",
       "origin": "factory-runner",
       "source": "ISS-086 분리",
       "title": "[JIEUN] 로컬 워커 컷 이미지 3명×3컷 생성 + ContentUploader 연결 + 시트 상태(컷완료/선택대기) 기록",
       "created_at": "2026-10-19T04:09:45.198873+00:00",
-      "updated_at": "2026-10-19T04:09:45.198873+00:00",
+      "updated_at": "2026-10-19T04:15:55.014Z",
       "depends_on": [
         "ISS-069",
         "ISS-086"
@@ -4913,7 +4959,16 @@
           "effort": "M",
           "by": "factory-runner",
           "at": "2026-10-19T04:09:45.198873+00:00"
-        }
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-10-19T04:15:55.014Z",
+            "by": "auto",
+            "reason": "어떤 생성 서비스를 쓸지 정해지지 않아 지금 만들면 다시 고쳐야 함. ISS-069 결정과 ISS-086 병합 후 착수"
+          }
+        ],
+        "deferred_at": "2026-10-19T04:15:55.014Z"
       }
     }
   ],

@@ -1,0 +1,47 @@
+# Propshaft가 서빙하는 app/assets/images/avatars/에 저장한다(app/assets/avatars/ 대신).
+# generator는 원본 파일에 직접 대응하는 비용 로그가 있을 때만 model을 기록한다.
+---
+SeoHARIN:
+  name: 서하린
+  body_type: 슬림 스트레이트
+  height_cm: 164
+  top_size: S(55)
+  bottom_size: '26'
+  gender: female
+  image: avatars/SeoHARIN.jpg
+  source: persona/runway-04/refs/SeoHARIN.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)
+KangUNA:
+  name: 강유나
+  body_type: 균형형
+  height_cm: 163
+  top_size: M(66)
+  bottom_size: '26'
+  gender: female
+  image: avatars/KangUNA.jpg
+  source: persona/f35-influencer/01_full_front.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)
+ChenMAYA:
+  name: 마야 첸
+  body_type: 탄탄한 러너형
+  height_cm: 162
+  top_size: S(55)
+  bottom_size: '25'
+  gender: female
+  image: avatars/ChenMAYA.jpg
+  source: persona/runway-04/refs/ChenMAYA.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)
+OhDAEUN:
+  name: 오다은
+  body_type: 부드러운 곡선형
+  height_cm: 161
+  top_size: M(66)
+  bottom_size: '27'
+  gender: female
+  image: avatars/OhDAEUN.jpg
+  source: persona/runway-04/refs/OhDAEUN.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)

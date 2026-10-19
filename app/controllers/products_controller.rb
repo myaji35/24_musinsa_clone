@@ -13,7 +13,7 @@ class ProductsController < ApplicationController
 
     # 검색
     if params[:q].present?
-      @products = @products.where("products.name LIKE ? OR products.brand LIKE ?", "%#{params[:q]}%", "%#{params[:q]}%")
+      @products = @products.search_name_or_brand(params[:q])
     end
 
     # 정렬

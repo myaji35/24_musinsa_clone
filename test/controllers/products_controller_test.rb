@@ -24,6 +24,29 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "특수 문자 검색은 전체 상품 대신 빈 결과를 표시한다" do
+    [ "%", "_", "\\" ].each do |query|
+      get products_path, params: { q: query }
+
+      assert_response :success
+      assert_select "[role=status] h2", text: "검색 결과가 없습니다"
+      assert_select "a[href=?]", product_path(@product), count: 0
+    end
+  end
+
+  test "이름과 브랜드의 특수 문자 및 일반 검색이 동작한다" do
+    [ "50%", "item_code", "path\\name", "일반검색" ].each do |query|
+      [ :name, :brand ].each do |attribute|
+        @product.update!(name: "검색대상", brand: "검색브랜드", attribute => "앞#{query}뒤")
+        get products_path, params: { q: query }
+
+        assert_response :success
+        assert_select ".grid a[href=?]", product_path(@product), text: @product.name
+        assert_select "[role=status]", count: 0
+      end
+    end
+  end
+
   test "empty search shows query and reset for guests and administrators" do
     [ false, true ].each do |admin|
       sign_in if admin

@@ -26,7 +26,7 @@ class HomeController < ApplicationController
 
     # 2. Search (Name or Brand)
     if params[:q].present?
-      @products = @products.where("products.name LIKE ? OR products.brand LIKE ?", "%#{params[:q]}%", "%#{params[:q]}%")
+      @products = @products.search_name_or_brand(params[:q])
     end
 
     # 3. Sorting

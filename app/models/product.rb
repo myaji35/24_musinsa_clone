@@ -31,6 +31,11 @@ class Product < ApplicationRecord
   validates :description, length: { maximum: 500 }, allow_blank: true
   validate :validate_image
 
+  scope :search_name_or_brand, ->(query) {
+    pattern = "%#{ActiveRecord::Base.sanitize_sql_like(query.to_s)}%"
+    where("products.name LIKE ? ESCAPE '\\' OR products.brand LIKE ? ESCAPE '\\'", pattern, pattern)
+  }
+
   # AI 속성 필터링 Scopes (Story 1.2)
   scope :by_mood, ->(mood) { where("json_extract(ai_attributes, '$.mood') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(mood.to_s.to_json)}%") }
   scope :by_tpo, ->(tpo) { where("json_extract(ai_attributes, '$.tpo') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(tpo.to_s.to_json)}%") }

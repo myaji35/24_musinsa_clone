@@ -42,6 +42,29 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "특수 문자 검색은 전체 상품 대신 빈 결과를 표시한다" do
+    [ "%", "_", "\\" ].each do |query|
+      get root_path, params: { q: query }
+
+      assert_response :success
+      assert_select "[role=status] h2", text: "검색 결과가 없습니다"
+      assert_select "a[href=?]", product_path(@product1), count: 0
+    end
+  end
+
+  test "이름과 브랜드의 특수 문자 및 일반 검색이 동작한다" do
+    [ "50%", "item_code", "path\\name", "일반검색" ].each do |query|
+      [ :name, :brand ].each do |attribute|
+        @product1.update!(name: "검색대상", brand: "검색브랜드", attribute => "앞#{query}뒤")
+        get root_path, params: { q: query }
+
+        assert_response :success
+        assert_select "#ranking .grid h3", text: @product1.name
+        assert_select "[role=status]", count: 0
+      end
+    end
+  end
+
   test "empty search displays query and reset without curation or ranking" do
     query = "<없는상품>"
     get root_path, params: { q: query, category: "상의" }

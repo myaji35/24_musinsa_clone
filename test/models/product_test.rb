@@ -15,6 +15,23 @@ class ProductTest < ActiveSupport::TestCase
     )
   end
 
+  test "이름과 브랜드 검색은 LIKE 특수 문자를 글자 그대로 찾는다" do
+    @product.save!
+    [ "%", "_", "\\", "50%", "item_code", "path\\name" ].each do |query|
+      [ :name, :brand ].each do |attribute|
+        match = @product.dup
+        match[attribute] = "앞#{query}뒤"
+        match.save!
+
+        assert_equal [ match.id ], Product.search_name_or_brand(query).pluck(:id)
+        match.destroy!
+      end
+    end
+    assert_includes Product.search_name_or_brand("Product"), @product
+    assert_includes Product.search_name_or_brand("Brand"), @product
+    assert_empty Product.search_name_or_brand("없는상품")
+  end
+
   test "should be valid with all attributes" do
     assert @product.valid?
   end

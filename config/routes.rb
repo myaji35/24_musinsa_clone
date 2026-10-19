@@ -29,6 +29,10 @@ Rails.application.routes.draw do
   end
 
   # Dashboard (Epic 4.3 - 익명 CRM 대시보드)
+  get "dashboard", to: redirect { |_params, request|
+    query = request.query_string
+    query.empty? ? "/dashboard/index" : "/dashboard/index?#{query}"
+  }
   namespace :dashboard do
     get :index
     get :regional_trends

@@ -382,7 +382,7 @@
       "priority": "P1",
       "size": "L",
       "phase": "2",
-      "status": "AWAITING_USER",
+      "status": "DONE",
       "depends_on": [
         "ISS-006",
         "ISS-008",
@@ -390,7 +390,7 @@
       ],
       "done_criteria": "grep 주소 0건",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-19T03:34:36.862967+00:00",
+      "updated_at": "2026-10-19T03:49:47.813383+00:00",
       "payload": {
         "decisions": [
           {
@@ -404,6 +404,12 @@
             "at": "2026-10-19T03:32:20.779Z",
             "by": "auto",
             "reason": "구현·전체 테스트(328건)·사용자 여정 검증 PASS. 돈 흐름·개인정보(배송지·주문서) 화면이라 배포 전 대표님 확인 필요. 승인하시면 다음 실행에서 push·배포"
+          },
+          {
+            "action": "decide",
+            "at": "2026-10-19T03:48:35.509Z",
+            "by": "대표님(관제실)",
+            "note": "A. 배포 승인 (90일 보관 후 파기 그대로)"
           }
         ],
         "recommendation": {
@@ -496,6 +502,13 @@
             "at": "2026-10-19T03:34:36.862967+00:00",
             "by": "factory-runner",
             "note": "배포 전 확인 재복원: 03:32:20 의 approved_at 은 '자동 승인(추천: 승인 권장)' — 공장 자신의 추천에 반응한 자동 처리로 대표님 배포 승인이 아님. 추천을 '대표님 결정 필요'로 바꿔 자동 승인 반복 차단"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T03:49:47.813383+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-18 — 대표님 배포 승인(관제실 결정 A, 2026-10-19T03:48:35Z, gate_stage=deploy-review 이후) 확인. main 재구성(ISS-059 제외)·검증 후 마감"
           }
         ],
         "gate_stage": "deploy-review",
@@ -511,8 +524,8 @@
           "approved_by": "대표님(관제실)"
         },
         "merged_to_main": "fd6ccc4 (로컬 main, 미push)",
-        "approved_at": null,
-        "approved_by": null,
+        "approved_at": "2026-10-19T03:48:35.509Z",
+        "approved_by": "대표님(관제실)",
         "auto_approval_ignored": {
           "approved_at": "2026-10-19T03:32:20.779Z",
           "approved_by": "자동 승인(추천: 승인 권장)",
@@ -543,21 +556,56 @@
         "recommended_why": "테스트·화면 검증이 모두 통과했고, 주문 기록은 남기고 배송지만 지우는 방식이라 전자상거래법 거래기록 보존과도 충돌이 적음",
         "plain_summary": "고객 배송지(개인정보)를 언제 지울지 정한 기능이 완성됐습니다. 개인정보라 실제 서버에 올리기 전 대표님 확인이 필요합니다.",
         "if_not_decided": "자사몰 주문 기능과 함께 계속 배포 대기 상태로 남고, 다른 완료 작업의 서버 반영(push)도 함께 묶여 멈춥니다.",
-        "reversible": "예 — 보관 기간은 설정값으로 바꿀 수 있고, 배포 후 되돌리기도 가능"
+        "reversible": "예 — 보관 기간은 설정값으로 바꿀 수 있고, 배포 후 되돌리기도 가능",
+        "decision": {
+          "choice": "A",
+          "label": "배포 승인 (90일 보관 후 파기 그대로)",
+          "text": null,
+          "by": "대표님(관제실)",
+          "at": "2026-10-19T03:48:35.509Z"
+        },
+        "deploy_approval": {
+          "approved_at": "2026-10-19T03:48:35.509Z",
+          "approved_by": "대표님(관제실)",
+          "choice": "A"
+        }
       },
       "blocked_reason": "'주소 폐기'가 10-13 결정(자사몰 배송지 저장·해외 배송)과 정면 충돌. ISS-058 개인정보 정책 결정 후 범위 재정의 필요",
       "result": {
-        "summary": "대표님 승인(deploy gate)에 따라 factory/ISS-015 를 main 에 병합, 전체 테스트 통과",
+        "summary": "대표님 배포 승인(관제실 결정 A, 2026-10-19T03:48Z)에 따라 ISS-015(Orders::Intake + 배송지 90일 후 자동 파기)를 main 에 반영. 승인 없는 ISS-059 병합은 main 에서 제외(로컬 미push 이력 재구성, 백업 backup/main-pre-rebuild-20261018)하고 factory/ISS-059 로만 대기",
+        "commit": "5ac549f (merge factory/ISS-015, b2c66ae)",
+        "tests_passed": true,
+        "test_count": 319,
         "proof": [
           {
-            "cmd": "bin/rails test (main, factory/ISS-015+ISS-059 병합 후)",
+            "cmd": "bin/rails test",
             "exit_code": 0,
-            "output": "328 runs, 2043 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "319 runs, 1972 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rails test test/jobs/shipping_address_purge_job_test.rb test/models/order_test.rb test/models/shipping_address_test.rb test/services/orders/intake_test.rb",
+            "exit_code": 0,
+            "output": "17 runs, 181 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bundle exec rubocop --parallel",
+            "exit_code": 0,
+            "output": "207 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "bundle exec brakeman -q --no-pager",
+            "exit_code": 0,
+            "output": "Security Warnings: 0 / No warnings found"
+          },
+          {
+            "cmd": "git merge-base --is-ancestor b2c66ae main; git merge-base --is-ancestor 0127026 main",
+            "exit_code": 0,
+            "output": "has015 / no059"
           }
         ],
         "factory_inline_verification": true
       },
-      "completed_at": "2026-10-18T19:14:40.353112"
+      "completed_at": "2026-10-18T20:50:26.406192"
     },
     {
       "id": "ISS-016",
@@ -702,14 +750,14 @@
       "priority": "P3",
       "size": "L",
       "phase": "3",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-014",
         "ISS-017"
       ],
       "done_criteria": "보류",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-19T03:36:25.311571+00:00",
+      "updated_at": "2026-10-19T03:50:46.975779+00:00",
       "payload": {
         "decisions": [
           {
@@ -722,12 +770,12 @@
         "approved_at": "2026-10-15T06:48:11.891Z",
         "approved_by": "대표님(관제실)",
         "recommendation": {
-          "verdict": "보류 권장",
-          "reason": "PRD v2·EPIC v2 에 '보류'로 명시되고 완료 기준도 '보류'. 지금 착수하면 판매 준비(자사몰·배포)보다 우선순위가 낮은 큰 작업(L)에 시간을 씀. 이번 회차도 미착수, READY 유지",
+          "verdict": "대표님 결정 필요",
+          "reason": "기획서에는 보류로 적혀 있고 완료 기준도 '보류'인데 카드는 착수대기라 회차마다 미착수만 반복. 큰 작업(L)이고 AI 호출 비용이 생기는 기능이라 지금 만들지 대표님이 정해야 함",
           "risk": "low",
           "effort": "L",
           "by": "factory-runner",
-          "at": "2026-10-19T03:36:25.311571+00:00"
+          "at": "2026-10-19T03:50:46.975779+00:00"
         },
         "deferred_reason": "EPIC_v2/PRD_v2 에 '보류'로 명시, done_criteria='보류'. 이번 회차도 미착수(READY 유지)",
         "recommendation_history": [
@@ -746,8 +794,52 @@
             "effort": "L",
             "by": "factory-runner",
             "at": "2026-10-19T03:35:12.649113+00:00"
+          },
+          {
+            "verdict": "보류 권장",
+            "reason": "PRD v2·EPIC v2 에 '보류'로 명시되고 완료 기준도 '보류'. 지금 착수하면 판매 준비(자사몰·배포)보다 우선순위가 낮은 큰 작업(L)에 시간을 씀. 이번 회차도 미착수, READY 유지",
+            "risk": "low",
+            "effort": "L",
+            "by": "factory-runner",
+            "at": "2026-10-19T03:36:25.311571+00:00"
           }
-        ]
+        ],
+        "question": "관리자 화면에서 말로 물어보면 AI가 재고·판매 현황을 답해 주는 '채팅형 분석'을 지금 만들까요?",
+        "options": [
+          {
+            "key": "A",
+            "label": "지금 만들기",
+            "pros": "재고·판매 숫자를 표 대신 질문으로 바로 확인",
+            "cons": "큰 작업이라 자사몰·결제 준비가 그만큼 늦어지고, 질문할 때마다 AI 사용료(건당 몇십 원 수준)가 듦"
+          },
+          {
+            "key": "B",
+            "label": "첫 매출 이후로 미루기",
+            "pros": "판매 시작에 필요한 일(자사몰·결제·배포)에 먼저 집중",
+            "cons": "당분간은 대시보드 표로만 현황을 봐야 함"
+          },
+          {
+            "key": "C",
+            "label": "만들지 않기(카드 종료)",
+            "pros": "관리할 카드가 줄어듦",
+            "cons": "나중에 필요하면 새로 기획해야 함"
+          }
+        ],
+        "recommended_option": "B",
+        "recommended_why": "기획서에도 보류로 되어 있고, 지금은 판매 시작에 직접 필요한 일이 먼저입니다",
+        "plain_summary": "기획서에는 '나중에'로 적힌 AI 채팅 분석 기능이 착수대기에 올라와 있어, 지금 만들지 미룰지 정해 주셔야 합니다.",
+        "if_not_decided": "카드가 계속 대기로 남을 뿐 다른 작업에는 영향 없음",
+        "reversible": "예 — 미뤄도 언제든 다시 착수 가능",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-19T03:50:46.975779+00:00",
+            "by": "factory-runner",
+            "note": "착수 시점 결정 대기 — 기획서(PRD v2)에는 '보류', 관제실에서는 10-15 승인되어 방향이 엇갈림"
+          }
+        ],
+        "blocked_reason": "착수 시점 결정 대기 — 기획서(PRD v2)에는 '보류', 관제실에서는 10-15 승인되어 방향이 엇갈림"
       },
       "last_dispatched_at": "2026-10-18T19:14:32"
     },
@@ -1373,14 +1465,14 @@
       "priority": "P1",
       "size": "M",
       "phase": "2",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-041",
         "ISS-042"
       ],
       "done_criteria": "업로드 이미지가 job을 거쳐 cutout_image로 첨부된다. API 실패 시 cutout_image는 nil 유지(원본으로 대체 금지)",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-19T03:36:25.311571+00:00",
+      "updated_at": "2026-10-19T03:50:46.975779+00:00",
       "payload": {
         "decisions": [
           {
@@ -1394,11 +1486,11 @@
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
           "verdict": "보류 권장",
-          "reason": "선행 ISS-041(누끼 공급사 실측)이 여전히 막힘 — 대표님 A안 자료(사입 사진 10장·Photoroom 키·fal 키)가 아직 없음(.env 에는 ANTHROPIC·HIGGSFIELD 키만). 1차 공급사가 정해져야 어댑터를 붙일 수 있어 미착수",
+          "reason": "선행 ISS-041 이 끝나지 않아 1차 누끼 공급사가 미정. 착수 대기 카드로 READY 에 두면 매 회차 건너뛰기만 반복돼 막힘(선행 대기)으로 정리",
           "risk": "low",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-10-19T03:36:25.311571+00:00"
+          "at": "2026-10-19T03:50:46.975779+00:00"
         },
         "recommendation_history": [
           {
@@ -1424,11 +1516,29 @@
             "effort": "M",
             "by": "factory-runner",
             "at": "2026-10-19T03:35:12.649113+00:00"
+          },
+          {
+            "verdict": "보류 권장",
+            "reason": "선행 ISS-041(누끼 공급사 실측)이 여전히 막힘 — 대표님 A안 자료(사입 사진 10장·Photoroom 키·fal 키)가 아직 없음(.env 에는 ANTHROPIC·HIGGSFIELD 키만). 1차 공급사가 정해져야 어댑터를 붙일 수 있어 미착수",
+            "risk": "low",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-10-19T03:36:25.311571+00:00"
           }
         ],
-        "policy_decision": "ISS-041 결정(2026-10-19): A. 사진 10장 제공 + Photoroom 가입·키 발급까지 직접 진행"
+        "policy_decision": "ISS-041 결정(2026-10-19): A. 사진 10장 제공 + Photoroom 가입·키 발급까지 직접 진행",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-19T03:50:46.975779+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-041(누끼 공급사 실측) 미완 — 대표님 A안 자료(사입 사진 10장·Photoroom 키)가 아직 저장소·.env 에 없음(.env 키: ANTHROPIC·HIGGSFIELD 뿐). 자료가 들어오면 ISS-041 실측 후 READY"
+          }
+        ],
+        "blocked_reason": "선행 ISS-041(누끼 공급사 실측) 미완 — 대표님 A안 자료(사입 사진 10장·Photoroom 키)가 아직 저장소·.env 에 없음(.env 키: ANTHROPIC·HIGGSFIELD 뿐). 자료가 들어오면 ISS-041 실측 후 READY"
       },
-      "last_dispatched_at": "2026-10-15T16:22:04",
+      "last_dispatched_at": "2026-10-18T20:50:26",
       "blocked_reason": "선행 ISS-041 BLOCKED — 1차 누끼 공급사 미확정(실측 스파이크는 외부 과금 필요)"
     },
     {
@@ -1889,15 +1999,21 @@
             "at": "2026-10-19T03:32:20.779Z",
             "by": "auto",
             "reason": "구현·전체 테스트(328건)·사용자 여정 검증 PASS. 돈 흐름·개인정보(배송지·주문서) 화면이라 배포 전 대표님 확인 필요. 승인하시면 다음 실행에서 push·배포"
+          },
+          {
+            "action": "approve",
+            "at": "2026-10-19T03:48:36.046Z",
+            "by": "auto",
+            "reason": "선행 결정이 확정됨 — ISS-015 결정(2026-10-19): A. 배포 승인 (90일 보관 후 파기 그대로). 이 결정을 반영해 범위를 다시 확인하고 진행"
           }
         ],
         "recommendation": {
           "verdict": "대표님 결정 필요",
-          "reason": "자사몰 1차(장바구니·비회원 주문서·주문 조회) 구현·테스트 328건·여정 검증 PASS. 고객 이름·연락처·주소를 받는 화면이고 결제는 아직 미연동이라 실서버 공개는 대표님 확인 필요. ISS-015 위에 쌓여 있어 함께 결정",
+          "reason": "ISS-015(배송지 파기)는 대표님이 배포 승인했지만, 이 카드의 질문(결제 없이 주문 접수만 되는 자사몰을 공개할지)에는 아직 대표님 선택이 없음. 관제실이 ISS-015 결정을 이어받아 자동 승인했으나 배포 승인으로 인정하지 않음",
           "risk": "medium",
           "effort": "S",
           "by": "factory-runner",
-          "at": "2026-10-19T03:34:36.862967+00:00"
+          "at": "2026-10-19T03:49:47.813383+00:00"
         },
         "recommendation_history": [
           {
@@ -1939,6 +2055,14 @@
             "effort": "S",
             "by": "factory-runner",
             "at": "2026-10-19T03:32:17.482496+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "선행 결정이 확정됨 — ISS-015 결정(2026-10-19): A. 배포 승인 (90일 보관 후 파기 그대로). 이 결정을 반영해 범위를 다시 확인하고 진행",
+            "risk": "중간",
+            "effort": "—",
+            "by": "관제실 결정",
+            "at": "2026-10-19T03:48:35.509Z"
           }
         ],
         "policy_decision": "ISS-058 결정(C안, 2026-10-18): 회원이 '배송지 저장'에 선택 동의하면 보관(동의 철회·탈퇴 시 파기), 동의하지 않거나 비회원이면 배송 완료 후 90일 보관 뒤 자동 파기",
@@ -1980,11 +2104,18 @@
             "at": "2026-10-19T03:34:36.862967+00:00",
             "by": "factory-runner",
             "note": "배포 전 확인 재복원: 03:32:20 의 approved_at 은 '자동 승인(추천: 승인 권장)'으로 대표님 배포 승인이 아님. 결정 카드로 전환"
+          },
+          {
+            "from": "READY",
+            "to": "AWAITING_USER",
+            "at": "2026-10-19T03:49:47.813383+00:00",
+            "by": "factory-runner",
+            "note": "배포 전 확인 유지: 03:48:36 승인은 '자동 승인(추천: 승인 권장)' — ISS-015 결정에 연쇄된 관제실 자동 처리이며 ISS-059 자체 질문(결제 없이 공개 여부)에 대한 대표님 선택(payload.decision) 없음. main 에서 ISS-059 병합을 빼고 factory/ISS-059 브랜치로만 대기"
           }
         ],
         "gate_stage": "deploy-review",
         "commit": "0127026 (branch factory/ISS-059, ISS-015 b2c66ae 포함, 미push)",
-        "merge_note": "factory/ISS-059 는 factory/ISS-015 를 포함하므로 둘 다 승인 시 ISS-059 브랜치만 병합하면 됨. ISS-059 만 승인되고 ISS-015 미승인이면 병합 불가",
+        "merge_note": "factory/ISS-059 는 factory/ISS-015 위에 쌓여 있음. ISS-015 는 2026-10-18 실행에서 main 에 반영됨 → 승인 시 factory/ISS-059 만 병합하면 됨",
         "journey_review": "PASS — 장바구니 담기·수량변경·삭제, 동의 미체크 거부+입력 유지, 주문 완료(결제 대기·마스킹), 세션 없는 직접 접근 차단, 뒤4자리 오입력 거부, 375px 가로스크롤 없음 (docs/user-test/2026-10-18/review-iss059-*). FRICTION 3건(주문서 품목 목록·바로구매 안내·0 배지) 반영 완료",
         "deploy_review_checklist": [
           "비회원 주문서 개인정보 동의 문구(배송 목적, 배송 완료 후 90일 보관 뒤 파기) 문안 확인",
@@ -1999,13 +2130,13 @@
           "approved_at": "2026-10-15T07:26:11.486Z",
           "approved_by": "자동 승인(추천: 승인 권장)"
         },
-        "merged_to_main": "fd6ccc4 (로컬 main, 미push)",
+        "merged_to_main": null,
         "approved_at": null,
         "approved_by": null,
         "auto_approval_ignored": {
-          "approved_at": "2026-10-19T03:32:20.779Z",
+          "approved_at": "2026-10-19T03:48:36.046Z",
           "approved_by": "자동 승인(추천: 승인 권장)",
-          "why": "배포 확인(gate=deploy)은 대표님 승인만 인정"
+          "why": "ISS-015 결정에 연쇄된 자동 승인 — ISS-059 질문에 대한 대표님 선택 아님"
         },
         "question": "결제 없이 '주문 접수(결제 대기)'까지만 되는 자사몰 주문 화면을 실서버에 공개해도 될까요?",
         "options": [
@@ -2034,7 +2165,7 @@
         "if_not_decided": "자사몰 기능이 계속 배포 대기로 남고, 이미 로컬 main 에 병합돼 있어 다른 완료 작업의 서버 반영(push)도 함께 멈춥니다.",
         "reversible": "예 — 배포 후 화면을 닫거나 이전 버전으로 되돌릴 수 있음"
       },
-      "updated_at": "2026-10-19T03:34:36.862967+00:00",
+      "updated_at": "2026-10-19T03:49:47.813383+00:00",
       "blocked_reason": "선행 ISS-058 DECISION 대기(개인정보 정책)",
       "result": {
         "summary": "대표님 승인(deploy gate)에 따라 factory/ISS-059 를 main 에 병합, 전체 테스트 통과",
@@ -4219,6 +4350,12 @@
         "issue_type": "FEATURE",
         "plan_created": 0,
         "timestamp": "2026-10-18T20:27:05.929736"
+      },
+      {
+        "issue_id": "ISS-015",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T20:50:26.406192"
       }
     ],
     "on_fail": [],
@@ -4231,7 +4368,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 47,
+    "completed": 48,
     "failed": 0,
     "evolved": 0
   },
@@ -4245,6 +4382,6 @@
   },
   "rewake_state": {
     "ISS-029:READY": 5,
-    "ISS-041:READY": 1
+    "ISS-043:READY": 1
   }
 }

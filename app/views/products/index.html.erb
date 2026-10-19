@@ -2,15 +2,17 @@
   <!-- Header -->
   <div class="flex justify-between items-center mb-8">
     <div>
-      <h1 class="text-2xl font-bold text-gray-900 mb-2">상품 관리</h1>
+      <h1 class="text-2xl font-bold text-gray-900 mb-2"><%= logged_in? ? "상품 관리" : "상품 목록" %></h1>
       <p class="text-sm text-gray-500">총 <%= @products.count %>개의 상품</p>
     </div>
 
+    <% if logged_in? %>
     <%= link_to new_product_path, class: "bg-black text-white font-bold px-6 py-3 rounded-md hover:bg-gray-800 transition-colors inline-flex items-center gap-2" do %>
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
       </svg>
       신규 상품 등록
+    <% end %>
     <% end %>
   </div>
 
@@ -66,13 +68,17 @@
 
             <!-- Actions -->
             <div class="flex gap-2 pt-3 border-t border-gray-100">
+              <% if logged_in? %>
               <%= link_to "수정", edit_product_path(product), class: "flex-1 text-center text-xs font-medium text-gray-700 py-2 border border-gray-300 rounded hover:border-black transition-colors" %>
+              <% end %>
               <%= link_to "보기", product_path(product), class: "flex-1 text-center text-xs font-medium text-white bg-black py-2 rounded hover:bg-gray-800 transition-colors" %>
             </div>
           </div>
         </div>
       <% end %>
     </div>
+  <% elsif params[:q].present? %>
+    <%= render "products/search_empty", reset_path: products_path(request.query_parameters.except("q")) %>
   <% else %>
     <!-- Empty State -->
     <div class="text-center py-20">
@@ -80,12 +86,16 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
       </svg>
       <h3 class="mt-2 text-sm font-medium text-gray-900">등록된 상품이 없습니다</h3>
+      <% if logged_in? %>
       <p class="mt-1 text-sm text-gray-500">첫 번째 상품을 등록해보세요</p>
       <div class="mt-6">
         <%= link_to new_product_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800" do %>
           신규 상품 등록
         <% end %>
       </div>
+      <% else %>
+        <p class="mt-1 text-sm text-gray-500">상품을 준비 중입니다. 잠시 후 다시 방문해주세요.</p>
+      <% end %>
     </div>
   <% end %>
 </div>

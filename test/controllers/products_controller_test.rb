@@ -24,6 +24,70 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "empty search shows query and reset for guests and administrators" do
+    [ false, true ].each do |admin|
+      sign_in if admin
+      get products_path, params: { q: "없는상품", category: "Top", brand: "없는브랜드", sort: "popular" }
+
+      assert_response :success
+      assert_select "[role=status] h2", text: "검색 결과가 없습니다"
+      assert_select "[role=status] p", text: "“없는상품”에 해당하는 상품이 없습니다."
+      assert_select "a[href=?]", products_path(category: "Top", brand: "없는브랜드", sort: "popular"), text: "검색 초기화"
+      assert_no_match "첫 번째 상품을 등록해보세요", response.body
+      assert_select "a[href=?]", new_product_path, count: admin ? 1 : 0
+    end
+  end
+
+  test "non search empty state reserves registration guidance for administrators" do
+    [ false, true ].each do |admin|
+      sign_in if admin
+      get products_path, params: { category: "없는카테고리" }
+
+      assert_response :success
+      assert_select "h3", text: "등록된 상품이 없습니다"
+      assert_select "a[href=?]", new_product_path, count: admin ? 2 : 0
+      if admin
+        assert_match "첫 번째 상품을 등록해보세요", response.body
+      else
+        assert_no_match "첫 번째 상품을 등록해보세요", response.body
+        assert_match "상품을 준비 중입니다", response.body
+      end
+      assert_select "[role=status]", count: 0
+    end
+  end
+
+  test "product list management links are only visible to administrators" do
+    get products_path
+    assert_response :success
+    assert_select "a[href=?]", new_product_path, count: 0
+    assert_select "a[href=?]", edit_product_path(@product), count: 0
+
+    sign_in
+    get products_path
+    assert_response :success
+    assert_select "a[href=?]", new_product_path, count: 1
+    assert_select "a[href=?]", edit_product_path(@product), count: 1
+  end
+
+  test "guests cannot access product management or mutate products" do
+    get new_product_path
+    assert_redirected_to login_path
+    get edit_product_path(@product)
+    assert_redirected_to login_path
+
+    assert_no_difference "Product.count" do
+      post products_path, params: { product: { name: "Unauthorized", price: 1000 } }
+      assert_redirected_to login_path
+      delete product_path(@product)
+      assert_redirected_to login_path
+    end
+
+    original_name = @product.name
+    patch product_path(@product), params: { product: { name: "Unauthorized" } }
+    assert_redirected_to login_path
+    assert_equal original_name, @product.reload.name
+  end
+
   test "should create product with uploaded image" do
     sign_in
 

@@ -1,0 +1,6 @@
+<div class="text-center py-20" role="status">
+  <h2 class="text-lg font-bold text-gray-900">검색 결과가 없습니다</h2>
+  <p class="mt-2 text-sm text-gray-500">“<%= params[:q] %>”에 해당하는 상품이 없습니다.</p>
+  <p class="mt-1 text-sm text-gray-500">다른 검색어를 입력하거나 검색을 초기화해보세요.</p>
+  <%= link_to "검색 초기화", reset_path, class: "mt-6 inline-block text-sm font-medium text-black underline underline-offset-4" %>
+</div>

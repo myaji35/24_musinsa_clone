@@ -42,6 +42,19 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "empty search displays query and reset without curation or ranking" do
+    query = "<없는상품>"
+    get root_path, params: { q: query, category: "상의" }
+
+    assert_response :success
+    assert_select "[role=status] h2", text: "검색 결과가 없습니다"
+    assert_select "[role=status] p", text: "“#{query}”에 해당하는 상품이 없습니다."
+    assert_select "a[href=?]", root_path(category: "상의"), text: "검색 초기화"
+    assert_select "#ranking", count: 0
+    assert_select "a[href=?]", product_path(@product1), count: 0
+    assert_select "a[href=?]", new_product_path, count: 0
+  end
+
   # GET /
   test "should get index" do
     get root_url

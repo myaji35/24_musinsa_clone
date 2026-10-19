@@ -45,7 +45,7 @@ class HomeController < ApplicationController
     @ranked_products = @products.limit(50)
 
     # 29cm 스타일 큐레이션 섹션 준비
-    @curated_collections = prepare_curated_collections
+    @curated_collections = params[:q].present? && @ranked_products.empty? ? [] : prepare_curated_collections
   end
 
   private

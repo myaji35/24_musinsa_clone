@@ -2,6 +2,8 @@ source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.0"
+# Ruby 3.4 부터 csv 가 기본 gem 에서 빠진다(트렌드 CSV 임포터·재고 CSV 내보내기에서 사용)
+gem "csv"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use sqlite3 as the database for Active Record

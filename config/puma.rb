@@ -42,7 +42,7 @@ plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 
 # Clean stale PID files on startup
-on_booted do
+after_booted do
   pid_file = ENV["PIDFILE"] || "tmp/pids/server.pid"
   if File.exist?(pid_file)
     old_pid = File.read(pid_file).strip.to_i

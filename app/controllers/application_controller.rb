@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :require_admin
-  helper_method :current_user, :logged_in?
+  helper_method :current_user, :logged_in?, :cart_count
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
@@ -12,6 +12,10 @@ class ApplicationController < ActionController::Base
 
   def current_user
     @current_user ||= User.find_by(id: session[:user_id])
+  end
+
+  def cart_count
+    @cart_count ||= Cart.new(session[:cart] || {}).count
   end
 
   def logged_in?

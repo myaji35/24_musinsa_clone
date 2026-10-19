@@ -1,0 +1,29 @@
+<div class="max-w-2xl mx-auto px-4 py-8 space-y-6">
+  <h1 class="text-2xl font-bold">비회원 주문서</h1>
+  <% if @errors.present? %>
+    <div role="alert" class="border border-black p-4"><%= @errors.join(" / ") %></div>
+  <% end %>
+  <ul class="border border-gray-300 divide-y divide-gray-200">
+    <% @cart.items.each do |item| %>
+      <li class="p-4 flex justify-between gap-4 text-sm">
+        <span class="min-w-0"><span class="font-bold"><%= item.product.name %></span><br><%= item.variant.color %> / <%= item.variant.size %> · <%= item.quantity %>개</span>
+        <span class="shrink-0 font-bold"><%= number_to_currency(item.line_total, unit: "", precision: 0) %>원</span>
+      </li>
+    <% end %>
+  </ul>
+  <p class="font-bold">주문 합계 <%= number_to_currency(@cart.total, unit: "", precision: 0) %>원</p>
+  <%= form_with scope: :checkout, url: checkout_path, class: "space-y-4" do |f| %>
+    <% { recipient_name: "받는 분", phone: "휴대폰", postal_code: "우편번호", address1: "주소", address2: "상세주소", birth_year: "출생연도(선택)" }.each do |field, label| %>
+      <div>
+        <%= f.label field, label, class: "block text-sm font-bold mb-2" %>
+        <%= f.text_field field, value: @checkout[field.to_s], required: ![:address2, :birth_year].include?(field), class: "w-full min-w-0 border border-gray-400 p-3", inputmode: [:phone, :postal_code, :birth_year].include?(field) ? "numeric" : "text" %>
+      </div>
+    <% end %>
+    <p class="text-sm text-gray-600">출생연도는 익명 취향분석용이며 입력하지 않아도 주문할 수 있습니다.</p>
+    <div class="flex items-start gap-2">
+      <%= f.check_box :privacy_consent, checked: @checkout["privacy_consent"] == "1", class: "mt-1 shrink-0" %>
+      <%= f.label :privacy_consent, "개인정보 수집·이용 동의(배송 목적, 배송 완료 후 #{Rails.configuration.x.shipping_address_retention_days}일 보관 뒤 파기)", class: "text-sm leading-relaxed" %>
+    </div>
+    <%= f.submit "주문하기", class: "w-full bg-black text-white p-4 font-bold" %>
+  <% end %>
+</div>

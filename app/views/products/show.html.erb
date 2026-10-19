@@ -31,7 +31,7 @@
     </div>
 
     <!-- 우측: 상품 정보 -->
-    <div class="space-y-6" data-controller="variant-selector">
+    <div class="space-y-6">
 
       <!-- 브랜드 & 상품명 -->
       <div class="space-y-2">
@@ -46,117 +46,20 @@
 
       <div class="h-px bg-gray-200"></div>
 
-      <!-- Variant 선택: 색상 -->
-      <div class="space-y-3">
-        <p class="text-sm font-medium text-black">색상</p>
-        <div class="flex flex-wrap gap-2">
-          <% if @variants.present? %>
-            <% @variants.map(&:color).uniq.each_with_index do |color, index| %>
-              <button
-                type="button"
-                class="px-4 py-2 border-2 text-sm font-medium transition-colors <%= index == 0 ? 'border-black bg-black text-white' : 'border-gray-300 bg-white text-black hover:border-black' %>"
-                data-action="click->variant-selector#selectColor"
-                data-color="<%= color %>">
-                <%= color %>
-              </button>
-            <% end %>
-          <% else %>
-            <button
-              type="button"
-              class="px-4 py-2 border-2 border-black bg-black text-white text-sm font-medium"
-              disabled>
-              기본 색상
-            </button>
-          <% end %>
+      <%= form_with url: cart_items_path, class: "space-y-4" do |f| %>
+        <%= f.label :variant_id, "색상 / 사이즈", class: "block text-sm font-bold" %>
+        <%= f.select :variant_id,
+              @variants.map { |variant| [ "#{variant.color} / #{variant.size} #{variant.stock.to_i.positive? ? "(재고 #{variant.stock}개)" : "(품절)"}", variant.id, { disabled: !variant.stock.to_i.positive? } ] },
+              { selected: @variants.find { |variant| variant.stock.to_i.positive? }&.id },
+              class: "w-full border border-gray-400 p-3", disabled: @variants.empty? %>
+        <%= f.label :quantity, "수량", class: "block text-sm font-bold" %>
+        <%= f.number_field :quantity, value: 1, min: 1, max: 99, class: "w-24 border border-gray-400 p-3" %>
+        <% if @variants.empty? %><p class="text-sm font-medium text-gray-700">옵션 준비 중</p><% end %>
+        <div class="grid grid-cols-2 gap-3">
+          <%= f.button "바로구매", name: "buy_now", value: "1", disabled: @variants.empty?, class: "p-4 border border-black font-bold disabled:opacity-40" %>
+          <%= f.button "장바구니", disabled: @variants.empty?, class: "p-4 bg-black text-white font-bold disabled:opacity-40" %>
         </div>
-      </div>
-
-      <!-- Variant 선택: 사이즈 -->
-      <div class="space-y-3">
-        <p class="text-sm font-medium text-black">사이즈</p>
-        <div class="flex flex-wrap gap-2">
-          <% if @variants.present? %>
-            <% @variants.map(&:size).uniq.each_with_index do |size, index| %>
-              <button
-                type="button"
-                class="px-4 py-2 border-2 text-sm font-medium transition-colors <%= index == 0 ? 'border-black bg-black text-white' : 'border-gray-300 bg-white text-black hover:border-black' %>"
-                data-action="click->variant-selector#selectSize"
-                data-size="<%= size %>">
-                <%= size %>
-              </button>
-            <% end %>
-          <% else %>
-            <button
-              type="button"
-              class="px-4 py-2 border-2 border-black bg-black text-white text-sm font-medium"
-              disabled>
-              FREE
-            </button>
-          <% end %>
-        </div>
-      </div>
-
-      <!-- 재고 표시 -->
-      <div class="flex items-center gap-2">
-        <p class="text-sm text-gray-600">재고:</p>
-        <p class="text-sm font-bold text-black" data-variant-selector-target="stock">
-          <% if @selected_variant.present? %>
-            <%= @selected_variant.stock %>개
-          <% else %>
-            <%= @product.stock %>개
-          <% end %>
-        </p>
-      </div>
-
-      <div class="h-px bg-gray-200"></div>
-
-      <!-- 수량 선택 -->
-      <div class="space-y-3">
-        <p class="text-sm font-medium text-black">수량</p>
-        <div class="flex items-center border-2 border-gray-300 w-32">
-          <button
-            type="button"
-            class="w-10 h-10 flex items-center justify-center text-lg font-medium hover:bg-gray-50 transition-colors"
-            data-action="click->variant-selector#decreaseQuantity">
-            -
-          </button>
-          <input
-            type="number"
-            value="1"
-            min="1"
-            class="flex-1 h-10 text-center border-x-2 border-gray-300 text-sm font-medium focus:outline-none"
-            data-variant-selector-target="quantity"
-            readonly>
-          <button
-            type="button"
-            class="w-10 h-10 flex items-center justify-center text-lg font-medium hover:bg-gray-50 transition-colors"
-            data-action="click->variant-selector#increaseQuantity">
-            +
-          </button>
-        </div>
-      </div>
-
-      <!-- 총 가격 -->
-      <div class="flex items-center justify-between py-4 border-t-2 border-black">
-        <p class="text-lg font-bold text-black">총 상품금액</p>
-        <p class="text-2xl font-bold text-black" data-variant-selector-target="totalPrice">
-          <%= number_to_currency(@product.price, unit: "", precision: 0) %>원
-        </p>
-      </div>
-
-      <!-- 액션 버튼 -->
-      <div class="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          class="py-4 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors">
-          바로구매
-        </button>
-        <button
-          type="button"
-          class="py-4 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors">
-          장바구니
-        </button>
-      </div>
+      <% end %>
 
       <!-- 상품 설명 -->
       <div class="pt-6 space-y-3">

@@ -4983,7 +4983,7 @@
       "type": "FEATURE_PLAN",
       "title": "쇼핑몰에 공급사들이 로그인해서 재고,크레임,입고예정 등을 관리하는 화면을 만들자.",
       "priority": "P2",
-      "status": "IN_PROGRESS",
+      "status": "AWAITING_USER",
       "created_at": "2026-10-19T04:29:35.160Z",
       "agent": "product-manager",
       "source": "agent-os-web",
@@ -4996,15 +4996,13 @@
             "reason": "「쇼핑몰에 공급사들이 로그인해서 재고,크레임,입고예정 등을 관리하는 화면을 만들자.」(FEATURE_PLAN, P2)을 다음 실행에 착수할 만합니다."
           }
         ],
-        "approved_at": "2026-10-19T04:29:38.035Z",
-        "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "대표님 지시 기능. 기존 거래처(Supplier)·발주(PurchaseOrder)·상품.supplier_id·옵션 재고가 이미 있어 1차 범위(공급사 전용 로그인, 내 상품 재고 조회, 입고예정=내 발주 목록·확정, 클레임 접수·답변)를 바로 만들 수 있음. 공급사 계정은 관리자가 발급(자가 가입 없음). 외부 업체가 로그인하는 새 문 + 다른 공급사 데이터가 보이면 안 되는 경계가 있어 구현은 브랜치에서 하고 배포 전 대표님 확인(gate=deploy).",
-          "risk": "중 — 새 로그인 경로·공급사 간 데이터 격리 실수 시 거래처 정보 노출. 테스트로 교차 접근 차단 검증",
-          "effort": "M (1회차)",
+          "verdict": "대표님 결정 필요",
+          "reason": "구현·테스트 완료(브랜치 factory/ISS-110). 외부 공급사가 로그인하는 새 문이 생기고 거래처 데이터가 밖에서 보이게 되므로 배포 전 대표님 확인이 필요함. 다른 공급사 데이터 차단·관리자 화면 차단은 테스트와 실제 화면으로 확인함.",
+          "risk": "중 — 새 로그인 경로. 새 표 2개 추가뿐, 기존 데이터 변경·삭제 없음",
+          "effort": "완료(병합만 남음)",
           "by": "factory-runner",
-          "at": "2026-10-19T04:30:51.119054+00:00"
+          "at": "2026-10-19T04:37:49.187674+00:00"
         },
         "gate": "deploy",
         "branch": "factory/ISS-110",
@@ -5022,10 +5020,86 @@
             "at": "2026-10-19T04:30:51.119054+00:00",
             "by": "factory-runner",
             "note": "착수 — gate=deploy(외부 공급사 로그인 신설·거래처 데이터 노출 경계)로 factory/ISS-110 브랜치에서 구현"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-10-19T04:37:49.187674+00:00",
+            "by": "factory-runner",
+            "note": "구현 완료 — 배포 전 검토(gate deploy-review)"
           }
-        ]
+        ],
+        "start_approval": {
+          "approved_at": "2026-10-19T04:29:38.035Z",
+          "approved_by": "자동 승인(추천: 승인 권장)"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "대표님 지시 기능. 기존 거래처(Supplier)·발주(PurchaseOrder)·상품.supplier_id·옵션 재고가 이미 있어 1차 범위(공급사 전용 로그인, 내 상품 재고 조회, 입고예정=내 발주 목록·확정, 클레임 접수·답변)를 바로 만들 수 있음. 공급사 계정은 관리자가 발급(자가 가입 없음). 외부 업체가 로그인하는 새 문 + 다른 공급사 데이터가 보이면 안 되는 경계가 있어 구현은 브랜치에서 하고 배포 전 대표님 확인(gate=deploy).",
+            "risk": "중 — 새 로그인 경로·공급사 간 데이터 격리 실수 시 거래처 정보 노출. 테스트로 교차 접근 차단 검증",
+            "effort": "M (1회차)",
+            "by": "factory-runner",
+            "at": "2026-10-19T04:30:51.119054+00:00"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "question": "공급사(도매 거래처)가 직접 로그인해 재고·입고예정·클레임을 보는 '파트너센터'를 쇼핑몰에 합쳐 배포할까요?",
+        "plain_summary": "거래처 담당자가 자기 회사 상품 재고, 우리가 넣은 발주(입고예정), 불량·오배송 같은 클레임을 직접 보고 답할 수 있는 화면을 만들었습니다. 계정은 관리자가 거래처 화면에서 직접 만들어 줍니다(스스로 가입 불가).",
+        "options": [
+          {
+            "key": "A",
+            "label": "지금 합쳐서 다음 배포에 포함",
+            "pros": "거래처와 전화·카톡 대신 화면으로 발주 확정·클레임 답변을 주고받을 수 있음. 계정을 안 만들어 주면 아무도 못 들어오니 바로 위험해지지는 않음",
+            "cons": "쇼핑몰에 외부 업체용 로그인 입구(/partner/login)가 하나 더 생김"
+          },
+          {
+            "key": "B",
+            "label": "거래처 1곳과 실제로 써 볼 준비가 될 때까지 보류",
+            "pros": "쓰지 않는 로그인 입구를 열어두지 않음",
+            "cons": "별도 갈래로 오래 남으면 다른 작업과 합칠 때 정리 비용이 생김"
+          },
+          {
+            "key": "C",
+            "label": "반려 — 거래처 관리는 지금처럼 관리자만",
+            "pros": "관리 대상이 늘지 않음",
+            "cons": "만든 화면을 버림"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "계정을 발급해야만 들어올 수 있어 합쳐 두는 위험이 작고, 다른 거래처 정보가 보이지 않는 것을 테스트와 실제 화면으로 확인했습니다.",
+        "if_not_decided": "파트너센터가 별도 갈래에 머물러 거래처는 계속 전화·문자로 발주 확정과 클레임을 처리합니다. 다른 작업에는 영향이 없습니다.",
+        "reversible": "예 — 새 표 2개(공급사 계정, 클레임) 추가뿐이라 기존 데이터는 바뀌지 않고, 계정을 비활성화하면 즉시 접속이 막힙니다."
       },
-      "updated_at": "2026-10-19T04:30:51.119054+00:00"
+      "updated_at": "2026-10-19T04:37:49.187674+00:00",
+      "result": {
+        "tests": "전체 331 runs 0 failures",
+        "rubocop": "223 files no offenses",
+        "proof": [
+          {
+            "cmd": "bin/rails test (factory/ISS-110, DATABASE_URL=storage/test_ISS-110)",
+            "exit_code": 0,
+            "output": "331 runs, 2082 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "223 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "node /tmp/ujt110/run.mjs (dev DB 복사본, 포트 3053, partner@jieun.test)",
+            "exit_code": 0,
+            "output": "1-dashboard /partner 부족 재고 옵션 1건 입고예정 발주 1건 열린 클레임 1건 | 5-po-confirmed flash: 발주가 확정되었습니다 | 7-claim-answered 답변이 등록되었습니다 | 공급사 세션으로 /suppliers -> /login | 다른 거래처 발주 16 status 404"
+          },
+          {
+            "cmd": "node /tmp/ujt110/admin.mjs (admin@jieun.test)",
+            "exit_code": 0,
+            "output": "supplier page has 파트너센터: true | claims: [접수, 답변완료] | 관리자 세션으로 /partner -> /partner/login"
+          }
+        ],
+        "commit": "a1104c6 (factory/ISS-110)",
+        "limits": "공급사 비밀번호 재설정·초대 메일 없음(관리자가 초기 비밀번호 전달). 관리자 상단 메뉴가 늘어 1440px에서 검색창이 좁아짐(기존 메뉴 과밀)."
+      }
     }
   ],
   "hooks": {

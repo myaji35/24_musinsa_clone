@@ -324,7 +324,7 @@
         "approved_at": "2026-10-15T06:47:51.600Z",
         "approved_by": "대표님(관제실)"
       },
-      "last_dispatched_at": "2026-10-18T17:55:20"
+      "last_dispatched_at": "2026-10-18T18:11:49"
     },
     {
       "id": "ISS-015",
@@ -537,7 +537,7 @@
         "approved_at": "2026-10-15T06:48:11.891Z",
         "approved_by": "대표님(관제실)"
       },
-      "last_dispatched_at": "2026-10-18T17:55:21"
+      "last_dispatched_at": "2026-10-18T18:11:49"
     },
     {
       "id": "ISS-025",
@@ -1229,7 +1229,7 @@
         "approved_at": "2026-10-15T07:26:11.486Z",
         "approved_by": "자동 승인(추천: 승인 권장)"
       },
-      "last_dispatched_at": "2026-10-18T17:39:18"
+      "last_dispatched_at": "2026-10-18T18:11:49"
     },
     {
       "id": "ISS-049",
@@ -2491,13 +2491,13 @@
       "type": "UX_FIX",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [
         "ISS-017"
       ],
       "done_criteria": "최소 막대 높이 보장(값>0이면 최소 2~4px) 또는 로그/상한 스케일, 터치 환경에서 탭/포커스로 날짜·금액 확인 가능",
       "created_at": "2026-10-15T08:55:39.666963+00:00",
-      "updated_at": "2026-10-19T00:30:49.052659+00:00",
+      "updated_at": "2026-10-19T01:16:20.773747+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-017",
@@ -2529,9 +2529,46 @@
             "by": "factory-runner",
             "at": "2026-10-15T08:55:39.666963+00:00"
           }
-        ]
+        ],
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:59:13.338008+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-19 착수 (user-test, 지난 실행에서 다음 실행 처리로 이월된 건)"
+          }
+        ],
+        "commit": "ef0ce13",
+        "journey_review": "PASS (1440 클릭·390 탭·키보드 포커스로 'M/D ₩금액' 표시). 90일 가로 스크롤은 ISS-102 로 분리"
       },
-      "last_dispatched_at": "2026-10-18T17:43:09"
+      "last_dispatched_at": "2026-10-18T17:43:09",
+      "result": {
+        "status": "success",
+        "summary": "일별 매출 최소 막대 높이 + 탭/포커스 금액 표시 (ef0ce13)",
+        "tests": {
+          "failed": 0
+        },
+        "proof": [
+          {
+            "cmd": "bin/rails test test/controllers/dashboard_controller_test.rb",
+            "exit_code": 0,
+            "output": "13 runs, 86 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "299 runs, 1809 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "199 files inspected, no offenses detected"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:11:49.529653"
     },
     {
       "id": "ISS-097",
@@ -2539,11 +2576,11 @@
       "type": "UX_FIX",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "검색어를 sanitize_sql_like + ESCAPE 로 처리해 %, _ 를 글자 그대로 검색",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T01:16:20.773747+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-094",
@@ -2555,8 +2592,55 @@
           "effort": "S",
           "by": "factory-runner",
           "at": "2026-10-19T00:55:38.632376+00:00"
-        }
-      }
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T00:57:42.764Z",
+            "by": "auto",
+            "reason": "검색 정확도 FRICTION. home_controller.rb:29·products_controller.rb:16 의 LIKE 패턴만 고치면 되고 되돌리기 쉬움"
+          }
+        ],
+        "approved_at": "2026-10-19T00:57:42.764Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:59:13.338008+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-19 착수 (user-test)"
+          }
+        ],
+        "commit": "c21501b",
+        "journey_review": "PASS (%, _ 검색 0건 안내, 일반 검색 정상)"
+      },
+      "result": {
+        "status": "success",
+        "summary": "검색 LIKE 이스케이프 스코프 (c21501b)",
+        "tests": {
+          "failed": 0
+        },
+        "proof": [
+          {
+            "cmd": "bin/rails test test/models/product_test.rb test/controllers/home_controller_test.rb test/controllers/products_controller_test.rb",
+            "exit_code": 0,
+            "output": "56 runs, 258 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "299 runs, 1809 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "199 files inspected, no offenses detected"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:11:49.671572"
     },
     {
       "id": "ISS-098",
@@ -2564,24 +2648,89 @@
       "type": "UX_FIX",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [],
       "done_criteria": "require_admin 리다이렉트 시 GET 요청 경로를 세션에 저장하고 로그인 성공 후 같은 호스트 내부 경로로만 복귀(open redirect 방지)",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T01:16:20.773747+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-064",
         "evidence": "user-journey review 2026-10-18 FRICTION",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "관리자 동선 FRICTION. 인증 판정 로직은 그대로 두고 복귀 경로만 추가 — 내부 경로 한정 검증 필수",
+          "verdict": "대표님 결정 필요",
+          "reason": "코드상 인증 판정(logged_in?·reset_session)은 그대로이고 복귀 경로만 추가, open redirect 차단 테스트·사용자 여정 검증 모두 PASS — 배포 승인 권장. 다만 '인증 변경은 자동 배포 금지' 규칙에 걸려 push 만 보류. 승인하시면 다음 실행에서 hold/ISS-098 을 main 에 cherry-pick 후 push",
           "risk": "low",
           "effort": "S",
           "by": "factory-runner",
-          "at": "2026-10-19T00:55:38.632376+00:00"
-        }
-      }
+          "at": "2026-10-19T01:16:20.773747+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T00:57:42.764Z",
+            "by": "auto",
+            "reason": "관리자 동선 FRICTION. 인증 판정 로직은 그대로 두고 복귀 경로만 추가 — 내부 경로 한정 검증 필수"
+          }
+        ],
+        "approved_at": "2026-10-19T00:57:42.764Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:59:13.338008+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-19 착수 (user-test)"
+          },
+          {
+            "from": "DONE",
+            "to": "BLOCKED",
+            "at": "2026-10-19T01:16:20.773747+00:00",
+            "by": "factory-runner",
+            "note": "구현·테스트·여정 검증 통과했으나 로그인(인증) 흐름 변경이라 배포 게이트 규칙상 자동 push 보류. 커밋은 로컬 브랜치 hold/ISS-098 (f0823a7) 에 보관"
+          }
+        ],
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "관리자 동선 FRICTION. 인증 판정 로직은 그대로 두고 복귀 경로만 추가 — 내부 경로 한정 검증 필수",
+            "risk": "low",
+            "effort": "S",
+            "by": "factory-runner",
+            "at": "2026-10-19T00:55:38.632376+00:00"
+          }
+        ],
+        "commit": "f0823a7 (branch hold/ISS-098, 미push)",
+        "journey_review": "PASS — /trends·/dashboard/index?period=7 복귀, /login 직접 로그인은 /inventory/scan, 외부 URL 유도 시 외부로 안 나감 (docs/user-test/2026-10-19/review-iss098-*)",
+        "blocked_reason": "구현·테스트·여정 검증 통과했으나 로그인(인증) 흐름 변경이라 배포 게이트 규칙상 자동 push 보류. 커밋은 로컬 브랜치 hold/ISS-098 (f0823a7) 에 보관"
+      },
+      "result": {
+        "status": "success",
+        "summary": "로그인 후 내부 경로 복귀 (f0823a7)",
+        "tests": {
+          "failed": 0
+        },
+        "proof": [
+          {
+            "cmd": "bin/rails test test/controllers/sessions_controller_test.rb",
+            "exit_code": 0,
+            "output": "13 runs, 135 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "299 runs, 1809 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "199 files inspected, no offenses detected"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:11:49.812890"
     },
     {
       "id": "ISS-099",
@@ -2589,11 +2738,11 @@
       "type": "INFRA",
       "priority": "P2",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "CI 의 bin/rails test 대상에 jobs·views·initializers(또는 test:all) 포함, 로컬 전체 실행과 같은 범위",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T01:16:20.773747+00:00",
       "payload": {
         "origin": "factory-runner",
         "source_issue": "ISS-091",
@@ -2605,8 +2754,54 @@
           "effort": "S",
           "by": "factory-runner",
           "at": "2026-10-19T00:55:38.632376+00:00"
-        }
-      }
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T00:57:42.764Z",
+            "by": "auto",
+            "reason": "ISS-013·045 에서 추가한 잡·뷰 테스트가 CI 에서 돌지 않아 회귀를 못 잡음. 워크플로 한 줄 수정"
+          }
+        ],
+        "approved_at": "2026-10-19T00:57:42.764Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:59:13.338008+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-19 착수 (P2, 최우선)"
+          }
+        ],
+        "commit": "c3c456f"
+      },
+      "result": {
+        "status": "success",
+        "summary": "CI 테스트를 bin/rails test + test:system 으로 확대 (c3c456f)",
+        "tests": {
+          "failed": 0
+        },
+        "proof": [
+          {
+            "cmd": "bin/rails test test/jobs test/views test/initializers",
+            "exit_code": 0,
+            "output": "11 runs, 78 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "299 runs, 1809 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "199 files inspected, no offenses detected"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:11:49.380418"
     },
     {
       "id": "ISS-100",
@@ -2618,20 +2813,41 @@
       "depends_on": [],
       "done_criteria": "관리자 링크 묶음을 logged_in? 일 때만 표시(서버 접근 제어는 이미 require_admin)",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T00:59:13.338008+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-064",
         "evidence": "user-journey review 2026-10-18 참고 사항",
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "권한 노출은 아니나(클릭 시 로그인으로 감) 게스트에게 헷갈리는 메뉴. 레이아웃 조건부 렌더만",
+          "reason": "5건 한도로 이번 실행에서 이월. 서버 접근 제어(require_admin)는 이미 막혀 있어 노출 위험 없음 — 화면 정리만 남음. ISS-101(저장 시 카테고리 소실 위험)을 먼저 처리",
           "risk": "low",
           "effort": "S",
           "by": "factory-runner",
-          "at": "2026-10-19T00:55:38.632376+00:00"
-        }
-      }
+          "at": "2026-10-19T00:59:13.338008+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T00:57:42.764Z",
+            "by": "auto",
+            "reason": "권한 노출은 아니나(클릭 시 로그인으로 감) 게스트에게 헷갈리는 메뉴. 레이아웃 조건부 렌더만"
+          }
+        ],
+        "approved_at": "2026-10-19T00:57:42.764Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "권한 노출은 아니나(클릭 시 로그인으로 감) 게스트에게 헷갈리는 메뉴. 레이아웃 조건부 렌더만",
+            "risk": "low",
+            "effort": "S",
+            "by": "factory-runner",
+            "at": "2026-10-19T00:55:38.632376+00:00"
+          }
+        ]
+      },
+      "last_dispatched_at": "2026-10-18T18:11:49"
     },
     {
       "id": "ISS-101",
@@ -2639,11 +2855,11 @@
       "type": "BUG",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "기존 카테고리 값이 선택 목록에 없으면 현재 값을 유지·표시하거나 데이터 정규화(하의→바지 등) 방안 결정",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T01:16:20.773747+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-091",
@@ -2655,7 +2871,159 @@
           "effort": "S",
           "by": "factory-runner",
           "at": "2026-10-19T00:55:38.632376+00:00"
-        }
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T00:57:42.764Z",
+            "by": "auto",
+            "reason": "편집 후 저장 시 카테고리가 비워질 위험. 우선 현재 값 유지 표시로 막고 정규화는 별도 판단"
+          }
+        ],
+        "approved_at": "2026-10-19T00:57:42.764Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:59:13.338008+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-19 착수 (user-test, 저장 시 카테고리 소실 위험이라 ISS-100 보다 먼저)"
+          }
+        ],
+        "commit": "812807e",
+        "journey_review": "PASS (Outer·One-piece '(기존 값)' 선택 표시, 무변경 저장 시 값 유지). 목록 밖 값 현황: 개발DB 하의2·One-piece5·Outer10·Top5, seeds.rb 에 One-piece/Outer/Top — 정규화는 범위 밖"
+      },
+      "result": {
+        "status": "success",
+        "summary": "목록 밖 카테고리 기존 값 유지 (7cea261)",
+        "tests": {
+          "failed": 0
+        },
+        "proof": [
+          {
+            "cmd": "bin/rails test test/integration/product_category_select_test.rb",
+            "exit_code": 0,
+            "output": "3 runs, 26 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "299 runs, 1809 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "199 files inspected, no offenses detected"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:11:49.958387"
+    },
+    {
+      "id": "ISS-102",
+      "title": "대시보드 90일 일별 매출 차트가 1440 폭에서도 가로 스크롤 — 91개 막대 중 44개가 첫 화면 밖, 최근 매출일이 처음엔 안 보임",
+      "type": "UX_FIX",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "90일은 주 단위 집계로 보여주거나, 첫 렌더 시 최근 날짜 쪽으로 스크롤. 1440 폭에서 90일 범위 매출 막대가 첫 화면에 보일 것",
+      "created_at": "2026-10-19T01:15:43.859451+00:00",
+      "updated_at": "2026-10-19T01:15:43.977Z",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-096",
+        "evidence": "docs/user-test/2026-10-19/review-iss096-dashboard-p90-click-1440.png (min-w-6 × 91개)",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "차트 첫인상 FRICTION. 뷰·헬퍼 범위라 되돌리기 쉬움. 주 단위 집계가 모바일까지 함께 해결해 우선 권장",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T01:15:43.859451+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T01:15:43.977Z",
+            "by": "auto",
+            "reason": "차트 첫인상 FRICTION. 뷰·헬퍼 범위라 되돌리기 쉬움. 주 단위 집계가 모바일까지 함께 해결해 우선 권장"
+          }
+        ],
+        "approved_at": "2026-10-19T01:15:43.977Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      }
+    },
+    {
+      "id": "ISS-103",
+      "title": "저장·로그인 후 성공/실패 안내(flash notice·alert)가 대부분 화면에서 보이지 않음 — 레이아웃에 flash 표시 없음",
+      "type": "UX_FIX",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "application 레이아웃에 notice/alert 공통 표시(접근성 role=status/alert), 이미 개별 뷰에서 표시하는 화면(inventory·trends)은 중복 제거",
+      "created_at": "2026-10-19T01:15:43.859451+00:00",
+      "updated_at": "2026-10-19T01:15:43.977Z",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-101",
+        "evidence": "review 2026-10-19: 상품 수정 후 '상품이 성공적으로 수정되었습니다.' 미표시. app/views/layouts/application.html.erb 에 flash 없음(grep 확인)",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "저장 성공 여부를 알 수 없는 FRICTION — 전 관리자 화면 공통. 레이아웃 한 곳 추가 + 중복 표시 정리, 되돌리기 쉬움",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T01:15:43.859451+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T01:15:43.977Z",
+            "by": "auto",
+            "reason": "저장 성공 여부를 알 수 없는 FRICTION — 전 관리자 화면 공통. 레이아웃 한 곳 추가 + 중복 표시 정리, 되돌리기 쉬움"
+          }
+        ],
+        "approved_at": "2026-10-19T01:15:43.977Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      }
+    },
+    {
+      "id": "ISS-104",
+      "title": "/dashboard 직접 접속 시 404 — 네비는 /dashboard/index 로 연결",
+      "type": "UX_FIX",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "/dashboard 가 대시보드를 보여주거나 /dashboard/index 로 리다이렉트(기존 링크 유지)",
+      "created_at": "2026-10-19T01:15:43.859451+00:00",
+      "updated_at": "2026-10-19T01:15:43.977Z",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-096",
+        "evidence": "curl /dashboard → 404 (2026-10-19), config/routes.rb:32 namespace :dashboard",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "북마크·주소 직접 입력 FRICTION. 라우트 한 줄, 되돌리기 쉬움",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T01:15:43.859451+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T01:15:43.977Z",
+            "by": "auto",
+            "reason": "북마크·주소 직접 입력 FRICTION. 라우트 한 줄, 되돌리기 쉬움"
+          }
+        ],
+        "approved_at": "2026-10-19T01:15:43.977Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
       }
     }
   ],
@@ -2776,6 +3144,36 @@
         "issue_type": "INFRA",
         "plan_created": 0,
         "timestamp": "2026-10-18T17:55:21.060761"
+      },
+      {
+        "issue_id": "ISS-099",
+        "issue_type": "INFRA",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:11:49.380418"
+      },
+      {
+        "issue_id": "ISS-096",
+        "issue_type": "UX_FIX",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:11:49.529653"
+      },
+      {
+        "issue_id": "ISS-097",
+        "issue_type": "UX_FIX",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:11:49.671572"
+      },
+      {
+        "issue_id": "ISS-098",
+        "issue_type": "UX_FIX",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:11:49.812890"
+      },
+      {
+        "issue_id": "ISS-101",
+        "issue_type": "BUG",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:11:49.958387"
       }
     ],
     "on_fail": [],
@@ -2788,7 +3186,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 33,
+    "completed": 38,
     "failed": 0,
     "evolved": 0
   },
@@ -2801,9 +3199,9 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-018:READY": 2,
-    "ISS-029:READY": 2,
-    "ISS-048:READY": 1,
-    "ISS-096:READY": 1
+    "ISS-018:READY": 3,
+    "ISS-029:READY": 3,
+    "ISS-048:READY": 2,
+    "ISS-100:READY": 1
   }
 }

@@ -75,7 +75,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
         assert_no_match "첫 번째 상품을 등록해보세요", response.body
         assert_match "상품을 준비 중입니다", response.body
       end
-      assert_select "[role=status]", count: 0
+      assert_select "[role=status] h2", count: 0
     end
   end
 

@@ -12,18 +12,7 @@
     <p class="text-sm text-gray-500">상품 입고 및 재고 증가</p>
   </div>
 
-  <!-- Flash Messages -->
-  <% if flash[:notice] %>
-    <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
-      <%= flash[:notice] %>
-    </div>
-  <% end %>
 
-  <% if flash[:alert] %>
-    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
-      <%= flash[:alert] %>
-    </div>
-  <% end %>
 
   <!-- Variant Info (바코드 스캔 후 표시) -->
   <% if @variant %>

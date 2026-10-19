@@ -1,4 +1,5 @@
 class Product < ApplicationRecord
+  belongs_to :worn_character, class_name: "Character", optional: true
   belongs_to :supplier_import, optional: true
   belongs_to :supplier, optional: true
   has_many :reviews, dependent: :destroy
@@ -12,6 +13,7 @@ class Product < ApplicationRecord
   has_one :latest_analysis, -> { order(created_at: :desc) }, class_name: "ProductAnalysis"
 
   # Active Storage 이미지 첨부 (Story 1.1)
+  has_one_attached :runway_video
   has_one_attached :image
   has_one_attached :cutout_image
 
@@ -30,6 +32,7 @@ class Product < ApplicationRecord
   validates :brand, presence: true
   validates :category, presence: true
   validates :description, length: { maximum: 500 }, allow_blank: true
+  validate :validate_runway_video
   validate :validate_image
 
   scope :search_name_or_brand, ->(query) {
@@ -87,6 +90,17 @@ class Product < ApplicationRecord
     parsed_ai_attributes["material_feel"]
   end
   private
+
+  def validate_runway_video
+    return unless runway_video.attached?
+
+    unless runway_video.content_type.in?(%w[video/mp4 video/webm video/quicktime])
+      errors.add(:runway_video, "는 MP4, WebM, QuickTime 형식만 업로드할 수 있습니다")
+    end
+    if runway_video.byte_size > 100.megabytes
+      errors.add(:runway_video, "는 100MB 이하여야 합니다")
+    end
+  end
 
   # 첨부 이미지 형식 및 크기 검증
   def validate_image

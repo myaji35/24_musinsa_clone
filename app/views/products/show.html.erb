@@ -1,18 +1,29 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
+  <% if (character = @product.worn_character) %>
+    <div class="border border-gray-300 bg-gray-50 p-4 mb-6 text-sm text-gray-800 leading-relaxed">
+      이 상품의 착용 이미지·영상은 AI로 만든 가상 인물(<%= character.name %>)입니다. 실제 핏·색상은 아래 실측 사이즈와 실물 사진을 확인해 주세요.
+    </div>
+  <% end %>
+
   <!-- 상품 메인 섹션 -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mb-20">
 
     <!-- 좌측: 이미지 갤러리 -->
     <div class="space-y-4">
       <!-- 메인 이미지 -->
-      <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden">
-        <% if (image_source = product_image_source(@product)) %>
+      <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden<%= ' relative' if character || @product.runway_video.attached? %>">
+        <% if @product.runway_video.attached? %>
+          <%= video_tag url_for(@product.runway_video), muted: true, autoplay: true, loop: true, playsinline: true, controls: true, poster: (url_for(product_image_source(@product)) if product_image_source(@product)), class: "w-full h-full object-cover" %>
+        <% elsif (image_source = product_image_source(@product)) %>
           <%= image_tag image_source, alt: @product.name, class: "w-full h-full object-cover" %>
         <% else %>
           <div class="w-full h-full flex items-center justify-center text-gray-300">
             <span class="text-sm font-medium">이미지 없음</span>
           </div>
+        <% end %>
+        <% if character || @product.runway_video.attached? %>
+          <span class="absolute top-3 left-3 z-10 bg-white text-black px-3 py-2 text-lg font-bold shadow">가상 인물</span>
         <% end %>
       </div>
 
@@ -38,6 +49,12 @@
         <p class="text-sm font-medium text-gray-500 uppercase"><%= @product.brand %></p>
         <h1 class="text-2xl md:text-3xl font-bold text-black leading-tight"><%= @product.name %></h1>
       </div>
+
+      <% if character %>
+        <p class="text-sm text-gray-700" data-worn-character>
+          <%= link_to character.name, character_path(character.handle), class: "font-bold underline" %><%= " #{character.height_cm}cm" if character.height_cm.present? %><%= " · 상의 #{character.top_size}" if character.top_size.present? %><%= " / #{@product.worn_size} 착용" if @product.worn_size.present? %>
+        </p>
+      <% end %>
 
       <!-- 가격 -->
       <div class="space-y-1">

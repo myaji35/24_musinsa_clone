@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   post "orders/lookup", to: "customer_orders#verify"
   get "orders/:checkout_number", to: "customer_orders#show", as: :customer_order
 
+  resources :characters, only: [ :show ], param: :handle
+
   # Products & Reviews
   resources :products do
     resources :reviews, only: [ :create ]

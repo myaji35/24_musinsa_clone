@@ -231,9 +231,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_007000) do
     t.string "supplier_product_code"
     t.integer "supplier_id"
     t.boolean "cutout_adopted", default: false, null: false
+    t.integer "worn_character_id"
+    t.string "worn_size"
     t.index ["supplier_id", "supplier_product_code"], name: "index_products_on_supplier_id_and_supplier_product_code"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
     t.index ["supplier_import_id"], name: "index_products_on_supplier_import_id"
+    t.index ["worn_character_id"], name: "index_products_on_worn_character_id"
   end
 
   create_table "purchase_order_items", force: :cascade do |t|
@@ -409,6 +412,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_007000) do
   add_foreign_key "orders", "variants"
   add_foreign_key "product_analyses", "characters"
   add_foreign_key "product_analyses", "products"
+  add_foreign_key "products", "characters", column: "worn_character_id"
   add_foreign_key "purchase_order_items", "purchase_orders"
   add_foreign_key "purchase_order_items", "variants"
   add_foreign_key "purchase_orders", "suppliers"

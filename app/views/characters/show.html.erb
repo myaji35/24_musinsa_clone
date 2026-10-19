@@ -1,0 +1,21 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+  <p class="text-sm font-medium text-gray-700 mb-4">AI로 만든 가상 인물입니다 · 실존 인물이 아닙니다</p>
+  <div class="flex items-center gap-3 mb-6">
+    <h1 class="text-2xl font-bold"><%= @character.name %>의 옷장</h1>
+    <span class="bg-white text-black border border-black px-3 py-1 text-base font-bold">가상 인물</span>
+  </div>
+  <dl class="flex flex-wrap gap-4 text-sm mb-10">
+    <% { "키" => (@character.height_cm.present? ? "#{@character.height_cm}cm" : nil), "상의" => @character.top_size, "하의" => @character.bottom_size, "신발" => (@character.shoe_mm.present? ? "#{@character.shoe_mm}mm" : nil), "체형" => @character.body_type }.each do |label, value| %>
+      <% if value.present? %>
+        <div><dt class="font-bold text-gray-700"><%= label %></dt><dd><%= value %></dd></div>
+      <% end %>
+    <% end %>
+  </dl>
+  <% if @products.any? %>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      <%= render partial: "products/card", collection: @products, as: :product %>
+    </div>
+  <% else %>
+    <p class="py-12 text-center text-sm text-gray-500">아직 입은 상품이 없어요</p>
+  <% end %>
+</div>

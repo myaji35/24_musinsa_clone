@@ -1,4 +1,5 @@
 class Character < ApplicationRecord
+  has_many :worn_products, class_name: "Product", foreign_key: :worn_character_id, dependent: :nullify
   has_many :product_analyses
   validates :name, :handle, presence: true
   validates :handle, uniqueness: true

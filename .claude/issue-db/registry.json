@@ -311,7 +311,7 @@
       ],
       "done_criteria": "Variant별 최근20건",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-15T06:47:51.600Z",
+      "updated_at": "2026-10-19T01:23:38.624561+00:00",
       "payload": {
         "decisions": [
           {
@@ -322,7 +322,15 @@
           }
         ],
         "approved_at": "2026-10-15T06:47:51.600Z",
-        "approved_by": "대표님(관제실)"
+        "approved_by": "대표님(관제실)",
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "이번 실행은 user-test UX_FIX 4건 우선 처리. 재고이력 탭은 FEATURE(P3)라 다음 실행으로 이월",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T01:23:38.624561+00:00"
+        }
       },
       "last_dispatched_at": "2026-10-18T18:11:49"
     },
@@ -2812,11 +2820,11 @@
       "type": "UX_FIX",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "관리자 링크 묶음을 logged_in? 일 때만 표시(서버 접근 제어는 이미 require_admin)",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-19T00:59:13.338008+00:00",
+      "updated_at": "2026-10-19T01:19:23.208914+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-064",
@@ -2848,9 +2856,40 @@
             "by": "factory-runner",
             "at": "2026-10-19T00:55:38.632376+00:00"
           }
+        ],
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T01:19:23.208914+00:00",
+            "by": "factory-runner",
+            "note": "공장 시작"
+          }
         ]
       },
-      "last_dispatched_at": "2026-10-18T18:11:49"
+      "last_dispatched_at": "2026-10-18T18:11:49",
+      "result": {
+        "passed": true,
+        "proof": [
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "303 runs, 1782 assertions, 0 failures, 0 errors"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "201 files inspected, no offenses"
+          },
+          {
+            "cmd": "user-journey review (Playwright, 1440/390)",
+            "exit_code": 0,
+            "output": "PASS, FAIL 0"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:23:34.000850"
     },
     {
       "id": "ISS-101",
@@ -2931,11 +2970,11 @@
       "type": "UX_FIX",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "90일은 주 단위 집계로 보여주거나, 첫 렌더 시 최근 날짜 쪽으로 스크롤. 1440 폭에서 90일 범위 매출 막대가 첫 화면에 보일 것",
       "created_at": "2026-10-19T01:15:43.859451+00:00",
-      "updated_at": "2026-10-19T01:15:43.977Z",
+      "updated_at": "2026-10-19T01:19:23.208914+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-096",
@@ -2957,8 +2996,39 @@
           }
         ],
         "approved_at": "2026-10-19T01:15:43.977Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T01:19:23.208914+00:00",
+            "by": "factory-runner",
+            "note": "공장 시작"
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "proof": [
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "303 runs, 1782 assertions, 0 failures, 0 errors"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "201 files inspected, no offenses"
+          },
+          {
+            "cmd": "user-journey review (Playwright, 1440/390)",
+            "exit_code": 0,
+            "output": "PASS, FAIL 0"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:23:33.763958"
     },
     {
       "id": "ISS-103",
@@ -2966,11 +3036,11 @@
       "type": "UX_FIX",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "application 레이아웃에 notice/alert 공통 표시(접근성 role=status/alert), 이미 개별 뷰에서 표시하는 화면(inventory·trends)은 중복 제거",
       "created_at": "2026-10-19T01:15:43.859451+00:00",
-      "updated_at": "2026-10-19T01:15:43.977Z",
+      "updated_at": "2026-10-19T01:19:23.208914+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-101",
@@ -2992,8 +3062,39 @@
           }
         ],
         "approved_at": "2026-10-19T01:15:43.977Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T01:19:23.208914+00:00",
+            "by": "factory-runner",
+            "note": "공장 시작"
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "proof": [
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "303 runs, 1782 assertions, 0 failures, 0 errors"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "201 files inspected, no offenses"
+          },
+          {
+            "cmd": "user-journey review (Playwright, 1440/390)",
+            "exit_code": 0,
+            "output": "PASS, FAIL 0"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:23:33.883000"
     },
     {
       "id": "ISS-104",
@@ -3001,11 +3102,11 @@
       "type": "UX_FIX",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "/dashboard 가 대시보드를 보여주거나 /dashboard/index 로 리다이렉트(기존 링크 유지)",
       "created_at": "2026-10-19T01:15:43.859451+00:00",
-      "updated_at": "2026-10-19T01:15:43.977Z",
+      "updated_at": "2026-10-19T01:19:23.208914+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-096",
@@ -3027,8 +3128,39 @@
           }
         ],
         "approved_at": "2026-10-19T01:15:43.977Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T01:19:23.208914+00:00",
+            "by": "factory-runner",
+            "note": "공장 시작"
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "proof": [
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "303 runs, 1782 assertions, 0 failures, 0 errors"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "201 files inspected, no offenses"
+          },
+          {
+            "cmd": "user-journey review (Playwright, 1440/390)",
+            "exit_code": 0,
+            "output": "PASS, FAIL 0"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:23:33.635188"
     }
   ],
   "hooks": {
@@ -3178,6 +3310,30 @@
         "issue_type": "BUG",
         "plan_created": 0,
         "timestamp": "2026-10-18T18:11:49.958387"
+      },
+      {
+        "issue_id": "ISS-104",
+        "issue_type": "UX_FIX",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:23:33.635188"
+      },
+      {
+        "issue_id": "ISS-102",
+        "issue_type": "UX_FIX",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:23:33.763958"
+      },
+      {
+        "issue_id": "ISS-103",
+        "issue_type": "UX_FIX",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:23:33.883000"
+      },
+      {
+        "issue_id": "ISS-100",
+        "issue_type": "UX_FIX",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:23:34.000850"
       }
     ],
     "on_fail": [],
@@ -3190,7 +3346,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 38,
+    "completed": 42,
     "failed": 0,
     "evolved": 0
   },

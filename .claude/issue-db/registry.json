@@ -382,7 +382,7 @@
       "priority": "P1",
       "size": "L",
       "phase": "2",
-      "status": "BLOCKED",
+      "status": "AWAITING_USER",
       "depends_on": [
         "ISS-006",
         "ISS-008",
@@ -390,7 +390,7 @@
       ],
       "done_criteria": "grep 주소 0건",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-19T00:30:49.052659+00:00",
+      "updated_at": "2026-10-19T02:07:26.927628+00:00",
       "payload": {
         "decisions": [
           {
@@ -403,12 +403,12 @@
         "approved_at": "2026-10-15T06:47:55.223Z",
         "approved_by": "대표님(관제실)",
         "recommendation": {
-          "verdict": "보류 권장",
-          "reason": "'주소 폐기'가 10-13 결정(자사몰 배송지 저장·해외 배송)과 정면 충돌. ISS-058 개인정보 정책 결정 후 범위 재정의 필요",
-          "risk": "high",
+          "verdict": "승인 권장",
+          "reason": "C안대로 구현·검증 완료: 비동의 배송지는 주문 종결 후 90일 뒤 매일 04시 잡이 삭제, 주문 기록은 유지, 익명 CRM 은 우편번호 3자리만. 319 tests/rubocop/brakeman 통과. 배포 전 체크리스트(법정 보존·pending 방치 주문) 확인 후 병합 권장",
+          "risk": "중간",
           "effort": "L",
           "by": "factory-runner",
-          "at": "2026-10-19T00:30:49.052659+00:00"
+          "at": "2026-10-19T02:07:26.927628+00:00"
         },
         "recommendation_history": [
           {
@@ -418,10 +418,89 @@
             "effort": "L",
             "by": "factory-runner",
             "at": "2026-10-15T07:03:46.873848Z"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "선행 결정 ISS-058 이 C안으로 확정됨 — '주소 폐기' → C안 반영: 동의 기반 배송지 보관 + 비동의·비회원 배송 완료 90일 후 자동 파기(파기 배치 포함) 범위로 진행",
+            "risk": "중간",
+            "effort": "L",
+            "by": "main-session",
+            "at": "2026-10-18T19:03:06.603443-07:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "ISS-058 C안 확정으로 범위 재정의: 외부마켓 수집(PRD v2 제외) 대신 '주문 수집 진입점'=Orders::Intake 서비스(자사몰·향후 채널 공통 입구) + ShippingAddress(동의 플래그) + 배송완료 90일 후 비동의 배송지 자동 파기 잡. 배송지(개인정보) 스키마라 구현은 브랜치에서 하고 배포만 대표님 확인(gate=deploy). 법정 거래기록 보존에 주소 포함 여부는 배포 전 확인 항목으로 남김",
+            "risk": "중간",
+            "effort": "L",
+            "by": "factory-runner",
+            "at": "2026-10-19T02:04:17.330591+00:00"
           }
+        ],
+        "policy_decision": "ISS-058 결정(C안, 2026-10-18): 회원이 '배송지 저장'에 선택 동의하면 보관(동의 철회·탈퇴 시 파기), 동의하지 않거나 비회원이면 배송 완료 후 90일 보관 뒤 자동 파기",
+        "scope_update": "'주소 폐기' → C안 반영: 동의 기반 배송지 보관 + 비동의·비회원 배송 완료 90일 후 자동 파기(파기 배치 포함)",
+        "gate": "deploy",
+        "branch": "factory/ISS-015",
+        "done_criteria_v2": "Orders::Intake 로 주문+배송지 생성, 배송완료 시 purge_after=+90일, ShippingAddressPurgeJob 이 비동의·만료 배송지 삭제(우편번호 앞3자리는 익명 CRM에 유지), 매일 실행 등록, 테스트 통과",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T02:04:17.330591+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-18 착수 (gate=deploy, 브랜치 factory/ISS-015)"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-10-19T02:07:26.927628+00:00",
+            "by": "factory-runner",
+            "note": "구현·테스트 완료, 배송지(개인정보) 스키마라 배포 전 대표님 확인 대기 — 브랜치 factory/ISS-015 (b2c66ae), push 안 함"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "commit": "b2c66ae (branch factory/ISS-015, 미push)",
+        "deploy_review_checklist": [
+          "보관일수 90일 확정(ENV SHIPPING_ADDRESS_RETENTION_DAYS 로 변경 가능)",
+          "전자상거래법 거래기록(5년) 보존 대상에 배송지 포함 여부 — 현재 구현은 주문 기록은 남기고 배송지만 파기",
+          "결제 안 된 채 방치된 pending 주문의 배송지는 아직 파기 대상 아님(종결 상태 delivered/cancelled 만) — 정책 필요 시 후속",
+          "비회원 birth_year 미입력 시 전화 뒤4자리가 같은 고객이 익명 CRM 에서 한 명으로 합쳐짐(기존 익명 CRM 설계 한계)"
         ]
       },
-      "blocked_reason": "'주소 폐기'가 10-13 결정(자사몰 배송지 저장·해외 배송)과 정면 충돌. ISS-058 개인정보 정책 결정 후 범위 재정의 필요"
+      "blocked_reason": "'주소 폐기'가 10-13 결정(자사몰 배송지 저장·해외 배송)과 정면 충돌. ISS-058 개인정보 정책 결정 후 범위 재정의 필요",
+      "result": {
+        "status": "success",
+        "summary": "Orders::Intake + ShippingAddress 보관·파기(C안) — factory/ISS-015 b2c66ae",
+        "tests": {
+          "failed": 0
+        },
+        "proof": [
+          {
+            "cmd": "bin/rails test test/models/order_test.rb test/models/shipping_address_test.rb test/services/orders test/jobs/shipping_address_purge_job_test.rb",
+            "exit_code": 0,
+            "output": "17 runs, 181 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "319 runs, 1972 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "207 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "bin/brakeman -q",
+            "exit_code": 0,
+            "output": "No warnings found"
+          },
+          {
+            "cmd": "bin/rails db:migrate (dev DB 사본) + runner: Intake→complete!→purge job",
+            "exit_code": 0,
+            "output": "AddShippingAddressesAndCheckoutToOrders: migrated; [\"pending\"]; purge_after==delivered_at+90d true; purged 1; order.shipping_address_id nil; zip_prefix \"061\""
+          }
+        ]
+      }
     },
     {
       "id": "ISS-016",
@@ -762,7 +841,7 @@
       ],
       "done_criteria": "스파이크 문서",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-19T00:30:49.052659+00:00",
+      "updated_at": "2026-10-18T19:03:06.603443-07:00",
       "payload": {
         "decisions": [
           {
@@ -791,7 +870,7 @@
             "note": "선행 ISS-015 BLOCKED(ISS-058 개인정보 정책 대기)"
           }
         ],
-        "blocked_reason": "선행 ISS-015 BLOCKED(ISS-058 개인정보 정책 대기)"
+        "blocked_reason": "선행 ISS-015 진행 대기 (ISS-058 결정 완료)"
       }
     },
     {
@@ -1450,7 +1529,7 @@
     },
     {
       "id": "ISS-058",
-      "status": "BLOCKED",
+      "status": "DONE",
       "priority": "P1",
       "type": "DECISION",
       "title": "개인정보 정책 재정의 — 익명 CRM(주소 미보관) vs 자사몰·해외 배송지 저장 충돌. 보관기간·파기 시점 결정",
@@ -1465,14 +1544,34 @@
           "effort": "S",
           "by": "factory-runner",
           "at": "2026-10-15T07:03:46.873848Z"
-        }
+        },
+        "decision": {
+          "choice": "C",
+          "policy": "회원이 '배송지 저장'에 선택 동의하면 보관(동의 철회·탈퇴 시 파기), 동의하지 않거나 비회원이면 배송 완료 후 90일 보관 뒤 자동 파기",
+          "retention_days": 90,
+          "retention_note": "90일은 제안값 — 대표님이 바꿀 수 있음",
+          "legal_check": "주문·결제 기록 법정 보관(전자상거래법 등)에 주소 포함 여부는 구현 전 확인",
+          "by": "대표님",
+          "at": "2026-10-18T19:03:06.603443-07:00",
+          "via": "GH_Harness 세션 대화"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-18T19:03:06.603443-07:00",
+            "by": "대표님",
+            "note": "C안 승인 — 회원이 '배송지 저장'에 선택 동의하면 보관(동의 철회·탈퇴 시 파기), 동의하지 않거나 비회원이면 배송 완료 후 90일 보관 뒤 자동 파기"
+          }
+        ],
+        "approved_at": "2026-10-18T19:03:06.603443-07:00"
       },
       "blocked_reason": "DECISION 이슈 — 배송지 보관기간·파기 시점은 대표님 정책 결정 사항. 결정 전엔 ISS-015·059 착수 불가",
-      "updated_at": "2026-10-15T07:03:46.873848Z"
+      "updated_at": "2026-10-18T19:03:06.603443-07:00",
+      "completed_at": "2026-10-18T19:03:06.603443-07:00"
     },
     {
       "id": "ISS-059",
-      "status": "BLOCKED",
+      "status": "AWAITING_USER",
       "priority": "P1",
       "type": "FEATURE",
       "title": "[EPIC] 자사몰 커머스 코어 — 고객 계정/비회원, 장바구니, 주문서, 배송지(ISS-058 정책), 주문 상태",
@@ -1495,12 +1594,12 @@
         "approved_at": "2026-10-15T07:26:11.486Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "대표님 결정 필요",
-          "reason": "선행 ISS-058(배송지 보관기간·파기 정책)이 대표님 결정 대기. 정책 없이 배송지 저장 구조를 만들면 되돌리기 어려운 개인정보 스키마가 생김",
-          "risk": "high",
+          "verdict": "승인 권장",
+          "reason": "EPIC 1차(비회원 장바구니→주문서→주문 조회) 구현 완료, 328 tests·rubocop·brakeman·사용자 여정 PASS. 개인정보 입력 화면이라 동의 문구·결제 대기 운영 방식 확인 후 ISS-015 와 함께 병합 권장. 회원 기능은 ISS-105 로 분리",
+          "risk": "중간",
           "effort": "L",
           "by": "factory-runner",
-          "at": "2026-10-19T00:30:49.052659+00:00"
+          "at": "2026-10-19T02:13:21.850007+00:00"
         },
         "recommendation_history": [
           {
@@ -1510,11 +1609,99 @@
             "effort": "L",
             "by": "factory-runner",
             "at": "2026-10-15T07:28:11.388199+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "선행 결정 ISS-058 이 C안으로 확정됨 — 배송지 정책 반영 범위로 진행",
+            "risk": "중간",
+            "effort": "L",
+            "by": "main-session",
+            "at": "2026-10-18T19:03:06.603443-07:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "EPIC 1차 슬라이스로 진행: 세션 장바구니 → 비회원 주문서(ISS-015 Orders::Intake 사용) → 주문 완료·주문 조회(주문번호+전화 뒤4자리). 결제는 PG(ISS-060, 대표님 결정) 전이라 주문은 pending(결제 대기)로만 생성. 고객 계정(회원)·배송지 저장 동의 UI는 PRD v2 '고객 계정은 2차'에 따라 별도 카드로 분리. 개인정보 입력 화면이라 gate=deploy",
+            "risk": "중간",
+            "effort": "L",
+            "by": "factory-runner",
+            "at": "2026-10-19T02:04:17.330591+00:00"
           }
+        ],
+        "policy_decision": "ISS-058 결정(C안, 2026-10-18): 회원이 '배송지 저장'에 선택 동의하면 보관(동의 철회·탈퇴 시 파기), 동의하지 않거나 비회원이면 배송 완료 후 90일 보관 뒤 자동 파기",
+        "gate": "deploy",
+        "branch": "factory/ISS-059",
+        "base_branch": "factory/ISS-015",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T02:07:31.803627+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-18 착수 (gate=deploy, factory/ISS-015 위에 쌓은 factory/ISS-059)"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-10-19T02:13:21.850007+00:00",
+            "by": "factory-runner",
+            "note": "1차 슬라이스 구현·테스트·여정검증 PASS, 개인정보 입력 화면이라 배포 전 대표님 확인 대기 — factory/ISS-059 (0127026, factory/ISS-015 위에 쌓임), push 안 함"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "commit": "0127026 (branch factory/ISS-059, ISS-015 b2c66ae 포함, 미push)",
+        "merge_note": "factory/ISS-059 는 factory/ISS-015 를 포함하므로 둘 다 승인 시 ISS-059 브랜치만 병합하면 됨. ISS-059 만 승인되고 ISS-015 미승인이면 병합 불가",
+        "journey_review": "PASS — 장바구니 담기·수량변경·삭제, 동의 미체크 거부+입력 유지, 주문 완료(결제 대기·마스킹), 세션 없는 직접 접근 차단, 뒤4자리 오입력 거부, 375px 가로스크롤 없음 (docs/user-test/2026-10-18/review-iss059-*). FRICTION 3건(주문서 품목 목록·바로구매 안내·0 배지) 반영 완료",
+        "deploy_review_checklist": [
+          "비회원 주문서 개인정보 동의 문구(배송 목적, 배송 완료 후 90일 보관 뒤 파기) 문안 확인",
+          "결제 미연동 — 주문은 '결제 대기'로만 쌓이고 담당자 수동 안내 전제",
+          "주문번호 날짜가 서버 UTC 기준(config.time_zone 미설정) — KST 00~09시 주문은 전날 날짜로 찍힘. 후속 정리 권장",
+          "재고 차감 없음(결제 시점 처리 예정, ISS-060)"
+        ],
+        "follow_up": [
+          "ISS-105 고객 계정 + 배송지 저장 동의(2차)"
         ]
       },
-      "updated_at": "2026-10-19T00:30:49.052659+00:00",
-      "blocked_reason": "선행 ISS-058 DECISION 대기(개인정보 정책)"
+      "updated_at": "2026-10-19T02:13:21.850007+00:00",
+      "blocked_reason": "선행 ISS-058 DECISION 대기(개인정보 정책)",
+      "result": {
+        "status": "success",
+        "summary": "자사몰 1차: 장바구니·비회원 주문서·주문 조회 — factory/ISS-059 0127026",
+        "tests": {
+          "failed": 0
+        },
+        "proof": [
+          {
+            "cmd": "bin/rails test test/models/cart_test.rb test/controllers/{cart_items,checkouts,customer_orders,products}_controller_test.rb",
+            "exit_code": 0,
+            "output": "32 runs, 220 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "328 runs, 2043 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "216 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "bin/brakeman -q",
+            "exit_code": 0,
+            "output": "No warnings found"
+          },
+          {
+            "cmd": "curl localhost:3053 / /cart /orders/lookup /products/218 (마이그레이션한 dev DB 사본)",
+            "exit_code": 0,
+            "output": "/ 200, /cart 200, /orders/lookup 200, /products/218 200, /checkout/new(빈 장바구니) 302"
+          },
+          {
+            "cmd": "user-journey review (Playwright, 1440/375)",
+            "exit_code": 0,
+            "output": "종합: PASS — /orders/CHK-20261019-13F10BB9 결제 대기·테*·010-****-5678, 세션 없는 직접 접근 → /orders/lookup"
+          }
+        ]
+      }
     },
     {
       "id": "ISS-060",
@@ -1579,9 +1766,9 @@
             "note": "선행 ISS-059(자사몰 커머스 코어 EPIC) BLOCKED — EPIC v2 상 국내 첫 매출 뒤"
           }
         ],
-        "blocked_reason": "선행 ISS-059(자사몰 커머스 코어 EPIC) BLOCKED — EPIC v2 상 국내 첫 매출 뒤"
+        "blocked_reason": "선행 ISS-059 대기 (ISS-058 결정 완료) · EPIC v2 상 국내 첫 매출 뒤"
       },
-      "updated_at": "2026-10-19T00:30:49.052659+00:00"
+      "updated_at": "2026-10-18T19:03:06.603443-07:00"
     },
     {
       "id": "ISS-062",
@@ -3243,6 +3430,32 @@
         "factory_inline_verification": true
       },
       "completed_at": "2026-10-18T18:23:33.635188"
+    },
+    {
+      "id": "ISS-105",
+      "title": "고객 계정(회원가입·로그인) + 배송지 저장 선택 동의·철회·탈퇴 시 파기 (ISS-059 2차)",
+      "type": "FEATURE",
+      "priority": "P2",
+      "size": "L",
+      "status": "BACKLOG",
+      "depends_on": [
+        "ISS-059"
+      ],
+      "done_criteria": "고객 회원가입/로그인(관리자 User 와 분리), 주문서에서 '배송지 저장' 선택 동의 시 save_consent true, 마이페이지에서 동의 철회 → revoke_consent! 로 즉시 파기 대상, 탈퇴 시 배송지 파기, 테스트 통과",
+      "created_at": "2026-10-19T02:08:05.907965+00:00",
+      "updated_at": "2026-10-19T02:08:05.907965+00:00",
+      "payload": {
+        "origin": "factory-runner ISS-059 분리",
+        "gate": "deploy",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "PRD v2 '고객 계정은 2차'에 따라 ISS-059 1차(비회원 주문)에서 분리. C안의 '회원 동의 보관' 절반을 담당. 인증·개인정보라 구현은 브랜치, 배포는 대표님 확인(gate=deploy). ISS-059 병합 후 착수",
+          "risk": "중간",
+          "effort": "L",
+          "by": "factory-runner",
+          "at": "2026-10-19T02:08:05.907965+00:00"
+        }
+      }
     }
   ],
   "hooks": {

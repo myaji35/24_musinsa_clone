@@ -1,6 +1,7 @@
 module ImageHelper
   # 상품 대표 이미지 소스. 첨부 > image_url 순으로 우선한다.
   def product_image_source(product)
+    return product.cutout_image if product.respond_to?(:cutout_adopted?) && product.cutout_adopted? && product.cutout_image.attached?
     return product.image if product.respond_to?(:image) && product.image.attached?
     product.image_url.presence
   end

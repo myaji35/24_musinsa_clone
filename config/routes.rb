@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   # Products & Reviews
   resources :products do
     resources :reviews, only: [ :create ]
+    resource :cutout, only: [ :show, :create, :update ], controller: "product_cutouts"
   end
 
   # Snaps (Style Feed)

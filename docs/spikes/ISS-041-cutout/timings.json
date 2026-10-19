@@ -1,0 +1,284 @@
+[
+ {
+  "model": "birefnet-general",
+  "image": "musinsa_clone/public/model_fitting.jpg",
+  "size": [
+   700,
+   1024
+  ],
+  "sec": 4.72
+ },
+ {
+  "model": "birefnet-general",
+  "image": "musinsa_clone/public/model_knit_sweater.png",
+  "size": [
+   1024,
+   1024
+  ],
+  "sec": 4.52
+ },
+ {
+  "model": "birefnet-general",
+  "image": "musinsa_clone/public/model_navy_coat.png",
+  "size": [
+   1024,
+   1024
+  ],
+  "sec": 4.61
+ },
+ {
+  "model": "birefnet-general",
+  "image": "musinsa_clone/public/model_tweed_dress.png",
+  "size": [
+   1024,
+   1024
+  ],
+  "sec": 4.54
+ },
+ {
+  "model": "birefnet-general",
+  "image": "musinsa_clone/public/intro/yuna-studio.jpg",
+  "size": [
+   687,
+   1024
+  ],
+  "sec": 4.53
+ },
+ {
+  "model": "birefnet-general",
+  "image": "persona/runway-02/product.png",
+  "size": [
+   534,
+   534
+  ],
+  "sec": 4.73
+ },
+ {
+  "model": "birefnet-general",
+  "image": "persona/runway-04/product_coat.jpg",
+  "size": [
+   474,
+   1024
+  ],
+  "sec": 4.64
+ },
+ {
+  "model": "birefnet-general",
+  "image": "persona/f40-influencer/01_full_front.png",
+  "size": [
+   683,
+   1024
+  ],
+  "sec": 4.6
+ },
+ {
+  "model": "birefnet-general",
+  "image": "persona/f40-influencer/04_full_back.png",
+  "size": [
+   683,
+   1024
+  ],
+  "sec": 4.72
+ },
+ {
+  "model": "birefnet-general",
+  "image": "persona/choi/choi_coat_1.png",
+  "size": [
+   572,
+   1024
+  ],
+  "sec": 4.55
+ },
+ {
+  "model": "birefnet-general",
+  "load_sec": 89.6
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "musinsa_clone/public/model_fitting.jpg",
+  "size": [
+   700,
+   1024
+  ],
+  "sec": 1.31
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "musinsa_clone/public/model_knit_sweater.png",
+  "size": [
+   1024,
+   1024
+  ],
+  "sec": 0.68
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "musinsa_clone/public/model_navy_coat.png",
+  "size": [
+   1024,
+   1024
+  ],
+  "sec": 1.03
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "musinsa_clone/public/model_tweed_dress.png",
+  "size": [
+   1024,
+   1024
+  ],
+  "sec": 1.07
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "musinsa_clone/public/intro/yuna-studio.jpg",
+  "size": [
+   687,
+   1024
+  ],
+  "sec": 1.27
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "persona/runway-02/product.png",
+  "size": [
+   534,
+   534
+  ],
+  "sec": 1.29
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "persona/runway-04/product_coat.jpg",
+  "size": [
+   474,
+   1024
+  ],
+  "sec": 1.23
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "persona/f40-influencer/01_full_front.png",
+  "size": [
+   683,
+   1024
+  ],
+  "sec": 0.99
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "persona/f40-influencer/04_full_back.png",
+  "size": [
+   683,
+   1024
+  ],
+  "sec": 1.83
+ },
+ {
+  "model": "isnet-general-use",
+  "image": "persona/choi/choi_coat_1.png",
+  "size": [
+   572,
+   1024
+  ],
+  "sec": 0.88
+ },
+ {
+  "model": "isnet-general-use",
+  "load_sec": 128.9
+ },
+ {
+  "model": "u2net",
+  "image": "musinsa_clone/public/model_fitting.jpg",
+  "size": [
+   700,
+   1024
+  ],
+  "sec": 1.0
+ },
+ {
+  "model": "u2net",
+  "image": "musinsa_clone/public/model_knit_sweater.png",
+  "size": [
+   1024,
+   1024
+  ],
+  "sec": 0.32
+ },
+ {
+  "model": "u2net",
+  "image": "musinsa_clone/public/model_navy_coat.png",
+  "size": [
+   1024,
+   1024
+  ],
+  "sec": 0.26
+ },
+ {
+  "model": "u2net",
+  "image": "musinsa_clone/public/model_tweed_dress.png",
+  "size": [
+   1024,
+   1024
+  ],
+  "sec": 0.32
+ },
+ {
+  "model": "u2net",
+  "image": "musinsa_clone/public/intro/yuna-studio.jpg",
+  "size": [
+   687,
+   1024
+  ],
+  "sec": 0.37
+ },
+ {
+  "model": "u2net",
+  "image": "persona/runway-02/product.png",
+  "size": [
+   534,
+   534
+  ],
+  "sec": 0.38
+ },
+ {
+  "model": "u2net",
+  "image": "persona/runway-04/product_coat.jpg",
+  "size": [
+   474,
+   1024
+  ],
+  "sec": 0.33
+ },
+ {
+  "model": "u2net",
+  "image": "persona/f40-influencer/01_full_front.png",
+  "size": [
+   683,
+   1024
+  ],
+  "sec": 0.29
+ },
+ {
+  "model": "u2net",
+  "image": "persona/f40-influencer/04_full_back.png",
+  "size": [
+   683,
+   1024
+  ],
+  "sec": 0.29
+ },
+ {
+  "model": "u2net",
+  "image": "persona/choi/choi_coat_1.png",
+  "size": [
+   572,
+   1024
+  ],
+  "sec": 0.29
+ },
+ {
+  "model": "u2net",
+  "load_sec": 16.4
+ }
+]

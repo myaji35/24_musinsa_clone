@@ -19,6 +19,9 @@ class ApplicationController < ActionController::Base
   end
 
   def require_admin
-    redirect_to login_path, alert: "관리자 로그인이 필요합니다." unless logged_in?
+    return if logged_in?
+
+    session[:return_to] = request.fullpath if request.get? && request.format.html?
+    redirect_to login_path, alert: "관리자 로그인이 필요합니다."
   end
 end

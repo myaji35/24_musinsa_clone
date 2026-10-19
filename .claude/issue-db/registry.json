@@ -2289,7 +2289,7 @@
     },
     {
       "id": "ISS-059",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "priority": "P1",
       "type": "FEATURE",
       "title": "[EPIC] 자사몰 커머스 코어 — 고객 계정/비회원, 장바구니, 주문서, 배송지(ISS-058 정책), 주문 상태",
@@ -2328,12 +2328,12 @@
           }
         ],
         "recommendation": {
-          "verdict": "대표님 결정 필요",
-          "reason": "ISS-015(배송지 파기)는 대표님이 배포 승인했지만, 이 카드의 질문(결제 없이 주문 접수만 되는 자사몰을 공개할지)에는 아직 대표님 선택이 없음. 관제실이 ISS-015 결정을 이어받아 자동 승인했으나 배포 승인으로 인정하지 않음",
+          "verdict": "승인 권장",
+          "reason": "대표님 배포 결정 C(사업자 확인용 내부 배포, 일반 공개는 결제 연동 후) 반영 — factory/ISS-059 main 병합, 전체 테스트·린트·보안검사 통과",
           "risk": "medium",
           "effort": "S",
           "by": "factory-runner",
-          "at": "2026-10-19T03:49:47.813383+00:00"
+          "at": "2026-10-19T05:26:53.627334+00:00"
         },
         "recommendation_history": [
           {
@@ -2383,6 +2383,14 @@
             "effort": "—",
             "by": "관제실 결정",
             "at": "2026-10-19T03:48:35.509Z"
+          },
+          {
+            "verdict": "대표님 결정 필요",
+            "reason": "ISS-015(배송지 파기)는 대표님이 배포 승인했지만, 이 카드의 질문(결제 없이 주문 접수만 되는 자사몰을 공개할지)에는 아직 대표님 선택이 없음. 관제실이 ISS-015 결정을 이어받아 자동 승인했으나 배포 승인으로 인정하지 않음",
+            "risk": "medium",
+            "effort": "S",
+            "by": "factory-runner",
+            "at": "2026-10-19T03:49:47.813383+00:00"
           }
         ],
         "policy_decision": "ISS-058 결정(C안, 2026-10-18): 회원이 '배송지 저장'에 선택 동의하면 보관(동의 철회·탈퇴 시 파기), 동의하지 않거나 비회원이면 배송 완료 후 90일 보관 뒤 자동 파기",
@@ -2440,7 +2448,7 @@
             "note": "대표님 배포 결정 C(관제실 2026-10-19T05:24:56Z, gate_stage=deploy-review 이후, by 대표님(관제실)) 확인 — factory/ISS-059 main 병합·검증 착수"
           }
         ],
-        "gate_stage": "deploy-review",
+        "gate_stage": "merged",
         "commit": "0127026 (branch factory/ISS-059, ISS-015 b2c66ae 포함, 미push)",
         "merge_note": "factory/ISS-059 는 factory/ISS-015 위에 쌓여 있음. ISS-015 는 2026-10-18 실행에서 main 에 반영됨 → 승인 시 factory/ISS-059 만 병합하면 됨",
         "journey_review": "PASS — 장바구니 담기·수량변경·삭제, 동의 미체크 거부+입력 유지, 주문 완료(결제 대기·마스킹), 세션 없는 직접 접근 차단, 뒤4자리 오입력 거부, 375px 가로스크롤 없음 (docs/user-test/2026-10-18/review-iss059-*). FRICTION 3건(주문서 품목 목록·바로구매 안내·0 배지) 반영 완료",
@@ -2457,7 +2465,7 @@
           "approved_at": "2026-10-15T07:26:11.486Z",
           "approved_by": "자동 승인(추천: 승인 권장)"
         },
-        "merged_to_main": null,
+        "merged_to_main": "2026-10-19",
         "approved_at": "2026-10-19T05:24:56.860Z",
         "approved_by": "대표님(관제실)",
         "auto_approval_ignored": {
@@ -2510,20 +2518,37 @@
           "by": "대표님(관제실)"
         }
       },
-      "updated_at": "2026-10-19T05:26:08.200659+00:00",
+      "updated_at": "2026-10-19T05:26:53.627334+00:00",
       "blocked_reason": "선행 ISS-058 DECISION 대기(개인정보 정책)",
       "result": {
-        "summary": "대표님 승인(deploy gate)에 따라 factory/ISS-059 를 main 에 병합, 전체 테스트 통과",
+        "summary": "대표님 배포 결정 C(관제실 2026-10-19T05:24:56Z)에 따라 factory/ISS-059(0127026) 를 main 에 병합(83e7708). 세션 장바구니·비회원 주문서(개인정보 동의)·주문 완료·주문 조회. 일반 고객 공개·홍보는 결제 연동(ISS-060) 후. 배송지 보관 재결정(ISS-106)·법정 고지(ISS-107)는 별도 카드",
         "proof": [
           {
-            "cmd": "bin/rails test (main, factory/ISS-015+ISS-059 병합 후)",
+            "cmd": "bin/rails test (main, ISS-059 병합 후)",
             "exit_code": 0,
-            "output": "328 runs, 2043 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "345 runs, 2109 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "221 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "bundle exec brakeman --no-pager -q",
+            "exit_code": 0,
+            "output": "Security Warnings: 0"
+          },
+          {
+            "cmd": "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3053{/,/cart,/checkout/new,/orders/lookup}",
+            "exit_code": 0,
+            "output": "/ 200, /cart 200, /checkout/new 302(빈 장바구니→리다이렉트), /orders/lookup 200"
           }
         ],
+        "branch": "factory/ISS-059",
+        "merge_commit": "83e7708",
         "factory_inline_verification": true
       },
-      "completed_at": "2026-10-18T19:14:40.469097"
+      "completed_at": "2026-10-18T22:26:53.720298"
     },
     {
       "id": "ISS-060",
@@ -2752,7 +2777,7 @@
     },
     {
       "id": "ISS-063",
-      "status": "READY",
+      "status": "IN_PROGRESS",
       "priority": "P2",
       "type": "FEATURE",
       "title": "캐릭터 옷장·영상 상품상세(첫 화면 런웨이 영상, 캐릭터 착용 사이즈 표기, AI 가상인물 표기)",
@@ -2775,11 +2800,11 @@
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "선행 결정이 확정됨 — ISS-059 결정(2026-10-19): 대표님(대화 2026-10-18): 해당 사업자에게는 공개해야 함 — 사업자 확인용으로 실서버에 올리고, 일반 고객 홍보·공개는 결제 연동(ISS-060) 후. 이 결정을 반영해 범위를 다시 확인하고 진행",
-          "risk": "중간",
-          "effort": "—",
-          "by": "관제실 결정",
-          "at": "2026-10-19T05:24:56.860Z"
+          "reason": "선행 059·062 완료. 영상 파일 자체는 영상 생성 경로 결정(ISS-069) 대기라 이번엔 '관리자가 런웨이 영상을 올리면 상세 첫 화면에 재생 + 착용 캐릭터·사이즈 표기 + 가상 인물 표시(공정위 지침, docs/plan/ai-content-labeling §5-2 문구) + 캐릭터별 옷장 페이지' 틀을 만든다. 돈·개인정보 무관, 추가 컬럼만(파괴적 변경 없음)이라 배포 게이트 불필요",
+          "risk": "low",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-19T05:27:50.983083+00:00"
         },
         "status_history": [
           {
@@ -2788,11 +2813,29 @@
             "at": "2026-10-19T00:30:49.052659+00:00",
             "by": "factory-runner",
             "note": "선행 ISS-059 BLOCKED"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T05:27:50.983083+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-059(오늘 DONE)·ISS-062(DONE) 충족 — 착수"
           }
         ],
-        "policy_decision": "ISS-059 결정(2026-10-19): 대표님(대화 2026-10-18): 해당 사업자에게는 공개해야 함 — 사업자 확인용으로 실서버에 올리고, 일반 고객 홍보·공개는 결제 연동(ISS-060) 후"
+        "policy_decision": "ISS-059 결정(2026-10-19): 대표님(대화 2026-10-18): 해당 사업자에게는 공개해야 함 — 사업자 확인용으로 실서버에 올리고, 일반 고객 홍보·공개는 결제 연동(ISS-060) 후",
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "선행 결정이 확정됨 — ISS-059 결정(2026-10-19): 대표님(대화 2026-10-18): 해당 사업자에게는 공개해야 함 — 사업자 확인용으로 실서버에 올리고, 일반 고객 홍보·공개는 결제 연동(ISS-060) 후. 이 결정을 반영해 범위를 다시 확인하고 진행",
+            "risk": "중간",
+            "effort": "—",
+            "by": "관제실 결정",
+            "at": "2026-10-19T05:24:56.860Z"
+          }
+        ]
       },
-      "updated_at": "2026-10-19T05:24:56.860Z"
+      "updated_at": "2026-10-19T05:27:50.983083+00:00",
+      "last_dispatched_at": "2026-10-18T22:26:53"
     },
     {
       "id": "ISS-064",
@@ -5743,6 +5786,12 @@
         "issue_type": "RESEARCH",
         "plan_created": 0,
         "timestamp": "2026-10-18T21:13:35.112975"
+      },
+      {
+        "issue_id": "ISS-059",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T22:26:53.720298"
       }
     ],
     "on_fail": [],
@@ -5755,7 +5804,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 52,
+    "completed": 53,
     "failed": 0,
     "evolved": 0
   },
@@ -5768,7 +5817,6 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-029:READY": 5,
-    "ISS-043:READY": 1
+    "ISS-063:READY": 1
   }
 }

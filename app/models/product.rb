@@ -13,6 +13,7 @@ class Product < ApplicationRecord
 
   # Active Storage 이미지 첨부 (Story 1.1)
   has_one_attached :image
+  has_one_attached :cutout_image
 
   # Nested attributes for Variants (Story 1.3)
   accepts_nested_attributes_for :variants, allow_destroy: true, reject_if: :all_blank

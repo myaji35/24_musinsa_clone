@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   # Products & Reviews
   resources :products do
+    resource :model_pick, only: [ :show, :create ], controller: :model_picks
     resources :reviews, only: [ :create ]
   end
 
@@ -62,6 +63,7 @@ Rails.application.routes.draw do
 
   # Epic 7: UCP API
   namespace :api do
+    resources :content_uploads, only: :create
     namespace :v1 do
       get "ucp/products", to: "ucp#products"
     end

@@ -77,6 +77,9 @@
           <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
           <%= link_to "상품 입고(엑셀)", supplier_imports_path, class: "hover:text-gray-500 text-green-600" %>
           <%= link_to "상품분석", product_analyses_path, class: "hover:text-gray-500 text-green-600" %>
+          <% if logged_in? %>
+            <%= link_to "트렌드", trends_path, class: "hover:text-gray-500 text-green-600" %>
+          <% end %>
           <%= link_to "KPI", kpi_path, class: "hover:text-gray-500 text-green-600" %>
         </div>
 

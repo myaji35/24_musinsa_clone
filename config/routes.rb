@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   resources :product_analyses, only: [ :index, :show, :create, :update ] do
     collection { post :analyze_pending }
   end
+  resources :trends, only: [ :index, :create ]
   get "kpi", to: "kpi#index", as: :kpi
   resources :purchase_orders do
     member do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_18_000000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_18_006400) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -337,6 +337,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_18_000000) do
     t.datetime "updated_at", null: false
     t.index ["active"], name: "index_suppliers_on_active"
     t.index ["name"], name: "index_suppliers_on_name", unique: true
+  end
+
+  create_table "trend_snapshots", force: :cascade do |t|
+    t.string "source", null: false
+    t.string "series_name", null: false
+    t.date "period_start", null: false
+    t.decimal "ratio", precision: 7, scale: 2, null: false
+    t.integer "age_band"
+    t.string "gender"
+    t.datetime "imported_at", null: false
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "source, series_name, period_start, COALESCE(age_band, 0), COALESCE(gender, '')", name: "index_trend_snapshots_nullable_identity", unique: true
+    t.index ["source", "series_name", "period_start", "age_band", "gender"], name: "index_trend_snapshots_identity", unique: true
   end
 
   create_table "users", force: :cascade do |t|

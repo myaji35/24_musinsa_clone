@@ -5619,6 +5619,107 @@
           }
         ]
       }
+    },
+    {
+      "id": "ISS-114",
+      "title": "[결정] 브랜드명 '오롯 (OROT)' 확정 — 스트리트·스포티 라인",
+      "type": "DECISION",
+      "priority": "P1",
+      "size": "S",
+      "status": "DONE",
+      "depends_on": [],
+      "created_at": "2026-10-19T05:30:54.783308+00:00",
+      "updated_at": "2026-10-19T05:30:54.783308+00:00",
+      "completed_at": "2026-10-19T05:30:54.783308+00:00",
+      "done_criteria": "브랜드명 결정과 상표 위험을 기록한다",
+      "payload": {
+        "decision": {
+          "choice": "오롯 (OROT)",
+          "by": "대표님(대화)",
+          "at": "2026-10-18",
+          "note": "뜻: '오롯이 나' — 이름·주소 없이 취향만 남는 나다움"
+        },
+        "trademark_check": {
+          "source": "KIPRIS 2026-10-18, 상표명 오롯+OROT, 25류",
+          "conflicts": [
+            {
+              "no": "40-2026-0014640",
+              "mark": "오롯 (OROTT)",
+              "status": "출원 중",
+              "holder": "개인"
+            },
+            {
+              "no": "40-2020-0076844",
+              "mark": "오알오티 (orot)",
+              "status": "등록",
+              "holder": "크레이지코스메틱스"
+            },
+            {
+              "no": "40-2017-0060748",
+              "mark": "OROTA",
+              "status": "등록",
+              "holder": "현대홈쇼핑"
+            }
+          ],
+          "risk": "높음 — 같은 25류에 유사 상표 등록·출원 중. 그대로 쓰면 등록 거절·사용 금지 청구 가능성"
+        },
+        "follow_up": "ISS-115 변리사 검토(결합상표·다른 류·출원 전략)",
+        "recommendation": {
+          "verdict": "완료",
+          "reason": "대표님 결정 기록. 상표 위험은 ISS-115 로 분리",
+          "risk": "high",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T05:30:54.783308+00:00"
+        }
+      }
+    },
+    {
+      "id": "ISS-115",
+      "title": "'오롯' 상표 출원 전략 변리사 검토 — 25류 선행상표(오롯 출원·orot 등록) 대응",
+      "type": "DECISION",
+      "priority": "P1",
+      "size": "S",
+      "status": "AWAITING_USER",
+      "depends_on": [
+        "ISS-114"
+      ],
+      "created_at": "2026-10-19T05:30:54.783308+00:00",
+      "updated_at": "2026-10-19T05:30:54.783308+00:00",
+      "done_criteria": "변리사 의견을 받아 출원 여부·표기(결합상표 등)를 확정한다",
+      "payload": {
+        "question": "'오롯' 상표 출원 전 변리사 검토를 맡기시겠습니까?",
+        "options": [
+          {
+            "key": "A",
+            "label": "변리사 검토 의뢰",
+            "pros": "분쟁·재브랜딩 비용 예방",
+            "cons": "검토비 발생"
+          },
+          {
+            "key": "B",
+            "label": "결합상표로 출원(예: 'JIEUN 오롯')",
+            "pros": "식별력 확보 가능성",
+            "cons": "브랜드가 길어짐, 그래도 유사 판단 위험"
+          },
+          {
+            "key": "C",
+            "label": "상표 없이 우선 사용",
+            "pros": "지금 비용 없음",
+            "cons": "선출원자 등록 시 사용 중지 위험"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "같은 의류 분류에 '오롯(OROTT)' 출원과 'orot' 등록이 이미 있어, 판매 전에 확인하는 비용이 나중 재브랜딩보다 훨씬 쌉니다.",
+        "recommendation": {
+          "verdict": "대표님 결정 필요",
+          "reason": "외부 비용(변리사)·법적 판단 필요",
+          "risk": "high",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T05:30:54.783308+00:00"
+        }
+      }
     }
   ],
   "hooks": {

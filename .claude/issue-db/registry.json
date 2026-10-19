@@ -2497,7 +2497,7 @@
       ],
       "done_criteria": "최소 막대 높이 보장(값>0이면 최소 2~4px) 또는 로그/상한 스케일, 터치 환경에서 탭/포커스로 날짜·금액 확인 가능",
       "created_at": "2026-10-15T08:55:39.666963+00:00",
-      "updated_at": "2026-10-19T01:16:20.773747+00:00",
+      "updated_at": "2026-10-19T01:18:35.473893+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-017",
@@ -2540,7 +2540,8 @@
           }
         ],
         "commit": "ef0ce13",
-        "journey_review": "PASS (1440 클릭·390 탭·키보드 포커스로 'M/D ₩금액' 표시). 90일 가로 스크롤은 ISS-102 로 분리"
+        "journey_review": "PASS (1440 클릭·390 탭·키보드 포커스로 'M/D ₩금액' 표시). 90일 가로 스크롤은 ISS-102 로 분리",
+        "ci_run": "39184605658 success"
       },
       "last_dispatched_at": "2026-10-18T17:43:09",
       "result": {
@@ -2580,7 +2581,7 @@
       "depends_on": [],
       "done_criteria": "검색어를 sanitize_sql_like + ESCAPE 로 처리해 %, _ 를 글자 그대로 검색",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-19T01:16:20.773747+00:00",
+      "updated_at": "2026-10-19T01:18:35.473893+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-094",
@@ -2613,7 +2614,8 @@
           }
         ],
         "commit": "c21501b",
-        "journey_review": "PASS (%, _ 검색 0건 안내, 일반 검색 정상)"
+        "journey_review": "PASS (%, _ 검색 0건 안내, 일반 검색 정상)",
+        "ci_run": "39184605658 success"
       },
       "result": {
         "status": "success",
@@ -2742,7 +2744,7 @@
       "depends_on": [],
       "done_criteria": "CI 의 bin/rails test 대상에 jobs·views·initializers(또는 test:all) 포함, 로컬 전체 실행과 같은 범위",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-19T01:16:20.773747+00:00",
+      "updated_at": "2026-10-19T01:18:35.473893+00:00",
       "payload": {
         "origin": "factory-runner",
         "source_issue": "ISS-091",
@@ -2774,7 +2776,8 @@
             "note": "공장 실행 2026-10-19 착수 (P2, 최우선)"
           }
         ],
-        "commit": "c3c456f"
+        "commit": "c3c456f",
+        "ci_run": "39184605658 success — Test Suite: bin/rails test 295 runs 0 failures + test:system 8 runs 0 failures (이전 CI 는 jobs·views·initializers 미포함)"
       },
       "result": {
         "status": "success",
@@ -2859,7 +2862,7 @@
       "depends_on": [],
       "done_criteria": "기존 카테고리 값이 선택 목록에 없으면 현재 값을 유지·표시하거나 데이터 정규화(하의→바지 등) 방안 결정",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-19T01:16:20.773747+00:00",
+      "updated_at": "2026-10-19T01:18:35.473893+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-091",
@@ -2892,7 +2895,8 @@
           }
         ],
         "commit": "812807e",
-        "journey_review": "PASS (Outer·One-piece '(기존 값)' 선택 표시, 무변경 저장 시 값 유지). 목록 밖 값 현황: 개발DB 하의2·One-piece5·Outer10·Top5, seeds.rb 에 One-piece/Outer/Top — 정규화는 범위 밖"
+        "journey_review": "PASS (Outer·One-piece '(기존 값)' 선택 표시, 무변경 저장 시 값 유지). 목록 밖 값 현황: 개발DB 하의2·One-piece5·Outer10·Top5, seeds.rb 에 One-piece/Outer/Top — 정규화는 범위 밖",
+        "ci_run": "39184605658 success"
       },
       "result": {
         "status": "success",

@@ -305,13 +305,13 @@
       "priority": "P3",
       "size": "S",
       "phase": "1",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [
         "ISS-004"
       ],
       "done_criteria": "Variant별 최근20건",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-19T01:23:38.624561+00:00",
+      "updated_at": "2026-10-19T01:25:36.001617+00:00",
       "payload": {
         "decisions": [
           {
@@ -324,15 +324,56 @@
         "approved_at": "2026-10-15T06:47:51.600Z",
         "approved_by": "대표님(관제실)",
         "recommendation": {
-          "verdict": "보류 권장",
-          "reason": "이번 실행은 user-test UX_FIX 4건 우선 처리. 재고이력 탭은 FEATURE(P3)라 다음 실행으로 이월",
+          "verdict": "승인 권장",
+          "reason": "user-test 이슈가 없어 READY 중 최우선 처리. StockLog 기반이라 스키마 변경 없는 S 규모 화면 추가",
           "risk": "low",
           "effort": "S",
           "by": "factory-runner",
-          "at": "2026-10-19T01:23:38.624561+00:00"
-        }
+          "at": "2026-10-19T01:25:36.001617+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "보류 권장",
+            "reason": "이번 실행은 user-test UX_FIX 4건 우선 처리. 재고이력 탭은 FEATURE(P3)라 다음 실행으로 이월",
+            "risk": "low",
+            "effort": "S",
+            "by": "factory-runner",
+            "at": "2026-10-19T01:23:38.624561+00:00"
+          }
+        ],
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T01:25:36.001617+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 착수"
+          }
+        ]
       },
-      "last_dispatched_at": "2026-10-18T18:11:49"
+      "last_dispatched_at": "2026-10-18T18:11:49",
+      "result": {
+        "status": "success",
+        "summary": "상품 편집 재고이력 탭(옵션별 최근 20건) + 빈 InventoryHelper 제거",
+        "tests": {
+          "failed": 0,
+          "runs": 306
+        },
+        "proof": [
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "306 runs, 1816 assertions, 0 failures"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "200 files inspected, no offenses"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:30:13.403105"
     },
     {
       "id": "ISS-015",
@@ -532,7 +573,7 @@
       ],
       "done_criteria": "보류",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-15T06:48:11.891Z",
+      "updated_at": "2026-10-19T01:25:36.001617+00:00",
       "payload": {
         "decisions": [
           {
@@ -543,9 +584,17 @@
           }
         ],
         "approved_at": "2026-10-15T06:48:11.891Z",
-        "approved_by": "대표님(관제실)"
+        "approved_by": "대표님(관제실)",
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "done_criteria 가 '보류'이고 L 규모. EPIC v2 에서 우선순위 밖이며 ISS-014/017 기반 설계 결정 선행 필요 — READY 유지하되 이번 실행은 미착수",
+          "risk": "low",
+          "effort": "L",
+          "by": "factory-runner",
+          "at": "2026-10-19T01:25:36.001617+00:00"
+        }
       },
-      "last_dispatched_at": "2026-10-18T18:11:49"
+      "last_dispatched_at": "2026-10-18T18:30:13"
     },
     {
       "id": "ISS-025",
@@ -1218,13 +1267,13 @@
       "priority": "P3",
       "size": "S",
       "phase": "2",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [
         "ISS-027"
       ],
       "done_criteria": "PRD v2에 '셀프 피팅은 범위 밖/차기' 결정 문장이 명기된다",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-15T07:26:11.486Z",
+      "updated_at": "2026-10-19T01:25:36.001617+00:00",
       "payload": {
         "decisions": [
           {
@@ -1235,9 +1284,42 @@
           }
         ],
         "approved_at": "2026-10-15T07:26:11.486Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "docs/PRD_v2.md 4.2 에 결정 문장이 이미 명기돼 있어 근거 확인 후 DONE 처리",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T01:25:36.001617+00:00"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T01:25:36.001617+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 착수"
+          }
+        ]
       },
-      "last_dispatched_at": "2026-10-18T18:11:49"
+      "last_dispatched_at": "2026-10-18T18:11:49",
+      "result": {
+        "status": "success",
+        "summary": "PRD_v2.md 4.2 에 셀프 피팅 범위 밖 결정 문장 명기 확인(ISS-027 에서 반영)",
+        "tests": {
+          "failed": 0
+        },
+        "proof": [
+          {
+            "cmd": "grep -n ISS-048 docs/PRD_v2.md",
+            "exit_code": 0,
+            "output": "107:- 결정(ISS-048): 소비자 셀프 피팅은 v2 범위 밖이며 차기로 미룬다."
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T18:30:13.595925"
     },
     {
       "id": "ISS-049",
@@ -3334,6 +3416,18 @@
         "issue_type": "UX_FIX",
         "plan_created": 0,
         "timestamp": "2026-10-18T18:23:34.000850"
+      },
+      {
+        "issue_id": "ISS-018",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:30:13.403105"
+      },
+      {
+        "issue_id": "ISS-048",
+        "issue_type": "DOC",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T18:30:13.595925"
       }
     ],
     "on_fail": [],
@@ -3346,7 +3440,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 42,
+    "completed": 44,
     "failed": 0,
     "evolved": 0
   },
@@ -3359,9 +3453,6 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-018:READY": 3,
-    "ISS-029:READY": 3,
-    "ISS-048:READY": 2,
-    "ISS-100:READY": 1
+    "ISS-029:READY": 4
   }
 }

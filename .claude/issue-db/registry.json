@@ -2777,7 +2777,7 @@
     },
     {
       "id": "ISS-063",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "priority": "P2",
       "type": "FEATURE",
       "title": "캐릭터 옷장·영상 상품상세(첫 화면 런웨이 영상, 캐릭터 착용 사이즈 표기, AI 가상인물 표기)",
@@ -2835,7 +2835,41 @@
         ]
       },
       "updated_at": "2026-10-19T05:27:50.983083+00:00",
-      "last_dispatched_at": "2026-10-18T22:26:53"
+      "last_dispatched_at": "2026-10-18T22:26:53",
+      "result": {
+        "summary": "상품에 착용 캐릭터·착용 사이즈·런웨이 영상 연결, 상품상세 첫 화면 영상 재생 + '가상 인물' 배지·안내문(ai-content-labeling §5-2 문구), 착용 줄(예: 강유나 163cm · 상의 M(66) / M 착용), /characters/:handle 공개 옷장. 실제 영상 소재는 영상 생성 경로 결정(ISS-069) 후 관리자 폼으로 업로드",
+        "commit": "edefb53",
+        "proof": [
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "355 runs, 2160 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "225 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "bundle exec brakeman -q --no-pager",
+            "exit_code": 0,
+            "output": "Security Warnings: 0"
+          },
+          {
+            "cmd": "curl /products/201 /products/202 /characters/KangUNA /characters/nobody (dev 3053)",
+            "exit_code": 0,
+            "output": "/products/201 200 video:1, /products/202 200, /characters/KangUNA 200, /characters/nobody 404; 착용 줄 '강유나 163cm · 상의 M(66) / M 착용'; /products/203(캐릭터 없음) '가상 인물' 0건"
+          },
+          {
+            "cmd": "user-journey-tester review (Playwright, /tmp/ujt/b9.js·c2.js, 1440/375)",
+            "exit_code": 0,
+            "output": "종합 PASS — 영상 readyState=4·currentTime 0.81→2.81s, 배지 최상단 노출, 옷장 카드 이동, 장바구니·비회원 주문·조회 PASS, 375폭 overflow 0"
+          }
+        ],
+        "cost_usd": 0,
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T22:32:47.248111"
     },
     {
       "id": "ISS-064",
@@ -5971,6 +6005,12 @@
         "issue_type": "FEATURE",
         "plan_created": 0,
         "timestamp": "2026-10-18T22:26:53.720298"
+      },
+      {
+        "issue_id": "ISS-063",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T22:32:47.248111"
       }
     ],
     "on_fail": [],
@@ -5983,7 +6023,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 53,
+    "completed": 54,
     "failed": 0,
     "evolved": 0
   },

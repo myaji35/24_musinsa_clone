@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class Trends::DatalabCsvImporterTest < ActiveSupport::TestCase
   test "메타 와이드 CSV를 주간 평균으로 집계하고 재업로드시 갱신한다" do
@@ -31,5 +32,17 @@ class Trends::DatalabCsvImporterTest < ActiveSupport::TestCase
   test "헤더 없음은 한국어 오류" do
     error = assert_raises(Trends::DatalabCsvImporter::Error) { Trends::DatalabCsvImporter.new.call("메타 정보\n코트,10\n") }
     assert_match "헤더를 찾을 수 없습니다", error.message
+  end
+  test "CSV 구문과 인코딩 오류는 내부 내용을 로그에만 남긴다" do
+    [ "날짜,코트\n\"닫히지 않은 값", "\xFF\xFE\x00\x81".b ].each do |content|
+      logs = StringIO.new
+      Rails.stub :logger, ActiveSupport::Logger.new(logs) do
+        error = assert_raises(Trends::DatalabCsvImporter::Error) do
+          Trends::DatalabCsvImporter.new.call(content)
+        end
+        assert_equal "CSV 파일을 읽을 수 없습니다. 데이터랩에서 내려받은 CSV(UTF-8 또는 엑셀 CSV)인지 확인하세요.", error.message
+      end
+      assert_match(/DatalabCsvImporter: (CSV::MalformedCSVError|Encoding::UndefinedConversionError|Encoding::InvalidByteSequenceError):/, logs.string)
+    end
   end
 end

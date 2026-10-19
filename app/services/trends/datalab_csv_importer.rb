@@ -46,7 +46,8 @@ module Trends
       end
       result
     rescue CSV::MalformedCSVError, EncodingError => e
-      raise Error, "CSV 파일을 읽을 수 없습니다: #{e.message}"
+      Rails.logger.warn("DatalabCsvImporter: #{e.class}: #{e.message}")
+      raise Error, "CSV 파일을 읽을 수 없습니다. 데이터랩에서 내려받은 CSV(UTF-8 또는 엑셀 CSV)인지 확인하세요."
     end
 
     private

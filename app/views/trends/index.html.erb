@@ -4,6 +4,12 @@
     <h1 class="text-2xl font-bold">시즌·트렌드 상품 선정</h1>
     <span class="rounded bg-gray-100 px-3 py-2 text-sm font-medium"><%= @api_configured ? "API 키 있음" : "API 키 없음 — CSV 업로드를 쓰세요" %></span>
   </div>
+  <% if flash[:notice] %>
+    <div role="status" class="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm"><%= flash[:notice] %></div>
+  <% end %>
+  <% if flash[:alert] %>
+    <div role="alert" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm"><%= flash[:alert] %></div>
+  <% end %>
   <section class="bg-white border rounded-lg p-6 space-y-4">
     <h2 class="text-lg font-bold">주간 실측 CSV 업로드</h2>
     <p class="text-sm text-gray-600">네이버 데이터랩 쇼핑인사이트에서 의류 카테고리와 조회 기간을 선택하세요.<br>연령대 필터를 확인하고 조회 결과를 CSV로 내려받으세요.<br>같은 연령대를 선택해 업로드하면 월요일 시작 주간 평균으로 저장됩니다.</p>
@@ -23,7 +29,6 @@
     <table class="w-full text-sm text-left"><thead><tr class="border-b"><th class="p-3">캐릭터</th><th class="p-3">연령대</th><th class="p-3">담당 의류</th><th class="p-3">상위 시리즈 · 상승률 · 후보 상품</th></tr></thead><tbody>
       <% @recommendations.each do |character, rows| %>
         <tr class="border-b"><td class="p-3"><%= character.name %></td><td class="p-3"><%= character.age_band ? "#{character.age_band}대" : "미지정" %></td><td class="p-3"><%= character.wardrobe %></td><td class="p-3 space-y-3">
-          <% if rows.empty? %><p>매칭 데이터가 없습니다. 담당 의류 CSV를 업로드하세요.</p><% end %>
           <% rows.each do |row| %>
             <div><p class="font-medium"><%= row[:series_name] %> · <%= row[:status] %> · <%= row[:growth] ? "#{number_with_precision(row[:growth], precision: 1)}%" : "상승률 계산 불가" %> · 최근 지수 <%= number_with_precision(row[:latest], precision: 2) %></p>
               <% if row[:products].empty? %><p class="text-gray-500">후보 상품 없음</p><% end %>
@@ -33,6 +38,9 @@
         </td></tr>
       <% end %>
     </tbody></table>
+    <% if @characters_without_data.any? %>
+      <p class="mt-4 text-sm text-gray-600">데이터 없음: <%= @characters_without_data.map(&:name).join(", ") %> — 담당 의류 CSV를 올리면 추천이 표시됩니다</p>
+    <% end %>
   </section>
   <section class="bg-white border rounded-lg p-6">
     <h2 class="text-lg font-bold mb-4">최근 스냅샷 요약</h2>

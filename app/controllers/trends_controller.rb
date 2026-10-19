@@ -3,6 +3,8 @@ class TrendsController < ApplicationController
     @api_configured = Trends::DatalabApiClient.new.configured?
     recommender = Trends::CharacterRecommender.new
     @recommendations = Character.order(:age_band, :id).map { |character| [ character, recommender.call(character) ] }
+    @recommendations, without_data = @recommendations.partition { |_, rows| rows.any? }
+    @characters_without_data = without_data.map(&:first)
     @snapshots = TrendSnapshot.order(period_start: :desc, imported_at: :desc).to_a.group_by(&:series_name).transform_values(&:first)
   end
 

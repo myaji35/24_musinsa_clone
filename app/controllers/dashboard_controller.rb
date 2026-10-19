@@ -22,6 +22,11 @@ class DashboardController < ApplicationController
     @daily_sales = (period_start.to_date..Date.current).map do |date|
       { date: date, revenue: sales_by_date.fetch(date.iso8601, 0) }
     end
+    if @period > 30
+      @daily_sales = @daily_sales.each_slice(7).map do |days|
+        { date: days.first[:date], end_date: days.last[:date], revenue: days.sum { |day| day[:revenue] } }
+      end
+    end
     @max_daily_revenue = @daily_sales.map { |day| day[:revenue] }.max.to_f
 
     # 인기 취향 태그 Top 10

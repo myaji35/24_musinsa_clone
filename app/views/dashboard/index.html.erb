@@ -33,21 +33,26 @@
     </div>
   </div>
 
-  <%# 기간 내 일별 매출 %>
+  <%# 기간 내 매출: 30일 이하는 일별, 90일은 7일 단위 %>
+  <% sales_unit = @period > 30 ? "주별" : "일별" %>
   <section class="bg-white rounded-lg shadow p-6 border border-gray-200 mb-8" aria-labelledby="daily-sales-heading" data-controller="daily-sales">
-    <h2 id="daily-sales-heading" class="text-xl font-bold mb-4">일별 매출</h2>
+    <h2 id="daily-sales-heading" class="text-xl font-bold mb-4"><%= sales_unit %> 매출</h2>
     <% if @total_orders.zero? %>
       <p class="text-gray-600 text-center py-8">선택 기간에 주문이 없습니다</p>
     <% else %>
-      <p class="text-sm text-gray-700 mb-2" data-daily-sales-target="detail" aria-live="polite" aria-atomic="true">막대를 선택하면 날짜와 매출이 표시됩니다.</p>
-      <p class="text-xs text-gray-600 mb-4">매출이 적은 날도 보이도록 막대에 최소 높이를 둡니다.</p>
+      <p class="text-sm text-gray-700 mb-2" data-daily-sales-target="detail" aria-live="polite" aria-atomic="true">막대를 선택하면 <%= @period > 30 ? "기간" : "날짜" %>와 매출이 표시됩니다.</p>
+      <p class="text-xs text-gray-600 mb-4">매출이 적은 <%= @period > 30 ? "주도" : "날도" %> 보이도록 막대에 최소 높이를 둡니다.</p>
       <div class="overflow-x-auto">
-        <div class="flex items-end gap-1 h-48 min-w-max border-b border-gray-300" aria-label="일별 매출 막대 차트">
+        <div class="flex items-end gap-1 h-48 min-w-max border-b border-gray-300" aria-label="<%= sales_unit %> 매출 막대 차트">
           <% @daily_sales.each do |day| %>
-            <% label = "#{day[:date].month}/#{day[:date].day} ₩#{number_with_delimiter(day[:revenue].to_i)}" %>
+            <% date_label = "#{day[:date].month}/#{day[:date].day}" %>
+            <% date_label += "~#{day[:end_date].month}/#{day[:end_date].day}" if day[:end_date] %>
+            <% title_date = day[:date].iso8601 %>
+            <% title_date += "~#{day[:end_date].iso8601}" if day[:end_date] %>
+            <% label = "#{date_label} ₩#{number_with_delimiter(day[:revenue].to_i)}" %>
             <button type="button"
                     class="flex flex-col items-center justify-end h-full min-w-6 flex-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-700 focus-visible:outline-offset-2"
-                    title="<%= day[:date].iso8601 %> · ₩<%= number_with_delimiter(day[:revenue].to_i) %>"
+                    title="<%= title_date %> · ₩<%= number_with_delimiter(day[:revenue].to_i) %>"
                     aria-label="<%= label %>"
                     data-action="focus->daily-sales#select click->daily-sales#select">
               <span class="w-full bg-blue-600 rounded-t" style="<%= daily_sales_bar_style(day[:revenue], @max_daily_revenue) %>" aria-hidden="true"></span>
@@ -56,7 +61,7 @@
         </div>
         <div class="flex justify-between mt-2 text-xs text-gray-600">
           <span><%= @daily_sales.first[:date].strftime("%m/%d") %></span>
-          <span><%= @daily_sales.last[:date].strftime("%m/%d") %></span>
+          <span><%= (@daily_sales.last[:end_date] || @daily_sales.last[:date]).strftime("%m/%d") %></span>
         </div>
       </div>
     <% end %>

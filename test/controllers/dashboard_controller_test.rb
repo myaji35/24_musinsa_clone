@@ -69,7 +69,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       orders(:one).update_columns(created_at: 2.days.ago, total_price: 33_000)
       orders(:two).update_columns(created_at: 1.day.ago, total_price: 7_800_000)
 
-      [ 7, 30, 90 ].each do |period|
+      [ 7, 30 ].each do |period|
         get dashboard_index_url(period: period)
         assert_response :success
         assert_select '[data-controller="daily-sales"]' do
@@ -82,6 +82,30 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
           assert_select "button[aria-label]", count: period + 1
         end
       end
+    end
+  end
+
+  test "90 day sales chart groups every date into seven day bars ISS102" do
+    travel_to Time.zone.local(2026, 10, 15, 12) do
+      orders(:one).update_columns(created_at: 90.days.ago, total_price: 33_000)
+      orders(:two).update_columns(created_at: Time.current, total_price: 7_800_000)
+
+      get dashboard_index_url(period: 90)
+      assert_response :success
+      assert_select "h2", text: "주별 매출"
+      assert_select '[aria-label="주별 매출 막대 차트"]' do
+        assert_select "button[aria-label]", count: 13
+        assert_select 'button[title="2026-07-17~2026-07-23 · ₩33,000"] span[style*="min-height: 4px"]', count: 1
+        assert_select 'button[aria-label="10/9~10/15 ₩7,800,000"] span[style="height: 100.0%; min-height: 4px"]', count: 1
+        assert_select 'button[title="2026-07-24~2026-07-30 · ₩0"]', count: 1
+      end
+      assert_select "#total-revenue", text: "₩7,833,000"
+      assert_select '[data-controller="daily-sales"] span', text: "10/15"
+
+      orders(:one).update_columns(created_at: 2.days.ago)
+      get dashboard_index_url(period: 90)
+      assert_select 'button[aria-label="10/9~10/15 ₩7,833,000"]', count: 1
+      assert_select 'button[title="2026-07-17~2026-07-23 · ₩0"]', count: 1
     end
   end
 

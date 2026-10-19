@@ -1,8 +1,9 @@
 require "test_helper"
 
 class AvatarTest < ActiveSupport::TestCase
-  test "catalog contains the four selected avatars and supports handle lookup" do
-    assert_equal %w[SeoHARIN KangUNA ChenMAYA OhDAEUN], Avatar.all.map(&:handle)
+  test "catalog contains the ten selected avatars and supports handle lookup" do
+    assert_equal 10, Avatar.all.size
+    assert_equal %w[SeoHARIN TanakaMIO ParkJADE YunCHAEI MoreauLEA HanSOYUL KangUNA ChenMAYA OhDAEUN SoERIN], Avatar.all.map(&:handle)
     assert_equal "서하린", Avatar.find("SeoHARIN").name
     assert_nil Avatar.find("unknown")
     assert_nil Avatar.find(nil)
@@ -22,12 +23,17 @@ class AvatarTest < ActiveSupport::TestCase
     end
   end
 
-  test "every image exists in the served asset directory and is at most 300KB" do
+  test "every image exists in the served asset directory and is a JPEG within its size limit" do
     Avatar.all.each do |avatar|
-      path = Rails.root.join("app/assets/images", avatar.image)
-      assert path.file?, "이미지 없음: #{avatar.image}"
-      assert_operator path.size, :<=, 300_000
-      assert_equal "\xFF\xD8".b, File.binread(path, 2)
+      { image: 150_000, card_image: 40_000 }.each do |attribute, limit|
+        image = avatar.public_send(attribute)
+        expected_path = "avatars/#{avatar.handle}#{attribute == :card_image ? '-card' : ''}.jpg"
+        assert_equal expected_path, image
+        path = Rails.root.join("app/assets/images", image)
+        assert path.file?, "이미지 없음: #{image}"
+        assert_operator path.size, :<=, limit
+        assert_equal "\xFF\xD8".b, File.binread(path, 2)
+      end
     end
   end
 end

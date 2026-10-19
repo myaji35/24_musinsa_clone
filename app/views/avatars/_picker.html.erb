@@ -7,7 +7,7 @@
         <%= radio_button_tag name, avatar.handle, local_assigns[:selected].to_s == avatar.handle,
               class: "peer h-4 w-4 mb-2 accent-black", aria: { label: "#{avatar.name} 아바타 선택" } %>
         <div class="h-full rounded-lg border border-gray-200 p-3 peer-checked:border-black peer-checked:ring-2 peer-checked:ring-black peer-focus-visible:ring-2 peer-focus-visible:ring-black">
-          <%= image_tag avatar.image, alt: "#{avatar.name} AI 가상인물", loading: "lazy", class: "w-full aspect-[3/4] object-contain rounded-md bg-gray-50" %>
+          <%= image_tag avatar.card_image, alt: "#{avatar.name} AI 가상인물", loading: "lazy", class: "w-full aspect-[3/4] object-contain rounded-md bg-gray-50" %>
           <p class="mt-3 text-sm font-bold text-gray-900"><%= avatar.name %></p>
           <span class="inline-block mt-1 rounded bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">AI 가상인물</span>
           <p class="mt-2 text-sm text-gray-700"><%= avatar.body_type %></p>

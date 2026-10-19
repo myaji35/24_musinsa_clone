@@ -1,6 +1,6 @@
 # 고정 아바타 카탈로그. DB 레코드와 무관하게 YAML에서 읽는다.
 class Avatar
-  ATTRIBUTES = %w[handle name gender body_type height_cm top_size bottom_size image source license generator].freeze
+  ATTRIBUTES = %w[handle name gender body_type height_cm top_size bottom_size image card_image source license generator].freeze
 
   attr_reader(*ATTRIBUTES)
 

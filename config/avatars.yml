@@ -9,7 +9,68 @@ SeoHARIN:
   bottom_size: '26'
   gender: female
   image: avatars/SeoHARIN.jpg
+  card_image: avatars/SeoHARIN-card.jpg
   source: persona/runway-04/refs/SeoHARIN.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)
+TanakaMIO:
+  name: 타나카 미오
+  body_type: 아담한 체형
+  height_cm: 158
+  top_size: S(55)
+  bottom_size: '25'
+  gender: female
+  image: avatars/TanakaMIO.jpg
+  card_image: avatars/TanakaMIO-card.jpg
+  source: persona/runway-04/refs/TanakaMIO.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)
+ParkJADE:
+  name: 제이드 박
+  body_type: 탄탄한 애슬레틱
+  height_cm: 166
+  top_size: M(66)
+  bottom_size: '27'
+  gender: female
+  image: avatars/ParkJADE.jpg
+  card_image: avatars/ParkJADE-card.jpg
+  source: persona/runway-04/refs/ParkJADE.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)
+YunCHAEI:
+  name: 윤채이
+  body_type: 가녀린 슬림
+  height_cm: 160
+  top_size: S(55)
+  bottom_size: '25'
+  gender: female
+  image: avatars/YunCHAEI.jpg
+  card_image: avatars/YunCHAEI-card.jpg
+  source: persona/runway-04/refs/YunCHAEI.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)
+MoreauLEA:
+  name: 레아 모로
+  body_type: 긴 팔다리 슬림
+  height_cm: 171
+  top_size: S(55)
+  bottom_size: '26'
+  gender: female
+  image: avatars/MoreauLEA.jpg
+  card_image: avatars/MoreauLEA-card.jpg
+  source: persona/runway-04/refs/MoreauLEA.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)
+HanSOYUL:
+  name: 한소율
+  body_type: 스트레이트
+  height_cm: 165
+  top_size: M(66)
+  bottom_size: '27'
+  gender: female
+  image: avatars/HanSOYUL.jpg
+  card_image: avatars/HanSOYUL-card.jpg
+  source: persona/runway-04/refs/HanSOYUL.png
   license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
   generator: 기록 없음(persona 작업물)
 KangUNA:
@@ -20,6 +81,7 @@ KangUNA:
   bottom_size: '26'
   gender: female
   image: avatars/KangUNA.jpg
+  card_image: avatars/KangUNA-card.jpg
   source: persona/f35-influencer/01_full_front.png
   license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
   generator: 기록 없음(persona 작업물)
@@ -31,6 +93,7 @@ ChenMAYA:
   bottom_size: '25'
   gender: female
   image: avatars/ChenMAYA.jpg
+  card_image: avatars/ChenMAYA-card.jpg
   source: persona/runway-04/refs/ChenMAYA.png
   license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
   generator: 기록 없음(persona 작업물)
@@ -42,6 +105,19 @@ OhDAEUN:
   bottom_size: '27'
   gender: female
   image: avatars/OhDAEUN.jpg
+  card_image: avatars/OhDAEUN-card.jpg
   source: persona/runway-04/refs/OhDAEUN.png
+  license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
+  generator: 기록 없음(persona 작업물)
+SoERIN:
+  name: 에린 소
+  body_type: 롱 슬림
+  height_cm: 168
+  top_size: S(55)
+  bottom_size: '26'
+  gender: female
+  image: avatars/SoERIN.jpg
+  card_image: avatars/SoERIN-card.jpg
+  source: persona/runway-04/refs/SoERIN.png
   license: 자체 생성 AI 가상인물 이미지(실존 인물 아님). 생성 도구·비용 기록은 persona/cost-log.jsonl 참조
   generator: 기록 없음(persona 작업물)

@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Project JIEUN (지은)** — AI-Native Fashion Operating System. "주소는 지우고 취향은 잇다."
 
-Rails 7.2 앱. 저장소 이름은 `musinsa_clone`(무신사 클론 프로토타입에서 출발)이지만, **현재 코드베이스는 이미 JIEUN 도메인으로 전환되어 있다.** 커머스 프론트(상품·리뷰·스냅·검색) 위에 재고/발주/익명 CRM 백오피스가 얹힌 구조다.
+Rails 8.1.x 앱. 저장소 이름은 `musinsa_clone`(무신사 클론 프로토타입에서 출발)이지만, **현재 코드베이스는 이미 JIEUN 도메인으로 전환되어 있다.** 커머스 프론트(상품·리뷰·스냅·검색) 위에 재고/발주/익명 CRM 백오피스가 얹힌 구조다.
 
 프로젝트 루트는 이 디렉터리(`musinsa_clone/`)이며, 상위 디렉터리에 `legacy_docs/prd.md`, `legacy_docs/EPIC_STORY.md`가 있다.
 
@@ -16,43 +16,26 @@ Rails 7.2 앱. 저장소 이름은 `musinsa_clone`(무신사 클론 프로토타
 
 ## ⚠️ 현재 저장소의 알려진 결함 (작업 전 반드시 인지)
 
-아래 3건은 실측으로 확인된 상태다. 관련 영역을 건드리기 전에 먼저 읽을 것.
+기존 3건은 모두 해소되었다.
 
-### 1. 테스트 스위트가 통째로 실행 불가 — minitest 6 비호환
-`Gemfile`에 minitest 버전 제약이 없어 **minitest 6.0.1**이 설치되어 있고, Rails 7.2.3의 `line_filtering.rb`와 시그니처가 맞지 않는다. `bin/rails test`가 테스트 실행 전에 크래시한다:
-
-```
-line_filtering.rb:7:in `run': wrong number of arguments (given 3, expected 1..2) (ArgumentError)
-```
-
-→ `gem "minitest", "~> 5.25"`를 Gemfile에 추가하면 해소된다(실측 확인). **`bin/ci`도 이 단계에서 실패하므로 CI 전체가 막혀 있다.**
-
-### 2. minitest를 고쳐도 전 테스트가 fixture에서 에러 (16/16)
-`test/fixtures/anony_customers.yml`이 **Rails 제너레이터 스캐폴딩 그대로**다. `one`/`two` 두 레코드 모두 `uuid: MyString`이라 `anony_customers.uuid` unique 인덱스를 위반한다:
-
-```
-ActiveRecord::RecordNotUnique: SQLite3::ConstraintException: UNIQUE constraint failed: anony_customers.uuid
-```
-
-`test_helper.rb`가 `fixtures :all`이라 이 파일 하나가 **모든 테스트를 죽인다.** 다른 fixture들도 `MyString` 스캐폴딩이 남아 있는지 함께 확인할 것.
-
-### 3. 입출고 전 경로가 런타임에서 깨짐 — `StockLog` 컬럼 불일치
-`Inventory::StockAdjuster`가 `StockLog.create!`에 **존재하지 않는 컬럼**을 넘긴다:
-
-| StockAdjuster가 넘기는 것 | 실제 `stock_logs` 스키마 |
+| 결함 | 해소 커밋·이슈 |
 |---|---|
-| `stock_type:` | `log_type` (컬럼명 다름) |
-| `user_name:` | **컬럼 없음** |
+| minitest 6 비호환 | `fff053a` · ISS-001 — `gem "minitest", "~> 5.25"`로 핀 |
+| `anony_customers` fixture의 `MyString` UUID 중복 | `fff053a` · ISS-002 — 실제 UUID로 교체 |
+| StockAdjuster의 `stock_type`/`user_name` 컬럼 불일치·재고 이중 반영 | ISS-006 — `StockLog.create!`에 `log_type:` 사용, 재고 변경은 콜백으로 일원화 |
 
-`app/services/inventory/stock_adjuster.rb:59` 부근. `InventoryController#create_stock_in` / `#create_stock_out`이 둘 다 이 서비스를 `stock_type:`으로 호출하므로 **입고·출고 기능 전체가 동작하지 않는다.** 컨트롤러의 `StockLog.new(log_type: "in")`과 `StockLog` 모델의 validation(`log_type`)은 올바른 이름을 쓰고 있어, 서비스 레이어만 어긋난 상태다. 테스트(`test/services/inventory/stock_adjuster_test.rb`)도 `stock_type`을 단언하고 있어 **테스트가 이 버그를 잡지 못한다** — 위 1·2번 때문에 애초에 실행된 적이 없기 때문.
+CRM Zeitwerk 부팅 오류도 `config/initializers/inflections.rb`의 `inflect.acronym "CRM"`으로 해소되었다(ISS-052, `ba5474f`). `bin/rails test`는 전체 실행 가능하며, ISS-066 실측 결과는 181 runs / 0 failures다.
 
-수정 시 서비스·테스트·(필요하면)스키마 중 어디를 정본으로 삼을지 먼저 정할 것. 스키마와 모델과 컨트롤러가 `log_type`으로 일치하므로 **서비스와 테스트를 고치는 쪽이 변경 범위가 작다.**
+남은 알려진 제약:
+
+- **Kamal 배포 미완(ISS-024)**: 이 맥에는 Docker·`config/master.key`·레지스트리 쓰기 토큰이 없어 배포가 대기 중이다.
+- **CI 성공 ≠ 배포**: `.github/workflows/ci.yml`의 "Deploy to Production" 잡은 실제 Kamal 배포가 주석 처리되어 있고, 배포 단계는 `echo` 플레이스홀더다.
 
 ---
 
 ## Technology Stack
 
-- **Framework**: Rails 7.2.3 / Ruby 3.3.0 (rbenv)
+- **Framework**: Rails 8.1.x (`Gemfile`: `~> 8.1.0`, lock: 8.1.4) / Ruby 3.3.10 (`.ruby-version`, rbenv)
 - **Database**: SQLite 3 — 멀티 DB (primary / cache / queue / cable), production 포함
 - **Solid 스택**: Solid Queue(잡) · Solid Cache(캐시) · Solid Cable(웹소켓) 전부 SQLite 백엔드
 - **Frontend**: Hotwire (Turbo + Stimulus) + Tailwind CSS, Importmap
@@ -69,9 +52,9 @@ ActiveRecord::RecordNotUnique: SQLite3::ConstraintException: UNIQUE constraint f
 bin/setup                   # 초기 셋업
 bin/dev                     # 개발 서버 (Rails + Tailwind watcher, Procfile.dev)
 
-bin/rails test                                  # 전체 (현재 위 결함 1로 크래시)
+bin/rails test                                  # 전체
 bin/rails test test/models/product_test.rb      # 파일 단위
-bin/rails test test/models/product_test.rb:10   # 단일 테스트 (line filtering — 결함 1의 크래시 지점)
+bin/rails test test/models/product_test.rb:10   # 단일 테스트 (line filtering)
 bin/rails test:system                           # 시스템 테스트 (Capybara)
 COVERAGE=1 bin/rails test                       # SimpleCov 커버리지 (최소 80%, 파일별 70% 강제)
 
@@ -87,7 +70,7 @@ Setup → RuboCop → bundler-audit → importmap audit → Brakeman(`--exit-on-
 Brakeman이 **경고에도 실패**하도록 설정되어 있고, seed replant까지 CI에 포함된다는 점에 유의.
 
 ### 배포
-`config/deploy.yml`의 서버 IP가 아직 **플레이스홀더(`192.168.0.1`)**이고 proxy/SSL 블록도 주석 상태다. Kamal 배포는 미구성이므로 `bin/kamal deploy`를 그대로 실행하면 안 된다.
+`config/deploy.yml`은 서버 `158.247.235.31`, proxy host `musinsa.158.247.235.31.nip.io`, `ssl: false`로 설정되어 있다. 이 맥에는 Docker·`config/master.key`·레지스트리 쓰기 토큰이 없어 Kamal 배포는 미완이며 ISS-024에서 대기 중이다. CI의 "Deploy to Production" 잡도 `echo` 플레이스홀더이므로 CI 성공이 실제 배포를 뜻하지 않는다.
 
 ---
 
@@ -108,7 +91,7 @@ Brakeman이 **경고에도 실패**하도록 설정되어 있고, seed replant�
 ### 재고의 정본은 `StockLog`이고, `Variant.stock`은 파생값이다
 `StockLog`에 `after_create :update_variant_stock` 콜백이 있어 **로그가 생성되면 `Variant.stock`을 자동으로 증감**시킨다(`increment!`/`decrement!`).
 
-⚠️ 그런데 `Inventory::StockAdjuster`는 `adjust_stock`으로 **직접 stock을 조정한 뒤 다시 `StockLog.create!`**를 호출한다. 콜백까지 함께 돌면 **재고가 이중 반영**되는 구조다(현재는 결함 3 때문에 create! 자체가 터져서 표면화되지 않음). 이 영역을 수정할 때는 **조정 주체를 콜백 하나로 일원화**할 것.
+재고 변경은 **`StockLog`의 콜백 하나로 일원화되었다(ISS-006).** `Inventory::StockAdjuster`는 재고 조정 과정에서 검증·로그 생성만 수행하고, 직접 재고를 증감하지 않는다.
 
 ### 서비스 레이어 규약 — `ApplicationService`
 모든 서비스는 `ApplicationService`를 상속하고 `Result` 객체를 반환한다. 컨트롤러는 절대 예외를 기대하지 않고 `result.success?`로 분기한다.

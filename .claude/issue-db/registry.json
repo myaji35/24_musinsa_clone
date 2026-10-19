@@ -5754,6 +5754,322 @@
           "at": "2026-10-19T05:30:54.783308+00:00"
         }
       }
+    },
+    {
+      "id": "ISS-116",
+      "title": "캐스트 사진 10명 웹용 자산 생성 + avatars.yml 10명으로 확장(단일 출처)",
+      "type": "TASK",
+      "priority": "P1",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "created_at": "2026-10-19T23:46:22.913577+00:00",
+      "updated_at": "2026-10-19T23:46:22.913577+00:00",
+      "done_criteria": "app/assets/images/avatars/ 에 10명(강유나 포함) 각 2종(카드용 360×640 ≤40KB, 상세용 714×1280 ≤150KB) 존재. config/avatars.yml 10항목(source·license 기록). Avatar.all.size == 10. 서하린은 refs/SeoHARIN.png(차콜 코트) 기준이며 cast9.jpg(카멜·구버전) 미사용.",
+      "payload": {
+        "summary": "인트로 링·큐레이션·캐릭터 페이지가 같은 사진을 쓰도록 원본 refs/<Handle>.png(1536×2752, 약 5MB PNG)를 sips/ffmpeg로 2단계 리사이즈해 Propshaft 자산으로 넣는다. 현재 avatars.yml 4명(SeoHARIN·KangUNA·ChenMAYA·OhDAEUN)과 public/intro/yuna-studio.jpg가 따로 놀고 있어 10명으로 통합한다. refs/cast9.jpg는 서하린이 구버전(카멜 코트)이라 스트립 분할 대신 개별 PNG를 쓴다. 이 맥에 ffmpeg 9.0.2(/opt/homebrew/bin)와 sips가 있어 과금·외부 도구 없이 가능하다.",
+        "files": [
+          "config/avatars.yml",
+          "app/assets/images/avatars/",
+          "app/models/avatar.rb",
+          "public/intro/yuna-studio.jpg"
+        ],
+        "assets": [
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/refs/SeoHARIN.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/refs/TanakaMIO.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/refs/ParkJADE.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/refs/YunCHAEI.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/refs/MoreauLEA.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/refs/HanSOYUL.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/refs/ChenMAYA.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/refs/OhDAEUN.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/refs/SoERIN.png",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/f35-influencer/01_full_front.png"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "이미 생성된 자사 AI 이미지라 추가 과금 0, 라이선스는 ISS-045 방식으로 기록. 이후 모든 홈 작업의 선행 자산",
+          "risk": "low",
+          "effort": "S",
+          "by": "fable-review",
+          "at": "2026-10-19T23:46:22.913577+00:00"
+        },
+        "source": "대표님 지시(2026-10-19): 나머지 9명 모델 캐릭터로 홈페이지 풍성하게 → Fable 검토 이슈화"
+      }
+    },
+    {
+      "id": "ISS-117",
+      "title": "인트로 THE CAST 링 — 하드코딩 배열을 Character DB+Avatar로 교체, 사진 10명 적용, 카드마다 '가상 인물' 표기",
+      "type": "FEATURE",
+      "priority": "P1",
+      "size": "M",
+      "status": "BLOCKED",
+      "depends_on": [
+        "ISS-116"
+      ],
+      "created_at": "2026-10-19T23:46:22.913577+00:00",
+      "updated_at": "2026-10-19T23:46:22.913577+00:00",
+      "done_criteria": "홈 첫 화면에서 .intro-card 20개 중 .intro-card-photo 10개, '곧 공개' 10개. 카드 데이터(이름·나이·출생·스타일축)가 Character 테이블(config/characters.yml 정본)에서 나오며 _intro.html.erb에 캐릭터 리터럴 배열이 없다. 사진 카드마다 '가상 인물' 라벨 + alt='<이름> (AI 가상 인물)'. 링 순서는 사진/빈 카드가 번갈아 보이도록 스타일축 우선(서하린·한소율·문서진·정혜원…) 정렬. 인트로 조각 캐시 키에 Character.maximum(:updated_at) 포함. test/system/homepage_test.rb 에 사진 10·라벨 20 단언 추가, 전체 테스트 통과.",
+      "payload": {
+        "summary": "현재 _intro.html.erb는 20명 데이터를 뷰에 하드코딩해 characters.yml(정본)과 이중 관리이고(출생 'LA' vs yml '미국 LA' 등), 강유나 사진 카드에 AI 가상인물 표시가 없다(영상에만 배지). 또 연령대순 정렬 때문에 20·30대(사진 10명)와 40·50대(빈 카드 10명)가 링의 반쪽씩 몰려 회전 시 한쪽이 통째로 비어 보인다. DB 기반으로 바꾸고 Avatar.find(handle)로 사진을 붙이며, 스타일축 우선 정렬로 사진이 2칸 간격으로 번갈아 보이게 한다. 공정위 지침(docs/plan/ai-content-labeling-2026-10.md §0: 사진·썸네일에도 '가상 인물' 표시)에 맞춰 카드 단위 라벨을 넣는다. 데이터 출처는 characters.yml만 쓴다 — persona/runway-04/cast.json·profiles의 키(서하린 168 vs 정본 164 등 9명 전원 2~4cm 불일치)는 쓰지 않는다.",
+        "files": [
+          "app/views/home/_intro.html.erb",
+          "app/assets/stylesheets/intro.css",
+          "app/controllers/home_controller.rb",
+          "app/models/character.rb",
+          "test/system/homepage_test.rb"
+        ],
+        "assets": [
+          "app/assets/images/avatars/*.jpg (NEW-1 산출)"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "대표님 지시의 핵심. 과금 없음, 마이그레이션 없음. 라벨 누락은 법적 노출이라 함께 닫아야 함",
+          "risk": "low",
+          "effort": "M",
+          "by": "fable-review",
+          "at": "2026-10-19T23:46:22.913577+00:00"
+        },
+        "source": "대표님 지시(2026-10-19): 나머지 9명 모델 캐릭터로 홈페이지 풍성하게 → Fable 검토 이슈화",
+        "blocked_reason": "선행 대기: ISS-116"
+      }
+    },
+    {
+      "id": "ISS-118",
+      "title": "런웨이 클립 10편 웹용 트랜스코딩 — 자막 없는 원본(clips/clips_v2) 10초 트림, 720p ≤1.3MB + 포스터",
+      "type": "TASK",
+      "priority": "P1",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "created_at": "2026-10-19T23:46:22.913577+00:00",
+      "updated_at": "2026-10-19T23:46:22.913577+00:00",
+      "done_criteria": "public/intro/runway/<Handle>.mp4 10편(h264, 720×1280, ≤1.3MB, 10초, 무음, moov 앞쪽 faststart) + <Handle>-poster.jpg 10장(≤50KB, 약 6~8초 측면·정면 프레임). 어떤 파일에도 글자(이름·브랜드·AI 배지)가 구워져 있지 않다. 출처 목록을 persona 쪽 기록이 아닌 커밋 메시지/README 주석에 남긴다.",
+      "payload": {
+        "summary": "out/single/*.mp4(15초 완성본)와 out/JIEUN_MZ_runway_10models.mp4는 'SEO HARIN/서하린' 이름, 'AI 생성 영상' 배지, 피날레의 'Townin Agence' 문구가 영상에 구워져 있어 홈에 쓸 수 없다(브랜드명이 오롯/JIEUN 사이에서 유동적 ISS-114·115 → 글자는 HTML 오버레이로만). 글자 없는 원본은 clips_v2/{KangUNA,YunCHAEI,MoreauLEA,OhDAEUN}.mp4(재생성본)와 clips/{SeoHARIN,TanakaMIO,ParkJADE,HanSOYUL,ChenMAYA,SoERIN}.mp4 — 1080×1920 24fps 23~31MB. 각 클립 3번째 샷(10~15초)에는 다음 모델이 런웨이 끝에서 등장하므로 앞 10초만 쓴다. 기존 yuna-runway.mp4(720×1280, 900kbps, 1.1MB)와 같은 규격으로 맞춘다. 첫 프레임은 모델이 멀어 작게 보이므로 포스터는 6~8초대 프레임으로 뽑는다.",
+        "files": [
+          "public/intro/runway/"
+        ],
+        "assets": [
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips/SeoHARIN.mp4",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips/TanakaMIO.mp4",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips/ParkJADE.mp4",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips/HanSOYUL.mp4",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips/ChenMAYA.mp4",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips/SoERIN.mp4",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips_v2/KangUNA.mp4",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips_v2/YunCHAEI.mp4",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips_v2/MoreauLEA.mp4",
+          "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-04/clips_v2/OhDAEUN.mp4"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ffmpeg가 로컬에 있어(브리핑의 '없음'은 오류) 과금 0. 완성본 재사용은 브랜드명·라벨 문구가 박혀 되돌릴 수 없으므로 원본 재인코딩이 유일한 안전 경로",
+          "risk": "low",
+          "effort": "S",
+          "by": "fable-review",
+          "at": "2026-10-19T23:46:22.913577+00:00"
+        },
+        "source": "대표님 지시(2026-10-19): 나머지 9명 모델 캐릭터로 홈페이지 풍성하게 → Fable 검토 이슈화"
+      }
+    },
+    {
+      "id": "ISS-119",
+      "title": "홈 인트로 'THE RUNWAY' 섹션 — 10명 포스터 스트립, 탭 시 1편씩 재생, HTML 오버레이 이름·'AI 가상인물' 배지",
+      "type": "FEATURE",
+      "priority": "P1",
+      "size": "M",
+      "status": "BLOCKED",
+      "depends_on": [
+        "ISS-117",
+        "ISS-118"
+      ],
+      "created_at": "2026-10-19T23:46:22.913577+00:00",
+      "updated_at": "2026-10-19T23:46:22.913577+00:00",
+      "done_criteria": "캐스트 링 다음(태그라인 앞)에 가로 스크롤 포스터 10장 섹션. 초기 로드 시 <video>는 preload='none'이고 네트워크에 mp4 요청 0건; 포스터 탭/Enter 시 해당 1편만 재생되고 다른 영상은 정지. 화면 밖으로 나가면 일시정지(IntersectionObserver). 모든 카드에 'AI 가상인물' 배지와 이름·나이·도시 오버레이(HTML, DB 값), 영상에 구운 글자 없음. 각 카드 → /characters/<handle> 링크. prefers-reduced-motion 시 포스터 그리드로 정적 표시. 모바일 375px에서 가로 스크롤·스냅 동작, 콘솔 에러 0. 홈 첫 화면 전송량 증가 ≤ 600KB(포스터 10장).",
+      "payload": {
+        "summary": "현재 홈은 강유나 영상 1편뿐이라 '9명 적용'의 체감은 영상에서 나온다. 다만 링 안에서 영상 20개 자동재생은 모바일에서 불가·과부하이므로, 별도 섹션에서 포스터만 깔고 사용자가 고른 1편만 재생하는 구조로 한다. 새 Stimulus 컨트롤러(runway_reel)로 재생/정지·키보드·관찰을 담당하고, scroll_scene의 섹션 타깃에 추가한다. 태그라인 CTA '유나의 옷장 보기'는 '캐릭터 옷장 보기'로 바꾸고 #ranking 대신 캐릭터 페이지/큐레이션으로 유도한다. 기존 히어로(강유나)는 유지한다 — 히어로 교체형 스위처는 스크롤 연출과 충돌 위험이 커서 제외.",
+        "files": [
+          "app/views/home/_intro.html.erb",
+          "app/assets/stylesheets/intro.css",
+          "app/javascript/controllers/runway_reel_controller.js",
+          "app/javascript/controllers/index.js",
+          "test/system/homepage_test.rb"
+        ],
+        "assets": [
+          "public/intro/runway/*.mp4",
+          "public/intro/runway/*-poster.jpg"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "영상은 이미 있고 과금 없음. 1편씩 지연 로드면 성능 예산 안에서 '풍성함'을 가장 크게 올림. 라벨 오버레이로 법적 요건 충족",
+          "risk": "medium",
+          "effort": "M",
+          "by": "fable-review",
+          "at": "2026-10-19T23:46:22.913577+00:00"
+        },
+        "source": "대표님 지시(2026-10-19): 나머지 9명 모델 캐릭터로 홈페이지 풍성하게 → Fable 검토 이슈화",
+        "blocked_reason": "선행 대기: ISS-117, ISS-118"
+      }
+    },
+    {
+      "id": "ISS-120",
+      "title": "큐레이션 섹션에 호스트 캐릭터 붙이기 — mood→스타일축 매핑, 사진·한 줄 소개·옷장 링크, 죽은 '더 많은 상품 보기' 링크 수정",
+      "type": "FEATURE",
+      "priority": "P2",
+      "size": "S",
+      "status": "BLOCKED",
+      "depends_on": [
+        "ISS-116"
+      ],
+      "created_at": "2026-10-19T23:46:22.913577+00:00",
+      "updated_at": "2026-10-19T23:46:22.913577+00:00",
+      "done_criteria": "홈 큐레이션 3섹션(minimal/casual/delicate) 헤더에 호스트 캐릭터 사진(Avatar)·이름·'가상 인물' 라벨·personality 한 줄이 보이고 /characters/<handle>로 이어진다(minimal→서하린, casual→타나카 미오 또는 강유나, delicate→윤채이; 매핑은 helper 상수 1곳). 섹션 하단 '더 많은 상품 보기'(현재 href='#')가 실제 경로로 간다. 추가 쿼리 ≤ 3, Bullet 경고 0. curated-collections 캐시 유지.",
+      "payload": {
+        "summary": "홈 하단 상품 영역은 캐릭터와 전혀 연결돼 있지 않다. 이미 있는 mood 큐레이션에 호스트 캐릭터만 얹으면 데이터 변경 없이 '캐릭터가 고른 옷'이라는 서사가 생기고, 20명 로스터의 스타일축(미니멀·오피스/캐주얼·데일리/페미닌·로맨틱)과 자연스럽게 맞는다. 체험담 금지 규칙에 따라 카피는 '서하린이 입어봤어요'가 아니라 '서하린 스타일 — 셔츠·슬랙스·코트'처럼 사실 설명형으로 쓴다.",
+        "files": [
+          "app/views/home/_curation_section.html.erb",
+          "app/helpers/home_helper.rb",
+          "app/controllers/home_controller.rb"
+        ],
+        "assets": [
+          "app/assets/images/avatars/*.jpg"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "작은 변경으로 상품 영역까지 캐릭터가 번진다. 데이터 의존 없음",
+          "risk": "low",
+          "effort": "S",
+          "by": "fable-review",
+          "at": "2026-10-19T23:46:22.913577+00:00"
+        },
+        "source": "대표님 지시(2026-10-19): 나머지 9명 모델 캐릭터로 홈페이지 풍성하게 → Fable 검토 이슈화",
+        "blocked_reason": "선행 대기: ISS-116"
+      }
+    },
+    {
+      "id": "ISS-121",
+      "title": "캐릭터 옷장 페이지 빈 상태 보강 — 착용 상품 없으면 상품분석(ProductAnalysis) 추천 상품을 '추천 코디'로 표시 + 사진·런웨이 영상",
+      "type": "FEATURE",
+      "priority": "P2",
+      "size": "M",
+      "status": "BLOCKED",
+      "depends_on": [
+        "ISS-116",
+        "ISS-118"
+      ],
+      "created_at": "2026-10-19T23:46:22.913577+00:00",
+      "updated_at": "2026-10-19T23:46:22.913577+00:00",
+      "done_criteria": "/characters/<handle> 상단에 Avatar 사진·런웨이 영상(있을 때, preload=none)·'가상 인물' 라벨. worn_products가 비면 '아직 입은 상품이 없어요' 대신 ProductAnalysis(status=done, character 또는 alt_character=해당 캐릭터) 상품을 '<이름>에게 추천하는 코디' 제목으로 표시하되 '착용'이라고 쓰지 않는다. 둘 다 없으면 같은 스타일축 캐릭터의 옷장 링크를 보여준다. 10명 전원 200 응답, N+1 없음.",
+      "payload": {
+        "summary": "홈에서 9명을 클릭하면 도착하는 페이지가 현재 거의 전부 빈 화면이다(dev DB: worn_character 있는 상품 2건·전부 강유나, 상품분석 완료 5건은 배연희·서하린·윤채이). 홈을 풍성하게 만들수록 이 빈 페이지가 더 많이 노출되므로 함께 닫아야 한다. '추천'과 '착용'을 문구로 구분해 공정위 표시 지침을 지킨다.",
+        "files": [
+          "app/controllers/characters_controller.rb",
+          "app/views/characters/show.html.erb",
+          "app/models/character.rb",
+          "test/controllers/characters_controller_test.rb"
+        ],
+        "assets": [
+          "app/assets/images/avatars/*.jpg",
+          "public/intro/runway/*.mp4"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "홈 유입의 착지 페이지 품질 문제. 추천 상품은 이미 ISS-077 분석 데이터가 있어 추가 비용 없음",
+          "risk": "low",
+          "effort": "M",
+          "by": "fable-review",
+          "at": "2026-10-19T23:46:22.913577+00:00"
+        },
+        "source": "대표님 지시(2026-10-19): 나머지 9명 모델 캐릭터로 홈페이지 풍성하게 → Fable 검토 이슈화",
+        "blocked_reason": "선행 대기: ISS-116, ISS-118"
+      }
+    },
+    {
+      "id": "ISS-122",
+      "title": "[결정] 사진 없는 40·50대 10명 처리 — '곧 공개' 유지 vs 링에서 숨김 vs 시트 생성 과금 승인(ISS-090)",
+      "type": "DECISION",
+      "priority": "P1",
+      "size": "S",
+      "status": "AWAITING_USER",
+      "depends_on": [],
+      "created_at": "2026-10-19T23:46:22.913577+00:00",
+      "updated_at": "2026-10-19T23:46:22.913577+00:00",
+      "done_criteria": "대표님 선택이 registry에 기록되고 NEW-2의 링 구성(20명/10명·문구)이 그에 맞춰 확정된다. C 선택 시 ISS-090·ISS-108 결제 경로가 열린다.",
+      "payload": {
+        "summary": "9명을 적용해도 링의 절반(문서진·배연희·줄리아 페리·권미래·모리 아야·정혜원·남궁선·노라 휫필드·이정란·사라 린드)은 이니셜+'곧 공개'로 남는다. 이미지 생성은 OpenAI 크레딧 0원이라 공장이 결제할 수 없다(ISS-090 약 $12, ISS-108). 비차단 결정 — 미응답 시 A로 진행한다.",
+        "question": "사진이 없는 10명을 홈 캐스트 링에서 어떻게 보여드릴까요?",
+        "options": [
+          {
+            "key": "A",
+            "label": "'곧 공개' 카드로 20명 유지(기본)",
+            "pros": "비용 0, '20명의 캐릭터' 메시지 유지, NEW-2 정렬로 빈 카드가 번갈아 보여 덜 허전함",
+            "cons": "절반이 빈 카드라는 사실은 그대로"
+          },
+          {
+            "key": "B",
+            "label": "사진 있는 10명만 링에 올리고 제목을 '먼저 만나는 10명'으로",
+            "pros": "화면이 꽉 차 보임, 추가 비용 0",
+            "cons": "40·50대 타깃 서사가 홈에서 사라짐, 시스템 테스트(20개 단언) 수정"
+          },
+          {
+            "key": "C",
+            "label": "OpenAI 크레딧 충전 후 10명 시트 생성(ISS-090 B안 분할 약 $12) → 카드 사진 채움",
+            "pros": "20명 완성, 이후 런웨이 영상 생성의 기준 이미지 확보",
+            "cons": "대표님 직접 결제 필요, 런웨이 영상까지 가려면 ISS-069 영상 경로·예산 결정도 필요"
+          }
+        ],
+        "recommended_option": "A",
+        "files": [
+          "app/views/home/_intro.html.erb"
+        ],
+        "assets": [],
+        "recommendation": {
+          "verdict": "대표님 결정 필요",
+          "reason": "결제(OpenAI 크레딧)와 브랜드 노출 범위(20명 vs 10명)는 대표님 몫. 결정 전에도 A로 작업은 진행 가능",
+          "risk": "low",
+          "effort": "S",
+          "by": "fable-review",
+          "at": "2026-10-19T23:46:22.913577+00:00"
+        },
+        "source": "대표님 지시(2026-10-19): 나머지 9명 모델 캐릭터로 홈페이지 풍성하게 → Fable 검토 이슈화"
+      }
+    },
+    {
+      "id": "ISS-123",
+      "title": "홈 인트로 성능·접근성 예산 검증 — 모바일 전송량·자동재생 1편·reduced-motion·키보드·Bullet",
+      "type": "CHORE",
+      "priority": "P2",
+      "size": "S",
+      "status": "BLOCKED",
+      "depends_on": [
+        "ISS-117",
+        "ISS-119",
+        "ISS-120"
+      ],
+      "created_at": "2026-10-19T23:46:22.913577+00:00",
+      "updated_at": "2026-10-19T23:46:22.913577+00:00",
+      "done_criteria": "모바일(375px, 3G 스로틀) 홈 첫 로드 전송량 ≤ 3.0MB(현재 약 1.6MB + 사진 10장 + 포스터 10장), 자동재생 <video> 1개(강유나)만, 추가 mp4 요청은 사용자 조작 후에만 발생. Lighthouse 모바일 접근성 ≥ 90, 모든 캐릭터 이미지에 alt. prefers-reduced-motion에서 링·스트립이 정적 그리드로 렌더. Tab 순서로 포스터 재생·캐릭터 링크 도달 가능. 개발 로그에 Bullet N+1 경고 0. 결과 스크린샷을 docs/user-test/<날짜>/ 에 저장.",
+      "payload": {
+        "summary": "사진 10장·포스터 10장·영상 10편이 한 페이지에 들어오므로 측정 가능한 예산을 두고 닫는다. 기존 intro.css의 reduced-motion 분기와 scroll_scene의 rAF 스로틀을 새 섹션에도 그대로 적용했는지 확인하는 게 핵심.",
+        "files": [
+          "app/views/home/_intro.html.erb",
+          "app/assets/stylesheets/intro.css",
+          "app/javascript/controllers/runway_reel_controller.js",
+          "docs/user-test/"
+        ],
+        "assets": [],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "홈은 유입 첫 화면이라 무게 회귀가 매출에 직결. 수치 기준이 있어야 공장 자동 검증이 가능",
+          "risk": "low",
+          "effort": "S",
+          "by": "fable-review",
+          "at": "2026-10-19T23:46:22.913577+00:00"
+        },
+        "source": "대표님 지시(2026-10-19): 나머지 9명 모델 캐릭터로 홈페이지 풍성하게 → Fable 검토 이슈화",
+        "blocked_reason": "선행 대기: ISS-117, ISS-119, ISS-120"
+      }
     }
   ],
   "hooks": {

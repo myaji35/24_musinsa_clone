@@ -7,6 +7,18 @@ class HomepageTest < ApplicationSystemTestCase
     end
   end
 
+  test "런웨이 재생 버튼은 선택한 영상만 로드하고 재생한다" do
+    visit root_url
+    assert_selector ".intro-reel video[src]", count: 0, visible: :all
+    button = find(".intro-reel button", match: :first)
+    button.click
+    assert_selector '.intro-reel button[aria-pressed="true"]', count: 1
+    assert evaluate_script('document.querySelector(".intro-reel video").src.endsWith(".mp4")')
+    assert evaluate_script('!document.querySelector(".intro-reel video").paused')
+    button.click
+    assert_selector '.intro-reel button[aria-pressed="true"]', count: 0
+  end
+
   # 시나리오 1: 홈페이지 접속 및 기본 요소 확인
   test "홈페이지가 정상적으로 로드되는가" do
     visit root_url

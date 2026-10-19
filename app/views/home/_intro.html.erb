@@ -60,12 +60,35 @@
     </div>
   </section>
 
+  <section id="runway-reel" class="intro-reel" aria-labelledby="runway-reel-heading" data-controller="runway-reel">
+    <header class="intro-reel-heading">
+      <span class="intro-eyebrow">THE RUNWAY</span>
+      <h2 id="runway-reel-heading">10명이 걸어본 런웨이</h2>
+    </header>
+    <div class="intro-reel-strip">
+      <% @runway_characters.each do |character| %>
+        <article class="intro-reel-card">
+          <div class="intro-reel-media">
+            <video preload="none" muted playsinline loop poster="/intro/runway/<%= character.handle %>-poster.jpg" data-src="/intro/runway/<%= character.handle %>.mp4" data-runway-reel-target="video" data-action="play->runway-reel#sync pause->runway-reel#sync" aria-label="<%= character.name %> 런웨이 영상"></video>
+            <span class="intro-ai-badge">AI 가상인물</span>
+            <div class="intro-reel-details">
+              <h3><%= character.name %></h3>
+              <p><%= character.age %>세 · <%= character.birthplace %></p>
+              <button type="button" aria-label="<%= character.name %> 런웨이 영상 재생" aria-pressed="false" data-name="<%= character.name %>" data-action="runway-reel#toggle">재생</button>
+            </div>
+          </div>
+          <%= link_to "옷장 보기", character_path(character.handle), class: "intro-reel-wardrobe" %>
+        </article>
+      <% end %>
+    </div>
+  </section>
+
   <section class="intro-section intro-tagline" data-scroll-scene-target="section" style="--p: 0">
     <div class="intro-stage intro-tagline-stage">
       <div class="intro-tagline-content">
         <h2><span style="--intro-order: 0">주소는</span> <span style="--intro-order: 1">지우고,</span> <span style="--intro-order: 2">취향은</span> <span style="--intro-order: 3">잇다.</span></h2>
         <p>20~50대, 나와 닮은 캐릭터가 먼저 입어봅니다.</p>
-        <a href="#ranking" class="intro-cta">유나의 옷장 보기 <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a>
+        <a href="#runway-reel" class="intro-cta">캐릭터 옷장 보기 <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a>
       </div>
     </div>
   </section>

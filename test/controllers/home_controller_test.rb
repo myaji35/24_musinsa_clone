@@ -123,6 +123,30 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "런웨이는 파일이 있는 캐릭터 열 명을 지연 로드한다" do
+    handles = %w[SeoHARIN TanakaMIO ParkJADE YunCHAEI MoreauLEA HanSOYUL KangUNA ChenMAYA OhDAEUN SoERIN]
+    YAML.load_file(Rails.root.join("config/characters.yml")).each do |attributes|
+      Character.create!(attributes) if handles.include?(attributes.fetch("handle"))
+    end
+    Character.create!(name: "미공개", handle: "NoRunway", status: "planned")
+
+    get root_path
+
+    assert_response :success
+    assert_select ".intro-reel video", count: 10
+    assert_select '.intro-reel video[preload="none"][muted][playsinline][loop][data-src]', count: 10
+    assert_select ".intro-reel video[src], .intro-reel source[src]", count: 0
+    assert_select ".intro-reel .intro-ai-badge", text: "AI 가상인물", count: 10
+    assert_select ".intro-reel a", count: 10
+    handles.each do |handle|
+      assert File.exist?(Rails.public_path.join("intro/runway/#{handle}.mp4"))
+      assert File.exist?(Rails.public_path.join("intro/runway/#{handle}-poster.jpg"))
+      assert_select ".intro-reel video[poster=?]", "/intro/runway/#{handle}-poster.jpg"
+      assert_select ".intro-reel a[href=?]", character_path(handle), text: "옷장 보기"
+    end
+    assert_select '.intro-cta[href="#runway-reel"]', text: /캐릭터 옷장 보기/
+  end
+
   # GET /
   test "should get index" do
     get root_url

@@ -7,6 +7,10 @@ class HomeController < ApplicationController
       File.mtime(Rails.root.join("config/characters.yml")).to_f
     ]
 
+    @runway_characters = Character.for_intro.select do |character|
+      File.exist?(Rails.public_path.join("intro/runway/#{character.handle}.mp4"))
+    end
+
     @products = Product.includes(:reviews).with_attached_image
 
     # 1. Filter by Category

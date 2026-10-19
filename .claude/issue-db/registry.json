@@ -5541,6 +5541,84 @@
         ],
         "deferred_at": "2026-10-19T04:47:30.717Z"
       }
+    },
+    {
+      "id": "ISS-113",
+      "title": "[결정] 누끼 솔루션 표준: rembg + BiRefNet 자체 호스팅(무료·MIT)",
+      "type": "DECISION",
+      "priority": "P1",
+      "size": "S",
+      "status": "DONE",
+      "depends_on": [],
+      "created_at": "2026-10-19T05:27:56.207566+00:00",
+      "updated_at": "2026-10-19T05:27:56.207566+00:00",
+      "completed_at": "2026-10-19T05:27:56.207566+00:00",
+      "done_criteria": "누끼 솔루션 결정과 근거·구성·운영 조건을 한 카드에 기록하고 관련 이슈를 연결한다",
+      "payload": {
+        "decision": {
+          "choice": "rembg + BiRefNet 자체 호스팅",
+          "by": "대표님(대화)",
+          "at": "2026-10-18",
+          "note": "추천안 승인 — 유료 Photoroom·remove.bg·fal 대신 채택"
+        },
+        "solution": {
+          "engine": "rembg (MIT) — HTTP 서버 `rembg s`, POST /api/remove (multipart file + model)",
+          "model": "birefnet-general (MIT, 약 1GB, 첫 호출 시 다운로드)",
+          "fallback_model": "u2net (Apache-2.0) — 장당 0.4초, 대량 일괄 처리 시 속도 우선",
+          "cost_per_image_usd": 0,
+          "speed": "CPU(Apple Silicon) 장당 평균 4.62초 — Solid Queue 백그라운드 처리",
+          "app_integration": "Cutouts::RembgAdapter → ProductImageProcessingJob(kind=cutout) → Product.cutout_image, cutout_adopted 로 대표 이미지 채택",
+          "config": "ENV REMBG_URL (기본 http://127.0.0.1:7000). 자체 호스팅은 월 호출 상한(IMAGE_PROCESSING_MONTHLY_LIMIT) 집계 제외",
+          "local_run": "~/.claude/factory-runner/venv-rembg/bin/rembg s --host 127.0.0.1 --port 7000 --no-ui"
+        },
+        "rejected": [
+          {
+            "name": "Photoroom API",
+            "why": "장당 과금·가입/키 필요"
+          },
+          {
+            "name": "remove.bg API",
+            "why": "장당 과금"
+          },
+          {
+            "name": "fal BiRefNet",
+            "why": "외부 과금·키 필요(같은 모델을 자체 호스팅 가능)"
+          },
+          {
+            "name": "BRIA RMBG-2.0",
+            "why": "CC BY-NC 비상업 라이선스 — SaaS 사용 시 별도 유료 계약"
+          }
+        ],
+        "constraints": [
+          "행거에 걸린 상품컷은 행거 일부가 남음 → 촬영 가이드에 '행거 없이' 명시",
+          "실사입 사진(ISS-068) 도착 시 같은 스크립트로 재검증",
+          "운영 서버 메모리 약 2GB 필요(birefnet)"
+        ],
+        "related": {
+          "ISS-041": "실측 스파이크(완료)",
+          "ISS-043": "누끼 어댑터(완료, main f2c453d)",
+          "ISS-044": "배경 제거 패널 UI(완료)",
+          "ISS-112": "운영 서버 rembg 컨테이너 배치(대기, ISS-024 선행)"
+        },
+        "docs": "docs/spikes/ISS-041-cutout/README.md",
+        "recommendation": {
+          "verdict": "완료",
+          "reason": "결정 기록 카드 — 남은 실행 작업은 ISS-112",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T05:27:56.207566+00:00"
+        }
+      },
+      "result": {
+        "proof": [
+          {
+            "cmd": "main f2c453d 병합 후 bin/rails test",
+            "exit_code": 0,
+            "output": "336 runs, 0 failures"
+          }
+        ]
+      }
     }
   ],
   "hooks": {

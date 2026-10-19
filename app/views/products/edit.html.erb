@@ -11,6 +11,60 @@
         class: "bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-red-700 transition-colors" %>
   </div>
 
-  <!-- Form -->
-  <%= render "form", product: @product %>
+  <nav class="flex gap-6 border-b border-gray-200 mb-6" aria-label="상품 편집 탭">
+    <%= link_to "상품 정보", edit_product_path(@product),
+        aria: { current: params[:tab] != "inventory" ? "page" : nil },
+        class: "px-1 py-3 text-sm font-medium #{params[:tab] != 'inventory' ? 'border-b-2 border-black text-gray-900' : 'text-gray-500'}" %>
+    <%= link_to "재고이력", edit_product_path(@product, tab: "inventory"),
+        aria: { current: params[:tab] == "inventory" ? "page" : nil },
+        class: "px-1 py-3 text-sm font-medium #{params[:tab] == 'inventory' ? 'border-b-2 border-black text-gray-900' : 'text-gray-500'}" %>
+  </nav>
+
+  <% if @inventory_variants %>
+    <section aria-label="재고이력" class="space-y-6">
+      <h2 class="text-lg font-bold text-gray-900">재고이력</h2>
+      <p class="text-sm text-gray-500">옵션별 최근 20건을 표시합니다.</p>
+      <% if @inventory_variants.empty? %>
+        <p class="text-sm text-gray-500">등록된 옵션이 없습니다.</p>
+      <% end %>
+      <% @inventory_variants.each do |variant| %>
+        <section id="inventory-variant-<%= variant.id %>" class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <div class="flex justify-between items-center gap-4 p-4 border-b border-gray-200">
+            <h3 class="font-bold text-gray-900"><%= variant.color %> / <%= variant.size %></h3>
+            <%= link_to "전체 보기", inventory_history_path(variant_id: variant.id), class: "text-sm text-blue-600 underline" %>
+          </div>
+          <% logs = @stock_logs_by_variant.fetch(variant.id, []) %>
+          <% if logs.empty? %>
+            <p class="p-6 text-sm text-gray-500">재고 이력이 없습니다.</p>
+          <% else %>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 text-gray-600">
+                  <tr>
+                    <% ["유형", "수량", "메모", "일시"].each do |label| %>
+                      <th scope="col" class="px-4 py-3 font-medium"><%= label %></th>
+                    <% end %>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <% logs.each do |log| %>
+                    <tr>
+                      <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="px-2 py-1 rounded text-xs font-medium <%= log.stock_in? ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800' %>"><%= log.stock_in? ? "입고" : "출고" %></span>
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap font-medium"><%= log.quantity %>개</td>
+                      <td class="px-4 py-3 text-gray-600 break-words"><%= log.note.presence || "-" %></td>
+                      <td class="px-4 py-3 whitespace-nowrap text-gray-500"><%= log.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% end %>
+        </section>
+      <% end %>
+    </section>
+  <% else %>
+    <%= render "form", product: @product %>
+  <% end %>
 </div>

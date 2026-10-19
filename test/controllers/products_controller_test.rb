@@ -24,6 +24,56 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "관리자 재고이력 탭은 옵션별 최신 20건과 빈 상태를 표시한다" do
+    second = @product.variants.create!(color: "Black", size: "L", stock: 100)
+    empty = @product.variants.create!(color: "White", size: "S", stock: 0)
+    other = variants(:one)
+    [ @variant, second, other ].each do |variant|
+      22.times do |index|
+        variant.stock_logs.create!(log_type: index.even? ? "in" : "out", quantity: 1,
+          note: "이력-#{variant.id}-#{index}", created_at: index.minutes.ago)
+      end
+    end
+    sign_in
+
+    get edit_product_path(@product, tab: "inventory")
+
+    assert_response :success
+    [ @variant, second ].each do |variant|
+      assert_select "#inventory-variant-#{variant.id}" do
+        assert_select "h3", text: "#{variant.color} / #{variant.size}"
+        assert_select "tbody tr", count: 20
+        assert_select "tbody tr:first-child td", text: "이력-#{variant.id}-0"
+        assert_select "tbody tr:last-child td", text: "이력-#{variant.id}-19"
+        assert_select "td", text: "이력-#{variant.id}-20", count: 0
+        assert_select "td", text: "이력-#{variant.id}-21", count: 0
+        assert_select "span.bg-blue-100", text: "입고", count: 10
+        assert_select "span.bg-red-100", text: "출고", count: 10
+        assert_select "td", text: "1개", count: 20
+        assert_select "a[href=?]", inventory_history_path(variant_id: variant.id), text: "전체 보기"
+      end
+    end
+    assert_select "#inventory-variant-#{empty.id} p", text: "재고 이력이 없습니다."
+    assert_select "#inventory-variant-#{other.id}", count: 0
+  end
+
+  test "비로그인 사용자는 재고이력 탭에 접근할 수 없다" do
+    get edit_product_path(@product, tab: "inventory")
+
+    assert_redirected_to login_path
+    assert_select "section[aria-label='재고이력']", count: 0
+  end
+
+  test "공개 상품 상세에는 재고이력을 노출하지 않는다" do
+    @variant.stock_logs.create!(log_type: "in", quantity: 1, note: "관리자 전용 메모")
+
+    get product_path(@product)
+
+    assert_response :success
+    assert_no_match "관리자 전용 메모", response.body
+    assert_select "a[href=?]", inventory_history_path(variant_id: @variant.id), count: 0
+  end
+
   test "특수 문자 검색은 전체 상품 대신 빈 결과를 표시한다" do
     [ "%", "_", "\\" ].each do |query|
       get products_path, params: { q: query }

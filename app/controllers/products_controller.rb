@@ -53,6 +53,19 @@ class ProductsController < ApplicationController
   end
 
   def edit
+    return unless params[:tab] == "inventory"
+
+    @inventory_variants = @product.variants.to_a
+    # 전체 이력을 메모리에 올리지 않고 각 옵션의 최신 20건만 조회한다.
+    @stock_logs_by_variant = StockLog.where(variant_id: @inventory_variants.map(&:id))
+      .where(<<~SQL.squish)
+        stock_logs.id IN (
+          SELECT recent_logs.id FROM stock_logs AS recent_logs
+          WHERE recent_logs.variant_id = stock_logs.variant_id
+          ORDER BY recent_logs.created_at DESC, recent_logs.id DESC LIMIT 20
+        )
+      SQL
+      .includes(:variant).recent.order(id: :desc).group_by { |log| log.variant.id }
   end
 
   def update

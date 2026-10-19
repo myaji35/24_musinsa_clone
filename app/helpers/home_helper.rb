@@ -1,4 +1,15 @@
 module HomeHelper
+  MOOD_HOSTS = {
+    "minimal" => "SeoHARIN",
+    "casual" => "TanakaMIO",
+    "delicate" => "YunCHAEI"
+  }.freeze
+
+  def mood_host(mood)
+    @mood_hosts ||= Character.where(handle: MOOD_HOSTS.values).index_by(&:handle)
+    @mood_hosts[MOOD_HOSTS[mood]]
+  end
+
   # 29cm 스타일 큐레이션 섹션 타이틀
   def mood_to_title(mood)
     titles = {

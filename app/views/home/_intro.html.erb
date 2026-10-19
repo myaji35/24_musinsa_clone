@@ -1,29 +1,6 @@
 <% content_for :head do %>
 <% end %>
 
-<% characters = [
-  ["서하린", "SeoHARIN", 27, "서울", "미니멀·오피스", 20],
-  ["타나카 미오", "TanakaMIO", 24, "후쿠오카", "캐주얼·데일리", 20],
-  ["제이드 박", "ParkJADE", 22, "LA", "스트리트·스포티", 20],
-  ["윤채이", "YunCHAEI", 25, "부산", "페미닌·로맨틱", 20],
-  ["레아 모로", "MoreauLEA", 26, "리옹", "트렌드·하이패션", 20],
-  ["한소율", "HanSOYUL", 36, "서울", "미니멀·오피스", 30],
-  ["강유나", "KangUNA", 32, "서울", "캐주얼·데일리", 30],
-  ["마야 첸", "ChenMAYA", 34, "타이베이", "스트리트·스포티", 30],
-  ["오다은", "OhDAEUN", 38, "대구", "페미닌·로맨틱", 30],
-  ["에린 소", "SoERIN", 33, "뉴욕", "트렌드·하이패션", 30],
-  ["문서진", "MoonSEOJIN", 45, "서울", "미니멀·오피스", 40],
-  ["배연희", "BaeYEONHEE", 43, "인천", "캐주얼·데일리", 40],
-  ["줄리아 페리", "FerriGIULIA", 47, "밀라노", "스트리트·스포티", 40],
-  ["권미래", "KwonMIRAE", 41, "광주", "페미닌·로맨틱", 40],
-  ["모리 아야", "MoriAYA", 46, "도쿄", "트렌드·하이패션", 40],
-  ["정혜원", "JungHYEWON", 54, "서울", "미니멀·오피스", 50],
-  ["남궁선", "NamgungSUN", 52, "제주", "캐주얼·데일리", 50],
-  ["노라 휫필드", "WhitfieldNORA", 56, "시드니", "스트리트·스포티", 50],
-  ["이정란", "LeeJEONGRAN", 58, "전주", "페미닌·로맨틱", 50],
-  ["사라 린드", "LindSARA", 55, "스톡홀름", "트렌드·하이패션", 50]
-] %>
-
 <div class="intro" data-controller="scroll-scene">
   <section class="intro-section intro-runway" data-scroll-scene-target="section" style="--p: 0">
     <div class="intro-stage intro-runway-stage">
@@ -54,27 +31,32 @@
         <span class="intro-eyebrow">THE CAST</span>
         <h2>20명의 캐릭터, 20개의 옷장</h2>
       </div>
-      <div class="intro-ring-viewport">
-        <div class="intro-ring">
-          <% characters.each_with_index do |(name, romanized, age, birthplace, style, decade), index| %>
-            <article class="intro-card intro-card-<%= decade %>" style="--intro-index: <%= index %>">
-              <span class="intro-card-band"><%= decade %>s</span>
-              <% if name == "강유나" %>
-                <img class="intro-card-photo" src="/intro/yuna-studio.jpg" alt="강유나" loading="lazy">
-              <% else %>
-                <span class="intro-card-initial" aria-hidden="true"><%= romanized.first %></span>
-              <% end %>
-              <div class="intro-card-details">
-                <span class="intro-card-romanized"><%= romanized %></span>
-                <h3><%= name %></h3>
-                <p><%= age %> · <%= birthplace %></p>
-                <p><%= style %></p>
-                <% unless name == "강유나" %><span class="intro-card-soon">곧 공개</span><% end %>
-              </div>
-            </article>
-          <% end %>
+      <% cache @intro_cache_key do %>
+        <% intro_avatars = Avatar.all.index_by(&:handle) %>
+        <div class="intro-ring-viewport">
+          <div class="intro-ring">
+            <% Character.for_intro.each_with_index do |character, index| %>
+              <% avatar = intro_avatars[character.handle] %>
+              <article class="intro-card intro-card-<%= character.age_band %>" style="--intro-index: <%= index %>">
+                <span class="intro-card-band"><%= character.age_band %>s</span>
+                <% if avatar %>
+                  <%= image_tag avatar.card_image, class: "intro-card-photo", alt: "#{character.name} (AI 가상 인물)", loading: "lazy" %>
+                  <span class="intro-card-virtual">가상 인물</span>
+                <% else %>
+                  <span class="intro-card-initial" aria-hidden="true"><%= character.handle.first %></span>
+                <% end %>
+                <div class="intro-card-details">
+                  <span class="intro-card-romanized"><%= character.handle %></span>
+                  <h3><%= character.name %></h3>
+                  <p><%= character.age %> · <%= character.birthplace %></p>
+                  <p><%= character.style_axis %></p>
+                  <% unless avatar %><span class="intro-card-soon">곧 공개</span><% end %>
+                </div>
+              </article>
+            <% end %>
+          </div>
         </div>
-      </div>
+      <% end %>
     </div>
   </section>
 

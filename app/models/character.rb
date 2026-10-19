@@ -9,5 +9,10 @@ class Character < ApplicationRecord
   validates :shoe_mm, numericality: { only_integer: true, in: 210..280 }, allow_nil: true
   validates :status, inclusion: { in: %w[active planned] }
 
+  def self.for_intro
+    axes = YAML.load_file(Rails.root.join("config/characters.yml")).map { |attributes| attributes.fetch("style_axis") }.uniq
+    all.sort_by { |character| [ axes.index(character.style_axis) || axes.length, character.age_band || 0, character.handle ] }
+  end
+
   scope :active, -> { where(status: "active") }
 end

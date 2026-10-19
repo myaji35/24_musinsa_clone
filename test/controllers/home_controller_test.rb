@@ -78,6 +78,51 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", new_product_path, count: 0
   end
 
+  test "인트로는 DB 캐릭터 스무 명과 아바타 열 명을 표시한다" do
+    YAML.load_file(Rails.root.join("config/characters.yml")).each do |attributes|
+      Character.create!(attributes)
+    end
+
+    get root_path
+
+    assert_response :success
+    assert_select ".intro-card", count: 20
+    assert_select ".intro-card-photo", count: 10
+    assert_select ".intro-card-soon", text: "곧 공개", count: 10
+    assert_select ".intro-card-virtual", text: "가상 인물", count: 10
+    assert_select 'img[alt="강유나 (AI 가상 인물)"]', count: 1
+    assert_select ".intro-card-details p", text: "22 · 미국 LA"
+    assert_select ".intro-card h3", text: "서하린"
+    assert_equal Character.for_intro.map(&:name), css_select(".intro-card h3").map(&:text)
+  end
+
+  test "인트로 조각 캐시는 캐릭터 수정과 삭제를 반영한다" do
+    character = Character.create!(YAML.load_file(Rails.root.join("config/characters.yml")).first)
+    original_cache_store = ActionController::Base.cache_store
+    original_perform_caching = ActionController::Base.perform_caching
+    original_bullet_enabled = Bullet.enable?
+    ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+    ActionController::Base.perform_caching = true
+    Bullet.enable = false
+
+    begin
+      get root_path
+      assert_select ".intro-card h3", text: character.name
+
+      character.update!(name: "변경된 이름", updated_at: 1.minute.from_now)
+      get root_path
+      assert_select ".intro-card h3", text: "변경된 이름"
+
+      character.destroy!
+      get root_path
+      assert_select ".intro-card", count: 0
+    ensure
+      ActionController::Base.perform_caching = original_perform_caching
+      ActionController::Base.cache_store = original_cache_store
+      Bullet.enable = original_bullet_enabled
+    end
+  end
+
   # GET /
   test "should get index" do
     get root_url

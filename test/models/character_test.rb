@@ -1,6 +1,18 @@
 require "test_helper"
 
 class CharacterTest < ActiveSupport::TestCase
+  test "인트로는 정본 스타일축 순서 다음 연령대순으로 전체 캐릭터를 정렬한다" do
+    attributes = YAML.load_file(Rails.root.join("config/characters.yml"))
+    attributes.reverse_each { |row| Character.create!(row) }
+
+    expected = attributes.map { |row| row.fetch("style_axis") }.uniq.flat_map do |axis|
+      attributes.select { |row| row.fetch("style_axis") == axis }.sort_by { |row| row.fetch("age_band") }.map { |row| row.fetch("handle") }
+    end
+    assert_equal 20, Character.for_intro.size
+    assert_equal expected, Character.for_intro.map(&:handle)
+    assert_equal %w[SeoHARIN HanSOYUL MoonSEOJIN JungHYEWON TanakaMIO], expected.first(5)
+  end
+
   test "키와 신발 사이즈는 허용 범위의 정수여야 한다" do
     character = Character.new(name: "테스트", handle: "Test", status: "planned")
 

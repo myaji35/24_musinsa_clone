@@ -1,6 +1,12 @@
 require "application_system_test_case"
 
 class HomepageTest < ApplicationSystemTestCase
+  setup do
+    YAML.load_file(Rails.root.join("config/characters.yml")).each do |attributes|
+      Character.create!(attributes)
+    end
+  end
+
   # 시나리오 1: 홈페이지 접속 및 기본 요소 확인
   test "홈페이지가 정상적으로 로드되는가" do
     visit root_url
@@ -22,8 +28,12 @@ class HomepageTest < ApplicationSystemTestCase
   test "홈 인트로가 표시되는가" do
     visit root_url
 
+    assert_selector ".intro-card-photo", count: 10, visible: :all
+    assert_selector ".intro-card-soon", text: "곧 공개", count: 10, visible: :all
+    assert_selector ".intro-card-virtual", text: "가상 인물", count: 10, visible: :all
+    assert_selector 'img[alt="강유나 (AI 가상 인물)"]', visible: :all
     assert_selector ".intro-characters h2", text: "20명의 캐릭터, 20개의 옷장"
-    assert_selector ".intro-card", count: 20
+    assert_selector ".intro-card", count: 20, visible: :all
   end
 
   # 시나리오 3: 네비게이션 테스트

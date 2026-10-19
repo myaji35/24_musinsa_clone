@@ -263,6 +263,19 @@
   object-position: center top;
 }
 
+.intro-card-virtual {
+  position: absolute;
+  top: 2.3rem;
+  right: .35rem;
+  padding: .2rem .35rem;
+  border-radius: .2rem;
+  background: #fff;
+  color: #111;
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
 .intro-card-details {
   flex: none;
   min-height: 112px;
@@ -411,6 +424,7 @@
     height: 182px;
     transform: rotateY(calc(var(--intro-index) * 18deg)) translateZ(320px);
   }
+  .intro-card-virtual { top: 1.65rem; right: .2rem; padding: .15rem .25rem; font-size: .7rem; }
   .intro-card-band { padding: .2rem .4rem; font-size: .58rem; }
   .intro-card-initial { font-size: 3.2rem; }
   .intro-card-details { min-height: 85px; padding: .3rem .4rem; }
@@ -440,6 +454,7 @@
   .intro-ring-viewport { position: relative; inset: auto; perspective: none; overflow: visible; }
   .intro-ring { position: relative; top: auto; left: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: .75rem; width: min(1100px, 100%); height: auto; margin: auto; transform: none; }
   .intro-card { position: relative; top: auto; left: auto; width: 100%; height: 240px; transform: none; }
+  .intro-card-virtual { top: 2.3rem; font-size: .75rem; }
   .intro-card-initial { font-size: 4rem; }
   .intro-card-details { min-height: 100px; padding: .45rem .55rem; }
   .intro-card-romanized { font-size: .6rem; }

@@ -1911,7 +1911,7 @@
       ],
       "done_criteria": "아바타와 누끼 PNG로 착용컷이 첨부된다. 매핑 불가 카테고리(신발·가방)는 버튼 비활성화 + 사유 표시",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-19T00:30:49.052659+00:00",
+      "updated_at": "2026-10-19T04:48:31.098175+00:00",
       "payload": {
         "decisions": [
           {
@@ -1925,11 +1925,11 @@
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
           "verdict": "보류 권장",
-          "reason": "depends_on ISS-043 이 BLOCKED(누끼 공급사 미확정). 어댑터만 먼저 만들면 실제 호출 검증 불가하고 fal 과금 경로도 미승인",
+          "reason": "선행 ISS-043 이 main 에 병합되기 전이라 착용컷 어댑터가 붙을 누끼 이미지 저장 구조가 main 에 없음",
           "risk": "low",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-10-19T00:30:49.052659+00:00"
+          "at": "2026-10-19T04:48:31.098175+00:00"
         },
         "status_history": [
           {
@@ -1940,7 +1940,17 @@
             "note": "선행 ISS-043(누끼 어댑터) BLOCKED — 누끼 PNG 경로가 없어 착용컷 어댑터를 붙일 입력이 없음"
           }
         ],
-        "blocked_reason": "선행 ISS-043(누끼 어댑터) BLOCKED — 누끼 PNG 경로가 없어 착용컷 어댑터를 붙일 입력이 없음"
+        "blocked_reason": "선행 ISS-043(누끼 어댑터)은 factory/ISS-043 브랜치에 구현 완료했으나 배포 전 대표님 검토 대기(main 미병합) — 병합 후 착수. 착용컷 외부 키(fal)도 미수령",
+        "recommendation_history": [
+          {
+            "verdict": "보류 권장",
+            "reason": "depends_on ISS-043 이 BLOCKED(누끼 공급사 미확정). 어댑터만 먼저 만들면 실제 호출 검증 불가하고 fal 과금 경로도 미승인",
+            "risk": "low",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-10-19T00:30:49.052659+00:00"
+          }
+        ]
       },
       "last_dispatched_at": "2026-10-15T17:55:21"
     },

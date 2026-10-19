@@ -1,0 +1,11 @@
+<div class="max-w-lg mx-auto px-4 py-8 space-y-6">
+  <h1 class="text-2xl font-bold">주문조회</h1>
+  <% if @error %><p role="alert"><%= @error %></p><% end %>
+  <%= form_with url: orders_lookup_path, class: "space-y-4" do |f| %>
+    <%= f.label :checkout_number, "주문서 번호", class: "block font-bold" %>
+    <%= f.text_field :checkout_number, required: true, class: "w-full border border-gray-400 p-3" %>
+    <%= f.label :phone_suffix, "휴대폰 뒤 4자리", class: "block font-bold" %>
+    <%= f.text_field :phone_suffix, required: true, maxlength: 4, pattern: "[0-9]{4}", inputmode: "numeric", class: "w-full border border-gray-400 p-3" %>
+    <%= f.submit "조회하기", class: "w-full bg-black text-white p-4" %>
+  <% end %>
+</div>

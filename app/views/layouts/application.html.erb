@@ -44,8 +44,8 @@
               <%= link_to "로그인", login_path, class: "hover:text-black" %>
             <% end %>
             <a href="#" class="hover:text-black">회원가입</a>
-            <a href="#" class="hover:text-black">마이페이지</a>
-            <a href="#" class="hover:text-black">장바구니</a>
+            <%= link_to "주문조회", orders_lookup_path, class: "hover:text-black" %>
+            <%= link_to "장바구니 (#{cart_count})", cart_path, class: "hover:text-black" %>
             <a href="#" class="hover:text-black">고객센터</a>
         </div>
     </div>
@@ -85,11 +85,13 @@
 
         <!-- Mobile Menu & Icons -->
         <div class="flex items-center space-x-3 md:space-x-5 shrink-0">
-          <a href="#" class="relative hover:text-gray-500">
+          <a href="<%= cart_path %>" aria-label="장바구니" class="relative hover:text-gray-500">
              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-             <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[9px] font-bold px-1 rounded-full">3</span>
+             <% if cart_count.positive? %>
+               <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[9px] font-bold px-1 rounded-full"><%= cart_count %></span>
+             <% end %>
           </a>
-          <a href="#" class="hover:text-gray-500 hidden md:block">
+          <a href="<%= orders_lookup_path %>" aria-label="주문조회" class="hover:text-gray-500">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
           </a>
         </div>

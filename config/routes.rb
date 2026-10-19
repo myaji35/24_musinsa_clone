@@ -6,6 +6,13 @@ Rails.application.routes.draw do
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
 
+  resource :cart, only: [ :show ]
+  resources :cart_items, only: [ :create, :update, :destroy ]
+  resource :checkout, only: [ :new, :create ]
+  get "orders/lookup", to: "customer_orders#lookup", as: :orders_lookup
+  post "orders/lookup", to: "customer_orders#verify"
+  get "orders/:checkout_number", to: "customer_orders#show", as: :customer_order
+
   # Products & Reviews
   resources :products do
     resources :reviews, only: [ :create ]

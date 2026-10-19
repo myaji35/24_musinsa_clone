@@ -1,4 +1,14 @@
 module ProductsHelper
+  PRODUCT_FORM_CATEGORIES = %w[상의 아우터 바지 원피스 스커트 가방 신발 액세서리].freeze
+
+  def product_category_options(product)
+    options = PRODUCT_FORM_CATEGORIES.map { |category| [ category, category ] }
+    if product.category.present? && !PRODUCT_FORM_CATEGORIES.include?(product.category)
+      options.unshift([ "#{product.category} (기존 값)", product.category ])
+    end
+    options
+  end
+
   # 29cm 스타일 배지 시스템
   def product_badges(product)
     badges = []

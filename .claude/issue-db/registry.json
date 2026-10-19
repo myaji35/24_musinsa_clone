@@ -323,7 +323,8 @@
         ],
         "approved_at": "2026-10-15T06:47:51.600Z",
         "approved_by": "대표님(관제실)"
-      }
+      },
+      "last_dispatched_at": "2026-10-18T17:55:20"
     },
     {
       "id": "ISS-015",
@@ -340,7 +341,7 @@
       ],
       "done_criteria": "grep 주소 0건",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-15T07:03:46.873848Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -353,13 +354,23 @@
         "approved_at": "2026-10-15T06:47:55.223Z",
         "approved_by": "대표님(관제실)",
         "recommendation": {
-          "verdict": "보류",
+          "verdict": "보류 권장",
           "reason": "'주소 폐기'가 10-13 결정(자사몰 배송지 저장·해외 배송)과 정면 충돌. ISS-058 개인정보 정책 결정 후 범위 재정의 필요",
           "risk": "high",
           "effort": "L",
           "by": "factory-runner",
-          "at": "2026-10-15T07:03:46.873848Z"
-        }
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "보류",
+            "reason": "'주소 폐기'가 10-13 결정(자사몰 배송지 저장·해외 배송)과 정면 충돌. ISS-058 개인정보 정책 결정 후 범위 재정의 필요",
+            "risk": "high",
+            "effort": "L",
+            "by": "factory-runner",
+            "at": "2026-10-15T07:03:46.873848Z"
+          }
+        ]
       },
       "blocked_reason": "'주소 폐기'가 10-13 결정(자사몰 배송지 저장·해외 배송)과 정면 충돌. ISS-058 개인정보 정책 결정 후 범위 재정의 필요"
     },
@@ -437,13 +448,13 @@
       "priority": "P2",
       "size": "M",
       "phase": "3",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [
         "ISS-014"
       ],
       "done_criteria": "전용 이력모델+failed 사유",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-15T06:48:07.453Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -454,9 +465,45 @@
           }
         ],
         "approved_at": "2026-10-15T06:48:07.453Z",
-        "approved_by": "대표님(관제실)"
+        "approved_by": "대표님(관제실)",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "현재 send_campaign! 은 variant_id 필수인 Notification 을 만들다 실패해 캠페인이 항상 cancelled 로 끝남. 고객별 발송 이력 모델(CampaignDelivery)과 실패 사유 기록으로 재정의. 실제 외부 발송 채널은 붙이지 않음(돈·개인정보 경로 아님)",
+          "risk": "low",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-18 착수"
+          }
+        ]
       },
-      "last_dispatched_at": "2026-10-15T17:55:21"
+      "last_dispatched_at": "2026-10-15T17:55:21",
+      "result": {
+        "summary": "CampaignDelivery 고객별 발송 이력 + failure_reason, 결과 sent/partially_failed/failed",
+        "commit": "0162b5e",
+        "proof": [
+          {
+            "cmd": "bin/rails test test/models/campaign_test.rb test/jobs/send_campaign_job_test.rb",
+            "exit_code": 0,
+            "output": "10 runs, 61 assertions, 0 failures, 0 errors, 0 skips"
+          }
+        ],
+        "files": [
+          "app/models/campaign.rb",
+          "app/models/campaign_delivery.rb",
+          "app/jobs/send_campaign_job.rb",
+          "db/migrate/20261018000000_create_campaign_deliveries.rb"
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T17:39:01.670182"
     },
     {
       "id": "ISS-029",
@@ -484,7 +531,8 @@
         ],
         "approved_at": "2026-10-15T06:48:11.891Z",
         "approved_by": "대표님(관제실)"
-      }
+      },
+      "last_dispatched_at": "2026-10-18T17:55:21"
     },
     {
       "id": "ISS-025",
@@ -517,7 +565,7 @@
       ],
       "done_criteria": "kamal deploy 성공",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-15T07:03:46.873848Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -530,13 +578,23 @@
         "approved_at": "2026-10-15T07:01:58.132Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "보류",
-          "reason": "config/deploy.yml 서버가 자리표시값(192.168.0.1). 실제 서버 주소·도메인·kamal secrets 를 대표님이 정해야 함",
+          "verdict": "대표님 결정 필요",
+          "reason": "config/deploy.yml 서버가 자리표시값(192.168.0.1). 실제 서버 주소·도메인·kamal secrets 를 대표님이 정해야 함(2026-10-18 재확인)",
           "risk": "medium",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-10-15T07:03:46.873848Z"
-        }
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "보류",
+            "reason": "config/deploy.yml 서버가 자리표시값(192.168.0.1). 실제 서버 주소·도메인·kamal secrets 를 대표님이 정해야 함",
+            "risk": "medium",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-10-15T07:03:46.873848Z"
+          }
+        ]
       },
       "blocked_reason": "config/deploy.yml 서버가 자리표시값(192.168.0.1). 실제 서버 주소·도메인·kamal secrets 를 대표님이 정해야 함"
     },
@@ -636,13 +694,13 @@
       "priority": "P3",
       "size": "M",
       "phase": "4",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-015"
       ],
       "done_criteria": "스파이크 문서",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-15T07:01:58.133Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -653,7 +711,25 @@
           }
         ],
         "approved_at": "2026-10-15T07:01:58.133Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "depends_on ISS-015 가 막혀 있고 EPIC v2 에서 외부채널 통합은 폐기(스파이크만 보존). 정책 결정 후 범위 재확인",
+          "risk": "low",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-015 BLOCKED(ISS-058 개인정보 정책 대기)"
+          }
+        ],
+        "blocked_reason": "선행 ISS-015 BLOCKED(ISS-058 개인정보 정책 대기)"
       }
     },
     {
@@ -795,7 +871,7 @@
       ],
       "done_criteria": "10장 결과 PNG와 실측표(초·달러)를 docs/spikes/에 남기고 1차 공급사를 확정한다",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-15T07:03:46.873848Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -808,13 +884,23 @@
         "approved_at": "2026-10-15T07:01:58.133Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "보류",
-          "reason": "실제 사입 사진 10장과 fal·Photoroom 유료 호출(외부 과금)이 필요. 공장 실행에서는 과금 금지",
+          "verdict": "대표님 결정 필요",
+          "reason": "실제 사입 사진 10장은 대표님 제공 필요. 과금(fal·Photoroom 각 10장)은 $10 이하로 집행 가능하나 Photoroom 은 신규 가입·키 발급이 필요해 공장 실행 범위 밖",
           "risk": "low",
           "effort": "S",
           "by": "factory-runner",
-          "at": "2026-10-15T07:03:46.873848Z"
-        }
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "보류",
+            "reason": "실제 사입 사진 10장과 fal·Photoroom 유료 호출(외부 과금)이 필요. 공장 실행에서는 과금 금지",
+            "risk": "low",
+            "effort": "S",
+            "by": "factory-runner",
+            "at": "2026-10-15T07:03:46.873848Z"
+          }
+        ]
       },
       "blocked_reason": "실제 사입 사진 10장과 fal·Photoroom 유료 호출(외부 과금)이 필요. 공장 실행에서는 과금 금지"
     },
@@ -876,7 +962,7 @@
       ],
       "done_criteria": "업로드 이미지가 job을 거쳐 cutout_image로 첨부된다. API 실패 시 cutout_image는 nil 유지(원본으로 대체 금지)",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-15T07:28:11.388199+00:00",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -889,13 +975,23 @@
         "approved_at": "2026-10-15T07:01:58.133Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "보류",
-          "reason": "선행 ISS-041(누끼 공급사 확정 스파이크)이 외부 과금 필요로 막혀 1차 공급사가 정해지지 않음. 공급사 확정 후 착수",
+          "verdict": "보류 권장",
+          "reason": "선행 ISS-041(누끼 공급사 확정 스파이크)이 막혀 1차 공급사 미정. 공급사 확정 후 착수",
           "risk": "low",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-10-15T07:28:11.388199+00:00"
-        }
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "보류",
+            "reason": "선행 ISS-041(누끼 공급사 확정 스파이크)이 외부 과금 필요로 막혀 1차 공급사가 정해지지 않음. 공급사 확정 후 착수",
+            "risk": "low",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-10-15T07:28:11.388199+00:00"
+          }
+        ]
       },
       "last_dispatched_at": "2026-10-15T16:22:04",
       "blocked_reason": "선행 ISS-041 BLOCKED — 1차 누끼 공급사 미확정(실측 스파이크는 외부 과금 필요)"
@@ -913,7 +1009,7 @@
       ],
       "done_criteria": "저니 통과: 업로드→클릭→PNG 표시→채택→상세 반영. 실패 시나리오에서 상태 배지 노출",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-15T07:28:11.388199+00:00",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -926,13 +1022,23 @@
         "approved_at": "2026-10-15T07:01:58.133Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "보류",
-          "reason": "ISS-043(누끼 어댑터) 선행. 043이 공급사 미확정으로 막혀 UI만 먼저 만들면 동작 경로가 없음",
+          "verdict": "보류 권장",
+          "reason": "ISS-043(누끼 어댑터) 선행. 043 이 막혀 UI 만 먼저 만들면 동작 경로가 없음",
           "risk": "low",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-10-15T07:28:11.388199+00:00"
-        }
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "보류",
+            "reason": "ISS-043(누끼 어댑터) 선행. 043이 공급사 미확정으로 막혀 UI만 먼저 만들면 동작 경로가 없음",
+            "risk": "low",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-10-15T07:28:11.388199+00:00"
+          }
+        ]
       },
       "last_dispatched_at": "2026-10-15T16:22:10",
       "blocked_reason": "선행 ISS-043 BLOCKED"
@@ -944,11 +1050,11 @@
       "priority": "P2",
       "size": "S",
       "phase": "2",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "라이선스 출처를 기록하고 아바타 선택 파셜이 렌더된다",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-15T07:01:58.133Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -959,9 +1065,40 @@
           }
         ],
         "approved_at": "2026-10-15T07:01:58.133Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "persona/ 와 runway-04/refs 에 이미 생성한 자사 AI 캐릭터 전신 이미지가 있어 추가 과금 없이 3~4종 확보 가능. 출처(자체 생성, Higgsfield)와 메타를 기록",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-18 착수"
+          }
+        ]
       },
-      "last_dispatched_at": "2026-10-15T17:55:21"
+      "last_dispatched_at": "2026-10-15T17:55:21",
+      "result": {
+        "summary": "아바타 4종(자체 생성 AI 이미지, 과금 $0) + config/avatars.yml 메타·라이선스 + avatars/_picker 파셜",
+        "commit": "see git log",
+        "cost_usd": 0,
+        "proof": [
+          {
+            "cmd": "bin/rails test test/models/avatar_test.rb test/views/avatars_picker_test.rb",
+            "exit_code": 0,
+            "output": "4 runs, 98 assertions, 0 failures, 0 errors, 0 skips"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T17:39:18.367595"
     },
     {
       "id": "ISS-046",
@@ -970,14 +1107,14 @@
       "priority": "P2",
       "size": "M",
       "phase": "2",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-043",
         "ISS-045"
       ],
       "done_criteria": "아바타와 누끼 PNG로 착용컷이 첨부된다. 매핑 불가 카테고리(신발·가방)는 버튼 비활성화 + 사유 표시",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-15T07:01:58.133Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -988,7 +1125,25 @@
           }
         ],
         "approved_at": "2026-10-15T07:01:58.133Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "depends_on ISS-043 이 BLOCKED(누끼 공급사 미확정). 어댑터만 먼저 만들면 실제 호출 검증 불가하고 fal 과금 경로도 미승인",
+          "risk": "low",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-043(누끼 어댑터) BLOCKED — 누끼 PNG 경로가 없어 착용컷 어댑터를 붙일 입력이 없음"
+          }
+        ],
+        "blocked_reason": "선행 ISS-043(누끼 어댑터) BLOCKED — 누끼 PNG 경로가 없어 착용컷 어댑터를 붙일 입력이 없음"
       },
       "last_dispatched_at": "2026-10-15T17:55:21"
     },
@@ -999,13 +1154,13 @@
       "priority": "P2",
       "size": "M",
       "phase": "2",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-046"
       ],
       "done_criteria": "저니 통과 + 상세 갤러리에 착용컷이 표시된다",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-15T07:26:11.486Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "decisions": [
           {
@@ -1016,7 +1171,25 @@
           }
         ],
         "approved_at": "2026-10-15T07:26:11.486Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "depends_on ISS-046(착용컷 어댑터)이 막혀 UI 만 만들면 동작 경로가 없음",
+          "risk": "low",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-046 BLOCKED"
+          }
+        ],
+        "blocked_reason": "선행 ISS-046 BLOCKED"
       }
     },
     {
@@ -1044,7 +1217,8 @@
         ],
         "approved_at": "2026-10-15T07:26:11.486Z",
         "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+      },
+      "last_dispatched_at": "2026-10-18T17:39:18"
     },
     {
       "id": "ISS-049",
@@ -1220,15 +1394,25 @@
         "approved_at": "2026-10-15T07:26:11.486Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "대표님 결정 후 진행",
-          "reason": "선행 ISS-058(배송지 보관기간·파기 정책 DECISION)이 대표님 결정 대기. 정책 없이 배송지 저장 구조를 만들면 되돌리기 어려운 개인정보 스키마가 생김",
+          "verdict": "대표님 결정 필요",
+          "reason": "선행 ISS-058(배송지 보관기간·파기 정책)이 대표님 결정 대기. 정책 없이 배송지 저장 구조를 만들면 되돌리기 어려운 개인정보 스키마가 생김",
           "risk": "high",
           "effort": "L",
           "by": "factory-runner",
-          "at": "2026-10-15T07:28:11.388199+00:00"
-        }
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "대표님 결정 후 진행",
+            "reason": "선행 ISS-058(배송지 보관기간·파기 정책 DECISION)이 대표님 결정 대기. 정책 없이 배송지 저장 구조를 만들면 되돌리기 어려운 개인정보 스키마가 생김",
+            "risk": "high",
+            "effort": "L",
+            "by": "factory-runner",
+            "at": "2026-10-15T07:28:11.388199+00:00"
+          }
+        ]
       },
-      "updated_at": "2026-10-15T07:28:11.388199+00:00",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "blocked_reason": "선행 ISS-058 DECISION 대기(개인정보 정책)"
     },
     {
@@ -1257,7 +1441,7 @@
     },
     {
       "id": "ISS-061",
-      "status": "READY",
+      "status": "BLOCKED",
       "priority": "P2",
       "type": "FEATURE",
       "title": "글로벌 대비 — i18n(ko/en 우선), 다통화 표기, 해외 배송비·관세 고지",
@@ -1276,9 +1460,27 @@
           }
         ],
         "approved_at": "2026-10-15T07:26:11.486Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "depends_on ISS-059 가 개인정보 정책(ISS-058) 결정 대기로 막힘. 장바구니·주문서가 없는 상태에서 다통화·관세 고지를 붙일 화면이 없음",
+          "risk": "low",
+          "effort": "L",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-059(자사몰 커머스 코어 EPIC) BLOCKED — EPIC v2 상 국내 첫 매출 뒤"
+          }
+        ],
+        "blocked_reason": "선행 ISS-059(자사몰 커머스 코어 EPIC) BLOCKED — EPIC v2 상 국내 첫 매출 뒤"
       },
-      "updated_at": "2026-10-15T07:26:11.486Z"
+      "updated_at": "2026-10-19T00:30:49.052659+00:00"
     },
     {
       "id": "ISS-062",
@@ -1325,7 +1527,7 @@
     },
     {
       "id": "ISS-063",
-      "status": "READY",
+      "status": "BLOCKED",
       "priority": "P2",
       "type": "FEATURE",
       "title": "캐릭터 옷장·영상 상품상세(첫 화면 런웨이 영상, 캐릭터 착용 사이즈 표기, AI 가상인물 표기)",
@@ -1345,13 +1547,31 @@
           }
         ],
         "approved_at": "2026-10-15T07:26:11.486Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "depends_on ISS-059(커머스 코어) BLOCKED. ISS-062 는 완료됐으나 상품상세 구매 흐름이 059 에 묶임",
+          "risk": "low",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-059 BLOCKED"
+          }
+        ],
+        "blocked_reason": "선행 ISS-059 BLOCKED"
       },
-      "updated_at": "2026-10-15T07:26:11.486Z"
+      "updated_at": "2026-10-19T00:30:49.052659+00:00"
     },
     {
       "id": "ISS-064",
-      "status": "READY",
+      "status": "DONE",
       "priority": "P2",
       "type": "FEATURE",
       "title": "시즌·트렌드 상품 선정 파이프라인 — 데이터랩 쇼핑인사이트 등 주간 실측 → 캐릭터별 추천",
@@ -1368,9 +1588,68 @@
           }
         ],
         "approved_at": "2026-10-15T07:26:11.486Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "사용자 테스트 FAIL 재작업: /trends 에 flash 표시, 인코딩 오류 문구를 사용자 언어로, 데이터 있는 캐릭터를 표 위로. 뷰·문구 수정이라 위험 낮음",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:51:15.689715+00:00"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-18 착수"
+          },
+          {
+            "from": "DONE",
+            "to": "READY",
+            "at": "2026-10-19T00:51:15.689715+00:00",
+            "by": "factory-runner",
+            "note": "사용자 여정 검증(review) FAIL 2: /trends 가 flash 를 그리지 않아 업로드 성공·갱신·오류 결과가 안 보이고, 남은 오류 flash 가 다음 화면(/inventory/scan)에 뜸. 오류 문구도 내부 메시지(\"\\xFF\" on CP949). 증거 docs/user-test/2026-10-18/review-iss064-*.png"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:51:15.689715+00:00",
+            "by": "factory-runner",
+            "note": "재작업 착수(같은 실행)"
+          }
+        ],
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "네이버 데이터랩 API 키가 없고 시크릿 신규 발급은 금지라, 데이터랩 화면에서 내려받은 CSV 를 올리는 경로를 1차로 만들고 API 클라이언트는 키가 있을 때만 동작하게 둠. 주간 실측값을 저장하고 캐릭터(연령대·담당 의류)별 추천을 계산",
+            "risk": "low",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-10-19T00:30:49.052659+00:00"
+          }
+        ]
       },
-      "updated_at": "2026-10-15T07:26:11.486Z"
+      "updated_at": "2026-10-19T00:51:15.689715+00:00",
+      "result": {
+        "summary": "/trends 재작업: flash 표시·사용자 오류 문구·추천 표 정리. 사용자 여정 재검증 FAIL 0",
+        "cost_usd": 0,
+        "proof": [
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "286 runs, 1592 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "user-journey-tester review 재검증(Playwright)",
+            "exit_code": 0,
+            "output": "6 시나리오 PASS, FAIL 0 — docs/user-test/2026-10-18/recheck-iss064-*.png"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T17:55:20.914711"
     },
     {
       "id": "ISS-065",
@@ -1857,12 +2136,12 @@
       "payload": {
         "origin": "factory-runner ISS-062 분리",
         "recommendation": {
-          "verdict": "대표님 집행 승인 후 진행",
-          "reason": "자동 승인(승인 권장)은 과금 승인이 아님. 예상 $12로 $10 초과 + 공장 규칙상 외부 과금 금지라 BLOCKED 로 되돌림",
+          "verdict": "대표님 결정 필요",
+          "reason": "예상 과금 약 $12 로 1회 실행 한도 $10 초과. 대표님 집행 승인 시 진행(또는 10명/9명 2회 분할 승인)",
           "risk": "low",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-10-15T08:32:27.372397+00:00"
+          "at": "2026-10-19T00:30:49.052659+00:00"
         },
         "decisions": [
           {
@@ -1873,10 +2152,20 @@
           }
         ],
         "approved_at": "2026-10-15T07:54:26.870Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation_history": [
+          {
+            "verdict": "대표님 집행 승인 후 진행",
+            "reason": "자동 승인(승인 권장)은 과금 승인이 아님. 예상 $12로 $10 초과 + 공장 규칙상 외부 과금 금지라 BLOCKED 로 되돌림",
+            "risk": "low",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-10-15T08:32:27.372397+00:00"
+          }
+        ]
       },
       "created_at": "2026-10-15T07:49:05.509032+00:00",
-      "updated_at": "2026-10-15T08:32:27.372397+00:00"
+      "updated_at": "2026-10-19T00:30:49.052659+00:00"
     },
     {
       "id": "ISS-091",
@@ -1884,21 +2173,21 @@
       "type": "INFRA",
       "priority": "P2",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "Rails 지원 버전으로 상향, 전체 테스트·RuboCop·Brakeman 통과, config/brakeman.ignore 의 EOLRails 항목 제거",
       "created_at": "2026-10-15T08:16:53.615239+00:00",
-      "updated_at": "2026-10-15T08:31:30.261Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "origin": "factory-runner ISS-089 분리",
         "source_issue": "ISS-089",
         "recommendation": {
-          "verdict": "진행",
-          "reason": "ISS-089 에서 EOLRails 경고를 2026-12-31 기한으로 임시 무시. 보안 패치가 끊긴 상태라 기한 전 업그레이드 필요",
+          "verdict": "승인 권장",
+          "reason": "Rails 7.2 지원 종료로 보안 패치가 끊김. brakeman.ignore 기한(2026-12-31) 전에 8.x 로 올린다. 다른 이슈와 Gemfile 이 겹쳐 묶음 마지막에 단독 진행",
           "risk": "medium",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-10-15T08:16:53.615239+00:00"
+          "at": "2026-10-19T00:30:49.052659+00:00"
         },
         "decisions": [
           {
@@ -1909,8 +2198,59 @@
           }
         ],
         "approved_at": "2026-10-15T08:31:30.261Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation_history": [
+          {
+            "verdict": "진행",
+            "reason": "ISS-089 에서 EOLRails 경고를 2026-12-31 기한으로 임시 무시. 보안 패치가 끊긴 상태라 기한 전 업그레이드 필요",
+            "risk": "medium",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-10-15T08:16:53.615239+00:00"
+          }
+        ],
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-18 착수"
+          }
+        ]
+      },
+      "result": {
+        "summary": "Rails 8.1.4, load_defaults 8.1, brakeman 8.1.0, EOLRails ignore 제거, gem csv, Puma after_booted",
+        "proof": [
+          {
+            "cmd": "bin/rails test",
+            "exit_code": 0,
+            "output": "286 runs, 1592 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rails test:system",
+            "exit_code": 0,
+            "output": "8 runs, 16 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "198 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "bin/brakeman --no-pager -q",
+            "exit_code": 0,
+            "output": "No warnings found"
+          },
+          {
+            "cmd": "bundle exec bundler-audit check --update",
+            "exit_code": 0,
+            "output": "No vulnerabilities found"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T17:55:21.060761"
     },
     {
       "id": "ISS-092",
@@ -2000,22 +2340,22 @@
       "type": "UX_FIX",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "done_criteria": "검색 0건일 때 '검색 결과가 없습니다'+초기화 안내, /products 게스트에게 관리 버튼 비노출",
       "created_at": "2026-10-15T08:28:13.793292+00:00",
-      "updated_at": "2026-10-15T08:31:30.261Z",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-092",
         "evidence": "docs/user-test/2026-10-15/3-home-search-empty-1440.png, 3b-home-empty-ranking-1440.png, 4c-products-q-empty-1440.png",
         "recommendation": {
-          "verdict": "진행",
-          "reason": "사용자가 검색 실패를 인지 못함(FRICTION). 문구·조건부 렌더만이라 되돌리기 쉬움. 게스트 관리 버튼은 링크만 보이고 실제 접근은 require_admin 으로 막혀 있는지 함께 확인",
+          "verdict": "승인 권장",
+          "reason": "사용자 테스트에서 검색 실패를 인지 못한 FRICTION. 조건부 문구·버튼 노출만 바꾸는 작은 수정이라 되돌리기 쉬움",
           "risk": "low",
           "effort": "S",
           "by": "factory-runner",
-          "at": "2026-10-15T08:28:13.793292+00:00"
+          "at": "2026-10-19T00:30:49.052659+00:00"
         },
         "decisions": [
           {
@@ -2026,8 +2366,46 @@
           }
         ],
         "approved_at": "2026-10-15T08:31:30.261Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation_history": [
+          {
+            "verdict": "진행",
+            "reason": "사용자가 검색 실패를 인지 못함(FRICTION). 문구·조건부 렌더만이라 되돌리기 쉬움. 게스트 관리 버튼은 링크만 보이고 실제 접근은 require_admin 으로 막혀 있는지 함께 확인",
+            "risk": "low",
+            "effort": "S",
+            "by": "factory-runner",
+            "at": "2026-10-15T08:28:13.793292+00:00"
+          }
+        ],
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-19T00:30:49.052659+00:00",
+            "by": "factory-runner",
+            "note": "공장 실행 2026-10-18 착수"
+          }
+        ]
+      },
+      "result": {
+        "summary": "검색 0건 안내(홈·/products, 검색어+초기화 링크) + 게스트 관리 버튼·등록 문구 비노출",
+        "commit": "313c572",
+        "proof": [
+          {
+            "cmd": "bin/rails test test/controllers/home_controller_test.rb test/controllers/products_controller_test.rb",
+            "exit_code": 0,
+            "output": "35 runs, 129 assertions, 0 failures, 0 errors, 0 skips"
+          }
+        ],
+        "files": [
+          "app/views/home/index.html.erb",
+          "app/views/products/index.html.erb",
+          "app/views/products/_search_empty.html.erb",
+          "app/controllers/home_controller.rb"
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-18T17:38:57.411931"
     },
     {
       "id": "ISS-095",
@@ -2091,18 +2469,164 @@
       ],
       "done_criteria": "최소 막대 높이 보장(값>0이면 최소 2~4px) 또는 로그/상한 스케일, 터치 환경에서 탭/포커스로 날짜·금액 확인 가능",
       "created_at": "2026-10-15T08:55:39.666963+00:00",
-      "updated_at": "2026-10-15T08:55:39.666963+00:00",
+      "updated_at": "2026-10-19T00:30:49.052659+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-017",
         "evidence": "docs/user-test/2026-10-15/review-iss017-90d-1440.png (9/7 ₩7.8M 대비 ₩33,000 막대 1px)",
         "recommendation": {
-          "verdict": "진행",
-          "reason": "차트 가독성 FRICTION. 뷰 내 스케일·접근성 보완만이라 되돌리기 쉬움. 실데이터가 쌓이면 바로 체감됨",
+          "verdict": "승인 권장",
+          "reason": "차트 가독성 FRICTION. 뷰 내 스케일·접근성 보완만이라 되돌리기 쉬움. 이번 묶음 5건 한도로 다음 실행에서 처리",
           "risk": "low",
           "effort": "S",
           "by": "factory-runner",
-          "at": "2026-10-15T08:55:39.666963+00:00"
+          "at": "2026-10-19T00:30:49.052659+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-19T00:28:11.288Z",
+            "by": "auto",
+            "reason": "「대시보드 일별 매출 차트 — 매출 집중일이 있으면 나머지 막대가 1px 로 안 보임 + 모바일에서 금액 확인 수단 없음(title 툴팁만)」은 사용자 테스트에서 실제로 막힌 곳으로 기록되었습니다."
+          }
+        ],
+        "approved_at": "2026-10-19T00:28:11.288Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation_history": [
+          {
+            "verdict": "진행",
+            "reason": "차트 가독성 FRICTION. 뷰 내 스케일·접근성 보완만이라 되돌리기 쉬움. 실데이터가 쌓이면 바로 체감됨",
+            "risk": "low",
+            "effort": "S",
+            "by": "factory-runner",
+            "at": "2026-10-15T08:55:39.666963+00:00"
+          }
+        ]
+      },
+      "last_dispatched_at": "2026-10-18T17:43:09"
+    },
+    {
+      "id": "ISS-097",
+      "title": "검색어의 % · _ 가 와일드카드로 해석됨 — '%' 검색 시 전체 상품 노출(홈·/products)",
+      "type": "UX_FIX",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "검색어를 sanitize_sql_like + ESCAPE 로 처리해 %, _ 를 글자 그대로 검색",
+      "created_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-094",
+        "evidence": "docs/user-test/2026-10-18/review-iss094-products-special-guest-1440.png (FRICTION, 변경 전부터 존재)",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "검색 정확도 FRICTION. home_controller.rb:29·products_controller.rb:16 의 LIKE 패턴만 고치면 되고 되돌리기 쉬움",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:55:38.632376+00:00"
+        }
+      }
+    },
+    {
+      "id": "ISS-098",
+      "title": "로그인 후 원래 화면으로 복귀 — /trends 등 관리자 화면에서 로그인으로 보내진 뒤 /inventory/scan 으로 감",
+      "type": "UX_FIX",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "require_admin 리다이렉트 시 GET 요청 경로를 세션에 저장하고 로그인 성공 후 같은 호스트 내부 경로로만 복귀(open redirect 방지)",
+      "created_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-064",
+        "evidence": "user-journey review 2026-10-18 FRICTION",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "관리자 동선 FRICTION. 인증 판정 로직은 그대로 두고 복귀 경로만 추가 — 내부 경로 한정 검증 필수",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:55:38.632376+00:00"
+        }
+      }
+    },
+    {
+      "id": "ISS-099",
+      "title": "CI 테스트 단계가 test/jobs·test/views·test/initializers 를 실행하지 않음",
+      "type": "INFRA",
+      "priority": "P2",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "CI 의 bin/rails test 대상에 jobs·views·initializers(또는 test:all) 포함, 로컬 전체 실행과 같은 범위",
+      "created_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "payload": {
+        "origin": "factory-runner",
+        "source_issue": "ISS-091",
+        "evidence": ".github/workflows/ci.yml:75 — models/services/controllers/helpers/system 만 지정",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-013·045 에서 추가한 잡·뷰 테스트가 CI 에서 돌지 않아 회귀를 못 잡음. 워크플로 한 줄 수정",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:55:38.632376+00:00"
+        }
+      }
+    },
+    {
+      "id": "ISS-100",
+      "title": "게스트 네비에 관리자 링크(재고관리·대시보드·거래처·발주·입고·상품분석·KPI)가 그대로 노출 — '트렌드'만 숨김",
+      "type": "UX_FIX",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "관리자 링크 묶음을 logged_in? 일 때만 표시(서버 접근 제어는 이미 require_admin)",
+      "created_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-064",
+        "evidence": "user-journey review 2026-10-18 참고 사항",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "권한 노출은 아니나(클릭 시 로그인으로 감) 게스트에게 헷갈리는 메뉴. 레이아웃 조건부 렌더만",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:55:38.632376+00:00"
+        }
+      }
+    },
+    {
+      "id": "ISS-101",
+      "title": "상품 편집 카테고리 선택 목록에 없는 값('하의' 등)이 '선택하세요'로 표시됨",
+      "type": "BUG",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "done_criteria": "기존 카테고리 값이 선택 목록에 없으면 현재 값을 유지·표시하거나 데이터 정규화(하의→바지 등) 방안 결정",
+      "created_at": "2026-10-19T00:55:38.632376+00:00",
+      "updated_at": "2026-10-19T00:55:38.632376+00:00",
+      "payload": {
+        "origin": "user-test",
+        "source_issue": "ISS-091",
+        "evidence": "docs/user-test/2026-10-18/review-iss091-admin-product-edit-1440.png (/products/226/edit)",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "편집 후 저장 시 카테고리가 비워질 위험. 우선 현재 값 유지 표시로 막고 정규화는 별도 판단",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-19T00:55:38.632376+00:00"
         }
       }
     }
@@ -2188,6 +2712,42 @@
         "issue_type": "FEATURE",
         "plan_created": 0,
         "timestamp": "2026-10-15T17:55:21.735543"
+      },
+      {
+        "issue_id": "ISS-094",
+        "issue_type": "UX_FIX",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T17:38:57.411931"
+      },
+      {
+        "issue_id": "ISS-013",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T17:39:01.670182"
+      },
+      {
+        "issue_id": "ISS-045",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T17:39:18.367595"
+      },
+      {
+        "issue_id": "ISS-064",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T17:43:08.980006"
+      },
+      {
+        "issue_id": "ISS-064",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T17:55:20.914711"
+      },
+      {
+        "issue_id": "ISS-091",
+        "issue_type": "INFRA",
+        "plan_created": 0,
+        "timestamp": "2026-10-18T17:55:21.060761"
       }
     ],
     "on_fail": [],
@@ -2200,7 +2760,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 27,
+    "completed": 33,
     "failed": 0,
     "evolved": 0
   },
@@ -2209,12 +2769,13 @@
     "issues": []
   },
   "issue_budget": {
-    "date": "2026-10-15",
+    "date": "2026-10-18",
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-013:READY": 3,
-    "ISS-045:READY": 2,
-    "ISS-046:READY": 2
+    "ISS-018:READY": 2,
+    "ISS-029:READY": 2,
+    "ISS-048:READY": 1,
+    "ISS-096:READY": 1
   }
 }

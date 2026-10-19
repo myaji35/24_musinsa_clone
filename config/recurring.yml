@@ -10,6 +10,11 @@
 #     schedule: at 5am every day
 
 development:
+  shipping_address_purge:
+    class: ShippingAddressPurgeJob
+    queue: default
+    schedule: at 4am every day
+
   # Epic 5.1: 재고 부족 알림 Job (개발 환경 - 테스트용 5분마다 실행)
   low_stock_alert:
     class: LowStockAlertJob
@@ -29,6 +34,11 @@ development:
   #   schedule: every hour
 
 production:
+  shipping_address_purge:
+    class: ShippingAddressPurgeJob
+    queue: default
+    schedule: at 4am every day
+
   trend_fetch:
     class: TrendFetchJob
     queue: default

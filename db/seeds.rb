@@ -1,6 +1,8 @@
 
 # Clear existing data
 ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
+SupplierClaim.destroy_all
+SupplierAccount.destroy_all
 PurchaseOrderItem.destroy_all
 PurchaseOrder.destroy_all
 Supplier.destroy_all
@@ -435,3 +437,14 @@ puts "  - PurchaseOrder: #{PurchaseOrder.count}개"
 puts "  - PurchaseOrderItem: #{PurchaseOrderItem.count}개"
 puts "=" * 50
 Rake::Task["characters:sync"].invoke
+
+
+if Rails.env.development?
+  supplier = Supplier.first
+  if supplier
+    supplier.supplier_accounts.create!(email: "partner@jieun.test", name: "공급사 담당자", password: "PartnerDev!2026")
+    Product.where(supplier_id: nil).limit(3).each { |product| product.update!(supplier: supplier) }
+    supplier.supplier_claims.create!(claim_type: "defective", description: "입고 상품 봉제 불량 확인을 부탁드립니다.", quantity: 2)
+    supplier.supplier_claims.create!(claim_type: "short_quantity", description: "입고 수량이 부족합니다. 확인 부탁드립니다.", quantity: 1)
+  end
+end

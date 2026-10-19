@@ -40,7 +40,25 @@ Rails.application.routes.draw do
   end
 
   # Epic 8: 거래처 및 발주 관리
-  resources :suppliers
+  namespace :partner do
+    root "dashboard#index"
+    get "login", to: "sessions#new"
+    post "login", to: "sessions#create"
+    delete "logout", to: "sessions#destroy"
+    resources :inventory, only: :index
+    resources :purchase_orders, only: [ :index, :show ] do
+      member { post :confirm }
+    end
+    resources :claims, only: [ :index, :show, :update ]
+  end
+  resources :supplier_claims, only: [ :index, :new, :create, :show ] do
+    member { patch :resolve }
+  end
+  resources :suppliers do
+    resources :supplier_accounts, only: :create do
+      member { patch :toggle }
+    end
+  end
   resources :supplier_imports, only: [ :index, :new, :create, :show ] do
     member { post :retry }
   end

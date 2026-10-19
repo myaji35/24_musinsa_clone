@@ -1,0 +1,10 @@
+<h1 class="text-2xl font-bold">클레임</h1>
+<nav class="flex flex-wrap gap-4" aria-label="클레임 상태"><%= link_to "전체", partner_claims_path %>
+<% SupplierClaim::STATUSES.each do |value, label| %><%= link_to label, partner_claims_path(status: value) %><% end %></nav>
+<div class="bg-white rounded-lg shadow divide-y">
+<% @claims.each do |claim| %><div class="p-4 space-x-4">
+  <%= link_to "#{SupplierClaim::TYPES[claim.claim_type]} · #{claim.description.truncate(60)}", partner_claim_path(claim), class: "text-blue-700" %>
+  <span class="bg-gray-100 rounded px-2 py-1"><%= SupplierClaim::STATUSES[claim.status] %></span>
+</div><% end %>
+<% if @claims.empty? %><p class="p-6 text-gray-500">클레임이 없습니다.</p><% end %>
+</div>

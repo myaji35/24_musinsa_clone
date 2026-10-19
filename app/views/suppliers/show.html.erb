@@ -105,3 +105,22 @@
     <% end %>
   </div>
 </div>
+
+<section class="container mx-auto px-4 pb-8">
+<div class="bg-white rounded-lg shadow p-6 space-y-4">
+<h2 class="text-xl font-bold">파트너센터 계정</h2>
+<% @supplier.supplier_accounts.order(:id).each do |account| %>
+  <div class="flex flex-wrap gap-4 items-center border-b pb-3">
+    <span><%= account.name %> · <%= account.email %></span>
+    <span class="bg-gray-100 px-2 py-1 rounded"><%= account.active? ? "활성" : "비활성" %></span>
+    <%= button_to(account.active? ? "비활성화" : "활성화", toggle_supplier_supplier_account_path(@supplier, account), method: :patch, class: "text-blue-700") %>
+  </div>
+<% end %>
+<%= form_with model: SupplierAccount.new, url: supplier_supplier_accounts_path(@supplier), class: "space-y-3 max-w-lg" do |f| %>
+  <h3 class="font-bold">계정 발급</h3>
+  <div><%= f.label :email, "이메일", class: "block" %><%= f.email_field :email, required: true, class: "border rounded p-2 w-full" %></div>
+  <div><%= f.label :name, "이름", class: "block" %><%= f.text_field :name, class: "border rounded p-2 w-full" %></div>
+  <div><%= f.label :password, "초기 비밀번호", class: "block" %><%= f.password_field :password, required: true, autocomplete: "new-password", class: "border rounded p-2 w-full" %></div>
+  <%= f.submit "계정 발급", class: "bg-blue-600 text-white px-4 py-2 rounded-lg" %>
+<% end %>
+</div></section>

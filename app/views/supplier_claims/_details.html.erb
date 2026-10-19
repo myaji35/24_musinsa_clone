@@ -1,0 +1,8 @@
+<div class="bg-white rounded-lg shadow p-6 space-y-3">
+  <p>거래처: <%= claim.supplier.name %></p>
+  <p>유형: <%= SupplierClaim::TYPES[claim.claim_type] %> · 상태: <%= SupplierClaim::STATUSES[claim.status] %></p>
+  <p>관련 발주: <%= claim.purchase_order&.order_number || "-" %> · 수량: <%= claim.quantity || "-" %></p>
+  <h2 class="font-bold">클레임 내용</h2><p class="whitespace-pre-wrap"><%= claim.description %></p>
+  <h2 class="font-bold">공급사 답변</h2><p class="whitespace-pre-wrap"><%= claim.supplier_response.presence || "아직 답변이 없습니다." %></p>
+  <% if claim.responded_at %><p class="text-gray-600">답변일: <%= l(claim.responded_at, format: :short) %></p><% end %>
+</div>

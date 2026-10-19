@@ -1,0 +1,13 @@
+<h1 class="text-2xl font-bold">재고 조회</h1>
+<p class="text-gray-600">쇼핑몰 재고는 조회만 가능합니다.</p>
+<div class="flex gap-4"><%= link_to "전체", partner_inventory_index_path %><%= link_to "부족 재고만", partner_inventory_index_path(low: 1), class: "text-red-700" %></div>
+<div class="bg-white rounded-lg shadow overflow-x-auto">
+<table class="min-w-full text-sm">
+  <thead class="bg-gray-100"><tr><% %w[상품명 SKU 색상 사이즈 현재재고 최소재고 상태].each do |label| %><th class="p-3 text-left"><%= label %></th><% end %></tr></thead>
+  <tbody><% @variants.each do |variant| %><tr class="border-t">
+    <% [variant.product.name, variant.sku_code, variant.color, variant.size, variant.stock, variant.min_stock || "-"].each do |value| %><td class="p-3"><%= value %></td><% end %>
+    <td class="p-3"><% if variant.low_stock? %><span class="bg-red-100 text-red-800 px-2 py-1 rounded font-medium">재고 부족</span><% end %></td>
+  </tr><% end %></tbody>
+</table>
+<% if @variants.empty? %><p class="p-6 text-gray-500">조회할 재고가 없습니다.</p><% end %>
+</div>

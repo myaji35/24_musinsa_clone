@@ -1568,14 +1568,14 @@
       "priority": "P1",
       "size": "M",
       "phase": "2",
-      "status": "AWAITING_USER",
+      "status": "DONE",
       "depends_on": [
         "ISS-041",
         "ISS-042"
       ],
       "done_criteria": "업로드 이미지가 job을 거쳐 cutout_image로 첨부된다. API 실패 시 cutout_image는 nil 유지(원본으로 대체 금지)",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-19T04:47:28.257034+00:00",
+      "updated_at": "2026-10-19T04:54:56.413476+00:00",
       "payload": {
         "decisions": [
           {
@@ -1588,12 +1588,12 @@
         "approved_at": "2026-10-15T07:01:58.133Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "대표님 결정 필요",
-          "reason": "구현·테스트 완료(factory/ISS-043). 추가형 마이그레이션 포함이라 병합 전 대표님 확인",
+          "verdict": "완료",
+          "reason": "main 병합. 운영 반영은 ISS-112(rembg 배치)·ISS-024(배포) 이후",
           "risk": "low",
-          "effort": "완료(병합만 남음)",
+          "effort": "완료",
           "by": "factory-runner",
-          "at": "2026-10-19T04:47:28.257034+00:00"
+          "at": "2026-10-19T04:54:56.413476+00:00"
         },
         "recommendation_history": [
           {
@@ -1643,6 +1643,14 @@
             "effort": "M",
             "by": "factory-runner",
             "at": "2026-10-19T04:40:31.927133+00:00"
+          },
+          {
+            "verdict": "대표님 결정 필요",
+            "reason": "구현·테스트 완료(factory/ISS-043). 추가형 마이그레이션 포함이라 병합 전 대표님 확인",
+            "risk": "low",
+            "effort": "완료(병합만 남음)",
+            "by": "factory-runner",
+            "at": "2026-10-19T04:47:28.257034+00:00"
           }
         ],
         "policy_decision": "ISS-041 결정(2026-10-19): A. 사진 10장 제공 + Photoroom 가입·키 발급까지 직접 진행",
@@ -1667,11 +1675,18 @@
             "at": "2026-10-19T04:47:28.257034+00:00",
             "by": "factory-runner",
             "note": "구현·테스트·저니 완료 — 배포 전 검토 대기(factory/ISS-043, 추가형 마이그레이션 포함)"
+          },
+          {
+            "from": "AWAITING_USER",
+            "to": "DONE",
+            "at": "2026-10-19T04:54:56.413476+00:00",
+            "by": "factory-runner",
+            "note": "대표님 병합 승인(대화, '병합') — main f2c453d 병합, 전체 336 runs 0 failures"
           }
         ],
         "blocked_reason": "선행 ISS-041(누끼 공급사 실측) 미완 — 대표님 A안 자료(사입 사진 10장·Photoroom 키)가 아직 저장소·.env 에 없음(.env 키: ANTHROPIC·HIGGSFIELD 뿐). 자료가 들어오면 ISS-041 실측 후 READY",
         "gate": "deploy",
-        "gate_stage": "deploy-review",
+        "gate_stage": "merged",
         "branch": "factory/ISS-043",
         "question": "상품 편집 화면의 '배경 제거(누끼)' 기능을 main 에 병합할까요? (운영 서버 반영은 rembg 서버 배치 ISS-112 와 배포 ISS-024 이후)",
         "plain_summary": "상품 사진을 올리고 '배경 제거'를 누르면 자체 rembg 서버가 5초 안팎에 배경을 지워 주고, 마음에 들면 '누끼를 대표 이미지로'를 눌러 상품 화면에 바로 씁니다. 외부 유료 서비스·키 없음.",
@@ -1691,7 +1706,14 @@
         ],
         "recommended_option": "A",
         "recommended_why": "전체 테스트 335건 통과, 실제 화면에서 업로드→배경 제거→채택→상세 반영까지 확인. 되돌리기 쉬운 추가형 변경.",
-        "reversible": "마이그레이션은 칸 추가뿐이라 롤백 가능, 기능은 버튼을 안 누르면 영향 없음"
+        "reversible": "마이그레이션은 칸 추가뿐이라 롤백 가능, 기능은 버튼을 안 누르면 영향 없음",
+        "decision": {
+          "choice": "A",
+          "label": "main 에 병합",
+          "by": "대표님(대화)",
+          "at": "2026-10-18"
+        },
+        "merged_commit": "f2c453d"
       },
       "last_dispatched_at": "2026-10-18T20:50:26",
       "blocked_reason": "선행 ISS-041 BLOCKED — 1차 누끼 공급사 미확정(실측 스파이크는 외부 과금 필요)",
@@ -1730,13 +1752,13 @@
       "priority": "P1",
       "size": "M",
       "phase": "2",
-      "status": "AWAITING_USER",
+      "status": "DONE",
       "depends_on": [
         "ISS-043"
       ],
       "done_criteria": "저니 통과: 업로드→클릭→PNG 표시→채택→상세 반영. 실패 시나리오에서 상태 배지 노출",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-19T04:47:28.257034+00:00",
+      "updated_at": "2026-10-19T04:54:56.413476+00:00",
       "payload": {
         "decisions": [
           {
@@ -1749,12 +1771,12 @@
         "approved_at": "2026-10-15T07:01:58.133Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "대표님 결정 필요",
-          "reason": "ISS-043 과 한 브랜치로 묶여 함께 병합 결정",
+          "verdict": "완료",
+          "reason": "ISS-043 과 함께 병합",
           "risk": "low",
-          "effort": "완료(병합만 남음)",
+          "effort": "완료",
           "by": "factory-runner",
-          "at": "2026-10-19T04:47:28.257034+00:00"
+          "at": "2026-10-19T04:54:56.413476+00:00"
         },
         "recommendation_history": [
           {
@@ -1780,6 +1802,14 @@
             "effort": "M",
             "by": "factory-runner",
             "at": "2026-10-19T04:40:31.927133+00:00"
+          },
+          {
+            "verdict": "대표님 결정 필요",
+            "reason": "ISS-043 과 한 브랜치로 묶여 함께 병합 결정",
+            "risk": "low",
+            "effort": "완료(병합만 남음)",
+            "by": "factory-runner",
+            "at": "2026-10-19T04:47:28.257034+00:00"
           }
         ],
         "blocked_reason": "선행 ISS-043(누끼 어댑터) BLOCKED — ISS-041 실측 자료(사입 사진 10장·Photoroom 키) 미도착",
@@ -1797,12 +1827,26 @@
             "at": "2026-10-19T04:47:28.257034+00:00",
             "by": "factory-runner",
             "note": "ISS-043 과 같은 브랜치(factory/ISS-043)에서 구현 완료 — ISS-043 결정에 따름"
+          },
+          {
+            "from": "AWAITING_USER",
+            "to": "DONE",
+            "at": "2026-10-19T04:54:56.413476+00:00",
+            "by": "factory-runner",
+            "note": "ISS-043 과 함께 main f2c453d 병합"
           }
         ],
         "gate": "deploy",
-        "gate_stage": "deploy-review",
+        "gate_stage": "merged",
         "branch": "factory/ISS-043",
-        "follows": "ISS-043"
+        "follows": "ISS-043",
+        "decision": {
+          "choice": "A",
+          "label": "main 에 병합",
+          "by": "대표님(대화)",
+          "at": "2026-10-18"
+        },
+        "merged_commit": "f2c453d"
       },
       "last_dispatched_at": "2026-10-15T16:22:10",
       "blocked_reason": "선행 ISS-043 BLOCKED",
@@ -1911,7 +1955,7 @@
       ],
       "done_criteria": "아바타와 누끼 PNG로 착용컷이 첨부된다. 매핑 불가 카테고리(신발·가방)는 버튼 비활성화 + 사유 표시",
       "created_at": "2026-09-07T18:34:06.678521",
-      "updated_at": "2026-10-19T04:48:31.098175+00:00",
+      "updated_at": "2026-10-19T04:55:02.053009+00:00",
       "payload": {
         "decisions": [
           {
@@ -1938,9 +1982,16 @@
             "at": "2026-10-19T00:30:49.052659+00:00",
             "by": "factory-runner",
             "note": "선행 ISS-043(누끼 어댑터) BLOCKED — 누끼 PNG 경로가 없어 착용컷 어댑터를 붙일 입력이 없음"
+          },
+          {
+            "from": "BLOCKED",
+            "to": "BLOCKED",
+            "at": "2026-10-19T04:55:02.053009+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-043 은 main 병합 완료(f2c453d). 남은 막힘: 착용컷 외부 키(fal Kling) 미수령"
           }
         ],
-        "blocked_reason": "선행 ISS-043(누끼 어댑터)은 factory/ISS-043 브랜치에 구현 완료했으나 배포 전 대표님 검토 대기(main 미병합) — 병합 후 착수. 착용컷 외부 키(fal)도 미수령",
+        "blocked_reason": "선행 ISS-043 은 main 병합 완료(f2c453d). 남은 막힘: 착용컷 외부 키(fal Kling) 미수령",
         "recommendation_history": [
           {
             "verdict": "보류 권장",

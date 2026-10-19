@@ -43,8 +43,8 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       assert_select 'nav[aria-label="조회 기간"] a[aria-current="page"]', text: "7일"
       assert_select "#total-orders", text: "1"
       assert_select "#total-revenue", text: "₩39,800"
-      assert_select 'div[title="2026-10-12 · ₩39,800"]', count: 1
-      assert_select 'div[title="2026-10-11 · ₩0"]', count: 1
+      assert_select 'button[title="2026-10-12 · ₩39,800"]', count: 1
+      assert_select 'button[title="2026-10-11 · ₩0"]', count: 1
       assert_select "h2", text: "최근 7일 주문"
       assert_no_match(/우편번호 061xxx/, response.body)
       assert_no_match(/ORD-20260901-0002/, response.body)
@@ -61,6 +61,27 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       assert_select 'nav[aria-label="조회 기간"] a[aria-current="page"]', text: "30일"
       assert_select "#total-orders", text: "1"
       assert_select "#total-revenue", text: "₩39,800"
+    end
+  end
+
+  test "daily sales bars remain visible and accessible in every period" do
+    travel_to Time.zone.local(2026, 10, 15, 12) do
+      orders(:one).update_columns(created_at: 2.days.ago, total_price: 33_000)
+      orders(:two).update_columns(created_at: 1.day.ago, total_price: 7_800_000)
+
+      [ 7, 30, 90 ].each do |period|
+        get dashboard_index_url(period: period)
+        assert_response :success
+        assert_select '[data-controller="daily-sales"]' do
+          assert_select '[data-daily-sales-target="detail"][aria-live="polite"]', count: 1
+          assert_select 'button[aria-label="10/13 ₩33,000"][data-action="focus->daily-sales#select click->daily-sales#select"]' do
+            assert_select 'span[style*="min-height: 4px"]', count: 1
+          end
+          assert_select 'button[aria-label="10/14 ₩7,800,000"] span[style="height: 100.0%; min-height: 4px"]', count: 1
+          assert_select 'button[aria-label="10/15 ₩0"] span[style="height: 0.0%; min-height: 0px"]', count: 1
+          assert_select "button[aria-label]", count: period + 1
+        end
+      end
     end
   end
 

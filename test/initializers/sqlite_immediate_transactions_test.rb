@@ -14,7 +14,8 @@ class SQLiteImmediateTransactionsTest < ActiveSupport::TestCase
       end
     end
 
-    assert_includes statements, "begin immediate transaction"
+    # Rails 8 provides IMMEDIATE transactions; SQL capitalization is adapter-specific.
+    assert_includes statements.map(&:downcase), "begin immediate transaction"
   end
 
   test "connection configuration installs a Ruby busy handler" do

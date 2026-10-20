@@ -26,15 +26,8 @@ deploy_timeout: 90
 
 # Where you keep your container images.
 registry:
-  # Alternatives: hub.docker.com / registry.digitalocean.com / ghcr.io / ...
-  server: ghcr.io
-
-  # Needed for authenticated registries.
-  username: myaji35
-
-  # Always use an access token rather than real password when possible.
-  password:
-    - KAMAL_REGISTRY_PASSWORD
+  # 로컬 레지스트리: 이미지를 SSH 터널로 서버에 직접 보낸다(ghcr 쓰기 토큰 불필요, ISS-024).
+  server: localhost:5555
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:

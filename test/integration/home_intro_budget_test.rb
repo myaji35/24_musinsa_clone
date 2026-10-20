@@ -13,6 +13,7 @@ class HomeIntroBudgetTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "video[autoplay]", count: 1
     assert_select 'video[autoplay][src="/intro/yuna-runway.mp4"]', count: 1
+    assert_select 'video[autoplay][data-scroll-scene-target="hero"]', count: 1
     assert_select ".intro-reel video", count: 10
     assert_select '.intro-reel video[preload="none"][data-src]', count: 10
     assert_select ".intro-reel video[src], .intro-reel source", count: 0

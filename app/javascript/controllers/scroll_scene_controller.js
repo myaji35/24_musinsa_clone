@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["section"]
+  static targets = ["section", "hero"]
 
   connect() {
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -25,6 +25,8 @@ export default class extends Controller {
     if (this.frame !== null) cancelAnimationFrame(this.frame)
     this.frame = null
 
+    this.syncHeroVideo()
+
     if (this.reducedMotion.matches) {
       this.sectionTargets.forEach((section) => this.updateSection(section, 1))
       return
@@ -33,6 +35,19 @@ export default class extends Controller {
     window.addEventListener("scroll", this.onScroll, { passive: true })
     window.addEventListener("resize", this.onScroll, { passive: true })
     this.onScroll()
+  }
+
+  // 움직임 줄이기 설정이면 자동재생을 멈추고 포스터 + 재생 컨트롤만 보여준다(WCAG 2.2.2).
+  syncHeroVideo() {
+    this.heroTargets.forEach((video) => {
+      if (this.reducedMotion.matches) {
+        video.pause()
+        video.controls = true
+      } else {
+        video.controls = false
+        video.play().catch(() => {})
+      }
+    })
   }
 
   updateSection(section, progress) {

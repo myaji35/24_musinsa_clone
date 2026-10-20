@@ -6154,13 +6154,13 @@
       "type": "FEATURE",
       "priority": "P2",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [
         "ISS-116",
         "ISS-118"
       ],
       "created_at": "2026-10-19T23:46:22.913577+00:00",
-      "updated_at": "2026-10-19T23:59:13.878187+00:00",
+      "updated_at": "2026-10-20T00:02:00.314463+00:00",
       "done_criteria": "/characters/<handle> 상단에 Avatar 사진·런웨이 영상(있을 때, preload=none)·'가상 인물' 라벨. worn_products가 비면 '아직 입은 상품이 없어요' 대신 ProductAnalysis(status=done, character 또는 alt_character=해당 캐릭터) 상품을 '<이름>에게 추천하는 코디' 제목으로 표시하되 '착용'이라고 쓰지 않는다. 둘 다 없으면 같은 스타일축 캐릭터의 옷장 링크를 보여준다. 10명 전원 200 응답, N+1 없음.",
       "payload": {
         "summary": "홈에서 9명을 클릭하면 도착하는 페이지가 현재 거의 전부 빈 화면이다(dev DB: worn_character 있는 상품 2건·전부 강유나, 상품분석 완료 5건은 배연희·서하린·윤채이). 홈을 풍성하게 만들수록 이 빈 페이지가 더 많이 노출되므로 함께 닫아야 한다. '추천'과 '착용'을 문구로 구분해 공정위 표시 지침을 지킨다.",
@@ -6196,9 +6196,48 @@
         "approved_by": "자동 승인(추천: 승인 권장)",
         "factory_notes": [
           "2026-10-20 사용자 테스트: 런웨이 '옷장 보기'로 SoERIN 등 빈 옷장 착지 확인 — 이 카드 우선도 높음. 선행 116·118 완료로 다음 회차 착수 가능"
+        ],
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-20T00:02:00.314463+00:00",
+            "by": "factory-runner",
+            "note": "factory-runner 착수 (2026-10-20 회차)"
+          }
         ]
       },
-      "last_dispatched_at": "2026-10-20T08:53:44"
+      "last_dispatched_at": "2026-10-20T08:53:44",
+      "result": {
+        "commit": "1cd4595",
+        "files_changed": [
+          "app/controllers/characters_controller.rb",
+          "app/views/characters/show.html.erb",
+          "app/models/character.rb",
+          "test/controllers/character_wardrobe_test.rb"
+        ],
+        "summary": "옷장 상단 사진·런웨이 영상(preload=none, 재생 전 mp4 요청 0). 착용 상품 없으면 상품분석 추천 '<이름>에게 추천하는 코디'(착용 문구 0), 둘 다 없으면 같은 스타일축 옷장 링크. 10명 전원 200, Bullet N+1 0.",
+        "proof": [
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_full0020.sqlite3 bin/rails test",
+            "exit_code": 0,
+            "output": "370 runs, 2546 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "for h in 10 runway handles; curl /characters/$h",
+            "exit_code": 0,
+            "output": "ChenMAYA 200 비슷한 스타일; HanSOYUL 200 추천하는 코디; KangUNA 200 착용 상품; MoreauLEA 200; OhDAEUN 200 추천; ParkJADE 200; SeoHARIN 200 추천; SoERIN 200 비슷한 스타일; TanakaMIO 200; YunCHAEI 200 추천 — 모두 video preload=none. new bullet 'USE eager' lines: 0"
+          },
+          {
+            "cmd": "node /tmp/ujt/wardrobe121.mjs (Playwright)",
+            "exit_code": 0,
+            "output": "SeoHARIN h2=서하린에게 추천하는 코디 img=714 video=none mp4BeforePlay=0; SoERIN similar=[사라 린드의 옷장,레아 모로의 옷장,모리 아야의 옷장] 클릭→/characters/LindSARA; 추천 블록 내 '착용' 0회; pageerror 0"
+          }
+        ],
+        "screenshots": "docs/user-test/2026-10-20/iss121-*.png",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-20T09:08:39.003779"
     },
     {
       "id": "ISS-122",
@@ -6256,14 +6295,14 @@
       "type": "CHORE",
       "priority": "P2",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [
         "ISS-117",
         "ISS-119",
         "ISS-120"
       ],
       "created_at": "2026-10-19T23:46:22.913577+00:00",
-      "updated_at": "2026-10-19T23:59:13.878187+00:00",
+      "updated_at": "2026-10-20T00:02:00.314463+00:00",
       "done_criteria": "모바일(375px, 3G 스로틀) 홈 첫 로드 전송량 ≤ 3.0MB(현재 약 1.6MB + 사진 10장 + 포스터 10장), 자동재생 <video> 1개(강유나)만, 추가 mp4 요청은 사용자 조작 후에만 발생. Lighthouse 모바일 접근성 ≥ 90, 모든 캐릭터 이미지에 alt. prefers-reduced-motion에서 링·스트립이 정적 그리드로 렌더. Tab 순서로 포스터 재생·캐릭터 링크 도달 가능. 개발 로그에 Bullet N+1 경고 0. 결과 스크린샷을 docs/user-test/<날짜>/ 에 저장.",
       "payload": {
         "summary": "사진 10장·포스터 10장·영상 10편이 한 페이지에 들어오므로 측정 가능한 예산을 두고 닫는다. 기존 intro.css의 reduced-motion 분기와 scroll_scene의 rAF 스로틀을 새 섹션에도 그대로 적용했는지 확인하는 게 핵심.",
@@ -6296,9 +6335,102 @@
         "approved_by": "자동 승인(추천: 승인 권장)",
         "factory_notes": [
           "2026-10-20 묶음 사용자 테스트(ISS-116~120) 제안 반영 대상: (1) 모바일 375px 3D 링 카드의 작은 글자(나이·도시·곧 공개·로마자)가 계단처럼 흐림 — 실기기 확인 후 글자 크기/transform 조정, (2) 태그라인 CTA '캐릭터 옷장 보기'가 opacity 0 구간에서도 클릭됨 — 투명 구간 pointer-events:none. 스크린샷 docs/user-test/2026-10-20/mobile-02-cast-2.png"
+        ],
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-20T00:02:00.314463+00:00",
+            "by": "factory-runner",
+            "note": "factory-runner 착수 (2026-10-20 회차)"
+          }
         ]
       },
-      "last_dispatched_at": "2026-10-20T08:53:44"
+      "last_dispatched_at": "2026-10-20T08:53:44",
+      "result": {
+        "commit": "74ee1a7",
+        "files_changed": [
+          "app/views/home/_intro.html.erb",
+          "app/assets/stylesheets/intro.css",
+          "app/javascript/controllers/scroll_scene_controller.js",
+          "app/javascript/controllers/wishlist_controller.js",
+          "app/views/layouts/application.html.erb",
+          "app/views/layouts/mailer.html.erb",
+          "app/views/products/_card.html.erb",
+          "app/views/home/_filter_section.html.erb",
+          "app/helpers/products_helper.rb",
+          "test/integration/home_intro_budget_test.rb",
+          "test/integration/application_layout_test.rb"
+        ],
+        "summary": "모바일 375 3G 전송량 2.59MB(≤3.0), 자동재생 1편(히어로), 런웨이 mp4 탭 전 0·탭 후 1, Lighthouse 모바일 접근성 0.80→0.96, reduced-motion 정적 그리드, Tab 으로 재생 10·옷장 링크 10 도달, 투명 CTA 클릭 차단, 링 최소 글자 9.6px.",
+        "remaining": "Lighthouse color-contrast 잔여 6건(감점 소폭, 90 기준 통과). html5-qrcode 367KB 가 홈에도 로드됨 — 후속 최적화 여지. CTA 는 진행도 0.75 전 inert 라 Tab 순서에서 빠짐(위쪽 런웨이로 가는 중복 링크라 수용).",
+        "proof": [
+          {
+            "cmd": "node /tmp/ujt/budget123.mjs final (Playwright, 375px, 1.6Mbps 스로틀, 캐시 off)",
+            "exit_code": 0,
+            "output": "transferMB 2.59, autoplayVideos [/intro/yuna-runway.mp4], reelMp4BeforeTap 0, reelMp4AfterTap [/intro/runway/SeoHARIN.mp4], imgNoAlt 0, ctaAtStart {opacity 0, pointerEvents none, hitIsCta false}, ctaAtEnd {opacity 1, hitIsCta true}, minRingFontPx 9.6, reduced {ringDisplay grid, cardTransform none, stripDisplay grid}, tabReelPlay 10, tabWardrobeLinks 10"
+          },
+          {
+            "cmd": "npx lighthouse@12 http://localhost:3053/ --only-categories=accessibility --form-factor=mobile",
+            "exit_code": 0,
+            "output": "before a11y 0.8 (button-name 38, color-contrast 150, html-has-lang, target-size 4) → after a11y 0.96 (color-contrast 6)"
+          },
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_full0020.sqlite3 bin/rails test",
+            "exit_code": 0,
+            "output": "370 runs, 2546 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "tail log/bullet.log after GET / and 10 wardrobe pages",
+            "exit_code": 0,
+            "output": "new 'USE eager loading' (N+1) lines: 0 (기존 AVOID eager 경고는 랭킹 그리드의 미사용 eager load — N+1 아님)"
+          }
+        ],
+        "screenshots": "docs/user-test/2026-10-20/iss123-*.png",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-20T09:08:39.127271"
+    },
+    {
+      "id": "ISS-124",
+      "title": "홈 인트로 후속 — reduced-motion 사용자에게 히어로 영상 자동재생 중지 + 모바일 3D 링 카드 글자 실기기 선명도 확인",
+      "type": "UX_FIX",
+      "priority": "P3",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [
+        "ISS-123"
+      ],
+      "created_at": "2026-10-20T00:14:38.181920+00:00",
+      "updated_at": "2026-10-20T00:14:41.194Z",
+      "done_criteria": "prefers-reduced-motion: reduce 에서 히어로 <video> 자동재생 없음(포스터+재생 버튼). 375px 실기기(또는 DPR3 에뮬레이션) 링 카드 글자 계단 현상 개선 여부 스크린샷 비교.",
+      "payload": {
+        "origin": "user-test",
+        "summary": "2026-10-20 묶음 사용자 테스트(ISS-121/123) 관찰: reduced-motion 에서도 히어로 1편 자동재생, 모바일 3D 링 카드 글자(9.6px) 계단 현상 잔존(headless 렌더 탓일 수 있음).",
+        "files": [
+          "app/views/home/_intro.html.erb",
+          "app/assets/stylesheets/intro.css",
+          "app/javascript/controllers/scroll_scene_controller.js"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "접근성 설정 존중(WCAG 2.2.2)과 모바일 첫 화면 가독성 — 비용 없음, 작은 수정",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-20T00:14:38.181920+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-20T00:14:41.194Z",
+            "by": "auto",
+            "reason": "접근성 설정 존중(WCAG 2.2.2)과 모바일 첫 화면 가독성 — 비용 없음, 작은 수정"
+          }
+        ],
+        "approved_at": "2026-10-20T00:14:41.194Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      }
     }
   ],
   "hooks": {
@@ -6586,6 +6718,18 @@
         "issue_type": "FEATURE",
         "plan_created": 0,
         "timestamp": "2026-10-20T08:55:02.264925"
+      },
+      {
+        "issue_id": "ISS-121",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-10-20T09:08:39.003779"
+      },
+      {
+        "issue_id": "ISS-123",
+        "issue_type": "CHORE",
+        "plan_created": 0,
+        "timestamp": "2026-10-20T09:08:39.127271"
       }
     ],
     "on_fail": [],
@@ -6598,7 +6742,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 59,
+    "completed": 61,
     "failed": 0,
     "evolved": 0
   },

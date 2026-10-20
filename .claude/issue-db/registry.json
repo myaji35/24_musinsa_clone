@@ -6397,12 +6397,12 @@
       "type": "UX_FIX",
       "priority": "P3",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [
         "ISS-123"
       ],
       "created_at": "2026-10-20T00:14:38.181920+00:00",
-      "updated_at": "2026-10-20T00:14:41.194Z",
+      "updated_at": "2026-10-20T00:17:28.155839+00:00",
       "done_criteria": "prefers-reduced-motion: reduce 에서 히어로 <video> 자동재생 없음(포스터+재생 버튼). 375px 실기기(또는 DPR3 에뮬레이션) 링 카드 글자 계단 현상 개선 여부 스크린샷 비교.",
       "payload": {
         "origin": "user-test",
@@ -6429,8 +6429,45 @@
           }
         ],
         "approved_at": "2026-10-20T00:14:41.194Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
-      }
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-20T00:17:28.155839+00:00",
+            "by": "factory-runner",
+            "note": "factory-runner 착수 (2026-10-20 3회차)"
+          }
+        ]
+      },
+      "result": {
+        "commit": "dbaf6cc",
+        "files_changed": [
+          "app/javascript/controllers/scroll_scene_controller.js",
+          "app/views/home/_intro.html.erb",
+          "test/integration/home_intro_budget_test.rb"
+        ],
+        "summary": "prefers-reduced-motion 에서 히어로 영상 pause+controls(포스터+재생 버튼), 일반 모드는 기존대로 자동재생. 모바일 375px DPR3 링 카드 글자 스크린샷상 선명(계단은 headless 저해상도 렌더 탓으로 판단).",
+        "proof": [
+          {
+            "cmd": "bin/rails test (전체)",
+            "exit_code": 0,
+            "output": "370 runs, 2547 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "node /tmp/ujt/r124.mjs (Playwright 375px DPR3, reducedMotion reduce/no-preference)",
+            "exit_code": 0,
+            "output": "reduce {paused:true,controls:true,t:0.0089}; no-preference {paused:false,controls:false,t:2.76}"
+          },
+          {
+            "cmd": "bin/rubocop test/integration/home_intro_budget_test.rb",
+            "exit_code": 0,
+            "output": "1 file inspected, no offenses detected"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-20T09:18:23.266198"
     }
   ],
   "hooks": {
@@ -6730,6 +6767,12 @@
         "issue_type": "CHORE",
         "plan_created": 0,
         "timestamp": "2026-10-20T09:08:39.127271"
+      },
+      {
+        "issue_id": "ISS-124",
+        "issue_type": "UX_FIX",
+        "plan_created": 0,
+        "timestamp": "2026-10-20T09:18:23.266198"
       }
     ],
     "on_fail": [],
@@ -6742,7 +6785,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 61,
+    "completed": 62,
     "failed": 0,
     "evolved": 0
   },

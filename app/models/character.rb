@@ -14,5 +14,18 @@ class Character < ApplicationRecord
     all.sort_by { |character| [ axes.index(character.style_axis) || axes.length, character.age_band || 0, character.handle ] }
   end
 
+  def recommended_products(limit: 8)
+    analyses = ProductAnalysis.where(status: "done")
+      .where(character_id: id).or(ProductAnalysis.where(status: "done", alt_character_id: id))
+    Product.where(id: analyses.select(:product_id)).with_attached_image.includes(:reviews)
+      .order(created_at: :desc, id: :desc).limit(limit)
+  end
+
+  def similar_characters(limit: 4)
+    return self.class.none if style_axis.blank?
+
+    self.class.where(style_axis: style_axis).where.not(id: id).order(:handle).limit(limit)
+  end
+
   scope :active, -> { where(status: "active") }
 end

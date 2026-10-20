@@ -4,6 +4,14 @@
     <h1 class="text-2xl font-bold"><%= @character.name %>의 옷장</h1>
     <span class="bg-white text-black border border-black px-3 py-1 text-base font-bold">가상 인물</span>
   </div>
+  <% avatar_image = Avatar.find(@character.handle)&.image %>
+  <% runway_path = "/intro/runway/#{@character.handle}.mp4" %>
+  <% if avatar_image.present? && Rails.root.join("app/assets/images", avatar_image).file? %>
+    <%= image_tag avatar_image, alt: "#{@character.name} (AI 가상 인물)", class: "w-full max-w-sm mb-6 rounded-lg" %>
+  <% end %>
+  <% if Rails.public_path.join(runway_path.delete_prefix("/")).file? %>
+    <video src="<%= runway_path %>" preload="none" controls muted playsinline poster="/intro/runway/<%= @character.handle %>-poster.jpg" class="w-full max-w-sm mb-6 rounded-lg"></video>
+  <% end %>
   <dl class="flex flex-wrap gap-4 text-sm mb-10">
     <% { "키" => (@character.height_cm.present? ? "#{@character.height_cm}cm" : nil), "상의" => @character.top_size, "하의" => @character.bottom_size, "신발" => (@character.shoe_mm.present? ? "#{@character.shoe_mm}mm" : nil), "체형" => @character.body_type }.each do |label, value| %>
       <% if value.present? %>
@@ -12,10 +20,27 @@
     <% end %>
   </dl>
   <% if @products.any? %>
+    <h2 class="text-xl font-bold mb-4">착용 상품</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
       <%= render partial: "products/card", collection: @products, as: :product %>
     </div>
+  <% elsif @recommended_products.any? %>
+    <section aria-labelledby="recommended-products-title">
+      <h2 id="recommended-products-title" class="text-xl font-bold mb-2"><%= @character.name %>에게 추천하는 코디</h2>
+      <p class="text-sm text-gray-500 mb-4"><%= @character.name %>이(가) 직접 입은 상품은 아니에요 · 스타일 분석으로 고른 추천이에요</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <%= render partial: "products/card", collection: @recommended_products, as: :product %>
+      </div>
+    </section>
   <% else %>
     <p class="py-12 text-center text-sm text-gray-500">아직 입은 상품이 없어요</p>
+    <% if @similar_characters.any? %>
+      <h2 class="text-xl font-bold mb-4">비슷한 스타일의 다른 옷장</h2>
+      <ul class="flex flex-wrap gap-4">
+        <% @similar_characters.each do |character| %>
+          <li><%= link_to "#{character.name}의 옷장", character_path(character.handle), class: "text-sm underline underline-offset-4" %></li>
+        <% end %>
+      </ul>
+    <% end %>
   <% end %>
 </div>

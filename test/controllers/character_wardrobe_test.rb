@@ -72,4 +72,85 @@ class CharacterWardrobeTest < ActionDispatch::IntegrationTest
     get character_path("missing-character")
     assert_response :not_found
   end
+
+  test "완료된 주 캐릭터와 대안 캐릭터 추천을 중복 없이 표시한다" do
+    ProductAnalysis.create!(product: @product, character: @character, status: "done")
+    ProductAnalysis.create!(product: @product, alt_character: @character, status: "done")
+    alternative = products(:two)
+    ProductAnalysis.create!(product: alternative, alt_character: @character, status: "done")
+    excluded = @product.dup
+    excluded.update!(name: "분석 중인 상품")
+    ProductAnalysis.create!(product: excluded, character: @character, status: "running")
+
+    get character_path(@character.handle)
+    assert_response :success
+    assert_select "section[aria-labelledby=recommended-products-title]" do |section|
+      assert_select "h2", text: "강유나에게 추천하는 코디"
+      assert_select "a[href=?]", product_path(@product), count: 1
+      assert_select "a[href=?]", product_path(alternative), count: 1
+      assert_select "a[href=?]", product_path(excluded), count: 0
+      assert_not_includes section.text, "착용"
+      assert_includes section.text, "직접 입은 상품은 아니에요"
+    end
+    assert_not_includes response.body, "아직 입은 상품이 없어요"
+
+    @product.update!(worn_character: @character)
+    get character_path(@character.handle)
+    assert_select "h2", text: "착용 상품"
+    assert_select "#recommended-products-title", count: 0
+    assert_select "a[href=?]", product_path(alternative), count: 0
+  end
+
+  test "추천 상품은 최신순 최대 8개이며 카드 연관을 미리 읽는다" do
+    created = 9.times.map do |index|
+      product = @product.dup
+      product.update!(name: "추천 상품 #{index}", created_at: index.days.ago)
+      ProductAnalysis.create!(product: product, character: @character, status: "done")
+      product
+    end
+    recommendations = @character.recommended_products.strict_loading.to_a
+    assert_equal created.first(8).map(&:id), recommendations.map(&:id)
+    recommendations.each do |product|
+      assert product.association(:reviews).loaded?
+      assert product.association(:image_attachment).loaded?
+      product.reviews.length
+      product.image.attached?
+    end
+  end
+
+  test "상품이 없으면 같은 스타일의 다른 옷장을 최대 4명 안내한다" do
+    @character.update!(style_axis: "minimal")
+    peers = 5.times.map do |index|
+      Character.create!(name: "비슷한 인물 #{index}", handle: "similar-#{index}", style_axis: "minimal", status: "planned")
+    end
+    other = Character.create!(name: "다른 스타일", handle: "other-style", style_axis: "casual", status: "planned")
+    get character_path(@character.handle)
+    assert_select "h2", text: "비슷한 스타일의 다른 옷장"
+    peers.first(4).each do |peer|
+      assert_select "a[href=?]", character_path(peer.handle), text: "#{peer.name}의 옷장"
+    end
+    [ @character, peers.last, other ].each do |excluded|
+      assert_select "a[href=?]", character_path(excluded.handle), count: 0
+    end
+    @character.update!(style_axis: nil)
+    get character_path(@character.handle)
+    assert_includes response.body, "아직 입은 상품이 없어요"
+    assert_select "h2", text: "비슷한 스타일의 다른 옷장", count: 0
+  end
+
+  test "실제 아바타 사진과 런웨이는 자동 재생 없이 표시한다" do
+    @character.update!(handle: "KangUNA")
+    get character_path(@character.handle)
+    assert_response :success
+    assert_select "img[alt=?]", "강유나 (AI 가상 인물)", count: 1
+    assert_select "video[preload=none][controls][muted][playsinline][poster='/intro/runway/KangUNA-poster.jpg'][src='/intro/runway/KangUNA.mp4']", count: 1
+    assert_select "video[autoplay]", count: 0
+
+    get character_path("runway-model-missing")
+    assert_response :not_found
+    @character.update!(handle: "runway-model")
+    get character_path(@character.handle)
+    assert_select "img[alt=?]", "강유나 (AI 가상 인물)", count: 0
+    assert_select "video", count: 0
+  end
 end

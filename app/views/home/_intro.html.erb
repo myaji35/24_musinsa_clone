@@ -37,7 +37,7 @@
           <div class="intro-ring">
             <% Character.for_intro.each_with_index do |character, index| %>
               <% avatar = intro_avatars[character.handle] %>
-              <article class="intro-card intro-card-<%= character.age_band %>" style="--intro-index: <%= index %>">
+              <article class="intro-card intro-card-<%= character.age_band %>" style="--intro-index: <%= index %>" aria-labelledby="intro-character-<%= index %>">
                 <span class="intro-card-band"><%= character.age_band %>s</span>
                 <% if avatar %>
                   <%= image_tag avatar.card_image, class: "intro-card-photo", alt: "#{character.name} (AI 가상 인물)", loading: "lazy" %>
@@ -47,7 +47,7 @@
                 <% end %>
                 <div class="intro-card-details">
                   <span class="intro-card-romanized"><%= character.handle %></span>
-                  <h3><%= character.name %></h3>
+                  <h3 id="intro-character-<%= index %>"><%= character.name %></h3>
                   <p><%= character.age %> · <%= character.birthplace %></p>
                   <p><%= character.style_axis %></p>
                   <% unless avatar %><span class="intro-card-soon">곧 공개</span><% end %>
@@ -88,7 +88,7 @@
       <div class="intro-tagline-content">
         <h2><span style="--intro-order: 0">주소는</span> <span style="--intro-order: 1">지우고,</span> <span style="--intro-order: 2">취향은</span> <span style="--intro-order: 3">잇다.</span></h2>
         <p>20~50대, 나와 닮은 캐릭터가 먼저 입어봅니다.</p>
-        <a href="#runway-reel" class="intro-cta">캐릭터 옷장 보기 <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a>
+        <a href="#runway-reel" class="intro-cta" inert>캐릭터 옷장 보기 <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a>
       </div>
     </div>
   </section>

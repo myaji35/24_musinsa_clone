@@ -51,6 +51,8 @@ export default class extends Controller {
 
   updateUI() {
     if (this.hasButtonTarget) {
+      this.buttonTarget.setAttribute("aria-label", this.activeValue ? "찜 해제" : "찜하기")
+      this.buttonTarget.setAttribute("aria-pressed", String(this.activeValue))
       if (this.activeValue) {
         this.buttonTarget.classList.add('text-red-500')
         this.buttonTarget.classList.remove('text-gray-400')

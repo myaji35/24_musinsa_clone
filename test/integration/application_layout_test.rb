@@ -54,6 +54,13 @@ class ApplicationLayoutTest < ActionDispatch::IntegrationTest
     assert_select '[role="alert"]', count: 0
   end
 
+  test "홈은 한국어 문서와 이름이 있는 상품 찜 버튼을 표시한다" do
+    get root_path
+
+    assert_select "html[lang=ko]", count: 1
+    assert_select 'button[data-wishlist-target="button"][aria-label="찜하기"][aria-pressed="false"]', minimum: 1
+  end
+
   private
 
   def admin_paths

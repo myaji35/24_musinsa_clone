@@ -26,13 +26,22 @@ export default class extends Controller {
     this.frame = null
 
     if (this.reducedMotion.matches) {
-      this.sectionTargets.forEach((section) => section.style.setProperty("--p", "1"))
+      this.sectionTargets.forEach((section) => this.updateSection(section, 1))
       return
     }
 
     window.addEventListener("scroll", this.onScroll, { passive: true })
     window.addEventListener("resize", this.onScroll, { passive: true })
     this.onScroll()
+  }
+
+  updateSection(section, progress) {
+    section.style.setProperty("--p", String(progress))
+    section.querySelectorAll(".intro-cta").forEach((cta) => {
+      const ready = this.reducedMotion.matches || progress >= 0.75
+      cta.classList.toggle("is-ready", ready)
+      cta.inert = !ready
+    })
   }
 
   removeScrollListeners() {
@@ -48,7 +57,7 @@ export default class extends Controller {
         const rect = section.getBoundingClientRect()
         const distance = rect.height - window.innerHeight
         const progress = distance > 0 ? Math.min(1, Math.max(0, -rect.top / distance)) : 1
-        section.style.setProperty("--p", String(progress))
+        this.updateSection(section, progress)
       })
     })
   }

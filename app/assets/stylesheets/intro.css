@@ -223,6 +223,8 @@
   color: #151515;
   box-shadow: 0 15px 35px rgba(0, 0, 0, .42);
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
   transform: rotateY(calc(var(--intro-index) * 18deg)) translateZ(530px);
 }
 
@@ -346,6 +348,7 @@
 }
 
 .intro-cta {
+  pointer-events: none;
   display: inline-flex;
   align-items: center;
   gap: 1rem;
@@ -360,12 +363,18 @@
   will-change: transform, opacity;
 }
 
+.intro-cta.is-ready {
+  pointer-events: auto;
+}
+
 .intro-cta svg {
   width: 1.1rem;
   height: 1.1rem;
 }
 
 .intro-cta:focus-visible {
+  opacity: 1;
+  transform: none;
   outline: 3px solid #d1cfaa;
   outline-offset: 4px;
 }
@@ -458,13 +467,17 @@
     transform: rotateY(calc(var(--intro-index) * 18deg)) translateZ(320px);
   }
   .intro-card-virtual { top: 1.65rem; right: .2rem; padding: .15rem .25rem; font-size: .7rem; }
-  .intro-card-band { padding: .2rem .4rem; font-size: .58rem; }
+  .intro-card-band { padding: .2rem .4rem; font-size: .6rem; }
   .intro-card-initial { font-size: 3.2rem; }
   .intro-card-details { min-height: 85px; padding: .3rem .4rem; }
-  .intro-card-romanized { font-size: .5rem; }
+  .intro-card-romanized { font-size: .6rem; }
+  .intro-card-romanized,
+  .intro-card-details h3,
+  .intro-card-details p,
+  .intro-card-soon { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .intro-card-details h3 { margin: .1rem 0 .2rem; font-size: .68rem; }
-  .intro-card-details p { font-size: .48rem; }
-  .intro-card-soon { margin-top: .2rem; font-size: .45rem; }
+  .intro-card-details p { font-size: .6rem; }
+  .intro-card-soon { margin-top: .2rem; font-size: .6rem; }
 }
 
 @supports (height: 100svh) {
@@ -493,8 +506,9 @@
   .intro-card-details { min-height: 100px; padding: .45rem .55rem; }
   .intro-card-romanized { font-size: .6rem; }
   .intro-card-details h3 { font-size: .8rem; }
-  .intro-card-details p { font-size: .58rem; }
-  .intro-card-soon { font-size: .55rem; }
+  .intro-card-details p { font-size: .6rem; }
+  .intro-card-soon { font-size: .6rem; }
+  .intro-cta { pointer-events: auto; }
   .intro-tagline-stage { padding: 5rem 1rem; }
   .intro-tagline-content h2 span,
   .intro-tagline-content p,

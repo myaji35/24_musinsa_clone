@@ -17,12 +17,12 @@ servers:
 proxy:
   ssl: false
   host: jieum.158.247.235.31.nip.io
-  app_port: 3000
+  app_port: 80
   healthcheck:
     path: /up
 
 # Allow enough time for the application to become healthy.
-deploy_timeout: 90
+deploy_timeout: 180
 
 # Where you keep your container images.
 registry:

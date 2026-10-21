@@ -1,0 +1,112 @@
+<%# 상세페이지 본문(ISS-142) — 모바일 세로 화면 기준 한 줄 흐름. "TODO:" 값은 detail_value 헬퍼가 '확인 필요/확인 중'으로 바꾼다 %>
+<% character = product.worn_character %>
+<article data-testid="detail-page" class="max-w-2xl mx-auto mb-20 space-y-16">
+
+  <% if page["scenes"].present? %>
+    <section aria-labelledby="detail-scenes" class="space-y-8">
+      <h2 id="detail-scenes" class="text-xl md:text-2xl font-bold text-black text-center">이런 날 입으세요</h2>
+      <% page["scenes"].each do |scene| %>
+        <figure class="space-y-3">
+          <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
+            <%= image_tag "/catalog/#{product.catalog_id}/#{scene["shot"]}.jpg", alt: "#{product.name} — #{scene["title"]}", loading: "lazy", class: "w-full h-full object-cover" %>
+            <span class="absolute top-3 left-3 bg-white text-black px-2 py-1 text-sm font-bold shadow">가상 인물</span>
+          </div>
+          <figcaption class="px-1">
+            <p class="text-base font-bold text-black"><%= scene["title"] %></p>
+            <p class="text-sm text-gray-700 leading-relaxed"><%= scene["copy"] %></p>
+          </figcaption>
+        </figure>
+      <% end %>
+    </section>
+  <% end %>
+
+  <% if (real = page["real"]) %>
+    <section aria-labelledby="detail-real" class="space-y-4">
+      <h2 id="detail-real" class="text-xl md:text-2xl font-bold text-black text-center">실제 상품은 이렇습니다</h2>
+      <p class="text-sm text-gray-700 text-center"><%= real["note"] %></p>
+      <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
+        <%= image_tag "/catalog/#{product.catalog_id}/real.jpg", alt: "#{product.name} 실물 사진", loading: "lazy", class: "w-full h-full object-contain" %>
+        <span class="absolute top-3 left-3 bg-black text-white px-2 py-1 text-sm font-bold">실물</span>
+      </div>
+      <ul class="space-y-2 text-sm text-gray-800">
+        <% Array(real["points"]).each do |point| %>
+          <li class="flex gap-2"><span aria-hidden="true">·</span><span><%= detail_value(point) %></span></li>
+        <% end %>
+      </ul>
+      <p class="p-3 bg-gray-50 border border-gray-200 text-sm text-gray-700"><%= real["color_note"] %></p>
+    </section>
+  <% end %>
+
+  <% if (size = page["size"]) %>
+    <section aria-labelledby="detail-size" class="space-y-4">
+      <h2 id="detail-size" class="text-xl md:text-2xl font-bold text-black text-center">사이즈·핏</h2>
+      <% if character %>
+        <p class="text-sm text-gray-800 text-center">모델 <%= character.name %>(가상 인물) <%= character.height_cm %>cm · 상의 <%= character.top_size %> · <strong><%= product.worn_size %> 착용</strong></p>
+      <% end %>
+      <p class="text-sm text-gray-700 text-center"><%= size["fit"] %></p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-center border border-gray-200">
+          <caption class="sr-only">실측 사이즈(cm)</caption>
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="p-2 font-medium">사이즈</th>
+              <% size["columns"].each do |column| %><th scope="col" class="p-2 font-medium"><%= column %></th><% end %>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% size["rows"].each do |label, values| %>
+              <tr>
+                <th scope="row" class="p-2 font-bold"><%= label %></th>
+                <% values.each do |value| %><td class="p-2"><%= detail_value(value) %></td><% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-gray-500"><%= size["guide"] %></p>
+    </section>
+  <% end %>
+
+  <% if page["faq"].present? %>
+    <section aria-labelledby="detail-faq" class="space-y-3">
+      <h2 id="detail-faq" class="text-xl md:text-2xl font-bold text-black text-center">자주 묻는 질문</h2>
+      <% page["faq"].each do |item| %>
+        <details class="border border-gray-200 p-4 group">
+          <summary class="font-bold text-sm text-black cursor-pointer">Q. <%= item["q"] %></summary>
+          <p class="pt-3 text-sm text-gray-700 leading-relaxed"><%= detail_value(item["a"]) %></p>
+        </details>
+      <% end %>
+    </section>
+  <% end %>
+
+  <% if pairings.present? %>
+    <section aria-labelledby="detail-pairings" class="space-y-4">
+      <h2 id="detail-pairings" class="text-xl md:text-2xl font-bold text-black text-center">함께 입기 좋은 상품</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <% pairings.each do |item| %>
+          <%= link_to product_path(item), class: "block space-y-2" do %>
+            <div class="aspect-[3/4] bg-gray-100 overflow-hidden">
+              <%= image_tag item.image_url, alt: item.name, loading: "lazy", class: "w-full h-full object-cover" if item.image_url.present? %>
+            </div>
+            <p class="text-sm text-gray-900 line-clamp-2"><%= item.name %></p>
+            <p class="text-sm font-bold"><%= number_to_currency(item.price, unit: "", precision: 0) %>원</p>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if page["spec"].present? %>
+    <section aria-labelledby="detail-spec" class="space-y-3">
+      <h2 id="detail-spec" class="text-xl md:text-2xl font-bold text-black text-center">상품 정보</h2>
+      <dl class="divide-y divide-gray-200 border-y border-gray-200 text-sm">
+        <% page["spec"].each do |label, value| %>
+          <div class="grid grid-cols-3 gap-4 py-3">
+            <dt class="text-gray-500"><%= label %></dt>
+            <dd class="col-span-2 text-gray-900"><%= detail_value(value) %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </section>
+  <% end %>
+</article>

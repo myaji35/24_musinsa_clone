@@ -97,4 +97,13 @@ module ProductsHelper
 
     stars.join
   end
+
+  # 상세페이지 본문의 "TODO: ..." 값 — 관리자에게는 무엇을 확인할지, 손님에게는 '확인 중'만 보인다 (ISS-142)
+  def detail_value(value)
+    text = value.to_s
+    return text unless text.start_with?("TODO:")
+
+    label = logged_in? ? "확인 필요 · #{text.delete_prefix('TODO:').strip}" : "확인 중"
+    content_tag(:span, label, class: "inline-block px-2 py-0.5 text-xs font-bold bg-amber-100 text-amber-800", data: { todo: true })
+  end
 end

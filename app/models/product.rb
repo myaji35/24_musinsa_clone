@@ -114,8 +114,20 @@ class Product < ApplicationRecord
   end
 
   # public/catalog/<id>/ 에 실제로 있는 컷만 순서대로 돌려준다.
+  # 카탈로그 상품 번호(G01 등). JIEUM-Gnn 코드가 아니면 nil
+  def catalog_id
+    supplier_product_code.to_s[/\AJIEUM-(G\d+)\z/, 1]
+  end
+
+  # 상세페이지 본문(config/detail_pages/<catalog_id>.yml). 없으면 기존 상세 레이아웃을 쓴다 (ISS-142)
+  def detail_page
+    return @detail_page if defined?(@detail_page)
+
+    path = catalog_id && Rails.root.join("config/detail_pages", "#{catalog_id}.yml")
+    @detail_page = path&.exist? ? YAML.safe_load_file(path) : nil
+  end
+
   def gallery_image_urls
-    catalog_id = supplier_product_code.to_s[/\AJIEUM-(G\d+)\z/, 1]
     return [] unless catalog_id
 
     GALLERY_SHOTS.filter_map do |shot|

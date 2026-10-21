@@ -91,6 +91,10 @@
       <div class="space-y-2">
         <p class="text-sm font-medium text-gray-500 uppercase"><%= @product.brand %></p>
         <h1 class="text-2xl md:text-3xl font-bold text-black leading-tight"><%= @product.name %></h1>
+        <% if (hero = @product.detail_page&.dig("hero")) %>
+          <p data-testid="detail-headline" class="pt-2 text-lg font-bold text-gray-900 leading-snug"><%= hero["headline"] %></p>
+          <p class="text-sm text-gray-600 leading-relaxed"><%= hero["sub"] %></p>
+        <% end %>
       </div>
 
       <% if character %>
@@ -121,14 +125,18 @@
         </div>
       <% end %>
 
+      <% unless @product.detail_page %>
       <!-- 상품 설명 -->
       <div class="pt-6 space-y-3">
         <p class="text-sm font-medium text-black">상품 설명</p>
         <p class="text-sm text-gray-600 leading-relaxed"><%= @product.description %></p>
       </div>
+      <% end %>
 
     </div>
   </div>
+
+  <%= render "detail_page", product: @product, page: @product.detail_page, pairings: @pairings if @product.detail_page %>
 
   <!-- 리뷰 섹션 -->
   <div class="border-t-2 border-gray-200 pt-12 mb-20">

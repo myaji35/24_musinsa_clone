@@ -357,4 +357,19 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_equal "draft", Product.order(:id).last.status
   end
+
+  test "상세페이지 본문이 있는 상품은 섹션을 렌더링하고 미확정 값은 손님에게 '확인 중'으로만 보인다" do
+    product = Product.create!(name: "랩코트", price: 189000, brand: "JIEUM", category: "Outer", supplier_product_code: "JIEUM-G01")
+
+    get product_path(product)
+    assert_response :success
+    assert_select "[data-testid=detail-headline]"
+    assert_select "[data-testid=detail-page] h2", text: "실제 상품은 이렇습니다"
+    assert_select "[data-todo]", text: "확인 중"
+    assert_no_match "확인 필요", response.body
+
+    sign_in
+    get product_path(product)
+    assert_select "[data-todo]", text: /확인 필요 · /
+  end
 end

@@ -107,4 +107,16 @@ module ProductsHelper
   def return_policy
     @return_policy ||= YAML.safe_load_file(Rails.root.join("config/policies/returns.yml"))
   end
+
+  # 카탈로그 착용컷의 고해상도 짝(<shot>-1440.webp)이 있으면 srcset 을 붙인다 — 카드는 720 JPEG, 큰 화면·레티나는 1440 WebP
+  def catalog_srcset(url)
+    large = url.to_s.sub(/\.jpg\z/, "-1440.webp")
+    return unless large != url && Rails.public_path.join(large.delete_prefix("/")).exist?
+
+    "#{url} 720w, #{large} 1440w"
+  end
+
+  def catalog_image_tag(url, sizes: "(min-width: 1024px) 600px, 100vw", **options)
+    image_tag url, srcset: catalog_srcset(url), sizes: (sizes if catalog_srcset(url)), **options
+  end
 end

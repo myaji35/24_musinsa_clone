@@ -6,6 +6,9 @@ export default class extends Controller {
 
   show(event) {
     const thumb = event.currentTarget
+    // 고해상도 짝이 있으면 srcset 도 함께 바꾼다(없으면 비워서 src 만 쓰게)
+    if (thumb.dataset.srcset) this.mainTarget.srcset = thumb.dataset.srcset
+    else this.mainTarget.removeAttribute("srcset")
     this.mainTarget.src = thumb.dataset.src
     this.mainTarget.alt = thumb.dataset.alt
     this.thumbTargets.forEach((el) => {

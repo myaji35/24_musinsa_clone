@@ -68,4 +68,10 @@ class ProductsHelperTest < ActionView::TestCase
   test "mood_to_description returns empty string for unknown mood" do
     assert_equal "", mood_to_description("unknown")
   end
+
+  test "catalog_srcset 은 1440 WebP 짝이 있을 때만 붙는다" do
+    assert_equal "/catalog/G01/front.jpg 720w, /catalog/G01/front-1440.webp 1440w", catalog_srcset("/catalog/G01/front.jpg")
+    assert_nil catalog_srcset("/catalog/G01/real.jpg")
+    assert_nil catalog_srcset("https://example.com/a.png")
+  end
 end

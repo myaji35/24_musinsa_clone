@@ -43,7 +43,7 @@
     <% if gallery.any? %>
     <div class="space-y-4" data-controller="gallery">
       <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden relative">
-        <%= image_tag gallery.first, alt: "#{@product.name} 착용컷", class: "w-full h-full object-cover", data: { gallery_target: "main" } %>
+        <%= catalog_image_tag gallery.first, alt: "#{@product.name} 착용컷", class: "w-full h-full object-cover", data: { gallery_target: "main" } %>
         <% if character %>
           <span class="absolute top-3 left-3 z-10 text-white font-bold [text-shadow:0_1px_3px_rgba(0,0,0,.85),0_0_10px_rgba(0,0,0,.45)] text-base" data-gallery-target="badge">가상 인물</span>
         <% end %>
@@ -53,7 +53,7 @@
           <% real = url.end_with?("/real.jpg") %>
           <% label = real ? "실물 사진" : (i.zero? ? "정면 착용컷" : "룩북 #{i}") %>
           <button type="button" class="relative aspect-[3/4] bg-gray-100 border-2 <%= i.zero? ? 'border-black' : 'border-transparent' %> hover:border-black transition-colors overflow-hidden"
-                  data-gallery-target="thumb" data-action="gallery#show" data-src="<%= url %>" data-alt="<%= "#{@product.name} #{label}" %>" data-real="<%= real %>" aria-pressed="<%= i.zero? %>" aria-label="<%= label %> 보기">
+                  data-gallery-target="thumb" data-action="gallery#show" data-src="<%= url %>" data-srcset="<%= catalog_srcset(url) %>" data-alt="<%= "#{@product.name} #{label}" %>" data-real="<%= real %>" aria-pressed="<%= i.zero? %>" aria-label="<%= label %> 보기">
             <%= image_tag url, alt: "", loading: "lazy", class: "w-full h-full object-cover" %>
             <% if real %><span class="absolute bottom-0 inset-x-0 bg-black/70 text-white text-[11px] font-bold py-0.5">실물</span><% end %>
           </button>

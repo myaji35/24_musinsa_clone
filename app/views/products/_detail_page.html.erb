@@ -10,7 +10,7 @@
   <% if (hero = page["hero"]) %>
     <section class="relative">
       <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
-        <%= image_tag photo.("front"), alt: "#{product.name} 착용 모습", class: "w-full h-full object-cover" %>
+        <%= catalog_image_tag photo.("front"), sizes: "(min-width: 672px) 672px, 100vw", alt: "#{product.name} 착용 모습", class: "w-full h-full object-cover" %>
         <span class="<%= virtual %>">가상 인물</span>
         <div class="absolute inset-x-0 bottom-0 px-6 pt-24 pb-8 bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white">
           <span class="<%= eyebrow %> text-white/80 mb-3"><%= hero["eyebrow"] %></span>
@@ -62,7 +62,7 @@
       <% page["scenes"].each do |scene| %>
         <figure>
           <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
-            <%= image_tag photo.(scene["shot"]), alt: "#{product.name} — #{scene["title"]}", loading: "lazy", class: "w-full h-full object-cover" %>
+            <%= catalog_image_tag photo.(scene["shot"]), sizes: "(min-width: 672px) 624px, 100vw", alt: "#{product.name} — #{scene["title"]}", loading: "lazy", class: "w-full h-full object-cover" %>
             <span class="<%= virtual %>">가상 인물</span>
             <span class="absolute bottom-3 left-3 font-oswald text-white text-3xl tracking-widest [text-shadow:0_1px_6px_rgba(0,0,0,.6)]"><%= scene["day"] %></span>
           </div>

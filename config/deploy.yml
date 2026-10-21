@@ -26,8 +26,8 @@ deploy_timeout: 90
 
 # Where you keep your container images.
 registry:
-  # 로컬 레지스트리: 이미지를 SSH 터널로 서버에 직접 보낸다(ghcr 쓰기 토큰 불필요, ISS-024).
-  server: localhost:5555
+  # 로컬 레지스트리(서버 5555는 다른 프로젝트 registry 사용 중): 이미지를 SSH 터널로 서버에 직접 보낸다(ghcr 쓰기 토큰 불필요, ISS-024).
+  server: localhost:5556
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:

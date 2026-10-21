@@ -1,4 +1,9 @@
 
+# 운영 DB 보호: 이 시드는 전체 삭제 후 재생성한다. 데이터가 있는 운영 환경에서는 실행을 막는다.
+if Rails.env.production? && Product.exists? && ENV["ALLOW_PRODUCTION_RESEED"] != "1"
+  abort "운영 DB에 데이터가 있어 시드를 중단합니다(전체 삭제 위험). 의도한 경우에만 ALLOW_PRODUCTION_RESEED=1"
+end
+
 # Clear existing data
 ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
 PurchaseOrderItem.destroy_all

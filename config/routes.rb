@@ -25,6 +25,9 @@ Rails.application.routes.draw do
     resource :cutout, only: [ :show, :create, :update ], controller: "product_cutouts"
   end
 
+  # 배송·반품 안내
+  get "returns", to: "policies#returns", as: :returns_policy
+
   # Snaps (Style Feed)
   resources :snaps, only: [ :index, :show ]
 

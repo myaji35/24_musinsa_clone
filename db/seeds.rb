@@ -57,25 +57,10 @@ catalog.each_with_index do |item, i|
 end
 puts "Created #{Product.count} products (Attributes by AI Model Generation)"
 
-# 개발용 관리자 계정 (샘플 리뷰와 스냅 작성자)
+# 개발용 관리자 계정 (샘플 스냅 작성자)
 user = User.create!(email: "admin@jieun.test", name: "관리자", password: "JieunDev!2026")
 
-# Add sample reviews
-Product.all.each do |product|
-  rand(0..5).times do
-    Review.create!(
-      product: product,
-      user: user,
-      content: [ "모델핏이 너무 예뻐서 샀어요!", "사진이랑 똑같네요.", "고급스러워 보입니다.", "재질 만족합니다.", "핏이 예술이네요." ].sample,
-      rating: rand(4..5),
-      height: rand(155..175),
-      weight: rand(45..65),
-      size_purchased: [ 'S', 'M', 'Free' ].sample,
-      photo_url: nil
-    )
-  end
-end
-puts "Added sample reviews"
+# 리뷰는 만들지 않는다 — 시드 리뷰가 실제 후기처럼 보이는 문제(대표님 결정 2026-10-22로 운영에서도 삭제)
 
 # 샘플 스냅
 Product.order("RANDOM()").limit(10).each do |product|

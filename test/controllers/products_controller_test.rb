@@ -364,7 +364,8 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     get product_path(product)
     assert_response :success
     assert_select "[data-testid=detail-headline]"
-    assert_select "[data-testid=detail-page] h2", text: "실제 상품은 이렇습니다"
+    assert_select "[data-testid=detail-page] h2", text: "AI 사진만 보고 사지 마세요"
+    assert_select "[data-testid=detail-page] h2", text: "배송·반품 안내"
     assert_select "[data-todo]", text: "확인 중"
     assert_no_match "확인 필요", response.body
 
@@ -392,5 +393,12 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     patch product_path(@product), params: { product: { info_notice: { "소재" => "울 70%, 나일론 30%", "제조국" => "대한민국" } } }
     assert_equal "울 70%, 나일론 30%", @product.reload.info_notice_value("소재")
     assert_equal "대한민국", @product.info_notice_value("제조국")
+  end
+
+  test "배송·반품 안내 페이지는 비로그인으로 볼 수 있다" do
+    get returns_policy_path
+    assert_response :success
+    assert_select "h2", text: "배송·반품 안내"
+    assert_select "dt", text: "단순 변심 반품"
   end
 end

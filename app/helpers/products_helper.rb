@@ -102,4 +102,9 @@ module ProductsHelper
     label = logged_in? ? "확인 필요 · #{text.delete_prefix('TODO:').strip}" : "확인 중"
     content_tag(:span, label, class: "inline-block px-2 py-0.5 text-xs font-bold bg-amber-100 text-amber-800", data: { todo: true })
   end
+
+  # 배송·반품 규정(config/policies/returns.yml)
+  def return_policy
+    @return_policy ||= YAML.safe_load_file(Rails.root.join("config/policies/returns.yml"))
+  end
 end

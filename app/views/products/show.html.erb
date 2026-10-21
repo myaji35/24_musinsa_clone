@@ -119,7 +119,7 @@
 
       <div class="h-px bg-gray-200"></div>
 
-      <%= form_with url: cart_items_path, class: "space-y-4" do |f| %>
+      <%= form_with url: cart_items_path, id: "buy", class: "space-y-4 scroll-mt-24" do |f| %>
         <%= f.label :variant_id, "색상 / 사이즈", class: "block text-sm font-bold" %>
         <%= f.select :variant_id,
               @variants.map { |variant| [ "#{variant.color} / #{variant.size} #{variant.stock.to_i.positive? ? "(재고 #{variant.stock}개)" : "(품절)"}", variant.id, { disabled: !variant.stock.to_i.positive? } ] },
@@ -145,7 +145,7 @@
     </div>
   </div>
 
-  <%= render "detail_page", product: @product, page: @product.detail_page, pairings: @pairings if @product.detail_page %>
+  <%= render "detail_page", product: @product, page: @product.detail_page, pairings: @pairings, return_policy: return_policy if @product.detail_page %>
 
   <!-- 리뷰 섹션 -->
   <div class="border-t-2 border-gray-200 pt-12 mb-20">

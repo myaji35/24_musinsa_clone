@@ -1,110 +1,229 @@
-<%# 상세페이지 본문(ISS-142) — 모바일 세로 화면 기준 한 줄 흐름. "TODO:" 값은 detail_value 헬퍼가 '확인 필요/확인 중'으로 바꾼다 %>
+<%# 상세페이지 본문(ISS-142) — 모바일 세로 흐름: 고민 → POINT → 코디 → 비교 → 실물 → 사이즈 → Q&A → 반품 → 마무리 제안.
+    "TODO:" 값은 detail_value 헬퍼가 관리자에게 '확인 필요', 손님에게 '확인 중'으로 보여 준다 %>
 <% character = product.worn_character %>
-<article data-testid="detail-page" class="max-w-2xl mx-auto mb-20 space-y-16">
+<% photo = ->(name) { "/catalog/#{product.catalog_id}/#{name}.jpg" } %>
+<% eyebrow = "block font-oswald text-xs tracking-[.3em] uppercase" %>
+<% heading = "text-[26px] md:text-[32px] font-bold leading-tight tracking-[-0.025em] text-balance" %>
+<% virtual = "absolute top-3 left-3 text-white text-sm font-bold [text-shadow:0_1px_3px_rgba(0,0,0,.85),0_0_10px_rgba(0,0,0,.45)]" %>
+<article data-testid="detail-page" class="max-w-2xl mx-auto mb-20 bg-white border-y border-gray-200 md:border">
+
+  <% if (hero = page["hero"]) %>
+    <section class="relative">
+      <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
+        <%= image_tag photo.("front"), alt: "#{product.name} 착용 모습", class: "w-full h-full object-cover" %>
+        <span class="<%= virtual %>">가상 인물</span>
+        <div class="absolute inset-x-0 bottom-0 px-6 pt-24 pb-8 bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white">
+          <span class="<%= eyebrow %> text-white/80 mb-3"><%= hero["eyebrow"] %></span>
+          <h2 class="<%= heading %>"><%= hero["headline"] %></h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-white/90"><%= hero["sub"] %></p>
+        </div>
+      </div>
+      <p class="px-6 py-3 text-xs text-gray-600 bg-gray-50">모델은 AI로 만든 가상 인물이고, 옷은 실제 판매 상품입니다.</p>
+    </section>
+  <% end %>
+
+  <% if (worries = page["worries"]) %>
+    <section aria-labelledby="detail-worries" class="px-6 py-16 text-center">
+      <span class="<%= eyebrow %> text-gray-500 mb-3">CHECK</span>
+      <h2 id="detail-worries" class="<%= heading %> text-black"><%= worries["title"] %></h2>
+      <ul class="mt-8 space-y-3 text-left">
+        <% worries["items"].each do |item| %>
+          <li class="flex gap-3 items-start p-4 bg-gray-50 text-[15px] text-gray-800 leading-relaxed">
+            <span aria-hidden="true" class="mt-0.5 shrink-0 w-5 h-5 grid place-items-center bg-black text-white text-xs font-bold">✓</span><%= item %>
+          </li>
+        <% end %>
+      </ul>
+      <p class="mt-8 text-lg font-bold text-black"><%= worries["answer"] %></p>
+    </section>
+  <% end %>
+
+  <% if page["points"].present? %>
+    <section aria-label="상품 포인트" class="bg-[#f6f2ec] px-6 py-16 space-y-14">
+      <% page["points"].each_with_index do |point, index| %>
+        <div>
+          <span class="<%= eyebrow %> text-[#8a6a4a] mb-2">POINT <%= format("%02d", index + 1) %></span>
+          <h3 class="text-[22px] md:text-[26px] font-bold leading-snug tracking-[-0.02em] text-black"><%= point["title"] %></h3>
+          <p class="mt-3 text-[15px] leading-relaxed text-gray-700"><%= point["copy"] %></p>
+          <div class="relative mt-5 aspect-square bg-white overflow-hidden">
+            <%= image_tag photo.(point["image"]), alt: "#{product.name} 실물 디테일 — #{point["title"]}", loading: "lazy", class: "w-full h-full object-cover" %>
+            <span class="absolute top-3 left-3 bg-black text-white px-2 py-1 text-xs font-bold">실물 디테일</span>
+          </div>
+        </div>
+      <% end %>
+    </section>
+  <% end %>
 
   <% if page["scenes"].present? %>
-    <section aria-labelledby="detail-scenes" class="space-y-8">
-      <h2 id="detail-scenes" class="text-xl md:text-2xl font-bold text-black text-center">이런 날 입으세요</h2>
+    <section aria-labelledby="detail-scenes" class="px-6 py-16 space-y-12">
+      <div class="text-center">
+        <span class="<%= eyebrow %> text-gray-500 mb-3">STYLING</span>
+        <h2 id="detail-scenes" class="<%= heading %> text-black">이렇게 입어요</h2>
+      </div>
       <% page["scenes"].each do |scene| %>
-        <figure class="space-y-3">
+        <figure>
           <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
-            <%= image_tag "/catalog/#{product.catalog_id}/#{scene["shot"]}.jpg", alt: "#{product.name} — #{scene["title"]}", loading: "lazy", class: "w-full h-full object-cover" %>
-            <span class="absolute top-3 left-3 z-10 text-white font-bold [text-shadow:0_1px_3px_rgba(0,0,0,.85),0_0_10px_rgba(0,0,0,.45)] text-sm">가상 인물</span>
+            <%= image_tag photo.(scene["shot"]), alt: "#{product.name} — #{scene["title"]}", loading: "lazy", class: "w-full h-full object-cover" %>
+            <span class="<%= virtual %>">가상 인물</span>
+            <span class="absolute bottom-3 left-3 font-oswald text-white text-3xl tracking-widest [text-shadow:0_1px_6px_rgba(0,0,0,.6)]"><%= scene["day"] %></span>
           </div>
-          <figcaption class="px-1">
-            <p class="text-base font-bold text-black"><%= scene["title"] %></p>
-            <p class="text-sm text-gray-700 leading-relaxed"><%= scene["copy"] %></p>
+          <figcaption class="mt-4">
+            <p class="text-lg font-bold text-black"><%= scene["title"] %></p>
+            <p class="mt-1 text-[15px] leading-relaxed text-gray-700"><%= scene["copy"] %></p>
           </figcaption>
         </figure>
       <% end %>
     </section>
   <% end %>
 
-  <% if (real = page["real"]) %>
-    <section aria-labelledby="detail-real" class="space-y-4">
-      <h2 id="detail-real" class="text-xl md:text-2xl font-bold text-black text-center">실제 상품은 이렇습니다</h2>
-      <p class="text-sm text-gray-700 text-center"><%= real["note"] %></p>
-      <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
-        <%= image_tag "/catalog/#{product.catalog_id}/real.jpg", alt: "#{product.name} 실물 사진", loading: "lazy", class: "w-full h-full object-contain" %>
-        <span class="absolute top-3 left-3 bg-black text-white px-2 py-1 text-sm font-bold">실물</span>
+  <% if (compare = page["compare"]) %>
+    <section aria-labelledby="detail-compare" class="bg-[#1b1b1d] text-white px-6 py-16">
+      <div class="text-center">
+        <span class="<%= eyebrow %> text-white/60 mb-3">COMPARE</span>
+        <h2 id="detail-compare" class="<%= heading %>"><%= compare["title"] %></h2>
       </div>
-      <ul class="space-y-2 text-sm text-gray-800">
-        <% Array(real["points"]).each do |point| %>
-          <li class="flex gap-2"><span aria-hidden="true">·</span><span><%= detail_value(point) %></span></li>
-        <% end %>
-      </ul>
-      <p class="p-3 bg-gray-50 border border-gray-200 text-sm text-gray-700"><%= real["color_note"] %></p>
+      <table class="mt-10 w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/20">
+            <th scope="col" class="py-3 text-left font-medium text-white/60 w-1/4"><span class="sr-only">항목</span></th>
+            <% compare["columns"].each_with_index do |column, index| %>
+              <th scope="col" class="py-3 px-2 text-left <%= index.zero? ? 'font-medium text-white/60' : 'font-bold text-[#e7c9a5]' %>"><%= column %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/10">
+          <% compare["rows"].each do |label, plain, ours| %>
+            <tr>
+              <th scope="row" class="py-4 pr-2 text-left font-medium text-white/80 align-top"><%= label %></th>
+              <td class="py-4 px-2 text-white/60 align-top leading-relaxed"><%= plain %></td>
+              <td class="py-4 px-2 font-bold align-top leading-relaxed"><%= ours %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  <% end %>
+
+  <% if (real = page["real"]) %>
+    <section aria-labelledby="detail-real" class="px-6 py-16 space-y-5">
+      <div class="text-center">
+        <span class="<%= eyebrow %> text-gray-500 mb-3">REAL PRODUCT</span>
+        <h2 id="detail-real" class="<%= heading %> text-black"><%= real["headline"] %></h2>
+        <p class="mt-3 text-[15px] text-gray-700 leading-relaxed"><%= real["note"] %></p>
+      </div>
+      <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
+        <%= image_tag photo.("real"), alt: "#{product.name} 실물 사진", loading: "lazy", class: "w-full h-full object-contain" %>
+        <span class="absolute top-3 left-3 bg-black text-white px-2 py-1 text-xs font-bold">실물</span>
+      </div>
+      <% if real["points"].present? %>
+        <ul class="space-y-2 text-[15px] text-gray-800">
+          <% real["points"].each do |point| %>
+            <li class="flex gap-2"><span aria-hidden="true">·</span><span><%= detail_value(point) %></span></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <p class="p-4 bg-gray-50 text-sm text-gray-700 leading-relaxed"><%= real["color_note"] %></p>
     </section>
   <% end %>
 
   <% if (size = page["size"]) %>
-    <section aria-labelledby="detail-size" class="space-y-4">
-      <h2 id="detail-size" class="text-xl md:text-2xl font-bold text-black text-center">사이즈·핏</h2>
+    <section aria-labelledby="detail-size" class="bg-gray-50 px-6 py-16 space-y-5">
+      <div class="text-center">
+        <span class="<%= eyebrow %> text-gray-500 mb-3">SIZE & FIT</span>
+        <h2 id="detail-size" class="<%= heading %> text-black">나에게 맞을까?</h2>
+      </div>
       <% if character %>
-        <p class="text-sm text-gray-800 text-center">모델 <%= character.name %>(가상 인물) <%= character.height_cm %>cm · 상의 <%= character.top_size %> · <strong><%= product.worn_size %> 착용</strong></p>
+        <p class="p-4 bg-white text-[15px] text-gray-800 text-center">모델 <%= character.name %>(가상 인물) · <%= character.height_cm %>cm · 상의 <%= character.top_size %> → <strong class="text-black"><%= product.worn_size %> 착용</strong></p>
       <% end %>
-      <p class="text-sm text-gray-700 text-center"><%= size["fit"] %></p>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm text-center border border-gray-200">
+      <p class="text-[15px] text-gray-700 text-center"><%= size["fit"] %></p>
+      <div class="overflow-x-auto bg-white">
+        <table class="w-full text-sm text-center tabular-nums">
           <caption class="sr-only">실측 사이즈(cm)</caption>
-          <thead class="bg-gray-50">
+          <thead class="border-b border-gray-200">
             <tr>
-              <th scope="col" class="p-2 font-medium">사이즈</th>
-              <% size["columns"].each do |column| %><th scope="col" class="p-2 font-medium"><%= column %></th><% end %>
+              <th scope="col" class="p-3 font-medium text-gray-600 whitespace-nowrap">사이즈</th>
+              <% size["columns"].each do |column| %><th scope="col" class="p-3 font-medium text-gray-600"><%= column %></th><% end %>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200">
+          <tbody class="divide-y divide-gray-100">
             <% size["rows"].each do |label, values| %>
               <tr>
-                <th scope="row" class="p-2 font-bold"><%= label %></th>
-                <% values.each do |value| %><td class="p-2"><%= detail_value(value) %></td><% end %>
+                <th scope="row" class="p-3 font-bold"><%= label %></th>
+                <% values.each do |value| %><td class="p-3"><%= detail_value(value) %></td><% end %>
               </tr>
             <% end %>
           </tbody>
         </table>
       </div>
-      <p class="text-xs text-gray-500"><%= size["guide"] %></p>
+      <p class="text-xs text-gray-600"><%= size["guide"] %></p>
     </section>
   <% end %>
 
   <% if page["faq"].present? %>
-    <section aria-labelledby="detail-faq" class="space-y-3">
-      <h2 id="detail-faq" class="text-xl md:text-2xl font-bold text-black text-center">자주 묻는 질문</h2>
+    <section aria-labelledby="detail-faq" class="px-6 py-16 space-y-3">
+      <div class="text-center mb-8">
+        <span class="<%= eyebrow %> text-gray-500 mb-3">Q&amp;A</span>
+        <h2 id="detail-faq" class="<%= heading %> text-black">망설이는 순간, 먼저 답해 드려요</h2>
+      </div>
       <% page["faq"].each do |item| %>
-        <details class="border border-gray-200 p-4 group">
-          <summary class="font-bold text-sm text-black cursor-pointer">Q. <%= item["q"] %></summary>
-          <p class="pt-3 text-sm text-gray-700 leading-relaxed"><%= detail_value(item["a"]) %></p>
+        <details class="border-b border-gray-200 py-4">
+          <summary class="font-bold text-[15px] text-black cursor-pointer">Q. <%= item["q"] %></summary>
+          <p class="pt-3 text-[15px] text-gray-700 leading-relaxed"><%= detail_value(item["a"]) %></p>
         </details>
       <% end %>
     </section>
   <% end %>
 
+  <%= render "products/return_policy", policy: return_policy %>
+
   <% if pairings.present? %>
-    <section aria-labelledby="detail-pairings" class="space-y-4">
-      <h2 id="detail-pairings" class="text-xl md:text-2xl font-bold text-black text-center">함께 입기 좋은 상품</h2>
+    <section aria-labelledby="detail-pairings" class="px-6 py-16 space-y-6">
+      <div class="text-center">
+        <span class="<%= eyebrow %> text-gray-500 mb-3">WITH</span>
+        <h2 id="detail-pairings" class="<%= heading %> text-black">함께 입으면 더 좋아요</h2>
+      </div>
       <div class="grid grid-cols-2 gap-4">
         <% pairings.each do |item| %>
           <%= link_to product_path(item), class: "block space-y-2" do %>
             <div class="aspect-[3/4] bg-gray-100 overflow-hidden">
               <%= image_tag item.image_url, alt: item.name, loading: "lazy", class: "w-full h-full object-cover" if item.image_url.present? %>
             </div>
-            <p class="text-sm text-gray-900 line-clamp-2"><%= item.name %></p>
-            <p class="text-sm font-bold"><%= number_to_currency(item.price, unit: "", precision: 0) %>원</p>
+            <p class="text-[15px] font-medium text-gray-900 line-clamp-2"><%= item.name %></p>
+            <p class="text-[17px] font-bold tabular-nums"><%= number_to_currency(item.price, unit: "", precision: 0) %>원</p>
           <% end %>
         <% end %>
       </div>
     </section>
   <% end %>
 
-  <section aria-labelledby="detail-spec" class="space-y-3">
-    <h2 id="detail-spec" class="text-xl md:text-2xl font-bold text-black text-center">상품정보제공고시</h2>
+  <section aria-labelledby="detail-spec" class="px-6 py-16 space-y-4">
+    <h2 id="detail-spec" class="text-lg font-bold text-black">상품정보제공고시</h2>
     <dl class="divide-y divide-gray-200 border-y border-gray-200 text-sm">
       <% Product::INFO_NOTICE_FIELDS.each do |field| %>
         <div class="grid grid-cols-3 gap-4 py-3">
-          <dt class="text-gray-500"><%= field %></dt>
+          <dt class="text-gray-600"><%= field %></dt>
           <dd class="col-span-2 text-gray-900"><%= detail_value(product.info_notice_value(field).presence || "TODO: 미입력") %></dd>
         </div>
       <% end %>
     </dl>
   </section>
+
+  <% if (closing = page["closing"]) %>
+    <section class="bg-[#1b1b1d] text-white px-6 py-16 text-center">
+      <span class="<%= eyebrow %> text-white/60 mb-3">JIEUM</span>
+      <h2 class="<%= heading %>"><%= closing["headline"] %></h2>
+      <p class="mt-3 text-[15px] text-white/80 leading-relaxed"><%= closing["sub"] %></p>
+      <ul class="mt-8 grid grid-cols-3 gap-2 text-xs">
+        <li class="p-3 border border-white/20"><strong class="block text-sm"><%= return_policy["shipping"] %></strong></li>
+        <li class="p-3 border border-white/20"><strong class="block text-sm">실물 사진 공개</strong></li>
+        <li class="p-3 border border-white/20"><strong class="block text-sm">7일 내 반품 신청</strong></li>
+      </ul>
+      <a href="#buy" class="mt-8 inline-block w-full py-4 bg-white text-black font-bold">옵션 선택하고 구매하기</a>
+    </section>
+  <% end %>
 </article>
+
+<%# 모바일 하단 구매 바 %>
+<div class="md:hidden fixed inset-x-0 bottom-0 z-30 flex items-center justify-between gap-3 px-4 py-3 bg-white border-t border-gray-200 pb-[calc(.75rem+env(safe-area-inset-bottom))]">
+  <span class="text-[17px] font-bold tabular-nums"><%= number_to_currency(product.price, unit: "", precision: 0) %>원</span>
+  <a href="#buy" class="flex-1 max-w-[60%] py-3 bg-black text-white text-center font-bold">구매하기</a>
+</div>

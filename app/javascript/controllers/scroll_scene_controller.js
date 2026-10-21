@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["section", "hero"]
+  static targets = ["section", "hero", "skip"]
 
   connect() {
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -27,11 +27,7 @@ export default class extends Controller {
 
     this.syncHeroVideo()
 
-    if (this.reducedMotion.matches) {
-      this.sectionTargets.forEach((section) => this.updateSection(section, 1))
-      return
-    }
-
+    // '상품 바로 보기' 버튼 표시는 움직임 줄이기 설정에서도 스크롤을 따라간다
     window.addEventListener("scroll", this.onScroll, { passive: true })
     window.addEventListener("resize", this.onScroll, { passive: true })
     this.onScroll()
@@ -59,6 +55,16 @@ export default class extends Controller {
     })
   }
 
+  // 인트로를 다 지나면 '상품 바로 보기' 버튼을 숨긴다
+  syncSkip() {
+    const passed = this.element.getBoundingClientRect().bottom < window.innerHeight
+    this.skipTargets.forEach((link) => {
+      link.classList.toggle("is-hidden", passed)
+      if (passed) link.setAttribute("tabindex", "-1")
+      else link.removeAttribute("tabindex")
+    })
+  }
+
   removeScrollListeners() {
     window.removeEventListener("scroll", this.onScroll)
     window.removeEventListener("resize", this.onScroll)
@@ -68,6 +74,11 @@ export default class extends Controller {
     if (this.frame !== null) return
     this.frame = requestAnimationFrame(() => {
       this.frame = null
+      this.syncSkip()
+      if (this.reducedMotion.matches) {
+        this.sectionTargets.forEach((section) => this.updateSection(section, 1))
+        return
+      }
       this.sectionTargets.forEach((section) => {
         const rect = section.getBoundingClientRect()
         const distance = rect.height - window.innerHeight

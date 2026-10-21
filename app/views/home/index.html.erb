@@ -2,7 +2,7 @@
   <%= render 'home/intro' %>
 <% end %>
 
-<div class="max-w-[1600px] mx-auto px-4 md:px-8 py-6">
+<div id="shop" class="max-w-[1600px] mx-auto px-4 md:px-8 py-6">
   <% if params[:q].present? && @ranked_products.empty? %>
     <%= render "products/search_empty", reset_path: root_path(request.query_parameters.except("q")) %>
   <% else %>

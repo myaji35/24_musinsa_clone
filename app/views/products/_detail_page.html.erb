@@ -9,7 +9,7 @@
         <figure class="space-y-3">
           <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden">
             <%= image_tag "/catalog/#{product.catalog_id}/#{scene["shot"]}.jpg", alt: "#{product.name} — #{scene["title"]}", loading: "lazy", class: "w-full h-full object-cover" %>
-            <span class="absolute top-3 left-3 bg-white text-black px-2 py-1 text-sm font-bold shadow">가상 인물</span>
+            <span class="absolute top-3 left-3 z-10 text-white font-bold [text-shadow:0_1px_3px_rgba(0,0,0,.85),0_0_10px_rgba(0,0,0,.45)] text-sm">가상 인물</span>
           </div>
           <figcaption class="px-1">
             <p class="text-base font-bold text-black"><%= scene["title"] %></p>

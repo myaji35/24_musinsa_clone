@@ -1,0 +1,33 @@
+# 2026-10-20 카카오톡으로 받은 의류 33장(inbox/jieum_20261020)을 상품 30개로 묶은 카탈로그.
+# 이미지: public/catalog/<id>/{front,look1,look2,look3}.jpg = AI 가상 인물 착용컷, real.jpg = 실물(마네킹) 누끼.
+# 가격은 공급가 미수령 상태의 임시값이다.
+- { id: G01, dir: G01,  source: [1],      model: KangUNA,   category: Outer,     price: 189000, mood: minimal,  colors: [카멜],                name: 숄칼라 벨티드 울 랩코트 }
+- { id: G02, dir: G02,  source: [2],      model: HanSOYUL,  category: Outer,     price: 219000, mood: vintage,  colors: [브라운베이지],        name: 부클 트위드 더블 롱코트 }
+- { id: G03, dir: G03,  source: [3],      model: MoreauLEA, category: Outer,     price: 199000, mood: modern,   colors: [카멜],                name: 레더 스트랩 울 케이프 코트 }
+- { id: G04, dir: G04,  source: [4],      model: SeoHARIN,  category: Outer,     price: 189000, mood: minimal,  colors: [카멜],                name: 셔츠칼라 울 롱코트 }
+- { id: G05, dir: G05,  source: [6, 5],   model: SeoHARIN,  category: Outer,     price: 179000, mood: minimal,  colors: [카멜, 네이비],        name: 노카라 코쿤 롱코트 }
+- { id: G06, dir: G06,  source: [7],      model: SoERIN,    category: Outer,     price: 189000, mood: modern,   colors: [다크브라운],          name: 스탠드칼라 A라인 울코트 }
+- { id: G07, dir: G07,  source: [8, 9],   model: SoERIN,    category: Outer,     price: 169000, mood: vintage,  colors: [카멜브라운, 아이보리], name: 금장버튼 노카라 하프코트 }
+- { id: G08, dir: G08,  source: [10],     model: KangUNA,   category: Outer,     price: 209000, mood: minimal,  colors: [카키],                name: 배색 숄칼라 랩 롱코트 }
+- { id: G09, dir: G09,  source: [11, 12], model: MoreauLEA, category: Outer,     price: 199000, mood: vintage,  colors: [블랙화이트, 옐로],    name: 하운드투스 코쿤 코트 }
+- { id: G10, dir: G10,  source: [13],     model: OhDAEUN,   category: One-piece, price: 119000, mood: delicate, colors: [차콜],                name: 버튼 민소매 롱 원피스 }
+- { id: G11, dir: G14,  source: [14, 15], model: YunCHAEI,  category: One-piece, price: 109000, mood: delicate, colors: [블랙, 네이비],        name: U넥 울 점퍼 원피스 }
+- { id: G12, dir: G12,  source: [16],     model: TanakaMIO, category: Outer,     price: 179000, mood: casual,   colors: [네이비],              name: 금장버튼 후드 울코트 }
+- { id: G13, dir: G13,  source: [22],     model: HanSOYUL,  category: Outer,     price: 199000, mood: minimal,  colors: [초콜릿브라운],        name: 노치드 라펠 울 롱코트 }
+- { id: G14, dir: G14b, source: [17],     model: KangUNA,   category: Outer,     price: 239000, mood: casual,   colors: [베이지],              name: 퍼넬넥 오버핏 롱패딩 }
+- { id: G15, dir: G15,  source: [18],     model: ParkJADE,  category: Outer,     price: 159000, mood: casual,   colors: [버건디],              name: 숄칼라 숏패딩 }
+- { id: G16, dir: G16,  source: [19],     model: TanakaMIO, category: Outer,     price: 189000, mood: casual,   colors: [그레이지],            name: 오버핏 후드 패딩 }
+- { id: G17, dir: G17,  source: [20],     model: ChenMAYA,  category: Outer,     price: 229000, mood: casual,   colors: [블랙],                name: 후드 롱패딩 }
+- { id: G18, dir: G18,  source: [21],     model: ChenMAYA,  category: Outer,     price: 249000, mood: modern,   colors: [다크카키],            name: 셰브론 퀼팅 롱패딩 }
+- { id: G19, dir: G19,  source: [23],     model: SoERIN,    category: Outer,     price: 199000, mood: modern,   colors: [토프],                name: 드로스트링 후드 패딩 }
+- { id: G20, dir: G20,  source: [24],     model: OhDAEUN,   category: Outer,     price: 229000, mood: casual,   colors: [토프],                name: 드로스트링 후드 롱패딩 }
+- { id: G21, dir: G21,  source: [25],     model: YunCHAEI,  category: Outer,     price: 219000, mood: delicate, colors: [버건디],              name: 가로 퀼팅 후드 롱패딩 }
+- { id: G22, dir: G22,  source: [26],     model: SeoHARIN,  category: Outer,     price: 249000, mood: minimal,  colors: [라이트그레이],        name: 숄칼라 셰브론 롱패딩 }
+- { id: G23, dir: G23,  source: [27],     model: ParkJADE,  category: Outer,     price: 179000, mood: casual,   colors: [블랙, 아이보리],      name: 스트랩 후드 숏패딩 }
+- { id: G24, dir: G24,  source: [28],     model: HanSOYUL,  category: Outer,     price: 219000, mood: minimal,  colors: [블랙],                name: 후드 롱 패딩코트 }
+- { id: G25, dir: G25,  source: [29],     model: TanakaMIO, category: Outer,     price: 169000, mood: casual,   colors: [아이보리, 블랙, 카키], name: 후드 숏패딩 }
+- { id: G26, dir: G26,  source: [30],     model: ChenMAYA,  category: Outer,     price: 179000, mood: casual,   colors: [다크브라운],          name: 벨티드 후드 숏패딩 }
+- { id: G27, dir: G27,  source: [30],     model: ParkJADE,  category: Outer,     price: 159000, mood: casual,   colors: [베이비핑크, 블랙],    name: 슬리브 포켓 숏패딩 }
+- { id: G28, dir: G28,  source: [31],     model: YunCHAEI,  category: Outer,     price: 239000, mood: delicate, colors: [아이보리],            name: 레더 스트랩 롱패딩 }
+- { id: G29, dir: G29,  source: [32],     model: MoreauLEA, category: Outer,     price: 249000, mood: modern,   colors: [블랙],                name: 벨티드 스탠드칼라 롱패딩 }
+- { id: G30, dir: G33,  source: [33],     model: ChenMAYA,  category: Outer,     price: 239000, mood: casual,   colors: [카멜],                name: 벨티드 후드 롱패딩 }

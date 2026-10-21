@@ -42,15 +42,14 @@ class ProductsHelperTest < ActionView::TestCase
     assert badges.any? { |b| b[:text] == "재입고" }
   end
 
-  test "discount_rate returns 30" do
-    assert_equal 30, discount_rate(@product)
+  test "할인 정보가 없으면 discount_rate 는 0 이다" do
+    assert_equal 0, discount_rate(@product)
   end
 
-  test "discounted_price calculates correctly" do
+  test "할인 정보가 없으면 discounted_price 는 정가다" do
     @product.price = 100000
-    expected = 70000 # 30% off
 
-    assert_equal expected, discounted_price(@product)
+    assert_equal 100000, discounted_price(@product)
   end
 
   test "mood_to_title returns correct title for known mood" do

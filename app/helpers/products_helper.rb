@@ -45,7 +45,7 @@ module ProductsHelper
   # 현재는 기본 30% 고정 (무신사 스타일 UI 시연용)
   def discount_rate(product)
     return product.discount_rate if product.respond_to?(:discount_rate) && product.discount_rate.present?
-    30 # 기본값
+    0 # 할인 정보가 없으면 할인 표시 안 함
   end
 
   # 할인가 계산

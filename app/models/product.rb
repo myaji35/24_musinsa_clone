@@ -20,6 +20,9 @@ class Product < ApplicationRecord
   # Nested attributes for Variants (Story 1.3)
   accepts_nested_attributes_for :variants, allow_destroy: true, reject_if: :all_blank
 
+  # 카탈로그 상품(JIEUM-Gnn) 갤러리 컷: AI 착용컷(정면·룩북 3) + 실물 사진
+  GALLERY_SHOTS = %w[front look1 look2 look3 real].freeze
+
   # AI 속성을 JSON으로 저장/파싱
   serialize :ai_attributes, coder: JSON
   serialize :badges, coder: JSON
@@ -89,6 +92,17 @@ class Product < ApplicationRecord
   def material_feel
     parsed_ai_attributes["material_feel"]
   end
+
+  # public/catalog/<id>/ 에 실제로 있는 컷만 순서대로 돌려준다.
+  def gallery_image_urls
+    catalog_id = supplier_product_code.to_s[/\AJIEUM-(G\d+)\z/, 1]
+    return [] unless catalog_id
+
+    GALLERY_SHOTS.filter_map do |shot|
+      "/catalog/#{catalog_id}/#{shot}.jpg" if Rails.public_path.join("catalog", catalog_id, "#{shot}.jpg").exist?
+    end
+  end
+
   private
 
   def validate_runway_video

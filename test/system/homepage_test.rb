@@ -24,13 +24,13 @@ class HomepageTest < ApplicationSystemTestCase
     visit root_url
 
     # 타이틀 확인
-    assert_selector "title", text: "JIEUN", visible: false
+    assert_selector "title", text: "JIEUM", visible: false
 
     # 로고 확인
-    assert_text "JIEUN"
+    assert_text "JIEUM"
 
     # 랭킹 섹션 확인
-    assert_text "무신사 랭킹"
+    assert_text "JIEUM 랭킹"
 
     # 상품 카드가 표시되는가
     assert_selector ".grid", minimum: 1
@@ -57,7 +57,7 @@ class HomepageTest < ApplicationSystemTestCase
     assert_current_path products_path
 
     # 홈으로 돌아가기
-    click_link "JIEUN"
+    click_link "JIEUM"
     assert_current_path root_path
   end
 

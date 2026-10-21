@@ -18,136 +18,38 @@ User.destroy_all
 ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
 puts "✅ Cleared existing data"
 
-products_data = [
-  {
-    "name": "[골드원사/하객룩/모임룩]코렌다 벨트 트위드 원피스[단독특가]",
-    "price": 55800,
-    "image_url": "https://shopping-phinf.pstatic.net/main_5818657/58186579277.jpg?type=f300",
-    "brand": "시크라인",
-    "category": "One-piece"
-  },
-  {
-    "name": "디애이치 코렌 레이어드 원피스",
-    "price": 30800,
-    "image_url": "https://shopping-phinf.pstatic.net/main_2794398/27943988468.20210710214327.jpg?type=f300",
-    "brand": "Coren",
-    "category": "One-piece"
-  },
-  {
-    "name": "매니크 코렌 울 니트 레이어드 원피스",
-    "price": 39520,
-    "image_url": "https://shopping-phinf.pstatic.net/main_5772781/57727811984.20251112001853.jpg?type=f300",
-    "brand": "Coren",
-    "category": "One-piece"
-  },
-  {
-    "name": "코렌 플라워 퍼프 미니 원피스 백 세트",
-    "price": 55000,
-    "image_url": "https://shopping-phinf.pstatic.net/main_5762598/57625982518.jpg?type=f300",
-    "brand": "트렌디어패럴",
-    "category": "One-piece"
-  },
-  {
-    "name": "코렌 끈 원피스 3컬러 린넨 100%",
-    "price": 61000,
-    "image_url": "https://shopping-phinf.pstatic.net/main_8199348/81993482391.jpg?type=f300",
-    "brand": "이야기가 있는 풍경",
-    "category": "One-piece"
-  },
-  {
-    "name": "다이앤본퍼스텐버그 코렌 리버시블 프린트 스트레치 메시 원피스 스카이블루 시밀러 룩 바캉스",
-    "price": 334990,
-    "image_url": "https://shopping-phinf.pstatic.net/main_5732329/57323293135.jpg?type=f300",
-    "brand": "Coren",
-    "category": "One-piece"
-  },
-  {
-    "name": "다이앤본퍼스텐버그 코렌 리버시블 프린트 스트레치 메시 원피스 스카이블루 시밀러 룩 바캉스",
-    "price": 313740,
-    "image_url": "https://shopping-phinf.pstatic.net/main_9010993/90109933928.jpg?type=f300",
-    "brand": "블랙유로",
-    "category": "One-piece"
-  },
-  {
-    "name": "[완전강추]빅사이즈 코렌 코듀로이 뷔스티에 프릴 롱 원피스",
-    "price": 52300,
-    "image_url": "https://shopping-phinf.pstatic.net/main_8710974/87109740839.jpg?type=f300",
-    "brand": "에브리바레",
-    "category": "One-piece"
-  },
-  {
-    "name": "다이앤 본 퍼스텐버그 코렌 리버시블 프린트 스트레치 메시 원피스",
-    "price": 346600,
-    "image_url": "https://shopping-phinf.pstatic.net/main_5732342/57323425679.jpg?type=f300",
-    "brand": "Coren",
-    "category": "One-piece"
-  },
-  {
-    "name": "휴양지 코렌 플레어 슬리브 드레스",
-    "price": 68100,
-    "image_url": "https://shopping-phinf.pstatic.net/main_8545806/85458066269.jpg?type=f300",
-    "brand": "제니직구",
-    "category": "One-piece"
-  }
-]
-
-# Create 20 products using the Generated Model Variations
-brands_list = [ "COVERNAT", "THISISNEVERTHAT", "LEE", "MUSINSA STANDARD", "ANDERSSON BELL", "MARD MERCREDI", "WHAT IT ISNT", "GROOVE RHYME", "PARTIMENTO", "DRAW FIT" ]
-
-# Define Image Mapping based on Category or Rotation
-# Define Image Mapping with Matching Names/Categories
-model_variations = [
-  { image: "/model_fitting.jpg", name_suffix: "Premium Grey Wool Coat", category: "Outer" },
-  { image: "/model_tweed_dress.png", name_suffix: "Luxury Tweed One-piece", category: "One-piece" },
-  { image: "/model_navy_coat.png", name_suffix: "Classic Navy Cashmere Coat", category: "Outer" },
-  { image: "/model_knit_sweater.png", name_suffix: "Soft White Knit Sweater", category: "Top" }
-]
-
-20.times do |i|
-  source_item = products_data[i % products_data.length]
-
-  # Cycle strictly through the 4 variations to ensure all 4 are visible
-  variation = model_variations[i % 4]
-
-  # Construct a name that matches the image
-  # We keep the brand from the source list for variety, but override the product name/category
-  brand_name = brands_list[i % brands_list.length]
-
-  # AI 속성 정의 (29cm 스타일 큐레이션용)
-  moods = [ "minimal", "casual", "delicate", "vintage", "modern" ]
-  tpos = [ "daily", "office", "date", "party", "casual" ]
-  fit_styles = [ "slim", "regular", "oversized", "loose" ]
-  material_feels = [ "soft", "structured", "lightweight", "warm" ]
-
-  ai_attrs = {
-    "mood" => [ moods.sample ],
-    "tpo" => [ tpos.sample ],
-    "fit_style" => fit_styles.sample,
-    "material_feel" => material_feels.sample
-  }
-
-  # 배지 정의
-  badge_array = []
-  badge_array << "coupon" if i % 3 == 0
-
-  Product.create!(
-    name: "#{brand_name} #{variation[:name_suffix]}",
-    description: "Exclusive fitting by our main model. Premium quality from #{brand_name}. This item features our signature #{variation[:category]} design.",
-    price: source_item[:price], # Keep realistic prices
-    stock: rand(10..100),
-    category: variation[:category],
-    brand: brand_name,
-    gender: 'Women',
-    views_count: rand(100..10000),
-    sales_count: 50 + rand(10..1000),
-    image_url: variation[:image],
-    ai_attributes: ai_attrs,
-    badges: badge_array,
-    is_new: i < 5, # 처음 5개는 신상
-    restocked_at: (i % 7 == 0 ? 3.days.ago : nil) # 7의 배수는 재입고
+# 상품 카탈로그: 2026-10-20 받은 의류 33장을 30개 상품으로 묶음(db/seeds/jieum_catalog.yml)
+Rake::Task["characters:sync"].invoke # worn_character 연결에 필요
+catalog = YAML.load_file(Rails.root.join("db/seeds/jieum_catalog.yml"))
+fit_styles = [ "regular", "oversized", "loose" ]
+catalog.each_with_index do |item, i|
+  character = Character.find_by(handle: item["model"])
+  product = Product.create!(
+    name: item["name"],
+    description: "#{item["colors"].join(" · ")} #{item["name"]}. 착용 이미지는 AI 가상 인물이 입은 모습이며, 실제 색상·핏은 실물 사진과 실측 사이즈를 확인해 주세요.",
+    price: item["price"],
+    stock: 0,
+    category: item["category"],
+    brand: "JIEUM",
+    gender: "Women",
+    views_count: rand(100..5000),
+    sales_count: rand(10..500),
+    image_url: "/catalog/#{item["id"]}/front.jpg",
+    supplier_product_code: "JIEUM-#{item["id"]}",
+    worn_character: character,
+    worn_size: character&.top_size&.first,
+    ai_attributes: { "mood" => [ item["mood"] ], "tpo" => [ "daily" ], "fit_style" => fit_styles[i % 3], "material_feel" => "warm" },
+    badges: (i % 4 == 0 ? [ "coupon" ] : []),
+    is_new: true
   )
+  item["colors"].each do |color|
+    [ "S", "M", "L" ].each do |size|
+      variant = Variant.create!(product: product, color: color, size: size, stock: rand(0..30), min_stock: 10)
+      StockLog.create!(variant: variant, log_type: "in", quantity: rand(10..50), supplier: "카카오톡 거래처",
+                       unit_cost: product.price * 0.6, note: "초기 입고")
+    end
+  end
 end
-
 puts "Created #{Product.count} products (Attributes by AI Model Generation)"
 
 # 개발용 관리자 계정 (샘플 리뷰와 스냅 작성자)
@@ -170,14 +72,11 @@ Product.all.each do |product|
 end
 puts "Added sample reviews"
 
-# Create dummy snaps using the SAME Model Images
-10.times do |i|
-  source_item = products_data[i % products_data.length]
-  variation = model_variations.sample # Random snap image
-
+# 샘플 스냅
+Product.order("RANDOM()").limit(10).each do |product|
   Snap.create!(
     user: user,
-    content: "모델 착장 그대로 구매! #{[ '#데일리룩', '#하객룩', '#데이트룩' ].sample} #Coren #{source_item[:name]} #OOTD",
+    content: "#{product.name} 데일리 코디 #{[ '#데일리룩', '#출근룩', '#데이트룩' ].sample} #OOTD",
   )
 end
 puts "Created sample snaps"
@@ -434,4 +333,3 @@ puts "  - Supplier: #{Supplier.count}개"
 puts "  - PurchaseOrder: #{PurchaseOrder.count}개"
 puts "  - PurchaseOrderItem: #{PurchaseOrderItem.count}개"
 puts "=" * 50
-Rake::Task["characters:sync"].invoke

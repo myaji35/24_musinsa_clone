@@ -293,4 +293,15 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "input[name='product[price]'][step='1']"
   end
+
+  test "카탈로그 상품 상세는 착용컷·룩북·실물 썸네일 갤러리를 보여준다" do
+    product = products(:one)
+    product.update!(supplier_product_code: "JIEUM-G01")
+
+    get product_path(product)
+
+    assert_response :success
+    assert_select "[data-controller=gallery] [data-testid=product-gallery] button[data-action='gallery#show']", product.gallery_image_urls.size
+    assert_select "button[data-real=true]", 1
+  end
 end

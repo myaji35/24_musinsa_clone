@@ -154,17 +154,17 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Homepage title
-  test "should display JIEUN title" do
+  test "should display JIEUM title" do
     get root_url
     assert_response :success
-    assert_select "title", text: /JIEUN/
+    assert_select "title", text: /JIEUM/
   end
 
   # Ranking section
   test "should display ranking section" do
     get root_url
     assert_response :success
-    assert_match /무신사 랭킹/, response.body
+    assert_match /JIEUM 랭킹/, response.body
   end
 
   # Product cards

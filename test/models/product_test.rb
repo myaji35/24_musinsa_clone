@@ -177,4 +177,17 @@ class ProductTest < ActiveSupport::TestCase
       assert_equal [], @product.badge_list
     end
   end
+
+  test "카탈로그 상품은 public/catalog 에 있는 갤러리 컷만 순서대로 돌려준다" do
+    @product.supplier_product_code = "JIEUM-G01"
+    urls = @product.gallery_image_urls
+
+    assert_equal "/catalog/G01/front.jpg", urls.first
+    assert urls.all? { |url| Rails.public_path.join(url.delete_prefix("/")).exist? }
+
+    @product.supplier_product_code = "JIEUM-G999"
+    assert_equal [], @product.gallery_image_urls
+    @product.supplier_product_code = nil
+    assert_equal [], @product.gallery_image_urls
+  end
 end

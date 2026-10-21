@@ -10,6 +10,28 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mb-20">
 
     <!-- 좌측: 이미지 갤러리 -->
+    <% gallery = @product.runway_video.attached? ? [] : @product.gallery_image_urls %>
+    <% if gallery.any? %>
+    <div class="space-y-4" data-controller="gallery">
+      <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden relative">
+        <%= image_tag gallery.first, alt: "#{@product.name} 착용컷", class: "w-full h-full object-cover", data: { gallery_target: "main" } %>
+        <% if character %>
+          <span class="absolute top-3 left-3 z-10 bg-white text-black px-3 py-2 text-lg font-bold shadow" data-gallery-target="badge">가상 인물</span>
+        <% end %>
+      </div>
+      <div class="grid grid-cols-5 gap-2" data-testid="product-gallery">
+        <% gallery.each_with_index do |url, i| %>
+          <% real = url.end_with?("/real.jpg") %>
+          <% label = real ? "실물 사진" : (i.zero? ? "정면 착용컷" : "룩북 #{i}") %>
+          <button type="button" class="relative aspect-[3/4] bg-gray-100 border-2 <%= i.zero? ? 'border-black' : 'border-transparent' %> hover:border-black transition-colors overflow-hidden"
+                  data-gallery-target="thumb" data-action="gallery#show" data-src="<%= url %>" data-alt="<%= "#{@product.name} #{label}" %>" data-real="<%= real %>" aria-pressed="<%= i.zero? %>" aria-label="<%= label %> 보기">
+            <%= image_tag url, alt: "", loading: "lazy", class: "w-full h-full object-cover" %>
+            <% if real %><span class="absolute bottom-0 inset-x-0 bg-black/70 text-white text-[11px] font-bold py-0.5">실물</span><% end %>
+          </button>
+        <% end %>
+      </div>
+    </div>
+    <% else %>
     <div class="space-y-4">
       <!-- 메인 이미지 -->
       <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden<%= ' relative' if character || @product.runway_video.attached? %>">
@@ -40,6 +62,7 @@
         <% end %>
       </div>
     </div>
+    <% end %>
 
     <!-- 우측: 상품 정보 -->
     <div class="space-y-6">

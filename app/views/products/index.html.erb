@@ -69,9 +69,10 @@
             <!-- Actions -->
             <div class="flex gap-2 pt-3 border-t border-gray-100">
               <% if logged_in? %>
+              <span class="self-center px-2 py-0.5 text-[10px] font-bold rounded <%= product.published? ? 'bg-gray-100 text-gray-600' : 'bg-amber-100 text-amber-800' %>"><%= product.published? ? "공개" : "초안" %></span>
               <%= link_to "수정", edit_product_path(product), class: "flex-1 text-center text-xs font-medium text-gray-700 py-2 border border-gray-300 rounded hover:border-black transition-colors" %>
               <% end %>
-              <%= link_to "보기", product_path(product), class: "flex-1 text-center text-xs font-medium text-white bg-black py-2 rounded hover:bg-gray-800 transition-colors" %>
+              <%= link_to (logged_in? ? "상세페이지 미리보기" : "보기"), product_path(product), class: "flex-1 text-center text-xs font-medium text-white bg-black py-2 rounded hover:bg-gray-800 transition-colors" %>
             </div>
           </div>
         </div>

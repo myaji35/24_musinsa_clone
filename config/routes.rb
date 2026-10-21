@@ -17,6 +17,10 @@ Rails.application.routes.draw do
 
   # Products & Reviews
   resources :products do
+    member do
+      post :publish
+      post :unpublish
+    end
     resources :reviews, only: [ :create ]
     resource :cutout, only: [ :show, :create, :update ], controller: "product_cutouts"
   end

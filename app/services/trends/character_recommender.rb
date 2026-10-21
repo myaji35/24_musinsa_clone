@@ -22,7 +22,7 @@ module Trends
         end
         insufficient = weekly.size < 2
         pattern = matched.map { |word| "%#{Product.sanitize_sql_like(word)}%" }
-        products = Product.where(pattern.map { "(name LIKE ? ESCAPE '\\' OR category LIKE ? ESCAPE '\\')" }.join(" OR "), *pattern.flat_map { |word| [ word, word ] }).order(sales_count: :desc, id: :asc).limit(3)
+        products = Product.published.where(pattern.map { "(name LIKE ? ESCAPE '\\' OR category LIKE ? ESCAPE '\\')" }.join(" OR "), *pattern.flat_map { |word| [ word, word ] }).order(sales_count: :desc, id: :asc).limit(3)
         { series_name: name, growth: growth, latest: weekly.max_by(&:first).last,
           status: insufficient ? "데이터 부족" : (growth.nil? ? "비교 기간 부족" : "추천"),
           score: insufficient ? -Float::INFINITY : (growth || -Float::INFINITY), products: products }

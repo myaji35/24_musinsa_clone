@@ -33,7 +33,7 @@ module CRM
 
       if top_tags.any?
         # ai_attributes에서 해당 태그와 매칭되는 상품 검색
-        Product.where("ai_attributes LIKE ?", "%#{top_tags.first}%")
+        Product.published.where("ai_attributes LIKE ?", "%#{top_tags.first}%")
                .limit(5)
                .pluck(:id, :name, :brand, :price)
                .map do |id, name, brand, price|

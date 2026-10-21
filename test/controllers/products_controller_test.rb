@@ -304,4 +304,57 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_select "[data-controller=gallery] [data-testid=product-gallery] button[data-action='gallery#show']", product.gallery_image_urls.size
     assert_select "button[data-real=true]", 1
   end
+
+  test "초안 상품은 손님 화면(상세·목록·홈·장바구니)에 보이지 않는다" do
+    @product.update!(status: "draft")
+
+    get product_path(@product)
+    assert_response :not_found
+
+    get products_path
+    assert_select "a[href='#{product_path(@product)}']", 0
+    get root_path
+    assert_select "a[href='#{product_path(@product)}']", 0
+
+    post cart_items_path, params: { variant_id: @variant.id }
+    assert_response :not_found
+  end
+
+  test "관리자는 초안을 미리보기하고 공개하면 손님에게 보인다" do
+    @product.update!(status: "draft")
+    sign_in
+
+    get product_path(@product)
+    assert_response :success
+    assert_select "[data-testid=publication-bar]", text: /미리보기 · 비공개/
+
+    post publish_product_path(@product)
+    assert_redirected_to product_path(@product)
+    @product.reload
+    assert @product.published?
+    assert_equal users(:one), @product.published_by
+    assert_not_nil @product.published_at
+
+    delete logout_path
+    get product_path(@product)
+    assert_response :success
+    assert_select "[data-testid=publication-bar]", 0
+  end
+
+  test "관리자는 공개 상품을 비공개로 되돌릴 수 있고 비로그인은 공개 전환을 못 한다" do
+    post publish_product_path(@product)
+    assert_redirected_to login_path
+
+    sign_in
+    post unpublish_product_path(@product)
+    assert_not @product.reload.published?
+  end
+
+  test "관리자 폼으로 새로 등록한 상품은 초안으로 시작한다" do
+    sign_in
+    assert_difference "Product.count", 1 do
+      post products_path, params: { product: { name: "새 코트", price: 99000, brand: "JIEUM", category: "Outer" } }
+    end
+    assert_equal "draft", Product.order(:id).last.status
+  end
 end

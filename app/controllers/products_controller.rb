@@ -1,9 +1,10 @@
 class ProductsController < ApplicationController
   skip_before_action :require_admin, only: [ :index, :show ]
-  before_action :set_product, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_product, only: [ :show, :edit, :update, :destroy, :publish, :unpublish ]
 
   def index
-    @products = Product.with_attached_image
+    # 관리자(상품 관리)는 초안까지, 손님은 공개 상품만 본다
+    @products = logged_in? ? Product.with_attached_image : Product.published.with_attached_image
 
     # 카테고리 필터
     @products = @products.where(category: params[:category]) if params[:category].present?
@@ -30,10 +31,12 @@ class ProductsController < ApplicationController
   end
 
   def show
+    raise ActiveRecord::RecordNotFound unless @product.published? || logged_in?
+
     @variants = @product.variants
     @selected_variant = @variants.first
     @reviews = @product.reviews.includes(:user).order(created_at: :desc).limit(10)
-    @related_products = Product.with_attached_image.where(category: @product.category).where.not(id: @product.id).limit(4)
+    @related_products = Product.published.with_attached_image.where(category: @product.category).where.not(id: @product.id).limit(4)
     @average_rating = @product.reviews.any? ? (@product.reviews.sum(:rating).to_f / @product.reviews.count).round(1) : 0
   end
 
@@ -44,6 +47,7 @@ class ProductsController < ApplicationController
 
   def create
     @product = Product.new(product_params)
+    @product.status = "draft"
 
     if @product.save
       redirect_to @product, notice: "상품이 성공적으로 등록되었습니다."
@@ -74,6 +78,16 @@ class ProductsController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def publish
+    @product.publish!(current_user)
+    redirect_to @product, notice: "상세페이지를 공개했습니다. 이제 손님 화면에 보입니다."
+  end
+
+  def unpublish
+    @product.unpublish!
+    redirect_to @product, notice: "비공개로 되돌렸습니다. 관리자 미리보기로만 보입니다."
   end
 
   def destroy

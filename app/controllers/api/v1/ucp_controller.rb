@@ -17,7 +17,7 @@ module Api
 
         # Cache entire response for 1 minute (reduced from 10 minutes)
         @response_data = Rails.cache.fetch(cache_key, expires_in: 1.minute) do
-          @products = Product.includes(:variants).with_attached_image.all
+          @products = Product.published.includes(:variants).with_attached_image
 
           # AI 감성 필터 (mood)
           if params[:mood].present?

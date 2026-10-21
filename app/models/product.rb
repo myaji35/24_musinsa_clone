@@ -11,6 +11,7 @@ class Product < ApplicationRecord
   has_many :product_analyses, dependent: :destroy
   has_many :image_processings, class_name: "ProductImageProcessing", dependent: :destroy
   has_one :latest_analysis, -> { order(created_at: :desc) }, class_name: "ProductAnalysis"
+  belongs_to :published_by, class_name: "User", optional: true
 
   # Active Storage 이미지 첨부 (Story 1.1)
   has_one_attached :runway_video
@@ -22,6 +23,11 @@ class Product < ApplicationRecord
 
   # 카탈로그 상품(JIEUM-Gnn) 갤러리 컷: AI 착용컷(정면·룩북 3) + 실물 사진
   GALLERY_SHOTS = %w[front look1 look2 look3 real].freeze
+
+  # 상세페이지 컨펌 전(draft)에는 관리자 미리보기로만 보이고, 공개(published)해야 손님 화면에 노출된다
+  STATUSES = %w[draft published].freeze
+  validates :status, inclusion: { in: STATUSES }
+  scope :published, -> { where(status: "published") }
 
   # AI 속성을 JSON으로 저장/파싱
   serialize :ai_attributes, coder: JSON
@@ -50,6 +56,20 @@ class Product < ApplicationRecord
   scope :by_material_feel, ->(material_feel) { where("json_extract(ai_attributes, '$.material_feel') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(material_feel.to_s)}%") }
 
   # 배지 관련 헬퍼 메서드
+  def published?
+    status == "published"
+  end
+
+  def publish!(user)
+    update!(status: "published", published_at: Time.current, published_by: user)
+    Rails.cache.delete("curated-collections")
+  end
+
+  def unpublish!
+    update!(status: "draft")
+    Rails.cache.delete("curated-collections")
+  end
+
   def badge_list
     value = parse_json_value(badges)
     value.is_a?(Array) ? value : []

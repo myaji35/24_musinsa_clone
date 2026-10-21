@@ -1,5 +1,25 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
+  <% if logged_in? %>
+    <div data-testid="publication-bar" class="flex flex-wrap items-center justify-between gap-3 p-4 mb-6 text-sm border <%= @product.published? ? 'border-gray-300 bg-white' : 'border-amber-400 bg-amber-50' %>">
+      <p class="font-medium text-gray-900">
+        <% if @product.published? %>
+          공개 중 · 손님 화면에 보입니다<%= " (#{@product.published_at.strftime('%Y-%m-%d %H:%M')} 공개)" if @product.published_at %>
+        <% else %>
+          미리보기 · 비공개 — 손님에게는 보이지 않습니다. 컨펌 후 공개해 주세요.
+        <% end %>
+      </p>
+      <div class="flex gap-2">
+        <%= link_to "수정", edit_product_path(@product), class: "px-4 py-2 border border-gray-300 text-gray-800 hover:border-black" %>
+        <% if @product.published? %>
+          <%= button_to "비공개로 되돌리기", unpublish_product_path(@product), data: { turbo_confirm: "손님 화면에서 내립니다. 계속할까요?" }, class: "px-4 py-2 border border-black text-black hover:bg-gray-100" %>
+        <% else %>
+          <%= button_to "공개", publish_product_path(@product), data: { turbo_confirm: "이 상세페이지를 손님에게 공개합니다. 계속할까요?" }, class: "px-4 py-2 bg-black text-white font-bold hover:bg-gray-800" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <% if (character = @product.worn_character) %>
     <div class="border border-gray-300 bg-gray-50 p-4 mb-6 text-sm text-gray-800 leading-relaxed">
       이 상품의 착용 이미지·영상은 AI로 만든 가상 인물(<%= character.name %>)입니다. 실제 핏·색상은 아래 실측 사이즈와 실물 사진을 확인해 주세요.

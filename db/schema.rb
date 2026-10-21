@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_18_007000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_21_001000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -233,6 +233,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_007000) do
     t.boolean "cutout_adopted", default: false, null: false
     t.integer "worn_character_id"
     t.string "worn_size"
+    t.string "status", default: "published", null: false
+    t.datetime "published_at"
+    t.integer "published_by_id"
+    t.index ["status"], name: "index_products_on_status"
     t.index ["supplier_id", "supplier_product_code"], name: "index_products_on_supplier_id_and_supplier_product_code"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
     t.index ["supplier_import_id"], name: "index_products_on_supplier_import_id"

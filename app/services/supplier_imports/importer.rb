@@ -33,7 +33,7 @@ module SupplierImports
         code = row[:supplier_product_code].presence
         product = Product.find_by(supplier_id: @supplier_import.supplier_id, supplier_product_code: code) if code
         status = product ? "updated" : "imported"
-        product ||= Product.new
+        product ||= Product.new(status: "draft") # 새 상품은 상세페이지 컨펌 후 공개
         product.assign_attributes(product_attributes(row))
         product.ai_attributes = product.parsed_ai_attributes.merge("material" => row[:material]) if row[:material].present?
         product.save!

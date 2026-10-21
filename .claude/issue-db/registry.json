@@ -8106,11 +8106,67 @@
         "ISS-141"
       ],
       "created_at": "2026-10-21T22:31:33.173791+00:00",
-      "updated_at": "2026-10-21T22:31:33.173791+00:00",
+      "updated_at": "2026-10-21T22:46:16.107138+00:00",
       "done_criteria": "G01 상세가 7개 섹션으로 구성; 히어로 근처 '모델은 가상 인물, 옷은 실제 상품' 한 줄; 대표님 컨펌 후 나머지 29개에 틀 적용(별도 이슈)",
       "payload": {
         "summary": "brand/research/hanirum_knowhow_2026-10.md 의 JIEUM 적용 항목 기반. 대화로 개선 후 대표님 공개.",
-        "source": "interactive-session"
+        "source": "interactive-session",
+        "decisions": {
+          "hero_title": "C — 니트 위에 툭, 벨트만 묶으면 외출 준비 끝",
+          "shipping": "전 상품 무료배송, 반품 고객 부담"
+        }
+      }
+    },
+    {
+      "id": "ISS-143",
+      "title": "상품정보제공고시 필수 9항목 + 상세페이지 미확정(TODO) 값이 남으면 공개 차단",
+      "type": "FEATURE",
+      "priority": "P1",
+      "size": "S",
+      "status": "DONE",
+      "depends_on": [
+        "ISS-141"
+      ],
+      "created_at": "2026-10-21T22:46:16.107138+00:00",
+      "updated_at": "2026-10-21T22:46:16.107138+00:00",
+      "done_criteria": "소재·색상·치수·제조자·제조국·세탁방법·제조연월·품질보증기준·A/S책임자 미입력 또는 TODO 잔존 시 공개 버튼 비활성·POST 거부, 관리자 폼 입력란",
+      "payload": {
+        "summary": "대표님 결정: 필수 입력 미입력 시 개시 불가",
+        "source": "interactive-session",
+        "status_history": [
+          {
+            "from": null,
+            "to": "DONE",
+            "at": "2026-10-21T22:46:16.107138+00:00",
+            "by": "interactive-session",
+            "note": "e70b2ab"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ISS-144",
+      "title": "글자 체계 — Pretendard, 최소 12px, 한글 자간·줄바꿈 + 근거 없는 평점(4.8 고정)·구매수·쿠폰 표시 제거, 전 상품 무료배송",
+      "type": "FEATURE",
+      "priority": "P1",
+      "size": "S",
+      "status": "DONE",
+      "depends_on": [],
+      "created_at": "2026-10-21T22:46:16.107138+00:00",
+      "updated_at": "2026-10-21T22:46:16.107138+00:00",
+      "done_criteria": "홈·카드·레이아웃 9~11px 제거, 큰 제목 자간 -2.5%, 카드 평점은 실제 리뷰 평균만",
+      "payload": {
+        "summary": "대표님 결정: Pretendard, 가짜 표시 숨김 후 관계자 의견 수렴",
+        "source": "interactive-session",
+        "status_history": [
+          {
+            "from": null,
+            "to": "DONE",
+            "at": "2026-10-21T22:46:16.107138+00:00",
+            "by": "interactive-session",
+            "note": "2b33659"
+          }
+        ]
       }
     }
   ],

@@ -6489,12 +6489,12 @@
       "type": "DECISION",
       "priority": "P1",
       "size": "S",
-      "status": "AWAITING_USER",
+      "status": "DONE",
       "depends_on": [
         "ISS-110"
       ],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:19:55.105048+00:00",
+      "updated_at": "2026-10-21T10:20:59.435412+00:00",
       "done_criteria": "대표님이 A/B/C 중 하나를 선택하고 registry에 기록됨. 선택에 따라 ISS-128·ISS-131 범위가 확정됨.",
       "payload": {
         "summary": "대표님 추가 요구('회원가입 후 관리자에서 납품처로 승격')는 ISS-110 설계(관리자가 SupplierAccount를 직접 발급, 자가 가입 불가)와 충돌한다. 현재 User에는 role 컬럼이 없고 모든 로그인 사용자가 관리자다. 계정 모델을 먼저 정해야 회원가입·승격·파트너센터 병합 순서가 잡힌다.",
@@ -6534,7 +6534,21 @@
           "by": "fable-review",
           "at": "2026-10-21T10:19:55.105048+00:00"
         },
-        "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획"
+        "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
+        "decision": {
+          "option": "B",
+          "by": "대표님(대화)",
+          "at": "2026-10-21"
+        },
+        "status_history": [
+          {
+            "from": "AWAITING_USER",
+            "to": "DONE",
+            "at": "2026-10-21T10:20:59.435412+00:00",
+            "by": "factory-runner",
+            "note": "대표님 결정 B: User 역할 통합(회원가입→관리자 승격), ISS-110은 User 기반으로 리베이스"
+          }
+        ]
       }
     },
     {
@@ -6543,10 +6557,10 @@
       "type": "FEATURE",
       "priority": "P1",
       "size": "M",
-      "status": "READY",
+      "status": "IN_PROGRESS",
       "depends_on": [],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:19:57.569Z",
+      "updated_at": "2026-10-21T10:20:35.001262+00:00",
       "done_criteria": "마이그레이션 products.selling_points(text) 추가. /products/new·edit에서 납품처 select(Supplier.active)·공급가·셀포인트(2,000자 이상 저장 가능) 입력·저장됨(products_controller permit 포함). 상품 편집 화면 관리자 섹션에 공급가·소매가·마진(원·%) 표시. 공개 /products/:id·/products·/api/v1/ucp/products·검색 응답에 supply_price 문자열이 없음을 통합테스트로 단언. 셀포인트는 공개 상품페이지에 줄바꿈 유지(simple_format)로 표시. bin/rails test·brakeman 통과.",
       "payload": {
         "summary": "products.supply_price/supplier_id 컬럼은 이미 있으나 엑셀 가져오기(ISS-077)로만 채워지고 폼에는 없다. 장문 셀포인트는 description 500자 제한 때문에 별도 컬럼이 필요하다. 공급가는 관리자 화면에만 보이도록 테스트로 고정한다.",
@@ -6579,7 +6593,23 @@
           }
         ],
         "approved_at": "2026-10-21T10:19:57.569Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "branch": "factory/ISS-126",
+        "acceptance_criteria": [
+          "관리자가 상품 등록·수정 화면에서 납품처를 고르고 공급가를 입력해 저장할 수 있다",
+          "관리자가 2,000자 넘는 긴 셀링포인트를 입력·저장할 수 있고, 손님용 상품 페이지에 줄바꿈 그대로 보인다",
+          "관리자 상품 편집 화면에서 공급가·판매가·마진(원·%)을 한눈에 볼 수 있다",
+          "손님이 보는 상품 상세·목록·외부 상품 API·검색 결과 어디에도 공급가가 드러나지 않는다(자동 테스트로 고정)"
+        ],
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-21T10:20:35.001262+00:00",
+            "by": "factory-runner",
+            "note": "factory-runner 착수(gate=deploy, 브랜치 factory/ISS-126)"
+          }
+        ]
       }
     },
     {
@@ -6588,12 +6618,12 @@
       "type": "TASK",
       "priority": "P1",
       "size": "S",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-126"
       ],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:19:57.569Z",
+      "updated_at": "2026-10-21T10:20:35.001262+00:00",
       "done_criteria": "Supplier '카카오톡 납품처(가칭)' 레코드(phone 필수 — 대표님 제공 전까지 '미입력')가 seeds·dev DB에 존재. 30개 상품 supplier_id가 이 Supplier로 설정되고 db:seed:replant 후에도 유지(db/seeds.rb·jieum_catalog.yml에 supplier 키 반영). StockLog.supplier 문자열도 Supplier.name과 일치. supply_price는 NULL 유지하고 상품 편집 화면에 '공급가 미입력' 배지 표시. 대표님이 공급가 30건·납품처 정식명·연락처를 주면 입력(ISS-068 결정과 함께).",
       "payload": {
         "summary": "시드 30개 상품은 supplier_id·supply_price가 모두 NULL이고 StockLog.supplier='카카오톡 거래처' 문자열만 있다. 납품처 기능의 첫 실데이터로 연결한다. 공급가·정식 상호·연락처는 코드로 알 수 없어 대표님 입력 대기.",
@@ -6607,15 +6637,15 @@
           "30개 상품 공급가(ISS-068 '1차 판매 상품 확정' 결정과 동일 표)"
         ],
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "연결 작업은 위험 없음. 공급가 숫자만 대표님 입력 대기(ISS-068 연동).",
+          "verdict": "보류 권장",
+          "reason": "선행 카드 미완(ISS-126(배포 검토 대기) 미완 + 납품처 상호·연락처·공급가 표 대표님 입력 대기). 관제실 자동 승인으로 READY 가 됐으나 선행이 끝나야 착수 가능 — 선행 완료 시 다시 승인 권장으로 전환.",
           "risk": "low",
-          "effort": "S",
-          "by": "fable-review",
-          "at": "2026-10-21T10:19:55.105048+00:00"
+          "effort": "-",
+          "by": "factory-runner",
+          "at": "2026-10-21T10:20:35.001262+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
-        "blocked_reason": "선행 대기: ISS-126 / 대표님 입력 대기",
+        "blocked_reason": "선행 미완: ISS-126(배포 검토 대기) 미완 + 납품처 상호·연락처·공급가 표 대표님 입력 대기",
         "decisions": [
           {
             "action": "approve",
@@ -6624,8 +6654,32 @@
             "reason": "연결 작업은 위험 없음. 공급가 숫자만 대표님 입력 대기(ISS-068 연동)."
           }
         ],
-        "approved_at": "2026-10-21T10:19:57.569Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_at": null,
+        "approved_by": null,
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "연결 작업은 위험 없음. 공급가 숫자만 대표님 입력 대기(ISS-068 연동).",
+            "risk": "low",
+            "effort": "S",
+            "by": "fable-review",
+            "at": "2026-10-21T10:19:55.105048+00:00"
+          }
+        ],
+        "auto_approval_ignored": {
+          "approved_at": "2026-10-21T10:19:57.569Z",
+          "approved_by": "자동 승인(추천: 승인 권장)",
+          "why_ignored": "depends_on 미충족"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-21T10:20:35.001262+00:00",
+            "by": "factory-runner",
+            "note": "선행 미완: ISS-126(배포 검토 대기) 미완 + 납품처 상호·연락처·공급가 표 대표님 입력 대기"
+          }
+        ]
       }
     },
     {
@@ -6639,7 +6693,7 @@
         "ISS-125"
       ],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:19:57.569Z",
+      "updated_at": "2026-10-21T10:20:59.435412+00:00",
       "done_criteria": "마이그레이션: users.role string NOT NULL default 'member' + users.supplier_id(index) 추가, 기존 User 전부 role='admin'으로 백필(데이터 마이그레이션, 되돌리기 가능). ApplicationController#require_admin이 current_user&.admin?만 통과시킴. member/partner 세션으로 /suppliers·/purchase_orders·/inventory/*·/dashboard·/products/new·/kpi·/supplier_imports 요청 시 전부 리다이렉트(테스트). User#admin?/partner?/member? 헬퍼. 기존 181+ 테스트와 fixtures(users.yml에 role 추가) 통과, brakeman 경고 0.",
       "payload": {
         "summary": "현재 require_admin == logged_in? 이라 회원가입을 여는 순간 모든 가입자가 관리자가 된다. 회원가입(ISS-129)·승격(ISS-130)보다 반드시 먼저 들어가야 하는 보안 기반 작업.",
@@ -6652,15 +6706,15 @@
         ],
         "gate": "deploy",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "인증 변경이지만 '기존 사용자 전원 admin 백필'로 잠김 위험 없음. NEW-5 전에 배포돼야 하므로 P0.",
-          "risk": "medium",
-          "effort": "M",
-          "by": "fable-review",
-          "at": "2026-10-21T10:19:55.105048+00:00"
+          "verdict": "보류 권장",
+          "reason": "선행 카드 미완(ISS-125(납품처 계정 구조 대표님 결정) 미결). 관제실 자동 승인으로 READY 가 됐으나 선행이 끝나야 착수 가능 — 선행 완료 시 다시 승인 권장으로 전환.",
+          "risk": "low",
+          "effort": "-",
+          "by": "factory-runner",
+          "at": "2026-10-21T10:20:35.001262+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
-        "blocked_reason": "선행 대기: ISS-125",
+        "blocked_reason": "선행 미완: ISS-125(납품처 계정 구조 대표님 결정) 미결",
         "decisions": [
           {
             "action": "approve",
@@ -6669,8 +6723,39 @@
             "reason": "인증 변경이지만 '기존 사용자 전원 admin 백필'로 잠김 위험 없음. NEW-5 전에 배포돼야 하므로 P0."
           }
         ],
-        "approved_at": "2026-10-21T10:19:57.569Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_at": null,
+        "approved_by": null,
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "인증 변경이지만 '기존 사용자 전원 admin 백필'로 잠김 위험 없음. NEW-5 전에 배포돼야 하므로 P0.",
+            "risk": "medium",
+            "effort": "M",
+            "by": "fable-review",
+            "at": "2026-10-21T10:19:55.105048+00:00"
+          }
+        ],
+        "auto_approval_ignored": {
+          "approved_at": "2026-10-21T10:19:57.569Z",
+          "approved_by": "자동 승인(추천: 승인 권장)",
+          "why_ignored": "depends_on 미충족"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-21T10:20:35.001262+00:00",
+            "by": "factory-runner",
+            "note": "선행 미완: ISS-125(납품처 계정 구조 대표님 결정) 미결"
+          },
+          {
+            "from": "BLOCKED",
+            "to": "READY",
+            "at": "2026-10-21T10:20:59.435412+00:00",
+            "by": "factory-runner",
+            "note": "선행 ISS-125 결정(B) 완료"
+          }
+        ]
       }
     },
     {
@@ -6679,12 +6764,12 @@
       "type": "FEATURE",
       "priority": "P1",
       "size": "S",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-128"
       ],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:19:57.569Z",
+      "updated_at": "2026-10-21T10:20:35.001262+00:00",
       "done_criteria": "GET/POST /signup(RegistrationsController) 추가, 이메일·이름·비밀번호(10자 이상)로 가입 시 role='member'로만 생성(role·supplier_id는 strong params에서 절대 허용 안 함 — mass assignment 테스트). rate_limit to: 5, within: 10.minutes. 레이아웃의 '회원가입' 링크(#)를 signup_path로 교체. 가입 직후 로그인 상태로 root 이동, /suppliers 접근 시 리다이렉트 테스트. brakeman 경고 0.",
       "payload": {
         "summary": "대표님 요구 '회원등록 후 승격'의 입구. 현재 회원가입 화면이 없다(레이아웃 링크가 #). 가입자는 member이며 리뷰·스냅 작성자로만 쓰인다.",
@@ -6697,15 +6782,15 @@
         ],
         "gate": "deploy",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "외부에 열리는 새 입구이나 NEW-4 선행으로 권한 상승 경로 차단. 인증 변경 규칙상 자동 배포 금지 → 대표님 확인 후 배포.",
-          "risk": "medium",
-          "effort": "S",
-          "by": "fable-review",
-          "at": "2026-10-21T10:19:55.105048+00:00"
+          "verdict": "보류 권장",
+          "reason": "선행 카드 미완(ISS-128 미완(ISS-125 결정 대기)). 관제실 자동 승인으로 READY 가 됐으나 선행이 끝나야 착수 가능 — 선행 완료 시 다시 승인 권장으로 전환.",
+          "risk": "low",
+          "effort": "-",
+          "by": "factory-runner",
+          "at": "2026-10-21T10:20:35.001262+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
-        "blocked_reason": "선행 대기: ISS-128",
+        "blocked_reason": "선행 미완: ISS-128 미완(ISS-125 결정 대기)",
         "decisions": [
           {
             "action": "approve",
@@ -6714,8 +6799,32 @@
             "reason": "외부에 열리는 새 입구이나 NEW-4 선행으로 권한 상승 경로 차단. 인증 변경 규칙상 자동 배포 금지 → 대표님 확인 후 배포."
           }
         ],
-        "approved_at": "2026-10-21T10:19:57.569Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_at": null,
+        "approved_by": null,
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "외부에 열리는 새 입구이나 NEW-4 선행으로 권한 상승 경로 차단. 인증 변경 규칙상 자동 배포 금지 → 대표님 확인 후 배포.",
+            "risk": "medium",
+            "effort": "S",
+            "by": "fable-review",
+            "at": "2026-10-21T10:19:55.105048+00:00"
+          }
+        ],
+        "auto_approval_ignored": {
+          "approved_at": "2026-10-21T10:19:57.569Z",
+          "approved_by": "자동 승인(추천: 승인 권장)",
+          "why_ignored": "depends_on 미충족"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-21T10:20:35.001262+00:00",
+            "by": "factory-runner",
+            "note": "선행 미완: ISS-128 미완(ISS-125 결정 대기)"
+          }
+        ]
       }
     },
     {
@@ -6724,13 +6833,13 @@
       "type": "FEATURE",
       "priority": "P1",
       "size": "M",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-128",
         "ISS-129"
       ],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:19:57.569Z",
+      "updated_at": "2026-10-21T10:20:35.001262+00:00",
       "done_criteria": "마이그레이션 role_changes(user_id, actor_id, from_role, to_role, supplier_id, reason, created_at). /suppliers/:id '파트너 계정' 섹션: 이메일로 member 검색→'이 납품처 파트너로 승격'(role=partner, supplier_id=해당 납품처) / '해제'(role=member, supplier_id=nil) / 다른 납품처로 이동. 모든 변경이 role_changes에 actor와 함께 기록되고 화면에 이력 표시. 제약(테스트): admin만 호출 가능, 자기 자신 변경 불가, admin→partner 직접 전환 불가(강등은 별도 확인), 해제된 사용자는 다음 요청에서 세션 무효화되어 /partner 접근 불가(session에 role_version 또는 users.updated_at 검사). Users::RoleChanger 서비스(ApplicationService/Result 패턴, 트랜잭션). brakeman 경고 0.",
       "payload": {
         "summary": "대표님 추가 요구의 본체. 승격은 '역할 부여 + 납품처 연결' 두 가지를 한 트랜잭션으로 처리하고, 누가 언제 왜 바꿨는지 남긴다.",
@@ -6746,15 +6855,15 @@
         ],
         "gate": "deploy",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "권한 상승 경로이므로 감사 로그·자기 승격 금지·세션 무효화를 완료 조건에 고정. 자동 배포 금지 대상.",
-          "risk": "high",
-          "effort": "M",
-          "by": "fable-review",
-          "at": "2026-10-21T10:19:55.105048+00:00"
+          "verdict": "보류 권장",
+          "reason": "선행 카드 미완(ISS-128·ISS-129 미완(ISS-125 결정 대기)). 관제실 자동 승인으로 READY 가 됐으나 선행이 끝나야 착수 가능 — 선행 완료 시 다시 승인 권장으로 전환.",
+          "risk": "low",
+          "effort": "-",
+          "by": "factory-runner",
+          "at": "2026-10-21T10:20:35.001262+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
-        "blocked_reason": "선행 대기: ISS-128, ISS-129",
+        "blocked_reason": "선행 미완: ISS-128·ISS-129 미완(ISS-125 결정 대기)",
         "decisions": [
           {
             "action": "approve",
@@ -6763,8 +6872,32 @@
             "reason": "권한 상승 경로이므로 감사 로그·자기 승격 금지·세션 무효화를 완료 조건에 고정. 자동 배포 금지 대상."
           }
         ],
-        "approved_at": "2026-10-21T10:19:57.569Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_at": null,
+        "approved_by": null,
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "권한 상승 경로이므로 감사 로그·자기 승격 금지·세션 무효화를 완료 조건에 고정. 자동 배포 금지 대상.",
+            "risk": "high",
+            "effort": "M",
+            "by": "fable-review",
+            "at": "2026-10-21T10:19:55.105048+00:00"
+          }
+        ],
+        "auto_approval_ignored": {
+          "approved_at": "2026-10-21T10:19:57.569Z",
+          "approved_by": "자동 승인(추천: 승인 권장)",
+          "why_ignored": "depends_on 미충족"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-21T10:20:35.001262+00:00",
+            "by": "factory-runner",
+            "note": "선행 미완: ISS-128·ISS-129 미완(ISS-125 결정 대기)"
+          }
+        ]
       }
     },
     {
@@ -6773,14 +6906,14 @@
       "type": "FEATURE",
       "priority": "P1",
       "size": "L",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-125",
         "ISS-130",
         "ISS-126"
       ],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:19:57.569Z",
+      "updated_at": "2026-10-21T10:20:35.001262+00:00",
       "done_criteria": "factory/ISS-110을 main에 리베이스(충돌: routes.rb·layouts/application.html.erb·schema.rb). Partner::BaseController가 current_user.partner? && current_user.supplier_id로 판정(세션 1개, /partner/login 제거 또는 /login으로 리다이렉트). supplier_accounts 마이그레이션·모델 삭제(옵션 B), supplier_claims는 유지. 기존 partner_portal_test 8건을 User 기반으로 이식해 통과: 타 납품처 발주·클레임·재고 404, 강등/납품처 비활성 시 즉시 차단, 상태 주입 무시. /partner/inventory에 자기 상품의 셀포인트·소매가 표시, 공급가는 자기 발주 단가로만 노출되고 마진·타 납품처 공급가는 응답에 없음(테스트). 발주 확정 시 confirm_by_supplier! 사용. ISS-110 상태를 DONE(또는 superseded)으로 정리.",
       "payload": {
         "summary": "파트너센터 화면·격리 로직은 브랜치에 이미 있다(687줄, 테스트 160줄). 인증 계층만 User 역할로 바꾸고 32커밋 뒤처진 main에 맞춘다. 옵션 A 선택 시 이 이슈는 '충돌 해소 병합 + 승격=SupplierAccount 복제'로 축소.",
@@ -6796,15 +6929,15 @@
         ],
         "gate": "deploy",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "ISS-110 결정(배포 여부)과 묶여 있음. 외부 사용자 로그인 경계라 배포 전 대표님 확인 필요. 이미 작성된 격리 테스트를 그대로 살리는 것이 핵심.",
-          "risk": "high",
-          "effort": "L",
-          "by": "fable-review",
-          "at": "2026-10-21T10:19:55.105048+00:00"
+          "verdict": "보류 권장",
+          "reason": "선행 카드 미완(ISS-125 결정·ISS-130·ISS-126 미완). 관제실 자동 승인으로 READY 가 됐으나 선행이 끝나야 착수 가능 — 선행 완료 시 다시 승인 권장으로 전환.",
+          "risk": "low",
+          "effort": "-",
+          "by": "factory-runner",
+          "at": "2026-10-21T10:20:35.001262+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
-        "blocked_reason": "선행 대기: ISS-125, ISS-130, ISS-126",
+        "blocked_reason": "선행 미완: ISS-125 결정·ISS-130·ISS-126 미완",
         "decisions": [
           {
             "action": "approve",
@@ -6813,8 +6946,32 @@
             "reason": "ISS-110 결정(배포 여부)과 묶여 있음. 외부 사용자 로그인 경계라 배포 전 대표님 확인 필요. 이미 작성된 격리 테스트를 그대로 살리는 것이 핵심."
           }
         ],
-        "approved_at": "2026-10-21T10:19:57.569Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_at": null,
+        "approved_by": null,
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "ISS-110 결정(배포 여부)과 묶여 있음. 외부 사용자 로그인 경계라 배포 전 대표님 확인 필요. 이미 작성된 격리 테스트를 그대로 살리는 것이 핵심.",
+            "risk": "high",
+            "effort": "L",
+            "by": "fable-review",
+            "at": "2026-10-21T10:19:55.105048+00:00"
+          }
+        ],
+        "auto_approval_ignored": {
+          "approved_at": "2026-10-21T10:19:57.569Z",
+          "approved_by": "자동 승인(추천: 승인 권장)",
+          "why_ignored": "depends_on 미충족"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-21T10:20:35.001262+00:00",
+            "by": "factory-runner",
+            "note": "선행 미완: ISS-125 결정·ISS-130·ISS-126 미완"
+          }
+        ]
       }
     },
     {
@@ -6823,13 +6980,13 @@
       "type": "FEATURE",
       "priority": "P2",
       "size": "M",
-      "status": "READY",
+      "status": "BLOCKED",
       "depends_on": [
         "ISS-126",
         "ISS-127"
       ],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:19:57.569Z",
+      "updated_at": "2026-10-21T10:20:35.001262+00:00",
       "done_criteria": "/suppliers/:id에 상품 탭: 해당 납품처 상품별 공급가·소매가·마진(원·%)·옵션 재고 합계·부족 옵션 수, 공급가 미입력 건 배지, 합계 행. /purchase_orders/new·edit에서 납품처 선택 시 해당 납품처 Variant만 옵션 목록에 뜨고(Stimulus, 현재는 Variant.all) unit_price 기본값이 product.supply_price로 채워짐(없으면 빈칸). 발주서 저장 검증: 품목 variant.product.supplier_id == purchase_order.supplier_id(모델 validation+테스트). 시스템/컨트롤러 테스트 통과.",
       "payload": {
         "summary": "대표님이 원하는 '납품처별로 옷·공급가·소매가·재고·발주를 한눈에' 화면. 모델·컬럼은 이미 있어 뷰·컨트롤러·검증만 추가. 마이그레이션 없음.",
@@ -6844,15 +7001,15 @@
           "test/models/purchase_order_item_test.rb"
         ],
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "마이그레이션·인증 변경 없음, 관리자 화면 한정. 데이터 입력(NEW-3) 뒤에 해야 화면이 의미 있음.",
+          "verdict": "보류 권장",
+          "reason": "선행 카드 미완(ISS-126(배포 검토 대기)·ISS-127 미완). 관제실 자동 승인으로 READY 가 됐으나 선행이 끝나야 착수 가능 — 선행 완료 시 다시 승인 권장으로 전환.",
           "risk": "low",
-          "effort": "M",
-          "by": "fable-review",
-          "at": "2026-10-21T10:19:55.105048+00:00"
+          "effort": "-",
+          "by": "factory-runner",
+          "at": "2026-10-21T10:20:35.001262+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
-        "blocked_reason": "선행 대기: ISS-126, ISS-127",
+        "blocked_reason": "선행 미완: ISS-126(배포 검토 대기)·ISS-127 미완",
         "decisions": [
           {
             "action": "approve",
@@ -6861,8 +7018,32 @@
             "reason": "마이그레이션·인증 변경 없음, 관리자 화면 한정. 데이터 입력(NEW-3) 뒤에 해야 화면이 의미 있음."
           }
         ],
-        "approved_at": "2026-10-21T10:19:57.569Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_at": null,
+        "approved_by": null,
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "마이그레이션·인증 변경 없음, 관리자 화면 한정. 데이터 입력(NEW-3) 뒤에 해야 화면이 의미 있음.",
+            "risk": "low",
+            "effort": "M",
+            "by": "fable-review",
+            "at": "2026-10-21T10:19:55.105048+00:00"
+          }
+        ],
+        "auto_approval_ignored": {
+          "approved_at": "2026-10-21T10:19:57.569Z",
+          "approved_by": "자동 승인(추천: 승인 권장)",
+          "why_ignored": "depends_on 미충족"
+        },
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-10-21T10:20:35.001262+00:00",
+            "by": "factory-runner",
+            "note": "선행 미완: ISS-126(배포 검토 대기)·ISS-127 미완"
+          }
+        ]
       }
     }
   ],

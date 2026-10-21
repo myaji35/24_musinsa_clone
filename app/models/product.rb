@@ -94,7 +94,7 @@ class Product < ApplicationRecord
   end
 
   def free_shipping?
-    price >= 30000 # 3만원 이상 무료배송
+    true # 전 상품 무료배송(대표님 결정 2026-10-21). 반품은 고객 부담
   end
 
   def has_coupon?

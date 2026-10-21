@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+/* 글자 체계(ISS-144): 한글 Pretendard, 영문 대문자 머리말에만 Oswald */
+@theme {
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-oswald: "Oswald", sans-serif;
+}
+
+@layer base {
+  body {
+    letter-spacing: -0.01em;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+}

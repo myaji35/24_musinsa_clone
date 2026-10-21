@@ -16,18 +16,18 @@
     <%# 랭킹 섹션 %>
     <div class="mt-16" id="ranking">
       <div class="flex items-center justify-between mb-4 border-b border-black pb-3">
-          <h2 class="text-xl font-bold font-oswald text-black tracking-tight">JIEUM 랭킹</h2>
-          <div class="text-[11px] text-gray-500 font-medium">
+          <h2 class="text-2xl font-bold text-black tracking-tight">JIEUM 랭킹</h2>
+          <div class="text-xs text-gray-600 font-medium tabular-nums">
             <%= Time.current.strftime("%m.%d %H:00") %> 갱신
           </div>
       </div>
 
       <%# 카테고리 필터 %>
       <div class="flex flex-wrap gap-2 mb-8">
-         <%= link_to "전체", root_path(q: params[:q], sort: params[:sort]), class: "px-3 py-1.5 text-xs font-bold border transition-all #{params[:category].blank? || params[:category] == '전체' ? 'bg-black text-white border-black' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-400 hover:text-black'}" %>
+         <%= link_to "전체", root_path(q: params[:q], sort: params[:sort]), class: "px-3 py-1.5 text-xs font-bold border transition-all #{params[:category].blank? || params[:category] == '전체' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:text-black'}" %>
 
          <% ["상의", "아우터", "바지", "원피스", "스커트", "가방"].each do |cat| %>
-            <%= link_to cat, root_path(category: cat, q: params[:q], sort: params[:sort]), class: "px-3 py-1.5 text-xs font-medium border transition-all #{params[:category] == cat ? 'bg-black text-white border-black font-bold' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-400 hover:text-black'}" %>
+            <%= link_to cat, root_path(category: cat, q: params[:q], sort: params[:sort]), class: "px-3 py-1.5 text-xs font-medium border transition-all #{params[:category] == cat ? 'bg-black text-white border-black font-bold' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:text-black'}" %>
          <% end %>
       </div>
 

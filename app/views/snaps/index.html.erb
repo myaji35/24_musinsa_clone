@@ -18,7 +18,7 @@
             <span class="text-xs font-bold"><%= snap.user.name %></span>
           </div>
           <p class="text-sm font-medium text-gray-800 line-clamp-2 leading-snug mb-2 font-sans group-hover:underline"><%= snap.content.presence || "내용 없음" %></p>
-          <time datetime="<%= snap.created_at.iso8601 %>" class="text-[10px] text-gray-400"><%= time_ago_in_words(snap.created_at) %> 전</time>
+          <time datetime="<%= snap.created_at.iso8601 %>" class="text-xs text-gray-400"><%= time_ago_in_words(snap.created_at) %> 전</time>
         </div>
       <% end %>
     <% end %>

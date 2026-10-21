@@ -22,10 +22,10 @@ class ProductsHelperTest < ActionView::TestCase
     assert badges.any? { |b| b[:text] == "무료배송" }
   end
 
-  test "product_badges returns coupon badge when product has coupon" do
+  test "쿠폰 제도가 생기기 전에는 쿠폰 배지를 띄우지 않는다" do
     badges = product_badges(@product)
 
-    assert badges.any? { |b| b[:text] == "쿠폰" }
+    assert_not badges.any? { |b| b[:text] == "쿠폰" }
   end
 
   test "product_badges returns new arrival badge for new products" do

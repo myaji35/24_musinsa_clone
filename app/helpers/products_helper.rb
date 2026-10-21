@@ -16,25 +16,21 @@ module ProductsHelper
     # 무료배송 배지
     badges << {
       text: "무료배송",
-      class: "px-1 py-0.5 bg-gray-100 text-[9px] text-gray-700 font-medium rounded-sm"
+      class: "px-1.5 py-0.5 bg-gray-100 text-xs text-gray-700 font-medium rounded-sm"
     } if product.free_shipping?
 
-    # 쿠폰 배지
-    badges << {
-      text: "쿠폰",
-      class: "px-1 py-0.5 bg-red-100 text-[9px] text-red-700 font-bold rounded-sm"
-    } if product.has_coupon?
+    # 쿠폰 배지는 쿠폰 제도가 생길 때까지 띄우지 않는다(근거 없는 혜택 표시 금지)
 
     # 신상품 배지
     badges << {
       text: "신상",
-      class: "px-1 py-0.5 bg-blue-100 text-[9px] text-blue-700 font-bold rounded-sm"
+      class: "px-1.5 py-0.5 bg-blue-100 text-xs text-blue-700 font-bold rounded-sm"
     } if product.new_arrival?
 
     # 재입고 배지
     badges << {
       text: "재입고",
-      class: "px-1 py-0.5 bg-green-100 text-[9px] text-green-700 font-bold rounded-sm"
+      class: "px-1.5 py-0.5 bg-green-100 text-xs text-green-700 font-bold rounded-sm"
     } if product.restocked?
 
     badges

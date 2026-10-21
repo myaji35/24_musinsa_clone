@@ -129,9 +129,9 @@
 .intro-runway-copy h1 {
   margin: 0;
   font-size: clamp(2.3rem, 6vw, 6rem);
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -.065em;
+  letter-spacing: -.025em;
 }
 
 .intro-runway-copy p {
@@ -189,9 +189,9 @@
 .intro-scene-heading h2 {
   margin: .5rem 0 0;
   font-size: clamp(2rem, 5vw, 5rem);
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -.055em;
+  letter-spacing: -.025em;
 }
 
 .intro-ring-viewport {
@@ -379,9 +379,9 @@
 .intro-tagline-content h2 {
   margin: 0;
   font-size: clamp(3rem, 9vw, 9.5rem);
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -.07em;
+  letter-spacing: -.025em;
   word-break: keep-all;
 }
 
@@ -441,7 +441,9 @@
 .intro-reel-heading h2 {
   margin: .5rem 0 2rem;
   font-size: clamp(1.8rem, 4vw, 3rem);
-  font-weight: 900;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -.025em;
 }
 
 .intro-reel-strip {

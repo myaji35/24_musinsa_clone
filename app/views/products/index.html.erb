@@ -54,12 +54,12 @@
             <% if product.ai_attributes.present? %>
               <div class="flex flex-wrap gap-1 mb-3">
                 <% if product.mood.present? %>
-                  <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-medium rounded">
+                  <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded">
                     <%= product.mood.is_a?(Array) ? product.mood.first : product.mood %>
                   </span>
                 <% end %>
                 <% if product.tpo.present? %>
-                  <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-medium rounded">
+                  <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">
                     <%= product.tpo.is_a?(Array) ? product.tpo.first : product.tpo %>
                   </span>
                 <% end %>
@@ -69,7 +69,7 @@
             <!-- Actions -->
             <div class="flex gap-2 pt-3 border-t border-gray-100">
               <% if logged_in? %>
-              <span class="self-center px-2 py-0.5 text-[10px] font-bold rounded <%= product.published? ? 'bg-gray-100 text-gray-600' : 'bg-amber-100 text-amber-800' %>"><%= product.published? ? "공개" : "초안" %></span>
+              <span class="self-center px-2 py-0.5 text-xs font-bold rounded <%= product.published? ? 'bg-gray-100 text-gray-600' : 'bg-amber-100 text-amber-800' %>"><%= product.published? ? "공개" : "초안" %></span>
               <%= link_to "수정", edit_product_path(product), class: "flex-1 text-center text-xs font-medium text-gray-700 py-2 border border-gray-300 rounded hover:border-black transition-colors" %>
               <% end %>
               <%= link_to (logged_in? ? "상세페이지 미리보기" : "보기"), product_path(product), class: "flex-1 text-center text-xs font-medium text-white bg-black py-2 rounded hover:bg-gray-800 transition-colors" %>

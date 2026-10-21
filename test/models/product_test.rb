@@ -36,12 +36,12 @@ class ProductTest < ActiveSupport::TestCase
     assert @product.valid?
   end
 
-  test "free_shipping? returns true for products over 30000" do
+  test "전 상품 무료배송이다" do
     @product.price = 30000
     assert @product.free_shipping?
 
-    @product.price = 29999
-    assert_not @product.free_shipping?
+    @product.price = 9900
+    assert @product.free_shipping?
   end
 
   test "has_coupon? returns true when badges include coupon" do

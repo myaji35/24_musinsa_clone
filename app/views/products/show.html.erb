@@ -82,6 +82,12 @@
       <div class="pt-6 space-y-3">
         <p class="text-sm font-medium text-black">상품 설명</p>
         <p class="text-sm text-gray-600 leading-relaxed"><%= @product.description %></p>
+        <% if @product.selling_points.present? %>
+          <section aria-label="셀링포인트" class="space-y-3">
+            <h2 class="text-sm font-medium text-black">셀링포인트</h2>
+            <div class="text-sm text-gray-600 leading-relaxed"><%= simple_format(h(@product.selling_points)) %></div>
+          </section>
+        <% end %>
       </div>
 
     </div>

@@ -65,6 +65,16 @@
       <% end %>
     </section>
   <% else %>
+    <section aria-label="관리자 가격 요약" class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6 text-sm space-y-2">
+      <h2 class="font-bold">관리자 가격 요약</h2>
+      <p>판매가: <%= number_to_currency(@product.price, unit: "원", format: "%n%u", precision: 0) %></p>
+      <% if @product.supply_price.nil? %>
+        <span class="inline-block bg-gray-200 text-gray-700 rounded px-2 py-1">공급가 미입력</span>
+      <% else %>
+        <p>공급가: <%= number_to_currency(@product.supply_price, unit: "원", format: "%n%u", precision: 0) %></p>
+        <p>마진: <%= number_to_currency(@product.margin_amount, unit: "원", format: "%n%u", precision: 0) %> (<%= @product.margin_rate.nil? ? "계산 불가" : "#{number_with_precision(@product.margin_rate, precision: 1)}%" %>)</p>
+      <% end %>
+    </section>
     <%= render "form", product: @product %>
     <%= render "cutout_panel", product: @product %>
   <% end %>

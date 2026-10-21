@@ -32,6 +32,9 @@ class Product < ApplicationRecord
   validates :brand, presence: true
   validates :category, presence: true
   validates :description, length: { maximum: 500 }, allow_blank: true
+  validates :selling_points, length: { maximum: 10_000 }, allow_blank: true
+  validates :supply_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :supplier, presence: true, if: -> { supplier_id.present? }
   validate :validate_runway_video
   validate :validate_image
 
@@ -45,6 +48,18 @@ class Product < ApplicationRecord
   scope :by_tpo, ->(tpo) { where("json_extract(ai_attributes, '$.tpo') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(tpo.to_s.to_json)}%") }
   scope :by_fit_style, ->(fit_style) { where("json_extract(ai_attributes, '$.fit_style') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(fit_style.to_s)}%") }
   scope :by_material_feel, ->(material_feel) { where("json_extract(ai_attributes, '$.material_feel') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(material_feel.to_s)}%") }
+
+  def margin_amount
+    return if supply_price.nil? || price.nil?
+
+    price - supply_price
+  end
+
+  def margin_rate
+    return if margin_amount.nil? || price.zero?
+
+    (margin_amount / price * 100).round(1)
+  end
 
   # 배지 관련 헬퍼 메서드
   def badge_list

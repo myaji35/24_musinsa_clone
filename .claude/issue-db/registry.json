@@ -896,14 +896,14 @@
       "priority": "P1",
       "size": "M",
       "phase": "4",
-      "status": "BLOCKED",
+      "status": "DONE",
       "depends_on": [
         "ISS-003",
         "ISS-012"
       ],
       "done_criteria": "kamal deploy 성공",
       "created_at": "2026-09-07T15:03:23.919740",
-      "updated_at": "2026-10-19T03:54:02.042135+00:00",
+      "updated_at": "2026-10-21T10:51:32.045545+00:00",
       "payload": {
         "decisions": [
           {
@@ -1018,6 +1018,13 @@
             "at": "2026-10-19T03:54:02.042135+00:00",
             "by": "factory-runner",
             "note": "대표님 결정 A(열쇠 파일·토큰 이전) 대기 — 이 맥에 config/master.key·ghcr 쓰기 토큰 아직 없음"
+          },
+          {
+            "from": "BLOCKED",
+            "to": "DONE",
+            "at": "2026-10-21T10:51:32.045545+00:00",
+            "by": "factory-runner",
+            "note": "2026-10-21 첫 Kamal 배포 성공 — http://jieum.158.247.235.31.nip.io (/up·홈·상품·카탈로그 이미지 200). colima+로컬 레지스트리(5556), master.key 재생성, app_port 80, 서버 nginx sites-enabled/jieum 추가. HTTPS(certbot) 미설정"
           }
         ],
         "gate_stage": "secrets",
@@ -1048,7 +1055,9 @@
           "이미지 저장소(ghcr) 쓰기 토큰 — write:packages 권한 GitHub 토큰을 KAMAL_REGISTRY_PASSWORD 로 제공",
           "이 맥에 docker 도구 설치(무료 Docker Desktop 개인/소규모 또는 colima)"
         ],
-        "blocked_reason": "대표님 결정 A(열쇠 파일·토큰 이전) 대기 — 이 맥에 config/master.key·ghcr 쓰기 토큰 아직 없음"
+        "blocked_reason": "대표님 결정 A(열쇠 파일·토큰 이전) 대기 — 이 맥에 config/master.key·ghcr 쓰기 토큰 아직 없음",
+        "deployed_at": "2026-10-21",
+        "deployed_commit": "b54a6e2"
       },
       "blocked_reason": "임시 서버 배포 설정 완료(9a3bed1). 첫 배포에 필요한 기존 열쇠 2개(config/master.key, ghcr 쓰기 토큰)가 이 맥에 없음 — 대표님 준비 대기",
       "result": {
@@ -6557,10 +6566,10 @@
       "type": "FEATURE",
       "priority": "P1",
       "size": "M",
-      "status": "IN_PROGRESS",
+      "status": "AWAITING_USER",
       "depends_on": [],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:20:35.001262+00:00",
+      "updated_at": "2026-10-21T10:24:22.567338+00:00",
       "done_criteria": "마이그레이션 products.selling_points(text) 추가. /products/new·edit에서 납품처 select(Supplier.active)·공급가·셀포인트(2,000자 이상 저장 가능) 입력·저장됨(products_controller permit 포함). 상품 편집 화면 관리자 섹션에 공급가·소매가·마진(원·%) 표시. 공개 /products/:id·/products·/api/v1/ucp/products·검색 응답에 supply_price 문자열이 없음을 통합테스트로 단언. 셀포인트는 공개 상품페이지에 줄바꿈 유지(simple_format)로 표시. bin/rails test·brakeman 통과.",
       "payload": {
         "summary": "products.supply_price/supplier_id 컬럼은 이미 있으나 엑셀 가져오기(ISS-077)로만 채워지고 폼에는 없다. 장문 셀포인트는 description 500자 제한 때문에 별도 컬럼이 필요하다. 공급가는 관리자 화면에만 보이도록 테스트로 고정한다.",
@@ -6576,12 +6585,12 @@
         ],
         "gate": "deploy",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "컬럼 1개 추가뿐, 기존 데이터 변경 없음. 공급가 노출 차단은 테스트로 고정.",
+          "verdict": "대표님 결정 필요",
+          "reason": "구현·전체 테스트 통과. 공급가(원가)라는 돈 정보가 들어가는 화면이라 배포 전 대표님 확인 단계(gate=deploy). 손님 화면 노출 0건 확인.",
           "risk": "low",
-          "effort": "M",
-          "by": "fable-review",
-          "at": "2026-10-21T10:19:55.105048+00:00"
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-21T10:24:22.567338+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
         "decisions": [
@@ -6608,8 +6617,95 @@
             "at": "2026-10-21T10:20:35.001262+00:00",
             "by": "factory-runner",
             "note": "factory-runner 착수(gate=deploy, 브랜치 factory/ISS-126)"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-10-21T10:24:22.567338+00:00",
+            "by": "factory-runner",
+            "note": "구현·테스트 완료(factory/ISS-126 e3c2b48), 배포 전 대표님 확인 대기"
           }
-        ]
+        ],
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "컬럼 1개 추가뿐, 기존 데이터 변경 없음. 공급가 노출 차단은 테스트로 고정.",
+            "risk": "low",
+            "effort": "M",
+            "by": "fable-review",
+            "at": "2026-10-21T10:19:55.105048+00:00"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "commit": "e3c2b48",
+        "question": "상품 등록 화면에 '납품처·공급가·셀링포인트' 입력칸을 추가한 것을 쇼핑몰에 반영할까요?",
+        "plain_summary": "관리자가 상품마다 어느 납품처 물건인지, 얼마에 받아오는지(공급가), 긴 판매 포인트 글을 적을 수 있게 했습니다. 공급가는 관리자 화면에서만 보이고 손님 화면에는 안 나오는 것을 자동 검사로 확인했습니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "반영(배포 묶음에 넣기)",
+            "pros": "다음 카드(납품처 30개 상품 연결·납품처 상품 탭·발주 단가 자동 입력)를 바로 이어서 할 수 있음",
+            "cons": "상품 표에 칸 1개가 추가됨(기존 데이터는 그대로)"
+          },
+          {
+            "key": "B",
+            "label": "화면을 먼저 직접 보고 결정(보류)",
+            "pros": "대표님이 입력 화면 문구·배치를 먼저 확인",
+            "cons": "후속 카드 ISS-127·132 가 계속 대기"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "기존 데이터를 바꾸지 않는 칸 추가뿐이고, 공급가가 손님에게 보이지 않는 것을 자동 검사로 고정했습니다.",
+        "if_not_decided": "납품처 30개 상품 연결(ISS-127)과 납품처 상품 탭(ISS-132)이 시작되지 못합니다.",
+        "reversible": "예 — 칸 추가만이라 되돌리기 쉽습니다(입력한 공급가·셀링포인트만 사라짐).",
+        "result": {
+          "summary": "상품 폼에 납품처 선택·공급가·장문 셀링포인트 추가, 편집 화면 마진 요약, 공개 화면·API 공급가 비노출 테스트",
+          "proof": [
+            {
+              "cmd": "DATABASE_URL=sqlite3:storage/test_ISS-126v.sqlite3 bin/rails test (factory/ISS-126)",
+              "exit_code": 0,
+              "output": "375 runs, 2635 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "bin/rubocop <변경 rb 5개> && bundle exec brakeman -q",
+              "exit_code": 0,
+              "output": "5 files inspected, no offenses detected / Security Warnings: 0"
+            },
+            {
+              "cmd": "로컬 서버(3126, dev DB 복사본) 관리자 로그인 → PATCH /products/227 supplier_id=21 supply_price=17777 selling_points(1806자)",
+              "exit_code": 0,
+              "output": "login=302 patch=302; DB 21|17777|1806; 편집화면 '공급가: 17,777원' '마진: 171,223원 (90.6%)'"
+            },
+            {
+              "cmd": "비로그인 curl /products/227, /products, /search?q=a 에서 17777·supply_price·납품처명 grep",
+              "exit_code": 0,
+              "output": "/products/227 17777=0 supply_price=0 supplier_name=0 셀링=2 br=4; /products 0/0/0; /search 0/0/0"
+            }
+          ],
+          "criteria_check": [
+            {
+              "criterion": "관리자가 상품 등록·수정 화면에서 납품처를 고르고 공급가를 입력해 저장할 수 있다",
+              "met": true,
+              "how": "통합테스트 create/update + 로컬 서버 PATCH 후 DB 확인(21|17777)"
+            },
+            {
+              "criterion": "2,000자 넘는 셀링포인트 입력·저장, 손님 상품 페이지에 줄바꿈 유지",
+              "met": true,
+              "how": "통합테스트 2,500자 저장·<br> 단언, 라이브 상세에 셀링포인트 블록·<br> 확인"
+            },
+            {
+              "criterion": "관리자 편집 화면에서 공급가·판매가·마진(원·%) 확인",
+              "met": true,
+              "how": "라이브 편집화면 '공급가: 17,777원 / 마진: 171,223원 (90.6%)', 미입력 시 배지 테스트"
+            },
+            {
+              "criterion": "손님 화면·외부 상품 API·검색에 공급가 미노출(테스트 고정)",
+              "met": true,
+              "how": "통합테스트(상세·목록·검색·/api/v1/ucp/products) + 라이브 curl grep 0건"
+            }
+          ],
+          "note": "main 작업트리에 대화형 세션의 미커밋 변경(products/show.html.erb 갤러리 등)이 있음 — 병합 시 show.html.erb 우측 설명부(이 브랜치)와 좌측 갤러리(그 세션)가 같은 파일이라 충돌 여부 확인 필요."
+        }
       }
     },
     {
@@ -6695,12 +6791,12 @@
       "type": "TASK",
       "priority": "P0",
       "size": "M",
-      "status": "READY",
+      "status": "AWAITING_USER",
       "depends_on": [
         "ISS-125"
       ],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-21T10:21:13.628370+00:00",
+      "updated_at": "2026-10-21T10:28:20.867047+00:00",
       "done_criteria": "마이그레이션: users.role string NOT NULL default 'member' + users.supplier_id(index) 추가, 기존 User 전부 role='admin'으로 백필(데이터 마이그레이션, 되돌리기 가능). ApplicationController#require_admin이 current_user&.admin?만 통과시킴. member/partner 세션으로 /suppliers·/purchase_orders·/inventory/*·/dashboard·/products/new·/kpi·/supplier_imports 요청 시 전부 리다이렉트(테스트). User#admin?/partner?/member? 헬퍼. 기존 181+ 테스트와 fixtures(users.yml에 role 추가) 통과, brakeman 경고 0.",
       "payload": {
         "summary": "현재 require_admin == logged_in? 이라 회원가입을 여는 순간 모든 가입자가 관리자가 된다. 회원가입(ISS-129)·승격(ISS-130)보다 반드시 먼저 들어가야 하는 보안 기반 작업.",
@@ -6713,12 +6809,12 @@
         ],
         "gate": "deploy",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "선행 ISS-125 결정 B 완료. 인증 변경이므로 gate=deploy 검토 후 배포.",
+          "verdict": "대표님 결정 필요",
+          "reason": "로그인 권한 구조를 바꾸는 보안 작업이라 배포 전 대표님 확인 단계. 기존 관리자 계정은 자동으로 관리자로 채워져 잠김 없음을 실측.",
           "risk": "medium",
           "effort": "M",
-          "by": "interactive-session",
-          "at": "2026-10-21T10:21:13.628370+00:00"
+          "by": "factory-runner",
+          "at": "2026-10-21T10:28:20.867047+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
         "blocked_reason": "선행 미완: ISS-125(납품처 계정 구조 대표님 결정) 미결",
@@ -6734,10 +6830,16 @@
             "at": "2026-10-21T10:20:59.912Z",
             "by": "auto",
             "reason": "선행 카드 미완(ISS-125(납품처 계정 구조 대표님 결정) 미결). 관제실 자동 승인으로 READY 가 됐으나 선행이 끝나야 착수 가능 — 선행 완료 시 다시 승인 권장으로 전환."
+          },
+          {
+            "action": "approve",
+            "at": "2026-10-21T10:24:24.126Z",
+            "by": "auto",
+            "reason": "선행 ISS-125 결정 B 완료. 인증 변경이므로 gate=deploy 검토 후 배포."
           }
         ],
-        "approved_at": null,
-        "approved_by": null,
+        "approved_at": "2026-10-21T10:24:24.126Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation_history": [
           {
             "verdict": "승인 권장",
@@ -6754,6 +6856,22 @@
             "effort": "-",
             "by": "factory-runner",
             "at": "2026-10-21T10:20:35.001262+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "선행 ISS-125 결정 B 완료. 인증 변경이므로 gate=deploy 검토 후 배포.",
+            "risk": "medium",
+            "effort": "M",
+            "by": "interactive-session",
+            "at": "2026-10-21T10:21:13.628370+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "선행 ISS-125 대표님 결정 B(대화) 확인. 인증 변경이라 브랜치에서 구현하고 배포는 대표님 확인 후. 기존 계정은 전부 관리자로 채워 넣어 잠김 위험 없음.",
+            "risk": "medium",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-10-21T10:24:43.075263+00:00"
           }
         ],
         "auto_approval_ignored": {
@@ -6782,9 +6900,100 @@
             "at": "2026-10-21T10:21:13.628370+00:00",
             "by": "factory-runner",
             "note": "선행 ISS-125 대표님 결정 B 완료(2026-10-21) — 착수 가능"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-21T10:24:43.075263+00:00",
+            "by": "factory-runner",
+            "note": "factory-runner 착수(gate=deploy, 브랜치 factory/ISS-128) — 선행 ISS-125 대표님 결정 B"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-10-21T10:28:20.867047+00:00",
+            "by": "factory-runner",
+            "note": "구현·테스트 완료(factory/ISS-128 76f8a02), 인증 변경이라 배포 전 대표님 확인 대기"
           }
         ],
-        "deferred_at": "2026-10-21T10:20:59.912Z"
+        "deferred_at": "2026-10-21T10:20:59.912Z",
+        "branch": "factory/ISS-128",
+        "acceptance_criteria": [
+          "지금 쓰는 관리자 계정은 업데이트 후에도 그대로 로그인해 모든 관리 화면을 쓸 수 있다",
+          "일반 회원이나 납품처(파트너) 계정으로 로그인해도 관리 화면(거래처·발주·재고·대시보드·상품 등록·KPI·엑셀 가져오기)에 들어가지 못하고 다른 곳으로 보내진다",
+          "계정마다 관리자/일반 회원/납품처 중 하나의 역할이 저장되고, 납품처 계정은 어느 납품처 소속인지 연결된다",
+          "기존 자동 테스트가 모두 통과하고 보안 검사 경고가 0건이다"
+        ],
+        "gate_stage": "deploy-review",
+        "commit": "76f8a02",
+        "question": "계정에 '관리자 / 일반 회원 / 납품처' 구분을 넣고 관리자만 관리 화면에 들어가게 한 변경을 쇼핑몰에 반영할까요?",
+        "plain_summary": "지금은 로그인만 하면 누구나 관리자 화면에 들어갈 수 있어서, 회원가입을 열기 전에 계정 구분을 먼저 넣었습니다. 지금 쓰는 관리자 계정은 자동으로 '관리자'가 되어 그대로 쓸 수 있습니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "반영(배포 묶음에 넣기)",
+            "pros": "다음 단계인 회원가입·납품처 승격 화면을 바로 시작할 수 있음",
+            "cons": "로그인 권한 구조가 바뀌므로 배포 직후 관리자 로그인 1회 확인 필요"
+          },
+          {
+            "key": "B",
+            "label": "회원가입·승격 화면까지 다 만든 뒤 한꺼번에 반영(보류)",
+            "pros": "한 번에 확인",
+            "cons": "회원가입(ISS-129)·승격(ISS-130)은 이 변경 위에서만 만들 수 있어 브랜치가 길어지고 병합 부담이 커짐"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "회원가입을 열기 전에 반드시 들어가야 하는 안전장치이고, 기존 관리자 계정이 그대로 동작하는 것을 실제로 확인했습니다.",
+        "if_not_decided": "회원가입(ISS-129)과 납품처 승격(ISS-130), 납품처 화면 통합(ISS-131)이 시작되지 못합니다.",
+        "reversible": "예 — 되돌리는 절차(마이그레이션 롤백)가 있어 원래대로 돌릴 수 있습니다.",
+        "result": {
+          "summary": "users.role(admin|member|partner)·supplier_id 추가, 기존 사용자 admin 백필, 관리자 화면 역할 검사, 비관리자 로그인 후 홈 이동",
+          "proof": [
+            {
+              "cmd": "DATABASE_URL=sqlite3:storage/test_ISS-128v.sqlite3 bin/rails test (factory/ISS-128)",
+              "exit_code": 0,
+              "output": "384 runs, 2735 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "bin/rubocop <9 files> && bundle exec brakeman -q",
+              "exit_code": 0,
+              "output": "9 files inspected, no offenses detected / Security Warnings: 0"
+            },
+            {
+              "cmd": "dev DB 복사본 bin/rails db:migrate 후 User.pluck(:email,:role)",
+              "exit_code": 0,
+              "output": "AddRolesToUsers: migrated; [[\"admin@jieun.test\", \"admin\"]] (기존 관리자 백필)"
+            },
+            {
+              "cmd": "로컬 서버 3128 — admin/member/partner 로그인 후 /suppliers /purchase_orders /inventory/scan /dashboard/index /products/new /kpi /supplier_imports curl",
+              "exit_code": 0,
+              "output": "admin: 로그인→/inventory/scan, 7경로 모두 200, 관리메뉴 3; member: 로그인→/, 7경로 모두 302→/, 관리메뉴 0; partner: 동일 302→/, 관리메뉴 0"
+            }
+          ],
+          "criteria_check": [
+            {
+              "criterion": "지금 쓰는 관리자 계정은 업데이트 후에도 그대로 로그인해 모든 관리 화면을 쓸 수 있다",
+              "met": true,
+              "how": "dev DB 복사본 마이그레이션 후 admin@jieun.test role=admin, 7개 관리 경로 200"
+            },
+            {
+              "criterion": "일반 회원·납품처 계정은 관리 화면에 못 들어가고 다른 곳으로 보내진다",
+              "met": true,
+              "how": "라이브 member/partner 7경로 302→홈 + 통합테스트 admin_role_access_test"
+            },
+            {
+              "criterion": "계정마다 역할 저장, 납품처 계정은 소속 납품처 연결",
+              "met": true,
+              "how": "User 모델 검증 테스트(partner 는 납품처 필수, member 는 납품처 없음) + 라이브 p128 supplier_id=21"
+            },
+            {
+              "criterion": "기존 자동 테스트 전부 통과, 보안 경고 0건",
+              "met": true,
+              "how": "384 runs 0 failures, brakeman 0"
+            }
+          ],
+          "note": "factory/ISS-126 과 함께 병합 시 db/schema.rb 버전 줄 1줄 충돌(더 큰 버전 2026_10_21_000128 선택). hold/ISS-098(로그인 후 복귀) 브랜치와 sessions_controller 가 겹칠 수 있음."
+        }
       }
     },
     {

@@ -9,10 +9,19 @@
           미리보기 · 비공개 — 손님에게는 보이지 않습니다. 컨펌 후 공개해 주세요.
         <% end %>
       </p>
+      <% if !@product.published? && !@product.publishable? %>
+        <ul data-testid="publish-blockers" class="w-full flex flex-wrap gap-1.5">
+          <% @product.publish_blockers.each do |blocker| %>
+            <li class="px-2 py-0.5 text-xs font-bold bg-amber-100 text-amber-900"><%= blocker %></li>
+          <% end %>
+        </ul>
+      <% end %>
       <div class="flex gap-2">
         <%= link_to "수정", edit_product_path(@product), class: "px-4 py-2 border border-gray-300 text-gray-800 hover:border-black" %>
         <% if @product.published? %>
           <%= button_to "비공개로 되돌리기", unpublish_product_path(@product), data: { turbo_confirm: "손님 화면에서 내립니다. 계속할까요?" }, class: "px-4 py-2 border border-black text-black hover:bg-gray-100" %>
+        <% elsif !@product.publishable? %>
+          <button type="button" disabled class="px-4 py-2 bg-gray-300 text-gray-600 font-bold cursor-not-allowed">공개 불가 · 필수 정보 <%= @product.publish_blockers.size %>건</button>
         <% else %>
           <%= button_to "공개", publish_product_path(@product), data: { turbo_confirm: "이 상세페이지를 손님에게 공개합니다. 계속할까요?" }, class: "px-4 py-2 bg-black text-white font-bold hover:bg-gray-800" %>
         <% end %>

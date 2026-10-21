@@ -96,17 +96,15 @@
     </section>
   <% end %>
 
-  <% if page["spec"].present? %>
-    <section aria-labelledby="detail-spec" class="space-y-3">
-      <h2 id="detail-spec" class="text-xl md:text-2xl font-bold text-black text-center">상품 정보</h2>
-      <dl class="divide-y divide-gray-200 border-y border-gray-200 text-sm">
-        <% page["spec"].each do |label, value| %>
-          <div class="grid grid-cols-3 gap-4 py-3">
-            <dt class="text-gray-500"><%= label %></dt>
-            <dd class="col-span-2 text-gray-900"><%= detail_value(value) %></dd>
-          </div>
-        <% end %>
-      </dl>
-    </section>
-  <% end %>
+  <section aria-labelledby="detail-spec" class="space-y-3">
+    <h2 id="detail-spec" class="text-xl md:text-2xl font-bold text-black text-center">상품정보제공고시</h2>
+    <dl class="divide-y divide-gray-200 border-y border-gray-200 text-sm">
+      <% Product::INFO_NOTICE_FIELDS.each do |field| %>
+        <div class="grid grid-cols-3 gap-4 py-3">
+          <dt class="text-gray-500"><%= field %></dt>
+          <dd class="col-span-2 text-gray-900"><%= detail_value(product.info_notice_value(field).presence || "TODO: 미입력") %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </section>
 </article>

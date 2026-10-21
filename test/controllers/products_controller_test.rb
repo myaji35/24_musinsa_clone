@@ -321,7 +321,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "관리자는 초안을 미리보기하고 공개하면 손님에게 보인다" do
-    @product.update!(status: "draft")
+    @product.update!(status: "draft", info_notice: Product::INFO_NOTICE_FIELDS.index_with { "입력됨" })
     sign_in
 
     get product_path(@product)
@@ -371,5 +371,26 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     sign_in
     get product_path(product)
     assert_select "[data-todo]", text: /확인 필요 · /
+  end
+
+  test "상품정보제공고시 필수 항목이 비면 공개되지 않고 빠진 항목을 알려 준다" do
+    @product.update!(status: "draft", info_notice: { "색상" => "카멜" })
+    sign_in
+
+    get product_path(@product)
+    assert_select "[data-testid=publish-blockers] li", text: "상품정보 · 소재"
+    assert_select "button[disabled]", text: /공개 불가/
+
+    post publish_product_path(@product)
+    assert_redirected_to product_path(@product)
+    assert_match "소재", flash[:alert]
+    assert_not @product.reload.published?
+  end
+
+  test "관리자 폼에서 상품정보제공고시를 입력하면 저장된다" do
+    sign_in
+    patch product_path(@product), params: { product: { info_notice: { "소재" => "울 70%, 나일론 30%", "제조국" => "대한민국" } } }
+    assert_equal "울 70%, 나일론 30%", @product.reload.info_notice_value("소재")
+    assert_equal "대한민국", @product.info_notice_value("제조국")
   end
 end

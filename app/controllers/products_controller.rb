@@ -82,6 +82,10 @@ class ProductsController < ApplicationController
   end
 
   def publish
+    unless @product.publishable?
+      return redirect_to @product, alert: "필수 정보가 비어 있어 공개할 수 없습니다: #{@product.publish_blockers.join(', ')}"
+    end
+
     @product.publish!(current_user)
     redirect_to @product, notice: "상세페이지를 공개했습니다. 이제 손님 화면에 보입니다."
   end
@@ -119,6 +123,7 @@ class ProductsController < ApplicationController
       :is_new,
       :restocked_at,
       ai_attributes: {},
+      info_notice: Product::INFO_NOTICE_FIELDS,
       badges: [],
       variants_attributes: [ :id, :color, :size, :stock, :min_stock, :barcode, :sku_code, :_destroy ]
     )

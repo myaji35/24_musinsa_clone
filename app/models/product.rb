@@ -29,6 +29,10 @@ class Product < ApplicationRecord
   validates :status, inclusion: { in: STATUSES }
   scope :published, -> { where(status: "published") }
 
+  # 상품정보제공고시(전자상거래법, 의류) 필수 항목 — 하나라도 비면 공개할 수 없다 (ISS-143)
+  INFO_NOTICE_FIELDS = %w[소재 색상 치수 제조자 제조국 세탁방법 제조연월 품질보증기준 A/S책임자].freeze
+  serialize :info_notice, coder: JSON
+
   # AI 속성을 JSON으로 저장/파싱
   serialize :ai_attributes, coder: JSON
   serialize :badges, coder: JSON
@@ -58,6 +62,20 @@ class Product < ApplicationRecord
   # 배지 관련 헬퍼 메서드
   def published?
     status == "published"
+  end
+
+  def info_notice_value(field)
+    (info_notice || {})[field].to_s.strip
+  end
+
+  # 공개를 막는 항목 목록. 비어 있으면 공개 가능
+  def publish_blockers
+    blockers = INFO_NOTICE_FIELDS.select { |field| info_notice_value(field).blank? }.map { |field| "상품정보 · #{field}" }
+    blockers + detail_page_todos.map { |todo| "상세페이지 · #{todo}" }
+  end
+
+  def publishable?
+    publish_blockers.empty?
   end
 
   def publish!(user)
@@ -125,6 +143,19 @@ class Product < ApplicationRecord
 
     path = catalog_id && Rails.root.join("config/detail_pages", "#{catalog_id}.yml")
     @detail_page = path&.exist? ? YAML.safe_load_file(path) : nil
+  end
+
+  # 상세페이지 본문에 남은 "TODO: ..." 값(미확정 정보)
+  def detail_page_todos
+    collect = ->(node) do
+      case node
+      when Hash then node.values.flat_map { |value| collect.(value) }
+      when Array then node.flat_map { |value| collect.(value) }
+      when String then node.start_with?("TODO:") ? [ node.delete_prefix("TODO:").strip ] : []
+      else []
+      end
+    end
+    collect.(detail_page).uniq
   end
 
   def gallery_image_urls

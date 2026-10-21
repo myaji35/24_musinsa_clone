@@ -95,6 +95,20 @@
     </div>
   </div>
 
+  <!-- 상품정보제공고시 (ISS-143) -->
+  <div class="bg-white border border-gray-200 rounded-lg p-6">
+    <h3 class="text-lg font-bold mb-2 pb-2 border-b border-gray-200">상품정보제공고시 (필수)</h3>
+    <p class="text-sm text-gray-600 mb-4">모두 입력해야 상세페이지를 공개할 수 있습니다. 납품처에서 받은 내용을 그대로 적어 주세요.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <% Product::INFO_NOTICE_FIELDS.each_with_index do |field, index| %>
+        <div>
+          <%= label_tag "product_info_notice_#{index}", "#{field} *", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= text_field_tag "product[info_notice][#{field}]", product.info_notice_value(field), id: "product_info_notice_#{index}", class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
   <!-- AI 속성 섹션 -->
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-bold mb-2 pb-2 border-b border-gray-200">AI 검색 속성</h3>

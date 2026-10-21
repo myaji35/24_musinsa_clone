@@ -10,6 +10,11 @@
 #     schedule: at 5am every day
 
 development:
+  feedback_contact_purge:
+    class: Feedbacks::PurgeContactsJob
+    queue: default
+    schedule: at 4:30am every day
+
   shipping_address_purge:
     class: ShippingAddressPurgeJob
     queue: default
@@ -34,6 +39,11 @@ development:
   #   schedule: every hour
 
 production:
+  feedback_contact_purge:
+    class: Feedbacks::PurgeContactsJob
+    queue: default
+    schedule: at 4:30am every day
+
   shipping_address_purge:
     class: ShippingAddressPurgeJob
     queue: default

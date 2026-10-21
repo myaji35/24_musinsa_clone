@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   resources :characters, only: [ :show ], param: :handle
 
+  resources :feedbacks, only: [ :new, :create ]
+
   # Products & Reviews
   resources :products do
     resources :reviews, only: [ :create ]

@@ -20,13 +20,20 @@ class Rack::Attack
     end
   end
 
-  # 일반 페이지와 정적/이미지 경로는 제한하지 않고 API에만 스로틀 적용
+  throttle("feedbacks/ip", limit: 5, period: 10.minutes) do |req|
+    req.ip if req.post? && req.path == "/feedbacks"
+  end
 
   ### Custom response for throttled requests ###
   self.throttled_responder = lambda do |request|
     match_data = request.env["rack.attack.match_data"]
     now = match_data[:epoch_time]
     retry_after = match_data[:period] - (now % match_data[:period])
+
+    if request.path == "/feedbacks"
+      next [ 429, { "Content-Type" => "text/plain; charset=utf-8", "Retry-After" => retry_after.to_s },
+             [ "잠시 후 다시 시도해 주세요" ] ]
+    end
 
     [
       429,
@@ -45,7 +52,7 @@ class Rack::Attack
   ### Enable logging for throttled requests ###
   ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, payload|
     req = payload[:request]
-    if req.env["rack.attack.matched"]
+    if req.env["rack.attack.matched"] && req.path != "/feedbacks"
       Rails.logger.warn "[Rack::Attack] #{req.env['rack.attack.match_type']} blocked #{req.ip} on #{req.path}"
     end
   end

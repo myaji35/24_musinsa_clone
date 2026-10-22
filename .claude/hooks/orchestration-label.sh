@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/orchestration-label.sh
+/Users/gangmini/.claude/harness-core/hooks/orchestration-label.sh

@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/browse-qa.sh
+/Users/gangmini/.claude/harness-core/hooks/browse-qa.sh

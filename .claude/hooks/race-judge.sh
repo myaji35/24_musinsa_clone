@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/race-judge.sh
+/Users/gangmini/.claude/harness-core/hooks/race-judge.sh

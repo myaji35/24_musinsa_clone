@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/freeze-guard.sh
+/Users/gangmini/.claude/harness-core/hooks/freeze-guard.sh

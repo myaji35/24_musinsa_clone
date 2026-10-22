@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/dispatch-ready.sh
+/Users/gangmini/.claude/harness-core/hooks/dispatch-ready.sh

@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/dashboard.sh
+/Users/gangmini/.claude/harness-core/hooks/dashboard.sh

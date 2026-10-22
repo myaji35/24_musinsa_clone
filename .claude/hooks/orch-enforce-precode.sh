@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/orch-enforce-precode.sh
+/Users/gangmini/.claude/harness-core/hooks/orch-enforce-precode.sh

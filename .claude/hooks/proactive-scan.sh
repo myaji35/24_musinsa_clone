@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/proactive-scan.sh
+/Users/gangmini/.claude/harness-core/hooks/proactive-scan.sh

@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/test-meta-review-pattern1.sh
+/Users/gangmini/.claude/harness-core/hooks/test-meta-review-pattern1.sh

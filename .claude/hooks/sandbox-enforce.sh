@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/sandbox-enforce.sh
+/Users/gangmini/.claude/harness-core/hooks/sandbox-enforce.sh

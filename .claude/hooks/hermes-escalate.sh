@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/hermes-escalate.sh
+/Users/gangmini/.claude/harness-core/hooks/hermes-escalate.sh

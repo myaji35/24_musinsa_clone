@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/user-input-mark.sh
+/Users/gangmini/.claude/harness-core/hooks/user-input-mark.sh

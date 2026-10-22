@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/user-confirm-response.sh
+/Users/gangmini/.claude/harness-core/hooks/user-confirm-response.sh

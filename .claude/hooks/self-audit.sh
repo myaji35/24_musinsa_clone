@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/self-audit.sh
+/Users/gangmini/.claude/harness-core/hooks/self-audit.sh

@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/on-agent-complete.sh
+/Users/gangmini/.claude/harness-core/hooks/on-agent-complete.sh

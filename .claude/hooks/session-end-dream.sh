@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/session-end-dream.sh
+/Users/gangmini/.claude/harness-core/hooks/session-end-dream.sh

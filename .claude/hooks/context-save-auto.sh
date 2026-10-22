@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/context-save-auto.sh
+/Users/gangmini/.claude/harness-core/hooks/context-save-auto.sh

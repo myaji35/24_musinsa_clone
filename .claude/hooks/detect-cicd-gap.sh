@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/detect-cicd-gap.sh
+/Users/gangmini/.claude/harness-core/hooks/detect-cicd-gap.sh

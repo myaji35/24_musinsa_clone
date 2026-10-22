@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/error-investigate-gate.sh
+/Users/gangmini/.claude/harness-core/hooks/error-investigate-gate.sh

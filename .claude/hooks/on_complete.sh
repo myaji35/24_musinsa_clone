@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/on_complete.sh
+/Users/gangmini/.claude/harness-core/hooks/on_complete.sh

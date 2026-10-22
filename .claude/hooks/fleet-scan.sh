@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/fleet-scan.sh
+/Users/gangmini/.claude/harness-core/hooks/fleet-scan.sh

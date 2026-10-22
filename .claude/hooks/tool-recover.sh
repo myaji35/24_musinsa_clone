@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/tool-recover.sh
+/Users/gangmini/.claude/harness-core/hooks/tool-recover.sh

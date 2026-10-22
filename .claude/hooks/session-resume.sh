@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/session-resume.sh
+/Users/gangmini/.claude/harness-core/hooks/session-resume.sh

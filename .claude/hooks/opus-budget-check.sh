@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/opus-budget-check.sh
+/Users/gangmini/.claude/harness-core/hooks/opus-budget-check.sh

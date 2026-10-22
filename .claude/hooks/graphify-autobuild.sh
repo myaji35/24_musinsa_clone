@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/graphify-autobuild.sh
+/Users/gangmini/.claude/harness-core/hooks/graphify-autobuild.sh

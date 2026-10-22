@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/post-code-change.sh
+/Users/gangmini/.claude/harness-core/hooks/post-code-change.sh

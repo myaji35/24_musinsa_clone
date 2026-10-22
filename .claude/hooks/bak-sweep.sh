@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/bak-sweep.sh
+/Users/gangmini/.claude/harness-core/hooks/bak-sweep.sh

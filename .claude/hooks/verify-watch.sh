@@ -1,1 +1,1 @@
-/Users/gangseungsig/.claude/harness-core/hooks/verify-watch.sh
+/Users/gangmini/.claude/harness-core/hooks/verify-watch.sh

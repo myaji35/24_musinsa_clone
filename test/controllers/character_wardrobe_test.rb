@@ -11,7 +11,7 @@ class CharacterWardrobeTest < ActionDispatch::IntegrationTest
     @product.update!(worn_character: @character, worn_size: "M")
     get product_path(@product)
     assert_response :success
-    assert_includes response.body, "이 상품의 착용 이미지·영상은 AI로 만든 가상 인물(강유나)입니다."
+    assert_includes response.body, "착용 모델은 AI 가상 인물(강유나)이며, 의류는 실제 판매 상품입니다."
     assert_select "span", text: "가상 인물"
     assert_select "[data-worn-character]", text: "강유나 163cm · 상의 55 / M 착용"
     assert_select "a[href=?]", character_path(@character.handle), text: "강유나"

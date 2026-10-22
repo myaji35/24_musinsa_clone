@@ -1,8 +1,8 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-  <p class="text-sm font-medium text-gray-700 mb-4">AI로 만든 가상 인물입니다 · 실존 인물이 아닙니다</p>
+  <p class="text-[11px] text-gray-500 mb-4">AI로 만든 가상 인물입니다 · 실존 인물이 아닙니다</p>
   <div class="flex items-center gap-3 mb-6">
     <h1 class="text-2xl font-bold"><%= @character.name %>의 옷장</h1>
-    <span class="bg-white text-black border border-black px-3 py-1 text-base font-bold">가상 인물</span>
+    <span class="text-[11px] text-gray-500">가상 인물</span>
   </div>
   <% avatar_image = Avatar.find(@character.handle)&.image %>
   <% runway_path = "/intro/runway/#{@character.handle}.mp4" %>

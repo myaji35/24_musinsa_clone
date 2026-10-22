@@ -364,7 +364,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     get product_path(product)
     assert_response :success
     assert_select "[data-testid=detail-headline]"
-    assert_select "[data-testid=detail-page] h2", text: "AI 사진만 보고 사지 마세요"
+    assert_select "[data-testid=detail-page] h2", text: "실물로 확인하세요"
     assert_select "[data-testid=detail-page] h2", text: "배송·반품 안내"
     assert_select "[data-todo]", text: "확인 중"
     assert_no_match "확인 필요", response.body

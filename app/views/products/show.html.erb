@@ -43,8 +43,9 @@
     <div class="grid grid-cols-2 gap-1.5 self-start" data-testid="product-gallery">
       <% gallery.each_with_index do |url, i| %>
         <% real = url.end_with?("/real.jpg") %>
-        <figure class="relative bg-gray-100 overflow-hidden cursor-zoom-in <%= 'col-span-2' if i.zero? %>" data-real="<%= real %>"
-                data-controller="zoom" data-action="mouseenter->zoom#enter mousemove->zoom#move mouseleave->zoom#leave">
+        <%# 돋보기 확대는 맨 위 큰 사진에만 %>
+        <figure class="relative bg-gray-100 overflow-hidden <%= 'col-span-2 cursor-zoom-in' if i.zero? %>" data-real="<%= real %>"
+                <%= tag.attributes(data: { controller: "zoom", action: "mouseenter->zoom#enter mousemove->zoom#move mouseleave->zoom#leave" }) if i.zero? %>>
           <%= catalog_image_tag url, sizes: "(min-width: 1024px) 50vw, 100vw", # 돋보기 확대용으로 작은 칸도 1440px 사진을 받는다
                 alt: "#{@product.name} #{real ? '실물 사진' : '착용 사진'}", loading: (i.zero? ? "eager" : "lazy"),
                 class: "w-full aspect-[2/3] #{real ? 'object-contain' : 'object-cover'}", data: { zoom_target: "image", zoom_src: catalog_srcset(url) && url.sub(/\.jpg\z/, "-1440.webp") } %>

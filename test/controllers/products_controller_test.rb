@@ -302,6 +302,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "[data-testid=product-gallery] figure", product.gallery_image_urls.size
+    assert_select "[data-testid=product-gallery] figure[data-controller=zoom]", 1
     assert_select "figure[data-real=true] figcaption", text: "실물 사진"
     assert_select "[data-testid=variant-picker]"
     assert_select "[data-testid=product-accordions] details", 3

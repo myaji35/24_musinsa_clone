@@ -43,10 +43,11 @@
     <div class="grid grid-cols-2 gap-1.5 self-start" data-testid="product-gallery">
       <% gallery.each_with_index do |url, i| %>
         <% real = url.end_with?("/real.jpg") %>
-        <figure class="relative bg-gray-100 overflow-hidden <%= 'col-span-2' if i.zero? %>" data-real="<%= real %>">
-          <%= catalog_image_tag url, sizes: (i.zero? ? "(min-width: 1024px) 50vw, 100vw" : "(min-width: 1024px) 25vw, 50vw"),
+        <figure class="relative bg-gray-100 overflow-hidden cursor-zoom-in <%= 'col-span-2' if i.zero? %>" data-real="<%= real %>"
+                data-controller="zoom" data-action="mouseenter->zoom#enter mousemove->zoom#move mouseleave->zoom#leave">
+          <%= catalog_image_tag url, sizes: "(min-width: 1024px) 50vw, 100vw", # 돋보기 확대용으로 작은 칸도 1440px 사진을 받는다
                 alt: "#{@product.name} #{real ? '실물 사진' : '착용 사진'}", loading: (i.zero? ? "eager" : "lazy"),
-                class: "w-full aspect-[2/3] #{real ? 'object-contain' : 'object-cover'}" %>
+                class: "w-full aspect-[2/3] #{real ? 'object-contain' : 'object-cover'}", data: { zoom_target: "image", zoom_src: catalog_srcset(url) && url.sub(/\.jpg\z/, "-1440.webp") } %>
           <figcaption class="absolute bottom-2 right-2 text-[11px] <%= real ? 'text-gray-700' : 'text-white [text-shadow:0_1px_3px_rgba(0,0,0,.85)]' %>">
             <%= real ? "실물 사진" : [ @product.worn_label, "AI 가상 인물" ].compact.join(" · ") %>
           </figcaption>

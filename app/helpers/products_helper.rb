@@ -142,4 +142,9 @@ module ProductsHelper
     wd = %w[일 월 화 수 목 금 토]
     "#{first.strftime('%-m/%-d')}(#{wd[first.wday]})~#{last.strftime('%-m/%-d')}(#{wd[last.wday]})"
   end
+
+  # 매거진 이미지 경로(카탈로그 컷)
+  def catalog_shot_url(product_id, shot)
+    "/catalog/#{product_id}/#{shot}.jpg"
+  end
 end

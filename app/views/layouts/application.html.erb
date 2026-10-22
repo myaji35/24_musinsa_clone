@@ -68,7 +68,7 @@
         <div aria-label="데스크톱 메뉴" class="hidden md:flex items-center space-x-6 md:space-x-8 font-bold text-sm md:text-[15px] tracking-tight whitespace-nowrap">
           <a href="/" class="hover:text-gray-500 hover:underline underline-offset-4 decoration-2">랭킹</a>
           <a href="/products" class="hover:text-gray-500">상품</a>
-          <a href="/snaps" class="hover:text-gray-500">매거진</a>
+          <%= link_to "매거진", magazine_path, class: "hover:text-gray-500" %>
           <% if logged_in? %>
             <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
             <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>

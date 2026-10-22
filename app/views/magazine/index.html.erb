@@ -1,0 +1,44 @@
+<% content_for :title, "매거진 | JIEUM" %>
+<div class="max-w-[1400px] mx-auto px-4 md:px-8 py-10">
+  <header class="mb-10">
+    <p class="font-oswald text-sm tracking-[.3em] uppercase text-gray-500">JIEUM Magazine</p>
+    <h1 class="text-3xl md:text-4xl font-bold tracking-[-0.02em] text-black">매거진</h1>
+  </header>
+
+  <% if @issues.empty? %>
+    <p class="text-gray-600">준비 중입니다.</p>
+  <% end %>
+
+  <% @issues.each do |issue| %>
+    <section aria-labelledby="issue-<%= issue.number %>" class="mb-20" data-testid="magazine-issue">
+      <% unless issue.published? %>
+        <p class="mb-4 inline-block px-3 py-1 text-xs font-bold bg-amber-100 text-amber-900">초안 · 관리자 미리보기 — 손님에게는 보이지 않습니다</p>
+      <% end %>
+      <% first = issue.articles.first %>
+      <%= link_to(first ? magazine_article_path(issue.number, first["slug"]) : magazine_path, class: "relative block mb-10 overflow-hidden bg-black -mx-4 md:mx-0") do %>
+        <%= catalog_image_tag catalog_shot_url(issue.cover["product"], issue.cover["shot"]), sizes: "100vw", alt: "", class: "w-full aspect-[4/5] md:aspect-[16/7] object-cover opacity-90", style: "object-position: 50% 6%" %>
+        <div class="absolute inset-x-0 bottom-0 px-6 md:px-12 pt-24 pb-10 bg-gradient-to-t from-black/70 to-transparent text-white">
+          <p class="font-oswald text-sm tracking-[.3em] uppercase text-white/80">Issue <%= format("%02d", issue.number) %></p>
+          <h2 id="issue-<%= issue.number %>" class="mt-2 text-3xl md:text-5xl font-bold tracking-[-0.025em] text-balance"><%= issue.title %></h2>
+          <p class="mt-3 text-[15px] md:text-lg text-white/90"><%= issue.subtitle %></p>
+        </div>
+        <span class="absolute top-3 left-4 text-[11px] text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,.8)]">AI 가상 인물</span>
+      <% end %>
+
+      <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <% issue.articles.each do |article| %>
+          <li>
+            <%= link_to magazine_article_path(issue.number, article["slug"]), class: "group block" do %>
+              <div class="aspect-[3/4] bg-gray-100 overflow-hidden mb-3">
+                <%= catalog_image_tag catalog_shot_url(article.dig("hero", "product"), article.dig("hero", "shot")), sizes: "(min-width: 1024px) 25vw, 100vw", alt: "", loading: "lazy", class: "w-full h-full object-cover group-hover:scale-[1.02] transition-transform" %>
+              </div>
+              <p class="font-oswald text-xs tracking-[.25em] uppercase text-gray-500"><%= article["kicker"] %></p>
+              <h3 class="mt-1 text-lg font-bold leading-snug text-black group-hover:underline"><%= article["title"] %></h3>
+              <p class="mt-1 text-sm text-gray-600 line-clamp-2"><%= article["lede"] %></p>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+</div>

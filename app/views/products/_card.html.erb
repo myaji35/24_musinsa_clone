@@ -1,15 +1,16 @@
 <%# 29cm 스타일 상품 카드 컴포넌트 %>
-<% cache([ "product-card-v2", product, product.variants.map(&:updated_at).max&.to_i, product.worn_character&.updated_at&.to_i ], expires_in: 10.minutes) do %>
+<% cache([ "product-card-v3", product, product.variants.map(&:updated_at).max&.to_i, product.worn_character&.updated_at&.to_i ], expires_in: 10.minutes) do %>
 <%= link_to product_path(product), class: "group block relative" do %>
 
   <%# 상품 이미지 영역 %>
   <div class="relative w-full aspect-[4/5] bg-gray-100 overflow-hidden mb-3">
     <% if (image_source = product_image_source(product)) %>
+      <%# 브라우저 기본 지연 로딩(스크롤로 보일 때 로드) %>
       <img
-        data-src="<%= image_source.is_a?(String) ? image_source : url_for(image_source) %>"
+        src="<%= image_source.is_a?(String) ? image_source : url_for(image_source) %>"
         alt="<%= product.name %>"
-        class="lazy w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        loading="lazy">
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy" decoding="async">
     <% else %>
       <div class="w-full h-full flex flex-col items-center justify-center text-gray-600 bg-gray-50">
         <span class="text-xs uppercase font-bold tracking-widest">No Image</span>

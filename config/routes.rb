@@ -25,6 +25,10 @@ Rails.application.routes.draw do
     resource :cutout, only: [ :show, :create, :update ], controller: "product_cutouts"
   end
 
+  # 매거진(config/magazine/*.yml)
+  get "magazine", to: "magazine#index", as: :magazine
+  get "magazine/:issue/:slug", to: "magazine#show", as: :magazine_article
+
   # 배송·반품 안내
   get "returns", to: "policies#returns", as: :returns_policy
 

@@ -6,7 +6,7 @@ class CharacterTest < ActiveSupport::TestCase
     attributes.reverse_each { |row| Character.create!(row) }
 
     expected = attributes.map { |row| row.fetch("style_axis") }.uniq.flat_map do |axis|
-      attributes.select { |row| row.fetch("style_axis") == axis }.sort_by { |row| row.fetch("age_band") }.map { |row| row.fetch("handle") }
+      attributes.select { |row| row.fetch("style_axis") == axis }.sort_by { |row| [ row.fetch("age_band"), row.fetch("handle") ] }.map { |row| row.fetch("handle") }
     end
     assert_equal 20, Character.for_intro.size
     assert_equal expected, Character.for_intro.map(&:handle)

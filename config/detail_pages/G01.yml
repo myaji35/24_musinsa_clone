@@ -26,17 +26,17 @@ points:
 
 scenes:
   - shot: look1
-    day: MON
-    title: 출근길
-    copy: 아이보리 슬랙스에 로퍼. 단정한데 차갑지 않게, 벨트는 단단히 묶어서.
-  - shot: look2
     day: SAT
-    title: 카페·친구 모임
-    copy: 벨트는 느슨하게, 니트 소매를 살짝 접어서. 앉아 있어도 편한 하프 기장.
+    title: 은행나무 길 산책
+    copy: 햇살 좋은 가을 오후. 와이드 팬츠에 힐 부츠를 더하면 걸음마다 경쾌해져요.
+  - shot: look2
+    day: FRI
+    title: 저녁 약속
+    copy: 벨트를 단단히 묶어 허리 라인을 살리면, 호텔 라운지 앞에서도 당당한 실루엣.
   - shot: look3
     day: SUN
-    title: 주말 나들이
-    copy: 브라운 토트를 들면 카멜과 톤온톤 완성. 가장 쉽게 어울리는 조합이에요.
+    title: 강바람 속에서
+    copy: 바람에 자락이 날려도 벨트가 실루엣을 잡아 줍니다. 큰 칼라는 세워서 목까지.
 
 compare:
   title: 단추 코트 vs 이 랩코트

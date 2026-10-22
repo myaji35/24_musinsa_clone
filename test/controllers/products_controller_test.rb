@@ -301,8 +301,10 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     get product_path(product)
 
     assert_response :success
-    assert_select "[data-controller=gallery] [data-testid=product-gallery] button[data-action='gallery#show']", product.gallery_image_urls.size
-    assert_select "button[data-real=true]", 1
+    assert_select "[data-testid=product-gallery] figure", product.gallery_image_urls.size
+    assert_select "figure[data-real=true] figcaption", text: "실물 사진"
+    assert_select "[data-testid=variant-picker]"
+    assert_select "[data-testid=product-accordions] details", 3
   end
 
   test "초안 상품은 손님 화면(상세·목록·홈·장바구니)에 보이지 않는다" do
@@ -400,5 +402,16 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h2", text: "배송·반품 안내"
     assert_select "dt", text: "단순 변심 반품"
+  end
+
+  test "착용감 응답이 있으면 작다·딱맞다·크다 분포와 리뷰어 정보를 보여준다" do
+    @product.reviews.create!(user: users(:one), rating: 5, content: "딱 맞아요", height: 162, size_purchased: "M", fit: "just")
+    @product.reviews.create!(user: users(:one), rating: 4, content: "조금 커요", height: 158, size_purchased: "M", fit: "large")
+
+    get product_path(@product)
+
+    assert_select "[data-testid=fit-scale]", text: /착용감 \(2명 응답\)/
+    assert_select "span", text: "착용감 딱맞다"
+    assert_select "span", text: "키 162cm"
   end
 end

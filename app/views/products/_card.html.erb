@@ -1,5 +1,5 @@
 <%# 29cm 스타일 상품 카드 컴포넌트 %>
-<% cache("product-card-#{product.id}-#{product.updated_at.to_i}", expires_in: 10.minutes) do %>
+<% cache([ "product-card-v2", product, product.variants.map(&:updated_at).max&.to_i, product.worn_character&.updated_at&.to_i ], expires_in: 10.minutes) do %>
 <%= link_to product_path(product), class: "group block relative" do %>
 
   <%# 상품 이미지 영역 %>
@@ -41,10 +41,16 @@
 
   <%# 상품 정보 영역 %>
   <div class="px-1">
-    <%# 브랜드명 %>
-    <p class="text-xs font-bold text-black uppercase mb-1 truncate">
-      <%= product.brand %>
-    </p>
+    <%# 색상 동그라미 + 사이즈 범위 %>
+    <% colors = product.color_names %>
+    <div class="flex items-center justify-between gap-2 mb-1.5">
+      <span class="flex items-center gap-1" aria-label="색상 <%= colors.join(', ') %>">
+        <% colors.first(5).each do |color| %>
+          <span class="w-3.5 h-3.5 rounded-full ring-1 ring-black/15" style="background: <%= color_swatch(color) %>" title="<%= color %>"></span>
+        <% end %>
+      </span>
+      <span class="text-xs text-gray-600"><%= product.size_range %></span>
+    </div>
 
     <%# 상품명 %>
     <h3 class="text-[15px] font-medium text-gray-900 leading-snug mb-2 line-clamp-2 min-h-[2.75em] group-hover:underline">
@@ -75,6 +81,10 @@
         </span>
       <% end %>
     </div>
+
+    <% if (worn = product.worn_label) %>
+      <p class="mt-1.5 text-xs text-gray-600 truncate"><%= worn %></p>
+    <% end %>
 
     <%# 배지 영역 (29cm 스타일) %>
     <div class="flex gap-1 mt-2">

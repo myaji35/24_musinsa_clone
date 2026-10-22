@@ -11,27 +11,17 @@ class HomeController < ApplicationController
       File.exist?(Rails.public_path.join("intro/runway/#{character.handle}.mp4"))
     end
 
-    @products = Product.published.includes(:reviews).with_attached_image
+    @products = Product.published.includes(:reviews, :variants, :worn_character).with_attached_image
 
-    # 1. Filter by Category
-    if params[:category].present? && params[:category] != "전체"
-      # Map Korean categories to English DB values if necessary, or assume DB uses Korean/English mix.
-      # Based on seeds, we have "Top", "One-piece". We need to handle this mapping.
-      # For now, let's try to match partially or define a mapping.
-      # Seed categories: "Top", "One-piece".
-      # UI categories: "상의", "아우터", "바지"
-
-      category_map = {
-        "상의" => "Top",
-        "원피스" => "One-piece",
-        "아우터" => "Outer",
-        "바지" => "Pants",
-        "스커트" => "Skirt",
-        "가방" => "Bag"
-      }
-
-      db_category = category_map[params[:category]] || params[:category]
-      @products = @products.where(category: db_category)
+    # 1. 카테고리(상단 메뉴·아이콘 판): 실제 판매 중인 묶음만
+    case params[:category]
+    when "아우터" then @products = @products.where(category: "Outer")
+    when "코트" then @products = @products.coats
+    when "패딩" then @products = @products.paddings
+    when "원피스" then @products = @products.one_pieces
+    when "신상품" then @products = @products.where(is_new: true)
+    when nil, "", "전체" then nil
+    else @products = @products.where(category: params[:category])
     end
 
     # 2. Search (Name or Brand)
@@ -55,28 +45,29 @@ class HomeController < ApplicationController
     @ranked_products = @products.limit(50)
 
     # 29cm 스타일 큐레이션 섹션 준비
-    @curated_collections = params[:q].present? && @ranked_products.empty? ? [] : prepare_curated_collections
+    @stories = params[:q].present? || params[:category].present? ? [] : prepare_stories
   end
 
   private
 
-  def prepare_curated_collections
-    # Low-level caching for curated collections (1 hour expiration)
-    Rails.cache.fetch("curated-collections", expires_in: 1.hour) do
-      [
-        {
-          mood: "minimal",
-          products: Product.published.includes(:reviews).with_attached_image.where("ai_attributes LIKE ?", "%minimal%").order(views_count: :desc).limit(10).to_a
-        },
-        {
-          mood: "casual",
-          products: Product.published.includes(:reviews).with_attached_image.where("ai_attributes LIKE ?", "%casual%").order(views_count: :desc).limit(10).to_a
-        },
-        {
-          mood: "delicate",
-          products: Product.published.includes(:reviews).with_attached_image.where("ai_attributes LIKE ?", "%delicate%").order(views_count: :desc).limit(10).to_a
-        }
-      ].select { |collection| collection[:products].any? }
+  # 유니클로식 홈 리듬: 룩북 사진(같은 상품의 3컷) → 그 묶음 상품 4개
+  STORIES = [
+    { key: "coat", en: "Wool Coat", title: "울코트", copy: "가을 햇살부터 첫눈까지, 매일 손이 가는 코트", scope: :coats, banner: "JIEUM-G01", category: "코트" },
+    { key: "padding", en: "Down & Padding", title: "패딩", copy: "눈 내린 거리도 가볍게, 한겨울을 건강하게", scope: :paddings, banner: "JIEUM-G23", category: "패딩" },
+    { key: "night", en: "Night Out", title: "저녁 약속", copy: "벨트 하나로 완성되는 자신감 있는 실루엣", scope: :belted, banner: "JIEUM-G29", category: nil },
+    { key: "one-piece", en: "One-piece", title: "원피스", copy: "코트 아래 가장 우아한 한 벌", scope: :one_pieces, banner: "JIEUM-G10", category: "원피스" }
+  ].freeze
+
+  def prepare_stories
+    Rails.cache.fetch("home-stories", expires_in: 1.hour) do
+      STORIES.filter_map do |story|
+        products = Product.published.public_send(story[:scope]).includes(:reviews, :variants, :worn_character).with_attached_image
+          .order(sales_count: :desc, id: :asc).limit(4).to_a
+        next if products.empty?
+
+        banner = Product.published.includes(:worn_character).find_by(supplier_product_code: story[:banner]) || products.first
+        story.merge(products: products, banner: banner)
+      end
     end
   end
 end

@@ -39,24 +39,19 @@
     <!-- 좌측: 이미지 갤러리 -->
     <% gallery = @product.runway_video.attached? ? [] : @product.gallery_image_urls %>
     <% if gallery.any? %>
-    <div class="space-y-4" data-controller="gallery">
-      <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden relative">
-        <%= catalog_image_tag gallery.first, alt: "#{@product.name} 착용컷", class: "w-full h-full object-cover", data: { gallery_target: "main" } %>
-        <% if character %>
-          <span class="absolute top-3 left-3 z-10 text-white [text-shadow:0_1px_3px_rgba(0,0,0,.85),0_0_10px_rgba(0,0,0,.45)] text-[11px] font-semibold opacity-90" data-gallery-target="badge">가상 인물</span>
-        <% end %>
-      </div>
-      <div class="grid grid-cols-5 gap-2" data-testid="product-gallery">
-        <% gallery.each_with_index do |url, i| %>
-          <% real = url.end_with?("/real.jpg") %>
-          <% label = real ? "실물 사진" : (i.zero? ? "정면 착용컷" : "룩북 #{i}") %>
-          <button type="button" class="relative aspect-[3/4] bg-gray-100 border-2 <%= i.zero? ? 'border-black' : 'border-transparent' %> hover:border-black transition-colors overflow-hidden"
-                  data-gallery-target="thumb" data-action="gallery#show" data-src="<%= url %>" data-srcset="<%= catalog_srcset(url) %>" data-alt="<%= "#{@product.name} #{label}" %>" data-real="<%= real %>" aria-pressed="<%= i.zero? %>" aria-label="<%= label %> 보기">
-            <%= image_tag url, alt: "", loading: "lazy", class: "w-full h-full object-cover" %>
-            <% if real %><span class="absolute bottom-0 inset-x-0 bg-black/70 text-white text-[11px] font-bold py-0.5">실물</span><% end %>
-          </button>
-        <% end %>
-      </div>
+    <%# 유니클로식 2열 사진 나열 — 사진마다 착용 정보, 실물은 '실물 사진' %>
+    <div class="grid grid-cols-2 gap-1.5 self-start" data-testid="product-gallery">
+      <% gallery.each_with_index do |url, i| %>
+        <% real = url.end_with?("/real.jpg") %>
+        <figure class="relative bg-gray-100 overflow-hidden <%= 'col-span-2' if i.zero? %>" data-real="<%= real %>">
+          <%= catalog_image_tag url, sizes: (i.zero? ? "(min-width: 1024px) 50vw, 100vw" : "(min-width: 1024px) 25vw, 50vw"),
+                alt: "#{@product.name} #{real ? '실물 사진' : '착용 사진'}", loading: (i.zero? ? "eager" : "lazy"),
+                class: "w-full aspect-[2/3] #{real ? 'object-contain' : 'object-cover'}" %>
+          <figcaption class="absolute bottom-2 right-2 text-[11px] <%= real ? 'text-gray-700' : 'text-white [text-shadow:0_1px_3px_rgba(0,0,0,.85)]' %>">
+            <%= real ? "실물 사진" : [ @product.worn_label, "AI 가상 인물" ].compact.join(" · ") %>
+          </figcaption>
+        </figure>
+      <% end %>
     </div>
     <% else %>
     <div class="space-y-4">
@@ -91,8 +86,8 @@
     </div>
     <% end %>
 
-    <!-- 우측: 상품 정보 -->
-    <div class="space-y-6">
+    <!-- 우측: 상품 정보(스크롤해도 따라온다) -->
+    <div class="space-y-6 lg:sticky lg:top-24 self-start">
 
       <!-- 브랜드 & 상품명 -->
       <div class="space-y-2">
@@ -118,11 +113,29 @@
       <div class="h-px bg-gray-200"></div>
 
       <%= form_with url: cart_items_path, id: "buy", class: "space-y-4 scroll-mt-24" do |f| %>
-        <%= f.label :variant_id, "색상 / 사이즈", class: "block text-sm font-bold" %>
-        <%= f.select :variant_id,
-              @variants.map { |variant| [ "#{variant.color} / #{variant.size} #{variant.stock.to_i.positive? ? "(재고 #{variant.stock}개)" : "(품절)"}", variant.id, { disabled: !variant.stock.to_i.positive? } ] },
-              { selected: @variants.find { |variant| variant.stock.to_i.positive? }&.id },
-              class: "w-full border border-gray-400 p-3", disabled: @variants.empty? %>
+        <%# 색상별 사이즈 버튼(품절은 비활성) — 한 번에 색상·사이즈 선택 %>
+        <fieldset data-testid="variant-picker" class="space-y-3" <%= "disabled" if @variants.empty? %>>
+          <legend class="text-sm font-bold mb-2">색상 / 사이즈</legend>
+          <% first_available = @variants.find { |variant| variant.stock.to_i.positive? } %>
+          <% @variants.group_by(&:color).each do |color, variants| %>
+            <div class="flex items-center gap-3">
+              <span class="flex items-center gap-1.5 w-28 shrink-0 text-sm text-gray-800">
+                <span class="w-4 h-4 rounded-full ring-1 ring-black/15" style="background: <%= color_swatch(color) %>"></span><%= color %>
+              </span>
+              <div class="flex flex-wrap gap-2">
+                <% variants.sort_by { |variant| Product::SIZE_ORDER.index(variant.size.to_s.upcase) || 99 }.each do |variant| %>
+                  <% sold_out = !variant.stock.to_i.positive? %>
+                  <label class="relative">
+                    <input type="radio" name="variant_id" value="<%= variant.id %>" class="peer sr-only" <%= "checked" if variant == first_available %> <%= "disabled" if sold_out %> aria-label="<%= color %> <%= variant.size %><%= ' 품절' if sold_out %>">
+                    <span class="grid place-items-center min-w-12 h-11 px-3 border text-sm font-medium cursor-pointer peer-checked:border-black peer-checked:ring-1 peer-checked:ring-black peer-focus-visible:outline peer-focus-visible:outline-2 peer-disabled:cursor-not-allowed peer-disabled:text-gray-300 peer-disabled:line-through border-gray-300"><%= variant.size %></span>
+                  </label>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <%= link_to "사이즈 안내", "#detail-size", class: "inline-block text-sm text-gray-700 underline" if @product.detail_page&.dig("size") %>
+        </fieldset>
+        <p class="text-sm text-gray-700"><span class="font-bold">무료배송</span> · <%= delivery_eta %> 도착 예정</p>
         <%= f.label :quantity, "수량", class: "block text-sm font-bold" %>
         <%= f.number_field :quantity, value: 1, min: 1, max: 99, class: "w-24 border border-gray-400 p-3" %>
         <% if @variants.empty? %><p class="text-sm font-medium text-gray-700">옵션 준비 중</p><% end %>
@@ -132,13 +145,30 @@
         </div>
       <% end %>
 
-      <% unless @product.detail_page %>
-      <!-- 상품 설명 -->
-      <div class="pt-6 space-y-3">
-        <p class="text-sm font-medium text-black">상품 설명</p>
-        <p class="text-sm text-gray-600 leading-relaxed"><%= @product.description %></p>
+      <%# 펼침 메뉴: 상세 설명 · 상품정보 · 배송/교환/반품 %>
+      <div class="border-t border-gray-200 divide-y divide-gray-200 text-sm" data-testid="product-accordions">
+        <details class="py-4" <%= "open" unless @product.detail_page %>>
+          <summary class="font-bold cursor-pointer">상품 상세 설명</summary>
+          <p class="pt-3 text-gray-700 leading-relaxed"><%= @product.description %></p>
+        </details>
+        <details class="py-4">
+          <summary class="font-bold cursor-pointer">소재 · 세탁 · 상품정보</summary>
+          <dl class="pt-3 grid grid-cols-3 gap-y-2">
+            <% Product::INFO_NOTICE_FIELDS.each do |field| %>
+              <dt class="text-gray-600"><%= field %></dt>
+              <dd class="col-span-2 text-gray-900"><%= detail_value(@product.info_notice_value(field).presence || "TODO: 미입력") %></dd>
+            <% end %>
+          </dl>
+        </details>
+        <details class="py-4">
+          <summary class="font-bold cursor-pointer">배송 · 교환 · 반품</summary>
+          <ul class="pt-3 space-y-1.5 text-gray-700">
+            <li><%= return_policy["shipping"] %></li>
+            <% return_policy["summary"].first(2).each do |item| %><li><%= item["title"] %>: <%= item["body"] %></li><% end %>
+          </ul>
+          <%= link_to "배송·반품 안내 전체 보기", returns_policy_path, class: "inline-block mt-2 underline text-gray-800" %>
+        </details>
       </div>
-      <% end %>
 
     </div>
   </div>
@@ -176,12 +206,42 @@
           <%= form.label :rating, "별점", class: "block text-sm font-bold text-black mb-2" %>
           <%= form.select :rating, (1..5).map { |rating| ["#{rating}점", rating] }, {}, class: "border border-black px-3 py-2 text-sm", required: true %>
         </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <%= form.label :height, "키(cm)", class: "block text-sm font-bold text-black mb-2" %>
+            <%= form.number_field :height, min: 120, max: 200, class: "w-full border border-black px-3 py-2 text-sm" %>
+          </div>
+          <div>
+            <%= form.label :size_purchased, "구매 사이즈", class: "block text-sm font-bold text-black mb-2" %>
+            <%= form.select :size_purchased, @variants.map(&:size).uniq, { include_blank: "선택" }, class: "w-full border border-black px-3 py-2 text-sm" %>
+          </div>
+          <div>
+            <%= form.label :fit, "착용감", class: "block text-sm font-bold text-black mb-2" %>
+            <%= form.select :fit, Review::FITS.invert.to_a, { include_blank: "선택" }, class: "w-full border border-black px-3 py-2 text-sm" %>
+          </div>
+        </div>
         <div>
           <%= form.label :content, "리뷰 내용", class: "block text-sm font-bold text-black mb-2" %>
           <%= form.text_area :content, rows: 4, maxlength: 1000, required: true, class: "w-full border border-black px-3 py-2 text-sm" %>
         </div>
         <%= form.submit "리뷰 등록", class: "px-5 py-3 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors cursor-pointer" %>
       <% end %>
+    <% end %>
+
+    <%# 착용감 분포(작다·딱맞다·크다) — 응답이 있을 때만 %>
+    <% fits = @product.reviews.where.not(fit: [ nil, "" ]).group(:fit).count %>
+    <% if fits.any? %>
+      <div data-testid="fit-scale" class="mb-8 max-w-md">
+        <p class="text-sm font-bold text-black mb-2">착용감 (<%= fits.values.sum %>명 응답)</p>
+        <% Review::FITS.each do |key, label| %>
+          <% share = (fits[key].to_i * 100.0 / fits.values.sum).round %>
+          <div class="flex items-center gap-3 text-sm mb-1.5">
+            <span class="w-14 text-gray-700"><%= label %></span>
+            <span class="flex-1 h-2 bg-gray-100"><span class="block h-2 bg-black" style="width: <%= share %>%"></span></span>
+            <span class="w-10 text-right tabular-nums text-gray-700"><%= share %>%</span>
+          </div>
+        <% end %>
+      </div>
     <% end %>
 
     <!-- 리뷰 카드 -->
@@ -223,6 +283,9 @@
               <% end %>
               <% if review.size_purchased.present? %>
                 <span class="px-2 py-1 bg-gray-50 border border-gray-200">구매 사이즈 <%= review.size_purchased %></span>
+              <% end %>
+              <% if review.fit_label %>
+                <span class="px-2 py-1 bg-gray-50 border border-gray-200">착용감 <%= review.fit_label %></span>
               <% end %>
             </div>
 

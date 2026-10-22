@@ -29,6 +29,13 @@ class Product < ApplicationRecord
   validates :status, inclusion: { in: STATUSES }
   scope :published, -> { where(status: "published") }
 
+  # 유니클로식 홈·메뉴용 상품 묶음(카탈로그 상품명·카테고리 기준)
+  scope :paddings, -> { where("products.name LIKE ?", "%패딩%") }
+  scope :coats, -> { where(category: "Outer").where.not("products.name LIKE ?", "%패딩%") }
+  scope :one_pieces, -> { where(category: "One-piece") }
+  scope :belted, -> { where("products.name LIKE ? OR products.name LIKE ?", "%벨티드%", "%랩%") }
+  SIZE_ORDER = %w[XS S M L XL XXL FREE].freeze
+
   # 상품정보제공고시(전자상거래법, 의류) 필수 항목 — 하나라도 비면 공개할 수 없다 (ISS-143)
   INFO_NOTICE_FIELDS = %w[소재 색상 치수 제조자 제조국 세탁방법 제조연월 품질보증기준 A/S책임자].freeze
   serialize :info_notice, coder: JSON
@@ -60,6 +67,23 @@ class Product < ApplicationRecord
   scope :by_material_feel, ->(material_feel) { where("json_extract(ai_attributes, '$.material_feel') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(material_feel.to_s)}%") }
 
   # 배지 관련 헬퍼 메서드
+  def color_names
+    variants.map(&:color).compact_blank.uniq
+  end
+
+  # 사이즈 범위 표기(예: S–L)
+  def size_range
+    sizes = variants.map(&:size).compact_blank.uniq.sort_by { |size| SIZE_ORDER.index(size.upcase) || 99 }
+    sizes.size > 1 ? "#{sizes.first}–#{sizes.last}" : sizes.first
+  end
+
+  # 착용 정보(예: 레아 모로 171cm · S 착용)
+  def worn_label
+    return unless worn_character
+
+    [ "#{worn_character.name} #{worn_character.height_cm}cm".strip, ("#{worn_size} 착용" if worn_size.present?) ].compact.join(" · ")
+  end
+
   def published?
     status == "published"
   end
@@ -81,11 +105,13 @@ class Product < ApplicationRecord
   def publish!(user)
     update!(status: "published", published_at: Time.current, published_by: user)
     Rails.cache.delete("curated-collections")
+    Rails.cache.delete("home-stories")
   end
 
   def unpublish!
     update!(status: "draft")
     Rails.cache.delete("curated-collections")
+    Rails.cache.delete("home-stories")
   end
 
   def badge_list

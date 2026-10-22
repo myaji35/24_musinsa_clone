@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_21_002000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_001000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -288,6 +288,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_002000) do
     t.integer "weight"
     t.string "size_purchased"
     t.string "photo_url"
+    t.string "fit"
     t.index ["product_id"], name: "index_reviews_on_product_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end

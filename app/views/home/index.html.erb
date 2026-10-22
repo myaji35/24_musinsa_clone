@@ -6,10 +6,10 @@
   <% if params[:q].present? && @ranked_products.empty? %>
     <%= render "products/search_empty", reset_path: root_path(request.query_parameters.except("q")) %>
   <% else %>
-    <%# 29cm 스타일 큐레이션 섹션 %>
-    <% if @curated_collections.present? %>
-      <% @curated_collections.each do |collection| %>
-        <%= render 'home/curation_section', mood: collection[:mood], products: collection[:products] %>
+    <% if @stories.present? %>
+      <%= render "home/category_grid" %>
+      <% @stories.each do |story| %>
+        <%= render "home/story", story: story %>
       <% end %>
     <% end %>
 
@@ -26,7 +26,7 @@
       <div class="flex flex-wrap gap-2 mb-8">
          <%= link_to "전체", root_path(q: params[:q], sort: params[:sort]), class: "px-3 py-1.5 text-xs font-bold border transition-all #{params[:category].blank? || params[:category] == '전체' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:text-black'}" %>
 
-         <% ["상의", "아우터", "바지", "원피스", "스커트", "가방"].each do |cat| %>
+         <% shop_categories.map(&:first).each do |cat| %>
             <%= link_to cat, root_path(category: cat, q: params[:q], sort: params[:sort]), class: "px-3 py-1.5 text-xs font-medium border transition-all #{params[:category] == cat ? 'bg-black text-white border-black font-bold' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:text-black'}" %>
          <% end %>
       </div>

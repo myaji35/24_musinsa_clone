@@ -206,9 +206,11 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
   test "should display category filter links" do
     get root_url
     assert_response :success
-    assert_match /아우터/, response.body
-    assert_match /상의/, response.body
-    assert_match /바지/, response.body
+    # 실제 판매 중인 묶음만 메뉴에 둔다
+    %w[아우터 코트 패딩 원피스 신상품].each do |name|
+      assert_select "a[href=?]", root_path(category: name, anchor: "ranking")
+    end
+    assert_select "a", text: "스니커즈", count: 0
   end
 
   # Search form

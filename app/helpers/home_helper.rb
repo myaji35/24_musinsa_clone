@@ -33,4 +33,14 @@ module HomeHelper
     }
     descriptions[mood] || "당신을 위한 특별한 선택"
   end
+
+  # 상단 메뉴·카테고리 아이콘 판: 실제 판매 중인 묶음만(아이콘은 실물 사진)
+  SHOP_CATEGORIES = [
+    [ "아우터", "/catalog/G03/real.jpg" ], [ "코트", "/catalog/G01/real.jpg" ], [ "패딩", "/catalog/G23/real.jpg" ],
+    [ "원피스", "/catalog/G10/real.jpg" ], [ "신상품", nil ]
+  ].freeze
+
+  def shop_categories
+    SHOP_CATEGORIES
+  end
 end

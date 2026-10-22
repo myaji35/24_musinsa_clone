@@ -119,4 +119,27 @@ module ProductsHelper
   def catalog_image_tag(url, sizes: "(min-width: 1024px) 600px, 100vw", **options)
     image_tag url, srcset: catalog_srcset(url), sizes: (sizes if catalog_srcset(url)), **options
   end
+
+  # 카탈로그 색상명 → 스와치 색(두 색 이름은 반반)
+  SWATCHES = {
+    "카멜" => "#B98A57", "카멜브라운" => "#8E6240", "브라운베이지" => "#A68A6D", "다크브라운" => "#4A3226",
+    "초콜릿브라운" => "#3F2A1E", "베이지" => "#D8C3A5", "토프" => "#8B7D6B", "그레이지" => "#B8B0A2",
+    "라이트그레이" => "#C9C9C9", "차콜" => "#3A3F45", "블랙" => "#111111", "네이비" => "#1F2A44",
+    "아이보리" => "#F4EFE3", "카키" => "#6B6B47", "다크카키" => "#4F4F35", "버건디" => "#6D1A2A",
+    "옐로" => "#E2C044", "베이비핑크" => "#F2C6CC"
+  }.freeze
+
+  def color_swatch(name)
+    return "linear-gradient(135deg,#111 50%,#f5f5f5 50%)" if name == "블랙화이트"
+
+    SWATCHES.fetch(name, "#D1D5DB")
+  end
+
+  # 도착 예정일(영업일 2~3일, 주말 제외) 예: 10/24(금)~10/26(일)
+  def delivery_eta(from = Date.current)
+    days = (1..10).map { |n| from + n }.reject { |day| day.saturday? || day.sunday? }
+    first, last = days[1], days[2]
+    wd = %w[일 월 화 수 목 금 토]
+    "#{first.strftime('%-m/%-d')}(#{wd[first.wday]})~#{last.strftime('%-m/%-d')}(#{wd[last.wday]})"
+  end
 end

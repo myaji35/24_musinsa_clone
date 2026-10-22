@@ -1,0 +1,20 @@
+<%# 유니클로식 '카테고리로 찾기' — 실물 사진 아이콘 %>
+<section aria-labelledby="category-grid" class="mb-16">
+  <h2 id="category-grid" class="text-lg font-bold text-black mb-4">카테고리로 찾기</h2>
+  <ul class="grid grid-cols-5 gap-3 md:gap-6 max-w-3xl">
+    <% shop_categories.each do |name, icon| %>
+      <li>
+        <%= link_to root_path(category: name, anchor: "ranking"), class: "group block text-center" do %>
+          <span class="block aspect-square rounded-full bg-gray-100 overflow-hidden mb-2 ring-1 ring-transparent group-hover:ring-black transition">
+            <% if icon %>
+              <%= image_tag icon, alt: "", loading: "lazy", class: "w-full h-full object-contain p-2" %>
+            <% else %>
+              <span class="w-full h-full grid place-items-center font-oswald text-lg font-bold text-black">NEW</span>
+            <% end %>
+          </span>
+          <span class="text-sm font-medium text-gray-900"><%= name %></span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</section>

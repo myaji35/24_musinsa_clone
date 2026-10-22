@@ -31,7 +31,7 @@
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" crossorigin>
   </head>
 
-  <body class="bg-gray-50 text-gray-900 font-sans antialiased" data-controller="lazy-load">
+  <body class="bg-white text-gray-900 font-sans antialiased" data-controller="lazy-load">
     <!-- Top Utility Bar -->
     <div class="bg-white border-b border-gray-100 hidden md:block">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-end space-x-4 text-xs text-gray-600 font-medium">
@@ -111,17 +111,10 @@
     <!-- Secondary Category Nav (Visual) -->
     <div class="border-b border-gray-200 bg-white hidden md:block">
          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-10 flex items-center space-x-6 text-xs font-bold text-gray-700 overflow-x-auto">
-             <a href="#" class="text-black">전체</a>
-             <a href="#" class="hover:text-black">상의</a>
-             <a href="#" class="hover:text-black">아우터</a>
-             <a href="#" class="hover:text-black">바지</a>
-             <a href="#" class="hover:text-black">원피스</a>
-             <a href="#" class="hover:text-black">스커트</a>
-             <a href="#" class="hover:text-black">스니커즈</a>
-             <a href="#" class="hover:text-black">신발</a>
-             <a href="#" class="hover:text-black">가방</a>
-             <a href="#" class="hover:text-black">모자</a>
-             <a href="#" class="hover:text-black text-red-600">뷰티</a>
+             <%= link_to "전체", root_path(anchor: "ranking"), class: (params[:category].blank? && current_page?(root_path) ? "text-black" : "hover:text-black") %>
+             <% shop_categories.map(&:first).each do |name| %>
+               <%= link_to name, root_path(category: name, anchor: "ranking"), class: (params[:category] == name ? "text-black" : "hover:text-black"), aria: { current: (params[:category] == name ? "page" : nil) } %>
+             <% end %>
          </div>
     </div>
 

@@ -17,7 +17,7 @@ class Character < ApplicationRecord
   def recommended_products(limit: 8)
     analyses = ProductAnalysis.where(status: "done")
       .where(character_id: id).or(ProductAnalysis.where(status: "done", alt_character_id: id))
-    Product.published.where(id: analyses.select(:product_id)).with_attached_image.includes(:reviews)
+    Product.published.where(id: analyses.select(:product_id)).with_attached_image.includes(:reviews, :variants, :worn_character)
       .order(created_at: :desc, id: :desc).limit(limit)
   end
 

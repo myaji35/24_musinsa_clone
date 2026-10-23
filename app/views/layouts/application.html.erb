@@ -140,10 +140,7 @@
                 <div class="col-span-1 md:col-span-2">
                     <h3 class="text-2xl font-bold text-black mb-4 font-oswald italic">JIEUM</h3>
                     <p class="leading-relaxed mb-4">
-                        "2027 겨울, 가장 먼저 입어보세요"<br>
-                        AI-Native Fashion Operating System<br>
-                        Privacy-First CRM · UCP Protocol · Barcode Automation<br>
-                        Built with Rails 8.1 + Claude AI
+                        "2027 겨울, 가장 먼저 입어보세요"
                     </p>
                     <p class="text-[11px] text-gray-500 mb-4">사이트의 모델 이미지는 AI로 생성되었으며, 의류는 실제 판매 상품입니다.</p>
                 </div>
@@ -151,22 +148,19 @@
                    <h4 class="font-bold text-black mb-3">HELP</h4>
                    <ul class="space-y-3">
                        <li><%= link_to "비회원 주문조회", orders_lookup_path, class: "inline-block py-1 hover:underline" %></li>
+                       <li><%= link_to "배송·반품 안내", returns_policy_path, class: "inline-block py-1 hover:underline" %></li>
                    </ul>
                 </div>
                 <div>
                    <h4 class="font-bold text-black mb-3">POLICY</h4>
                    <ul class="space-y-3">
-                       <li><span class="inline-block py-1" aria-disabled="true"><span class="text-black font-bold">개인정보처리방침</span> <span class="text-[11px] text-gray-500">(준비 중)</span></span></li>
-                       <li><span class="inline-block py-1" aria-disabled="true">이용약관 <span class="text-[11px] text-gray-500">(준비 중)</span></span></li>
-                       <li><%= link_to "배송·반품 안내", returns_policy_path, class: "inline-block py-1 hover:underline" %></li>
+                       <li><span class="inline-block py-1 font-normal text-gray-600" aria-disabled="true">개인정보처리방침 <span class="text-[11px] text-gray-500">(준비 중)</span></span></li>
+                       <li><span class="inline-block py-1 font-normal text-gray-600" aria-disabled="true">이용약관 <span class="text-[11px] text-gray-500">(준비 중)</span></span></li>
                    </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600">
+            <div class="border-t border-gray-200 pt-8 text-center md:text-left text-xs text-gray-600">
                 <p>🤖 Generated with <a href="https://claude.com/claude-code" class="underline hover:text-black">Claude Code</a> · COPYRIGHT (C) 2026 JIEUM ALL RIGHTS RESERVED.</p>
-                <div class="flex space-x-2 mt-2 md:mt-0">
-                    <span>Rails 8.1 · Solid Queue · Tailwind CSS</span>
-                </div>
             </div>
         </div>
     </footer>

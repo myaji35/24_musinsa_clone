@@ -30,6 +30,7 @@ export default class extends Controller {
     // '상품 바로 보기' 버튼 표시는 움직임 줄이기 설정에서도 스크롤을 따라간다
     window.addEventListener("scroll", this.onScroll, { passive: true })
     window.addEventListener("resize", this.onScroll, { passive: true })
+    this.syncSkip()
     this.onScroll()
   }
 
@@ -57,9 +58,12 @@ export default class extends Controller {
 
   // 인트로를 다 지나면 '상품 바로 보기' 버튼을 숨긴다
   syncSkip() {
-    const passed = this.element.getBoundingClientRect().bottom < window.innerHeight
+    const passed = this.element.getBoundingClientRect().bottom <= window.innerHeight
     this.skipTargets.forEach((link) => {
-      link.classList.toggle("is-hidden", passed)
+      // inline-flex가 브라우저의 기본 [hidden] 스타일을 덮어쓰지 않도록 함께 지정한다.
+      link.hidden = passed
+      link.style.display = passed ? "none" : ""
+      link.inert = passed
       if (passed) link.setAttribute("tabindex", "-1")
       else link.removeAttribute("tabindex")
     })

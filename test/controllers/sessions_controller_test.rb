@@ -34,12 +34,15 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "공개 페이지는 로그인 없이 접근한다" do
-    [ root_path, products_path, product_path(products(:one)), search_path,
+    [ root_path, products_path, product_path(products(:one)),
       snaps_path, snap_path(snaps(:one)), rails_health_check_path,
       pwa_manifest_path(format: :json), pwa_service_worker_path(format: :js), login_path ].each do |path|
       get path
       assert_response :success
     end
+
+    get search_path(q: "셔츠")
+    assert_redirected_to root_path(q: "셔츠")
   end
 
   test "거래처 토큰 확인은 로그인 없이 가능하다" do

@@ -41,10 +41,8 @@
             <% else %>
               <%= link_to "로그인", login_path, class: "hover:text-black" %>
             <% end %>
-            <a href="#" class="hover:text-black">회원가입</a>
             <%= link_to "주문조회", orders_lookup_path, class: "hover:text-black" %>
             <%= link_to "장바구니 (#{cart_count})", cart_path, class: "hover:text-black" %>
-            <a href="#" class="hover:text-black">고객센터</a>
         </div>
     </div>
 
@@ -148,29 +146,19 @@
                         Built with Rails 8.1 + Claude AI
                     </p>
                     <p class="text-[11px] text-gray-500 mb-4">사이트의 모델 이미지는 AI로 생성되었으며, 의류는 실제 판매 상품입니다.</p>
-                    <div class="flex space-x-3">
-                        <a href="#" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">F</a>
-                        <a href="#" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">I</a>
-                        <a href="#" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">Y</a>
-                    </div>
                 </div>
                 <div>
                    <h4 class="font-bold text-black mb-3">HELP</h4>
                    <ul class="space-y-3">
-                       <li><a href="#" class="inline-block py-1 hover:underline">공지사항</a></li>
-                       <li><a href="#" class="inline-block py-1 hover:underline">자주 묻는 질문</a></li>
-                       <li><a href="#" class="inline-block py-1 hover:underline">1:1 문의</a></li>
-                       <li><a href="#" class="inline-block py-1 hover:underline">비회원 주문조회</a></li>
+                       <li><%= link_to "비회원 주문조회", orders_lookup_path, class: "inline-block py-1 hover:underline" %></li>
                    </ul>
                 </div>
                 <div>
                    <h4 class="font-bold text-black mb-3">POLICY</h4>
                    <ul class="space-y-3">
-                       <li><a href="#" class="inline-block py-1 hover:underline text-black font-bold">개인정보처리방침</a></li>
-                       <li><a href="#" class="inline-block py-1 hover:underline">이용약관</a></li>
+                       <li><span class="inline-block py-1" aria-disabled="true"><span class="text-black font-bold">개인정보처리방침</span> <span class="text-[11px] text-gray-500">(준비 중)</span></span></li>
+                       <li><span class="inline-block py-1" aria-disabled="true">이용약관 <span class="text-[11px] text-gray-500">(준비 중)</span></span></li>
                        <li><%= link_to "배송·반품 안내", returns_policy_path, class: "inline-block py-1 hover:underline" %></li>
-                       <li><a href="#" class="inline-block py-1 hover:underline">입점신청</a></li>
-                       <li><a href="#" class="inline-block py-1 hover:underline">채용안내</a></li>
                    </ul>
                 </div>
             </div>

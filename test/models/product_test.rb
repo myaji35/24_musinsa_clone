@@ -32,6 +32,44 @@ class ProductTest < ActiveSupport::TestCase
     assert_empty Product.search_name_or_brand("없는상품")
   end
 
+  test "판매 가능 재고는 옵션 합계이며 선로딩 후에는 쿼리하지 않는다" do
+    product = products(:one)
+    product.update!(stock: 0)
+    product.variants.create!(color: "White", size: "L", stock: 7)
+    assert_equal 12, product.available_stock
+    assert_not product.sold_out?
+
+    product.variants.load
+    assert_no_queries do
+      assert_equal 12, product.available_stock
+      assert_not product.sold_out?
+    end
+
+    product.variants.each { |variant| variant.update!(stock: 0) }
+    product.stock = 99
+    assert_equal 0, product.available_stock
+    assert product.sold_out?
+    product.reload
+    assert_equal 0, product.available_stock
+    assert product.sold_out?
+  end
+
+  test "옵션이 없으면 상품 재고를 사용하고 0과 nil은 품절이다" do
+    @product.save!
+    [ false, true ].each do |preloaded|
+      @product.reload
+      @product.variants.load if preloaded
+      @product.stock = 10
+      assert_equal 10, @product.available_stock
+      assert_not @product.sold_out?
+      [ 0, nil ].each do |stock|
+        @product.stock = stock
+        assert_equal 0, @product.available_stock
+        assert @product.sold_out?
+      end
+    end
+  end
+
   test "should be valid with all attributes" do
     assert @product.valid?
   end

@@ -1,6 +1,12 @@
 module ProductsHelper
   PRODUCT_FORM_CATEGORIES = %w[상의 아우터 바지 원피스 스커트 가방 신발 액세서리].freeze
 
+  def product_category_label(product)
+    category = product.category.to_s
+    { "Outer" => "아우터", "One-piece" => "원피스" }[category] ||
+      (category if category.match?(/[가-힣]/) && !category.match?(/[A-Za-z]/))
+  end
+
   def product_category_options(product)
     options = PRODUCT_FORM_CATEGORIES.map { |category| [ category, category ] }
     if product.category.present? && !PRODUCT_FORM_CATEGORIES.include?(product.category)

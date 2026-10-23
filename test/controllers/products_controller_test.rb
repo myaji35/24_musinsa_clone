@@ -24,6 +24,63 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "게스트 목록은 옵션 재고가 있으면 재고 숫자와 품절을 표시하지 않는다" do
+    @product.update!(stock: 0)
+    get products_path, params: { q: @product.name }
+
+    assert_response :success
+    assert_select ".grid a", text: @product.name
+    assert_select ".grid", text: /재고:/, count: 0
+    assert_select ".grid span", text: "품절", count: 0
+  end
+
+  test "게스트 목록은 옵션 재고가 모두 0인 상품만 품절로 표시한다" do
+    @variant.update!(stock: 0)
+    get products_path, params: { q: @product.name }
+
+    assert_response :success
+    assert_select ".grid span", text: "품절", count: 1
+    assert_select ".grid", text: /재고:/, count: 0
+  end
+
+  test "옵션 없는 상품은 상품 재고가 0 또는 nil일 때만 품절로 표시한다" do
+    @product.variants.destroy_all
+    [ 5, 0, nil ].each do |stock|
+      @product.update!(stock: stock)
+      get products_path, params: { q: @product.name }
+
+      assert_response :success
+      assert_select ".grid span", text: "품절", count: stock.to_i > 0 ? 0 : 1
+      assert_select ".grid", text: /재고:/, count: 0
+    end
+  end
+
+  test "게스트 목록은 한글 카테고리만 표시하고 AI 태그를 숨긴다" do
+    { "Outer" => "아우터", "One-piece" => "원피스", "상의" => "상의", "Dress" => nil }.each do |category, label|
+      @product.update!(category: category, ai_attributes: { mood: [ "casual", "modern" ], tpo: [ "daily", "delicate" ] })
+      get products_path, params: { q: @product.name }
+
+      assert_response :success
+      assert_select ".grid span", text: label, count: 1 if label
+      assert_select ".grid span", text: category, count: 0 if category.match?(/[A-Za-z]/)
+      %w[casual modern daily delicate].each do |tag|
+        assert_select ".grid span", text: tag, count: 0
+      end
+    end
+  end
+
+  test "관리자 목록은 옵션 재고 합계와 AI 태그를 표시한다" do
+    @product.update!(stock: 0)
+    @product.variants.create!(color: "Black", size: "L", stock: 7)
+    sign_in
+    get products_path, params: { q: @product.name }
+
+    assert_response :success
+    assert_select ".grid span", text: "재고: 17"
+    assert_select ".grid span", text: "minimal"
+    assert_select ".grid span", text: "daily"
+  end
+
   test "관리자 재고이력 탭은 옵션별 최신 20건과 빈 상태를 표시한다" do
     second = @product.variants.create!(color: "Black", size: "L", stock: 100)
     empty = @product.variants.create!(color: "White", size: "S", stock: 0)

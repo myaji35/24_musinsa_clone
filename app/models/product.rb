@@ -66,6 +66,18 @@ class Product < ApplicationRecord
   scope :by_fit_style, ->(fit_style) { where("json_extract(ai_attributes, '$.fit_style') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(fit_style.to_s)}%") }
   scope :by_material_feel, ->(material_feel) { where("json_extract(ai_attributes, '$.material_feel') LIKE ? ESCAPE '\\'", "%#{sanitize_sql_like(material_feel.to_s)}%") }
 
+  def available_stock
+    if variants.loaded?
+      variants.empty? ? stock.to_i : variants.sum { |variant| variant.stock.to_i }
+    else
+      variants.exists? ? variants.sum(:stock) : stock.to_i
+    end
+  end
+
+  def sold_out?
+    available_stock <= 0
+  end
+
   # 배지 관련 헬퍼 메서드
   def color_names
     variants.map(&:color).compact_blank.uniq

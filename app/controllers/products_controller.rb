@@ -6,6 +6,8 @@ class ProductsController < ApplicationController
     # 관리자(상품 관리)는 초안까지, 손님은 공개 상품만 본다
     @products = logged_in? ? Product.with_attached_image : Product.published.with_attached_image
 
+    @products = @products.includes(:variants)
+
     # 카테고리 필터
     @products = @products.where(category: params[:category]) if params[:category].present?
 

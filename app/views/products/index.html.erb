@@ -46,12 +46,18 @@
 
             <!-- Meta Info -->
             <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
-              <span>재고: <%= product.stock || 0 %></span>
-              <span><%= product.category %></span>
+              <% if logged_in? %>
+                <span>재고: <%= product.available_stock %></span>
+              <% elsif product.sold_out? %>
+                <span class="px-2 py-0.5 bg-gray-100 text-gray-600 font-medium rounded">품절</span>
+              <% end %>
+              <% if (category_label = product_category_label(product)) %>
+                <span><%= category_label %></span>
+              <% end %>
             </div>
 
             <!-- AI Attributes Tags -->
-            <% if product.ai_attributes.present? %>
+            <% if logged_in? && product.ai_attributes.present? %>
               <div class="flex flex-wrap gap-1 mb-3">
                 <% if product.mood.present? %>
                   <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded">

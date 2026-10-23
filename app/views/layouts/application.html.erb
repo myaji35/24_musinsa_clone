@@ -92,6 +92,11 @@
           </a>
         </div>
       </div>
+      <div aria-label="모바일 메뉴" class="md:hidden flex items-center gap-5 overflow-x-auto whitespace-nowrap px-4 py-3 text-sm font-bold border-t border-gray-100">
+        <% [ [ "랭킹", root_path ], [ "상품", products_path ], [ "매거진", magazine_path ] ].each do |label, path| %>
+          <%= link_to label, path, class: "hover:text-gray-500#{' underline underline-offset-4 decoration-2' if current_page?(path)}", aria: { current: (current_page?(path) ? "page" : nil) } %>
+        <% end %>
+      </div>
       <% if logged_in? %>
         <div aria-label="모바일 관리자 메뉴" class="md:hidden flex items-center gap-5 overflow-x-auto whitespace-nowrap px-4 py-3 text-sm font-bold border-t border-gray-100">
           <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>

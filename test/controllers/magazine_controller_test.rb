@@ -5,6 +5,12 @@ class MagazineControllerTest < ActionDispatch::IntegrationTest
     get magazine_path
     assert_response :success
     assert_select "[data-testid=magazine-issue]", 0
+    assert_select '[data-testid="magazine-empty"]', count: 1 do
+      assert_select "p", text: "첫 호를 준비하고 있어요. 그동안 지금 판매 중인 상품을 둘러보세요."
+      assert_select "a[href=?]", products_path, text: "상품 보러 가기", count: 1
+      assert_select "a[href=?]", root_path, text: "랭킹 보기", count: 1
+    end
+    assert_select "p", text: "준비 중입니다.", count: 0
 
     get magazine_article_path(1, "waist-first-silhouette")
     assert_response :not_found

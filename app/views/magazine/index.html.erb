@@ -6,7 +6,13 @@
   </header>
 
   <% if @issues.empty? %>
-    <p class="text-gray-600">준비 중입니다.</p>
+    <div data-testid="magazine-empty" class="py-8">
+      <p class="text-sm text-gray-600">첫 호를 준비하고 있어요. 그동안 지금 판매 중인 상품을 둘러보세요.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <%= link_to "상품 보러 가기", products_path, class: "inline-block bg-black text-white px-5 py-3 text-sm font-bold hover:bg-gray-800" %>
+        <%= link_to "랭킹 보기", root_path, class: "inline-block border border-black bg-white text-black px-5 py-3 text-sm font-bold hover:bg-gray-100" %>
+      </div>
+    </div>
   <% end %>
 
   <% @issues.each do |issue| %>

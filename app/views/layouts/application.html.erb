@@ -66,7 +66,7 @@
         <div aria-label="데스크톱 메뉴" class="hidden md:flex items-center space-x-6 md:space-x-8 font-bold text-sm md:text-[15px] tracking-tight whitespace-nowrap">
           <a href="/" class="hover:text-gray-500 hover:underline underline-offset-4 decoration-2">랭킹</a>
           <a href="/products" class="hover:text-gray-500">상품</a>
-          <%= link_to "매거진", magazine_path, class: "hover:text-gray-500" %>
+          <%= link_to "매거진", magazine_path, class: "hover:text-gray-500" if magazine_available? %>
           <% if logged_in? %>
             <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
             <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
@@ -93,7 +93,9 @@
         </div>
       </div>
       <div aria-label="모바일 메뉴" class="md:hidden flex items-center gap-5 overflow-x-auto whitespace-nowrap px-4 py-3 text-sm font-bold border-t border-gray-100">
-        <% [ [ "랭킹", root_path ], [ "상품", products_path ], [ "매거진", magazine_path ] ].each do |label, path| %>
+        <% mobile_menu = [ [ "랭킹", root_path ], [ "상품", products_path ] ] %>
+        <% mobile_menu << [ "매거진", magazine_path ] if magazine_available? %>
+        <% mobile_menu.each do |label, path| %>
           <%= link_to label, path, class: "hover:text-gray-500#{' underline underline-offset-4 decoration-2' if current_page?(path)}", aria: { current: (current_page?(path) ? "page" : nil) } %>
         <% end %>
       </div>

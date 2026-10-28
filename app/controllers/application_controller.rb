@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :require_admin
-  helper_method :current_user, :logged_in?, :cart_count
+  helper_method :current_user, :logged_in?, :cart_count, :magazine_available?
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
@@ -20,6 +20,12 @@ class ApplicationController < ActionController::Base
 
   def logged_in?
     current_user.present?
+  end
+
+  def magazine_available?
+    return @magazine_available if defined?(@magazine_available)
+
+    @magazine_available = MagazineIssue.visible(admin: logged_in?).any?
   end
 
   def require_admin

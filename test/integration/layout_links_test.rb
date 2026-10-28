@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class LayoutLinksTest < ActionDispatch::IntegrationTest
   test "게스트 홈에 모바일 공용 메뉴를 표시하고 관리자 메뉴를 숨긴다" do
@@ -6,6 +7,7 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_mobile_menu(root_path)
+    assert_select 'nav [aria-label="데스크톱 메뉴"] a[href=?]', magazine_path, count: 0
     assert_select 'nav [aria-label="모바일 관리자 메뉴"]', count: 0
     assert_select 'nav [aria-label="데스크톱 메뉴"].hidden.md\\:flex', count: 1
   end
@@ -15,17 +17,39 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_mobile_menu(root_path)
+    assert_mobile_menu(root_path, magazine: true)
+    assert_select 'nav [aria-label="데스크톱 메뉴"] a[href=?]', magazine_path, count: 1
     assert_select 'nav [aria-label="모바일 메뉴"] + [aria-label="모바일 관리자 메뉴"].md\\:hidden', count: 1
   end
 
-  test "모바일 메뉴는 상품과 매거진의 현재 페이지를 표시한다" do
-    [ products_path, magazine_path ].each do |path|
-      get path
+  test "모바일 메뉴는 상품과 공개 매거진의 현재 페이지를 표시한다" do
+    issue = MagazineIssue.new(MagazineIssue.all.first.data.merge("status" => "published"))
+    MagazineIssue.stub(:visible, [ issue ]) do
+      [ products_path, magazine_path ].each do |path|
+        get path
+
+        assert_response :success
+        assert_mobile_menu(path, magazine: true)
+      end
+    end
+  end
+
+  test "공개 호가 생기면 손님의 데스크톱과 모바일 메뉴에 매거진이 나타난다" do
+    issue = MagazineIssue.new(MagazineIssue.all.first.data.merge("status" => "published"))
+    MagazineIssue.stub(:all, [ issue ]) do
+      get root_path
 
       assert_response :success
-      assert_mobile_menu(path)
+      assert_mobile_menu(root_path, magazine: true)
+      assert_select 'nav [aria-label="데스크톱 메뉴"] a[href=?]', magazine_path, text: "매거진", count: 1
     end
+  end
+
+  test "공개 호가 없는 매거진에서는 모바일 메뉴에 현재 페이지가 없다" do
+    get magazine_path
+
+    assert_response :success
+    assert_mobile_menu(magazine_path)
   end
 
   [ "/", "/returns" ].each do |path|
@@ -55,14 +79,18 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
 
   private
 
-  def assert_mobile_menu(current_path)
+  def assert_mobile_menu(current_path, magazine: false)
     assert_select 'nav [aria-label="모바일 메뉴"].md\\:hidden', count: 1 do
-      assert_select "a", count: 3
-      { root_path => "랭킹", products_path => "상품", magazine_path => "매거진" }.each do |path, label|
+      links = { root_path => "랭킹", products_path => "상품" }
+      links[magazine_path] = "매거진" if magazine
+      assert_select "a", count: links.size
+      assert_select "a[href=?]", magazine_path, count: (magazine ? 1 : 0)
+      links.each do |path, label|
         assert_select "a[href=?]", path, text: label, count: 1
       end
-      assert_select 'a[aria-current="page"]', count: 1
-      assert_select 'a[aria-current="page"].underline[href=?]', current_path, count: 1
+      current_count = links.key?(current_path) ? 1 : 0
+      assert_select 'a[aria-current="page"]', count: current_count
+      assert_select 'a[aria-current="page"].underline[href=?]', current_path, count: current_count
       assert_select "a:not([aria-current]).underline", count: 0
     end
   end

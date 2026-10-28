@@ -1057,7 +1057,8 @@
         ],
         "blocked_reason": "대표님 결정 A(열쇠 파일·토큰 이전) 대기 — 이 맥에 config/master.key·ghcr 쓰기 토큰 아직 없음",
         "deployed_at": "2026-10-21",
-        "deployed_commit": "b54a6e2"
+        "deployed_commit": "b54a6e2",
+        "confirmed_at": "2026-10-28T00:54:52.329Z"
       },
       "blocked_reason": "임시 서버 배포 설정 완료(9a3bed1). 첫 배포에 필요한 기존 열쇠 2개(config/master.key, ghcr 쓰기 토큰)가 이 맥에 없음 — 대표님 준비 대기",
       "result": {
@@ -4622,7 +4623,7 @@
       "depends_on": [],
       "done_criteria": "require_admin 리다이렉트 시 GET 요청 경로를 세션에 저장하고 로그인 성공 후 같은 호스트 내부 경로로만 복귀(open redirect 방지)",
       "created_at": "2026-10-19T00:55:38.632376+00:00",
-      "updated_at": "2026-10-25T07:21:30.027563+00:00",
+      "updated_at": "2026-10-28T20:59:30.069357+00:00",
       "payload": {
         "origin": "user-test",
         "source_issue": "ISS-064",
@@ -4713,7 +4714,18 @@
         "explained_at": "2026-10-18T20:12:55.982496-07:00",
         "gate": "deploy",
         "gate_stage": "deploy-review",
-        "branch": "factory/ISS-098"
+        "branch": "factory/ISS-098",
+        "observations": [
+          {
+            "at": "2026-10-28T20:59:30.069357+00:00",
+            "by": "user-test-nightly",
+            "app": "http://127.0.0.1:3000 (로컬 dev, DB 사본 /tmp/jieun_db — SMB 볼륨 SQLite 잠금 회피)",
+            "observed": "2026-10-29 야간 재현: 게스트로 /trends 접속 → /login('관리자 로그인이 필요합니다.') → admin 로그인 후 /inventory/scan 으로 이동(원래 /trends 로 돌아가지 않음). hold 브랜치 f0823a7 미반영 상태 그대로.",
+            "evidence": [
+              "(브라우저 관찰)"
+            ]
+          }
+        ]
       },
       "result": {
         "status": "success",
@@ -5294,7 +5306,7 @@
       "origin": "factory-runner",
       "title": "몰 하단 사업자 정보 고지 + 주문서 청약철회·환불 안내 + 이용약관·개인정보처리방침 화면",
       "created_at": "2026-10-19T03:59:23.677324+00:00",
-      "updated_at": "2026-10-19T04:01:58.960Z",
+      "updated_at": "2026-10-28T20:59:30.069357+00:00",
       "depends_on": [
         "ISS-059"
       ],
@@ -5319,7 +5331,18 @@
             "reason": "주문서(ISS-059)가 main 에 들어오고 대표님이 사업자 정보를 주면 바로 구현 가능. 법적 고지라 배포 전 대표님 확인(gate=deploy)"
           }
         ],
-        "deferred_at": "2026-10-19T04:01:58.960Z"
+        "deferred_at": "2026-10-19T04:01:58.960Z",
+        "observations": [
+          {
+            "at": "2026-10-28T20:59:30.069357+00:00",
+            "by": "user-test-nightly",
+            "app": "http://127.0.0.1:3000 (로컬 dev, DB 사본 /tmp/jieun_db — SMB 볼륨 SQLite 잠금 회피)",
+            "observed": "2026-10-29 야간 사용자 테스트: 비회원 주문서(/checkout/new)가 받는 분·휴대폰·주소·출생연도를 수집하는데, 푸터 '개인정보처리방침'·'이용약관'은 여전히 '(준비 중)' 텍스트뿐이라 손님이 열어 볼 수 없음.",
+            "evidence": [
+              "/tmp/jieun_ut/05_checkout.png"
+            ]
+          }
+        ]
       }
     },
     {
@@ -8897,6 +8920,274 @@
         "factory_inline_verification": true
       },
       "completed_at": "2026-10-25T16:16:28.471909"
+    },
+    {
+      "id": "ISS-152",
+      "title": "공개 상품 29개 전부 '소재·세탁·상품정보' 9항목이 '확인 중' — 손님이 소재·치수·세탁법·제조국을 알 수 없음(운영 동일)",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "M",
+      "status": "AWAITING_USER",
+      "origin": "user-test",
+      "depends_on": [],
+      "created_at": "2026-10-28T20:59:30.069357+00:00",
+      "updated_at": "2026-10-28T21:00:27.641058+00:00",
+      "done_criteria": "공개 상태의 모든 상품 상세에서 상품정보제공고시 9항목(소재·색상·치수·제조자·제조국·세탁방법·제조연월·품질보증기준·A/S책임자)이 실제 값으로 보이고, '확인 중'이 남은 상품은 손님 화면에 공개되지 않는다",
+      "payload": {
+        "origin": "user-test",
+        "holdout_note": "숨긴 시나리오 판정 없음(exit 2) — 야간 수동 사용자 테스트에서 발견",
+        "observations": [
+          {
+            "at": "2026-10-28T20:59:30.069357+00:00",
+            "by": "user-test-nightly",
+            "app": "http://127.0.0.1:3000 (로컬 dev, DB 사본 /tmp/jieun_db — SMB 볼륨 SQLite 잠금 회피)",
+            "observed": "게스트로 /products 의 29개 상품 상세(/products/228~256)를 모두 열어 보니 29개 전부 '소재 · 세탁 · 상품정보' 9항목이 '확인 중'으로만 표시됨(예: /products/234 배색 숄칼라 랩 롱코트 209,000원, 공개 2026-10-21). 운영 https://jieum.158.247.235.31.nip.io/products 의 29개 상세도 동일하게 29/29 '확인 중'. 바로구매·장바구니·비회원 주문서까지는 막힘 없이 진행돼 손님이 소재·치수를 모른 채 주문하게 됨. ISS-143(TODO 잔존 시 공개 차단)은 새 공개만 막고 이미 공개된 상품에는 적용되지 않은 것으로 보임.",
+            "evidence": [
+              "/tmp/jieun_ut/03_pdp.png",
+              "/tmp/jieun_ut/p234.html"
+            ]
+          }
+        ],
+        "recommendation": {
+          "verdict": "대표님 결정 필요",
+          "reason": "소재·제조국·세탁법 같은 값은 실제 상품 정보라 공장이 지어낼 수 없고, '확인 중'인 상품을 내리면 현재 판매 상품 29개가 전부 사라짐. 어느 쪽으로 갈지 대표님 선택이 먼저 필요. 코드 쪽(관리자 화면에 미완성 상품 목록·한꺼번에 입력하는 화면)은 선택 후 바로 착수 가능",
+          "risk": "medium",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-10-28T21:00:27.641058+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "대표님 결정 필요",
+            "reason": "실제 소재·제조국·세탁법 값은 상품 실물 정보라 공장이 지어낼 수 없음. 대표님이 값을 주시거나, 값이 채워질 때까지 해당 상품을 비공개로 돌릴지(=현재 판매 상품 전부 비공개) 결정 필요. 코드 쪽 후속은 '이미 공개된 상품 중 TODO 잔존 목록을 관리자 화면에 표시'까지",
+            "risk": "medium",
+            "effort": "M",
+            "by": "user-test-nightly",
+            "at": "2026-10-28T20:59:30.069357+00:00"
+          }
+        ],
+        "question": "상품 29개의 소재·치수·세탁법 등 표시 정보가 전부 '확인 중'인데, 정보가 채워질 때까지 판매를 어떻게 할까요?",
+        "plain_summary": "법(전자상거래 상품정보 제공 고시)상 옷은 소재·치수·제조국·세탁법 등 9가지를 보여줘야 하는데 지금 모든 상품이 '확인 중'으로 나옵니다. 실제 값은 공급사·대표님만 알 수 있어 공장이 채울 수 없습니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "판매는 그대로 두고, 관리자 화면에 '정보 미완성 상품' 목록과 한 번에 입력하는 표를 만들어 대표님(또는 공급사)이 빠르게 채운다",
+            "pros": "매출·노출이 끊기지 않음. 입력 도구가 생겨 이후 신상품도 편해짐",
+            "cons": "채우기 전까지는 손님이 정보 없이 주문할 수 있음(법적 지적 소지가 남음)"
+          },
+          {
+            "key": "B",
+            "label": "정보가 다 채워질 때까지 해당 상품을 손님 화면에서 내리고(비공개), 채운 상품부터 다시 공개한다",
+            "pros": "법적으로 가장 안전, 손님 불만 차단",
+            "cons": "현재 29개 전부라 사실상 판매 중단. 운영 데이터 일괄 변경이라 되돌릴 때도 작업 필요"
+          },
+          {
+            "key": "C",
+            "label": "대표님이 상품별 9가지 값을 엑셀 등으로 주시면 공장이 일괄 입력한다",
+            "pros": "가장 빨리 정상화, 판매 유지",
+            "cons": "대표님이 값을 모아 주셔야 함(공급사 확인 필요)"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "판매를 멈추지 않으면서 채울 도구를 먼저 만들고, 값은 대표님·공급사가 넣는 구조가 현실적입니다. 값이 이미 있으면 C 와 함께 해도 됩니다.",
+        "if_not_decided": "손님은 계속 소재·치수를 모른 채 주문하게 되고, 반품·문의와 법적 지적 가능성이 남습니다.",
+        "reversible": "A·C 는 언제든 되돌릴 수 있음. B 는 비공개 처리한 상품을 다시 공개하는 작업이 필요(데이터 삭제는 없음).",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "AWAITING_USER",
+            "at": "2026-10-28T21:00:27.641058+00:00",
+            "by": "factory-runner",
+            "note": "대표님 결정 필요 — 실물 상품정보 값·공개 유지 여부는 공장이 정할 수 없음"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ISS-153",
+      "title": "상단 메뉴 '매거진'을 누르면 '준비 중입니다' 한 줄뿐인 빈 화면 — 손님 주요 메뉴 3개 중 1개가 막다른 길(운영 동일)",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "S",
+      "status": "DONE",
+      "origin": "user-test",
+      "depends_on": [],
+      "created_at": "2026-10-28T20:59:30.069357+00:00",
+      "updated_at": "2026-10-28T21:00:27.641058+00:00",
+      "done_criteria": "글이 하나도 없을 때는 손님 메뉴(데스크톱·모바일)에 매거진이 보이지 않거나, /magazine 에서 손님이 갈 다음 행동(상품·랭킹 링크)이 보인다",
+      "payload": {
+        "origin": "user-test",
+        "holdout_note": "숨긴 시나리오 판정 없음(exit 2) — 야간 수동 사용자 테스트에서 발견",
+        "observations": [
+          {
+            "at": "2026-10-28T20:59:30.069357+00:00",
+            "by": "user-test-nightly",
+            "app": "http://127.0.0.1:3000 (로컬 dev, DB 사본 /tmp/jieun_db — SMB 볼륨 SQLite 잠금 회피)",
+            "observed": "게스트 1440 화면에서 헤더 '랭킹·상품·매거진' 중 '매거진' 클릭 → /magazine 본문이 'JIEUM MAGAZINE / 매거진 / 준비 중입니다.' 뿐이고 다른 안내·링크 없음(페이지 텍스트 299자). 390px 모바일 메뉴에도 같은 링크가 노출됨. 운영 https://jieum.158.247.235.31.nip.io/magazine 도 '준비 중입니다' 동일.",
+            "evidence": [
+              "/tmp/jieun_ut/06_magazine.png"
+            ]
+          }
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "주 메뉴가 빈 화면으로 이어지는 탐색 막힘. 글이 0건일 때 메뉴 숨김 또는 빈 화면에 상품·랭킹 안내 추가 — 데이터·결제·인증 무관",
+          "risk": "low",
+          "effort": "S",
+          "by": "user-test-nightly",
+          "at": "2026-10-28T20:59:30.069357+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-28T20:59:32.665Z",
+            "by": "auto",
+            "reason": "주 메뉴가 빈 화면으로 이어지는 탐색 막힘. 글이 0건일 때 메뉴 숨김 또는 빈 화면에 상품·랭킹 안내 추가 — 데이터·결제·인증 무관"
+          }
+        ],
+        "approved_at": "2026-10-28T20:59:32.665Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "acceptance_criteria": [
+          "글이 하나도 공개되지 않은 동안 손님은 데스크톱·모바일 상단 메뉴에서 '매거진'을 보지 않는다(막다른 길로 안내되지 않음)",
+          "주소로 /magazine 에 직접 들어온 손님은 '준비 중' 한 줄이 아니라 상품 보기·랭킹 보기로 가는 다음 행동 버튼을 본다",
+          "관리자는 초안 미리보기를 위해 메뉴에서 매거진에 계속 갈 수 있다",
+          "매거진 호가 공개(published)되면 손님 메뉴에 매거진이 다시 나타난다"
+        ],
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-28T21:00:27.641058+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수(2026-10-29)"
+          }
+        ]
+      },
+      "result": {
+        "commit": "9fdae48",
+        "summary": "공개 호가 0개면 손님 데스크톱·모바일 메뉴에서 매거진 숨김, /magazine 빈 상태에 안내문+상품 보러 가기/랭킹 보기 버튼. 관리자는 초안 미리보기용 링크 유지.",
+        "tests": {
+          "runs": 401,
+          "failures": 0,
+          "errors": 0
+        },
+        "criteria_check": [
+          {
+            "criterion": "글이 하나도 공개되지 않은 동안 손님은 데스크톱·모바일 상단 메뉴에서 '매거진'을 보지 않는다(막다른 길로 안내되지 않음)",
+            "met": true,
+            "how": "Playwright(127.0.0.1:3053) 1440·390 게스트 홈: 데스크톱 메뉴 [랭킹,상품], 모바일 메뉴 [랭킹,상품]"
+          },
+          {
+            "criterion": "주소로 /magazine 에 직접 들어온 손님은 '준비 중' 한 줄이 아니라 상품 보기·랭킹 보기로 가는 다음 행동 버튼을 본다",
+            "met": true,
+            "how": "Playwright: /magazine 에 안내문+두 버튼, '상품 보러 가기' 클릭 → /products(상품 링크 87개), '랭킹 보기' 클릭 → / (데스크톱·모바일), 스크린샷 /tmp/ujt/iss153_mobile.png"
+          },
+          {
+            "criterion": "관리자는 초안 미리보기를 위해 메뉴에서 매거진에 계속 갈 수 있다",
+            "met": true,
+            "how": "layout_links_test '로그인하면…' — 관리자 모바일 메뉴 3개(매거진 포함)·데스크톱 매거진 링크 1개 단언 통과"
+          },
+          {
+            "criterion": "매거진 호가 공개(published)되면 손님 메뉴에 매거진이 다시 나타난다",
+            "met": true,
+            "how": "layout_links_test '공개 호가 생기면…' — MagazineIssue.all 을 published 호로 스텁 시 게스트 데스크톱·모바일 메뉴에 매거진 표시 단언 통과"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS153full.sqlite3 bin/rails test",
+            "exit_code": 0,
+            "output": "401 runs, 2826 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop app/controllers/application_controller.rb test/integration/layout_links_test.rb test/controllers/magazine_controller_test.rb",
+            "exit_code": 0,
+            "output": "3 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "node /tmp/ujt/pw1023/walk1029.mjs",
+            "exit_code": 0,
+            "output": "desktop desktop-menu [\"랭킹\",\"상품\"] mobile-menu [\"랭킹\",\"상품\"] / desktop magazine-empty: 첫 호를 준비하고 있어요. 그동안 지금 판매 중인 상품을 둘러보세요. | 상품 보러 가기 | 랭킹 보기 / desktop after click -> /products cards: 87 / desktop ranking click -> / / mobile (동일)"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-29T06:02:26.436136"
+    },
+    {
+      "id": "ISS-154",
+      "title": "CI 보안 점검 실패 — net-ssh 7.3.0·crass 1.0.7 신규 취약점(bundler-audit), 보안 패치 버전으로 올리기",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "S",
+      "status": "DONE",
+      "origin": "factory-runner",
+      "depends_on": [],
+      "created_at": "2026-10-28T21:05:44.255243+00:00",
+      "updated_at": "2026-10-28T21:05:44.255243+00:00",
+      "done_criteria": "CI Security Checks(bundler-audit) 가 통과하고 기존 테스트·배포 도구(kamal)가 그대로 동작한다",
+      "payload": {
+        "origin": "factory-runner",
+        "found_in": "CI run 40768788129 (ISS-153 push) — Security Checks 실패, 10-25 run 40173843329 도 동일",
+        "acceptance_criteria": [
+          "CI 보안 점검(bundler-audit)이 취약 의존성 0건으로 통과한다",
+          "손님 화면·관리자 기능은 기존과 동일하게 동작한다(전체 테스트 통과)",
+          "배포 도구(kamal)가 그대로 실행된다"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "신규 공개 취약점 패치 버전 업데이트(조건 범위 내 최소 업데이트). 데이터·결제·인증 무관, 보안 패치라 배포 시간 제한 없음",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-28T21:05:44.255243+00:00"
+        }
+      },
+      "result": {
+        "commit": "97a42e0",
+        "summary": "net-ssh 7.3.0→7.3.8, crass 1.0.7→1.0.8 (bundle update --conservative). CI Security Checks 복구.",
+        "criteria_check": [
+          {
+            "criterion": "CI 보안 점검(bundler-audit)이 취약 의존성 0건으로 통과한다",
+            "met": true,
+            "how": "로컬 bundler-audit check 'No vulnerabilities found' + GitHub CI run 40769086745 Security Checks success"
+          },
+          {
+            "criterion": "손님 화면·관리자 기능은 기존과 동일하게 동작한다(전체 테스트 통과)",
+            "met": true,
+            "how": "bin/rails test 401 runs 0 failures, CI Test Suite success, sanitizer 동작 확인"
+          },
+          {
+            "criterion": "배포 도구(kamal)가 그대로 실행된다",
+            "met": true,
+            "how": "bin/kamal version → 2.10.1, net-ssh 7.3.8 로드 확인"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "bundle exec bundler-audit check",
+            "exit_code": 0,
+            "output": "No vulnerabilities found"
+          },
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS153full.sqlite3 bin/rails test",
+            "exit_code": 0,
+            "output": "401 runs, 2826 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bundle exec ruby -e 'require \"net/ssh\"; ... Rails::HTML5::SafeListSanitizer.new.sanitize(...)'",
+            "exit_code": 0,
+            "output": "net-ssh 7.3.8 crass 1.0.8 / <a>x</a>1"
+          },
+          {
+            "cmd": "gh run view 40769086745 --json jobs",
+            "exit_code": 0,
+            "output": "Security Checks success / Test Suite success / Lint (RuboCop) success / Build Assets success"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-29T06:08:17.221093"
     }
   ],
   "hooks": {
@@ -9244,6 +9535,18 @@
         "issue_type": "DECISION",
         "plan_created": 0,
         "timestamp": "2026-10-25T16:16:28.471909"
+      },
+      {
+        "issue_id": "ISS-153",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-10-29T06:02:26.436136"
+      },
+      {
+        "issue_id": "ISS-154",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-10-29T06:08:17.221093"
       }
     ],
     "on_fail": [],
@@ -9256,7 +9559,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 69,
+    "completed": 71,
     "failed": 0,
     "evolved": 0
   },

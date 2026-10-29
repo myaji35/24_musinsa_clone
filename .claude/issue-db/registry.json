@@ -9188,6 +9188,221 @@
         "factory_inline_verification": true
       },
       "completed_at": "2026-10-29T06:08:17.221093"
+    },
+    {
+      "id": "ISS-155",
+      "title": "비회원 주문 완료 후 결제 방법이 없음 — '결제 기능은 준비 중입니다. 담당자가 확인 후 안내드립니다.' 한 줄뿐, 입금 계좌·기한·연락처 안내 없음",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "size": "S",
+      "status": "AWAITING_USER",
+      "origin": "user-test",
+      "depends_on": [],
+      "created_at": "2026-10-29T20:47:50.000415+00:00",
+      "updated_at": "2026-10-29T20:55:23.580105+00:00",
+      "done_criteria": "손님이 비회원 주문을 마치면 주문 완료·주문조회 화면에서 어떻게 결제하면 되는지(입금 계좌·예금주·입금 기한 또는 대표님이 정한 결제 방법) 바로 알 수 있다",
+      "payload": {
+        "origin": "user-test",
+        "holdout_note": "숨긴 시나리오 판정 없음(exit 2) — 야간 수동 사용자 테스트에서 발견",
+        "observations": [
+          {
+            "at": "2026-10-29T20:47:50.000415+00:00",
+            "by": "user-test-nightly",
+            "app": "http://127.0.0.1:3000 (로컬 dev, DB 사본 /tmp/jieun_ut — SMB 볼륨 SQLite 잠금 회피, 코드 a6d54fb)",
+            "observed": "게스트로 /products → '벨티드 후드 롱패딩' 상세 → 카멜/M 선택 → 장바구니 → '비회원 주문하기' → 주문서 입력·개인정보 동의 → '주문하기' 클릭. /orders/CHK-20261029-E56E3A8E 로 이동하고 상태 '결제 대기', 안내는 '결제 기능은 준비 중입니다. 담당자가 확인 후 안내드립니다.' 한 줄뿐. 입금 계좌·예금주·입금 기한·문의처가 없어 손님이 결제를 끝낼 방법이 없음. 주문조회(주문번호+휴대폰 뒤 4자리)로 다시 들어가도 같은 문구. 주문서 단계에서도 결제 방법 안내 없음. app/views/customer_orders/show.html.erb:14 문구 고정, 코드에 PAYOUT_* 사용처 0건, 프로젝트 .env 에 PAYOUT_* 키 없음.",
+            "evidence": [
+              "/tmp/jieun_ut/shots/05-checkout.png",
+              "/tmp/jieun_ut/shots/06-order-done.png"
+            ]
+          }
+        ],
+        "acceptance_criteria": [
+          "비회원 주문 완료 화면에 결제 방법(계좌이체면 은행·계좌번호·예금주·입금 기한)이 보인다",
+          "주문조회로 다시 들어가도 같은 결제 안내가 보인다",
+          "계좌 값은 .env 의 PAYOUT_BANK/PAYOUT_ACCOUNT/PAYOUT_HOLDER 에서만 읽고 코드·git 에 실값이 없다(payout-account 규칙)",
+          "값이 비어 있으면 가짜 계좌를 보이지 않고 '결제 안내 준비 중'과 문의 방법을 정직하게 보여 준다"
+        ],
+        "related": [
+          "ISS-060 (PG 연동, BLOCKED) — PG 없이 계좌이체 직접 수금 원칙에 따른 별도 경로"
+        ],
+        "recommendation": {
+          "verdict": "대표님 결정 필요",
+          "reason": "구현·테스트 완료(브랜치 factory/ISS-155). 돈이 오가는 주문 완료 화면이라 배포 전 대표님 확인 필요. 실제 입금 계좌 값은 공장이 정할 수 없음",
+          "risk": "medium",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-29T20:55:23.580105+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-29T20:47:53.719Z",
+            "by": "auto",
+            "reason": "「비회원 주문 완료 후 결제 방법이 없음 — '결제 기능은 준비 중입니다. 담당자가 확인 후 안내드립니다.' 한 줄뿐, 입금 계좌·기한·연락처 안내 없음」은 P1 사용자 영향 결함이므로 우선 해결이 필요합니다."
+          }
+        ],
+        "approved_at": null,
+        "approved_by": null,
+        "recommendation_history": [
+          {
+            "verdict": "대표님 확인 필요",
+            "reason": "손님이 주문을 끝내도 돈을 낼 방법이 없어 매출이 막힘. 전역 원칙(PG 없이 대표님 계좌 직접 수금)에 맞춰 PAYOUT_* 로 계좌 안내를 붙이면 되지만, 돈이 오가는 화면이고 .env 에 PAYOUT_* 실값이 아직 없어 대표님 입력이 필요",
+            "risk": "medium",
+            "effort": "S",
+            "by": "user-test-nightly",
+            "at": "2026-10-29T20:47:50.000415+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "손님이 주문 후 돈 낼 방법을 모르는 P1 결함. PG(ISS-060) 없이 계좌이체 안내를 PAYOUT_* 환경값으로만 붙이고, 값이 없으면 가짜 계좌 대신 '준비 중'과 주문번호 보관·주문조회 안내를 정직하게 보여 주는 방식으로 구현. 돈이 오가는 화면이라 배포 전 대표님 확인(gate=deploy) — 구현은 브랜치에서 먼저 진행",
+            "risk": "medium",
+            "effort": "S",
+            "by": "factory-runner",
+            "at": "2026-10-29T20:48:47.306709+00:00"
+          }
+        ],
+        "gate": "deploy",
+        "recommendation_note": "기존 verdict '대표님 확인 필요'는 허용 목록 밖이라 교체",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-29T20:48:47.306709+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — 돈 흐름(결제 안내) 화면이라 gate=deploy, factory/ISS-155 브랜치에서 구현"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-10-29T20:55:23.580105+00:00",
+            "by": "factory-runner",
+            "note": "gate=deploy — factory/ISS-155(6a9845f) 구현·검증 완료, 배포 검토 대기"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "gate_stage_at": "2026-10-29T20:55:23.580105+00:00",
+        "branch": "factory/ISS-155",
+        "commit": "6a9845f",
+        "start_approval": {
+          "approved_at": "2026-10-29T20:47:53.719Z",
+          "approved_by": "자동 승인(추천: 승인 권장)"
+        },
+        "question": "주문 완료 화면의 결제(계좌이체) 안내를 어떻게 운영 서버에 올릴까요?",
+        "options": [
+          {
+            "key": "A",
+            "label": "입금받을 계좌(은행·계좌번호·예금주)를 알려 주시고, 그 계좌를 넣어 바로 올린다",
+            "pros": "손님이 주문 직후 바로 입금할 수 있어 첫 매출이 가능",
+            "cons": "계좌 값을 서버 비밀 설정에 넣는 작업이 함께 필요(대표님이 값 전달)"
+          },
+          {
+            "key": "B",
+            "label": "계좌 없이 먼저 올린다 — 손님에게 '결제 안내 준비 중, 주문번호 보관' 안내만 정직하게 보인다",
+            "pros": "지금보다 안내가 분명해지고 위험 없음. 계좌는 나중에 설정만 넣으면 화면이 자동으로 바뀜",
+            "cons": "계좌를 넣기 전까지는 여전히 입금 받을 수 없음"
+          },
+          {
+            "key": "C",
+            "label": "올리지 않고 결제대행사(카드 결제) 결정 때까지 보류한다",
+            "pros": "결제 방식을 한 번에 정리",
+            "cons": "그동안 주문한 손님은 결제 방법을 전혀 모름"
+          }
+        ],
+        "recommended_option": "B",
+        "recommended_why": "화면 변경 자체는 위험이 없고 지금 문구보다 정직합니다. 계좌는 대표님이 알려 주시는 대로 설정만 넣으면 같은 화면이 계좌 안내로 바뀌므로, 먼저 올려 두고 계좌는 따로 받는 편이 빠릅니다.",
+        "plain_summary": "비회원 손님이 주문을 마쳐도 돈을 어떻게 내는지 안내가 없었습니다. 계좌이체 안내 화면을 만들어 두었고(계좌 값은 서버 설정으로만 넣음), 운영에 올릴 방법을 정해 주세요.",
+        "if_not_decided": "손님은 계속 '결제 기능은 준비 중' 한 줄만 보고 결제할 방법을 몰라 주문이 매출로 이어지지 않습니다.",
+        "reversible": "예 — 화면 안내 변경이라 언제든 되돌릴 수 있고, 계좌는 설정값만 바꾸면 됩니다.",
+        "deploy_notes": "A 선택 시 config/deploy.yml env.secret 에 PAYOUT_BANK/PAYOUT_ACCOUNT/PAYOUT_HOLDER(선택 PAYOUT_CONTACT·PAYOUT_DUE_DAYS)와 .kamal/secrets 항목 추가 필요. 입금 확인 후 '결제 완료' 바꾸는 관리자 화면은 아직 없음 → ISS-156.",
+        "derived": [
+          "ISS-156"
+        ]
+      },
+      "result": {
+        "summary": "비회원 주문 완료·주문조회 화면에 계좌이체 결제 안내(ENV PAYOUT_* 기반), 값 없으면 '결제 안내 준비 중'+주문번호 보관 안내, 주문서에 계좌이체 안내 한 줄",
+        "proof": [
+          {
+            "cmd": "bin/rails test test/controllers/customer_orders_controller_test.rb test/controllers/checkouts_controller_test.rb test/models/payment_instruction_test.rb (LANG 미설정·C.UTF-8 각각)",
+            "exit_code": 0,
+            "output": "12 runs, 108 assertions, 0 failures, 0 errors, 0 skips (두 로캘 모두)"
+          },
+          {
+            "cmd": "bin/rails test (factory/ISS-155 전체)",
+            "exit_code": 0,
+            "output": "407 runs, 2885 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop",
+            "exit_code": 0,
+            "output": "237 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "node /tmp/ujt/pw1030/walk155.mjs http://127.0.0.1:3155 withenv (가짜 PAYOUT_* 설정, 모바일 게스트 주문→주문조회)",
+            "exit_code": 0,
+            "output": "checkout note: 결제는 주문 후 계좌이체로 진행됩니다 / done url: /orders/CHK-20261029-77C5FB38 / box: 주문이 접수되었습니다. | 결제 방법 — 계좌이체 | 은행: 테스트은행 | 계좌번호: 000-00-000000 | 예금주: 테스트예금주 | 입금 금액: 239,000원 | 입금 기한: 2026년 11월 2일까지 ... / lookup box: 동일"
+          },
+          {
+            "cmd": "node /tmp/ujt/pw1030/walk155.mjs http://127.0.0.1:3155 noenv (PAYOUT_* 없음)",
+            "exit_code": 0,
+            "output": "box: 주문이 접수되었습니다. | 결제 안내를 준비 중입니다 | 주문서 번호(CHK-20261029-846F21EA)를 보관해 주세요... / lookup box: 동일"
+          }
+        ],
+        "criteria_check": [
+          {
+            "criterion": "비회원 주문 완료 화면에 결제 방법(은행·계좌번호·예금주·입금 기한)이 보인다",
+            "met": true,
+            "how": "Playwright 게스트 주문 실행 후 #payment-instruction 텍스트 확인(withenv)"
+          },
+          {
+            "criterion": "주문조회로 다시 들어가도 같은 결제 안내가 보인다",
+            "met": true,
+            "how": "새 브라우저 컨텍스트에서 주문서 번호+뒤 4자리 조회 → 동일 안내 확인"
+          },
+          {
+            "criterion": "계좌 값은 .env 의 PAYOUT_* 에서만 읽고 코드·git 에 실값이 없다",
+            "met": true,
+            "how": "PaymentInstruction 이 ENV 만 읽음, 테스트는 가짜값(000-00-000000)만 사용, deploy.yml·secrets 미변경"
+          },
+          {
+            "criterion": "값이 비어 있으면 가짜 계좌 없이 '결제 안내 준비 중'과 확인 방법을 정직하게 보여 준다",
+            "met": true,
+            "how": "noenv 실행 화면·통합 테스트(계좌 라벨·가짜값 미노출 단언)"
+          }
+        ],
+        "notes": "검수 중 발견·수정: 비UTF-8 로캘 프로세스에서 한글 ENV 값이 ASCII-8BIT 로 읽혀 화면 500(incompatible encodings) → UTF-8 강제. 숨긴 시나리오 판정·push 대상 아님(gate 카드)."
+      }
+    },
+    {
+      "id": "ISS-156",
+      "title": "관리자 주문 화면에서 '입금 확인 → 결제 완료' 처리 — 지금은 주문 상태를 바꿀 화면이 없음",
+      "type": "FEATURE",
+      "priority": "P2",
+      "size": "S",
+      "status": "BACKLOG",
+      "origin": "factory-runner",
+      "depends_on": [
+        "ISS-155"
+      ],
+      "created_at": "2026-10-29T20:55:23.580105+00:00",
+      "updated_at": "2026-10-29T20:55:23.580105+00:00",
+      "payload": {
+        "origin": "factory-runner",
+        "parent": "ISS-155",
+        "description": "ISS-155 로 손님에게 계좌이체 안내를 보이게 했지만, 입금 확인 후 주문 상태를 pending→paid 로 바꿀 관리자 화면·버튼이 코드에 없음(대시보드는 상태 표시만). 계좌 안내가 운영에 켜지면 필요.",
+        "acceptance_criteria": [
+          "관리자가 결제 대기 주문 목록에서 주문서 번호별로 '입금 확인' 버튼을 눌러 결제 완료로 바꿀 수 있다",
+          "손님 주문조회 화면 상태가 '결제 완료'로 바뀌고 결제 안내 상자가 사라진다",
+          "관리자가 아니면 상태를 바꿀 수 없다"
+        ],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-155 배포 결정(계좌 안내를 켤지) 이후에 필요. 선행 카드 결정 전 착수하면 범위가 바뀔 수 있음",
+          "risk": "low",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-10-29T20:55:23.580105+00:00"
+        }
+      }
     }
   ],
   "hooks": {

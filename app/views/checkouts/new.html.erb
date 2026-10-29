@@ -24,6 +24,7 @@
       <%= f.check_box :privacy_consent, checked: @checkout["privacy_consent"] == "1", class: "mt-1 shrink-0" %>
       <%= f.label :privacy_consent, "개인정보 수집·이용 동의(배송 목적, 배송 완료 후 #{Rails.configuration.x.shipping_address_retention_days}일 보관 뒤 파기)", class: "text-sm leading-relaxed" %>
     </div>
+    <p class="text-sm text-gray-600">결제는 주문 후 계좌이체로 진행됩니다(주문 완료 화면에서 입금 계좌 안내)</p>
     <%= f.submit "주문하기", class: "w-full bg-black text-white p-4 font-bold" %>
   <% end %>
 </div>

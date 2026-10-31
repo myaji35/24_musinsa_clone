@@ -10094,10 +10094,10 @@
       "type": "FIX_BUG",
       "priority": "P2",
       "size": "S",
-      "status": "READY",
+      "status": "DONE",
       "depends_on": [],
       "created_at": "2026-10-31T14:48:54.086598+00:00",
-      "updated_at": "2026-10-31T14:48:54.086598+00:00",
+      "updated_at": "2026-10-31T14:49:01.552871+00:00",
       "payload": {
         "origin": "factory-runner",
         "source": "2026-10-31 ISS-126 화면 캡처 중 발견(main 에도 동일 마크업)",
@@ -10116,8 +10116,58 @@
         },
         "evidence": [
           "docs/user-test/2026-10-31/iss126-product-edit-1440.png"
+        ],
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-10-31T14:48:57.242Z",
+            "by": "auto",
+            "reason": "관리자 화면 가독성 버그, 작은 수정"
+          }
+        ],
+        "approved_at": "2026-10-31T14:48:57.242Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-31T14:49:01.552871+00:00",
+            "by": "factory-runner",
+            "note": "착수 — 칩 검정 원인 진단"
+          }
         ]
-      }
+      },
+      "result": {
+        "summary": "선택 칩에 JS 가 bg-black·text-white 를 붙이지만 span 의 peer-checked:text-black 이 글자를 검정으로 덮어 안 보였음 → peer-checked:text-white 로 교체(4곳). 작은 한 단어 수정이라 codex 위임 없이 직접 처리.",
+        "commit": "2cdac7c",
+        "criteria_check": [
+          {
+            "criterion": "상품 수정 화면에서 선택된 AI 속성 칩의 글자가 읽힌다(선택/미선택 모두)",
+            "met": true,
+            "how": "3053 서버 /products/256/edit 실측: 선택 칩 4개(캐주얼·데일리·루즈·따뜻함) span 글자색 rgb(255,255,255), 바탕 검정. 회귀 테스트는 수정 전 코드에서 실패·수정 후 통과"
+          },
+          {
+            "criterion": "칩을 눌러 선택·해제해도 저장 값은 그대로 동작한다",
+            "met": true,
+            "how": "체크박스·JS 는 건드리지 않음(클래스 한 단어만 교체), products_controller_test 40건 통과"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/products_controller_test.rb",
+            "exit_code": 0,
+            "output": "40 runs, 268 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "cd musinsa_clone && grep -c peer-checked:text-white app/views/products/_form.html.erb",
+            "exit_code": 0,
+            "output": "4"
+          }
+        ],
+        "external_cost_usd": 0,
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-31T23:50:20.561130"
     }
   ],
   "hooks": {
@@ -10501,6 +10551,12 @@
         "issue_type": "FEATURE_PLAN",
         "plan_created": 0,
         "timestamp": "2026-10-31T23:46:46.616168"
+      },
+      {
+        "issue_id": "ISS-158",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-10-31T23:50:20.561130"
       }
     ],
     "on_fail": [],
@@ -10513,7 +10569,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 75,
+    "completed": 76,
     "failed": 0,
     "evolved": 0
   },

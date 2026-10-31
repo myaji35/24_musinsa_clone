@@ -1,6 +1,9 @@
 # Epic 8.1: 거래처(공급처) 관리
 # 발주를 넣을 도매상/공급업체 정보 관리
 class Supplier < ApplicationRecord
+  has_many :supplier_accounts, dependent: :destroy
+  has_many :supplier_claims, dependent: :destroy
+  has_many :products
   has_many :purchase_orders, dependent: :destroy
 
   # Validations

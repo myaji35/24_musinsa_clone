@@ -78,9 +78,9 @@ namespace :mockup do
         <circle cx="350" cy="450" r="30" fill="white" opacity="0.2"/>
         <circle cx="50" cy="450" r="20" fill="white" opacity="0.2"/>
 
-        <!-- JIEUN branding -->
+        <!-- JIEUM branding -->
         <text x="200" y="485" font-family="Arial, sans-serif" font-size="10" font-weight="300"
-              text-anchor="middle" fill="#666" opacity="0.8">JIEUN FASHION</text>
+              text-anchor="middle" fill="#666" opacity="0.8">JIEUM FASHION</text>
       </svg>
     SVG
   end

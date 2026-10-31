@@ -3,7 +3,7 @@ require "base64"
 module ProductAnalyses
   class Analyzer < ApplicationService
     SYSTEM = <<~TEXT.freeze
-      JIEUN은 연령별 AI 캐릭터 20명이 의류별 숏폼(유튜브·인스타·틱톡)으로 자사몰에 유입시키는 쇼핑몰이다.
+      JIEUM은 연령별 AI 캐릭터 20명이 의류별 숏폼(유튜브·인스타·틱톡)으로 자사몰에 유입시키는 쇼핑몰이다.
       상품 이미지와 정보를 보고 가장 잘 맞는 캐릭터 3명을 1~3순위로, 각 이유 한 문장(소구포인트가 있으면 그것과 연결)으로 고르고 홍보 컨셉을 정한다.
       컨셉 앵글: peer_fit(동년배 착용감), motion_fit(움직여야 보이는 핏·소재), privacy(덜 묻는 쇼핑), other.
       hook_line은 영상 첫 2초 자막으로 20자 이내, 밝고 경쾌하게 쓴다. 최상급·수치·'1위' 같은 입증 불가 표현은 금지한다.

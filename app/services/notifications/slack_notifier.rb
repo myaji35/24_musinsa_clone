@@ -3,7 +3,7 @@ module Notifications
   class SlackNotifier < BaseNotifier
     WEBHOOK_URL = ENV["SLACK_WEBHOOK_URL"]
 
-    def initialize(channel:, text:, username: "JIEUN Bot", icon_emoji: ":robot_face:")
+    def initialize(channel:, text:, username: "JIEUM Bot", icon_emoji: ":robot_face:")
       @channel = channel
       @text = text
       @username = username

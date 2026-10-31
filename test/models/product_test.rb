@@ -15,6 +15,44 @@ class ProductTest < ActiveSupport::TestCase
     )
   end
 
+  test "공급가와 셀링포인트 및 납품처 유효성" do
+    @product.selling_points = "가" * 2500
+    [ nil, 0, 12345 ].each do |value|
+      @product.supply_price = value
+      assert @product.valid?
+    end
+    [ -1, "숫자 아님" ].each do |value|
+      @product.supply_price = value
+      assert_not @product.valid?
+      assert @product.errors[:supply_price].present?
+    end
+    @product.supply_price = nil
+    @product.selling_points = "가" * 10001
+    assert_not @product.valid?
+    @product.selling_points = nil
+    @product.supplier_id = Supplier.maximum(:id).to_i + 1
+    assert_not @product.valid?
+    assert @product.errors[:supplier].present?
+    @product.supplier_id = nil
+    assert @product.valid?
+  end
+
+  test "마진 금액과 비율은 공급가와 판매가로 계산한다" do
+    assert_nil @product.margin_amount
+    assert_nil @product.margin_rate
+    @product.price = 30000
+    @product.supply_price = 12345
+    assert_equal 17655, @product.margin_amount
+    assert_equal BigDecimal("58.9"), @product.margin_rate
+    @product.supply_price = 40000
+    assert_equal(-10000, @product.margin_amount)
+    assert_equal BigDecimal("-33.3"), @product.margin_rate
+    @product.supply_price = 0
+    assert_equal 100, @product.margin_rate
+    @product.price = 0
+    assert_nil @product.margin_rate
+  end
+
   test "이름과 브랜드 검색은 LIKE 특수 문자를 글자 그대로 찾는다" do
     @product.save!
     [ "%", "_", "\\", "50%", "item_code", "path\\name" ].each do |query|
@@ -227,5 +265,15 @@ class ProductTest < ActiveSupport::TestCase
     assert_equal [], @product.gallery_image_urls
     @product.supplier_product_code = nil
     assert_equal [], @product.gallery_image_urls
+  end
+  test "상품정보 미완성은 공백과 TODO 값을 포함하고 공개 차단의 기존 판정은 유지한다" do
+    assert_equal Product::INFO_NOTICE_FIELDS, @product.info_notice_missing_fields
+    assert_not @product.info_notice_complete?
+    @product.info_notice = Product::INFO_NOTICE_FIELDS.index_with { "확정" }
+    assert @product.info_notice_complete?
+    @product.info_notice.merge!("소재" => "  ", "색상" => "  TODO: 확인", "치수" => nil)
+    assert_equal %w[소재 색상 치수], @product.info_notice_missing_fields
+    assert_not @product.info_notice_complete?
+    assert_equal [ "상품정보 · 소재", "상품정보 · 치수" ], @product.publish_blockers
   end
 end

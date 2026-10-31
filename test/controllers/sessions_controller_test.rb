@@ -1,6 +1,40 @@
 require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
+  test "로그인 후 원래 관리자 화면과 쿼리로 복귀한다" do
+    [ trends_path, "#{dashboard_index_path}?range=7" ].each do |path|
+      delete logout_path
+      get path
+      assert_redirected_to login_path
+      assert_equal path, session[:return_to]
+
+      post login_path, params: { email: users(:one).email, password: "TestPassword!2026" }
+      assert_redirected_to path
+      assert_equal users(:one).id, session[:user_id]
+      assert_nil session[:return_to]
+    end
+  end
+
+  test "POST와 HTML이 아닌 요청은 복귀 경로를 저장하지 않는다" do
+    post trends_path
+    assert_redirected_to login_path
+    assert_nil session[:return_to]
+
+    get trends_path, as: :json
+    assert_redirected_to login_path
+    assert_nil session[:return_to]
+    sign_in
+  end
+
+  test "로그인 실패 후에도 복귀 경로를 보존한다" do
+    get trends_path
+    post login_path, params: { email: users(:one).email, password: "wrong" }
+    assert_response :unprocessable_entity
+    assert_equal trends_path, session[:return_to]
+    post login_path, params: { email: users(:one).email, password: "TestPassword!2026" }
+    assert_redirected_to trends_path
+  end
+
   test "비로그인 재고 스캔 접근은 로그인으로 이동한다" do
     get inventory_scan_path
     assert_response :found
@@ -86,5 +120,22 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user.destroy!
     get inventory_scan_path
     assert_redirected_to login_path
+  end
+end
+
+class SessionsReturnPathTest < ActionController::TestCase
+  tests SessionsController
+
+  test "안전하지 않은 복귀 경로는 기본 화면으로 이동한다" do
+    [ "https://evil.com", "//evil.com", "/\\evil.com", "/login", "/login?next=/trends",
+      "/logout", "/logout?next=/trends", "/login/", "/%", "trends", nil ].each do |path|
+      session[:return_to] = path
+      session[:old_session_value] = "discard"
+      post :create, params: { email: users(:one).email, password: "TestPassword!2026" }
+      assert_redirected_to inventory_scan_path
+      assert_equal users(:one).id, session[:user_id]
+      assert_nil session[:return_to]
+      assert_nil session[:old_session_value]
+    end
   end
 end

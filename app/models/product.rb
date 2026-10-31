@@ -52,6 +52,9 @@ class Product < ApplicationRecord
   validates :brand, presence: true
   validates :category, presence: true
   validates :description, length: { maximum: 500 }, allow_blank: true
+  validates :selling_points, length: { maximum: 10_000 }, allow_blank: true
+  validates :supply_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :supplier, presence: true, if: -> { supplier_id.present? }
   validate :validate_runway_video
   validate :validate_image
 
@@ -78,6 +81,18 @@ class Product < ApplicationRecord
     available_stock <= 0
   end
 
+  def margin_amount
+    return if supply_price.nil? || price.nil?
+
+    price - supply_price
+  end
+
+  def margin_rate
+    return if margin_amount.nil? || price.zero?
+
+    (margin_amount / price * 100).round(1)
+  end
+
   # 배지 관련 헬퍼 메서드
   def color_names
     variants.map(&:color).compact_blank.uniq
@@ -102,6 +117,17 @@ class Product < ApplicationRecord
 
   def info_notice_value(field)
     (info_notice || {})[field].to_s.strip
+  end
+
+  def info_notice_missing_fields
+    INFO_NOTICE_FIELDS.select do |field|
+      value = info_notice_value(field)
+      value.blank? || value.start_with?("TODO:")
+    end
+  end
+
+  def info_notice_complete?
+    info_notice_missing_fields.empty?
   end
 
   # 공개를 막는 항목 목록. 비어 있으면 공개 가능

@@ -1,0 +1,11 @@
+<h1 class="text-2xl font-bold">입고예정 · 발주 내역</h1>
+<div class="bg-white rounded-lg shadow divide-y">
+  <% @purchase_orders.each do |order| %>
+    <div class="p-4 flex flex-wrap gap-4">
+      <%= link_to order.order_number, partner_purchase_order_path(order), class: "text-blue-700 font-medium" %>
+      <span><%= partner_order_status(order.status) %></span>
+      <span>입고예정일: <%= order.expected_delivery_date || "미정" %></span>
+    </div>
+  <% end %>
+  <% if @purchase_orders.empty? %><p class="p-6 text-gray-500">발주 내역이 없습니다.</p><% end %>
+</div>

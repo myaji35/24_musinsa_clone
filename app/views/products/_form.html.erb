@@ -95,10 +95,30 @@
     </div>
   </div>
 
+  <div class="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-bold pb-2 border-b border-gray-200">납품처·원가 (관리자 전용)</h3>
+    <div>
+      <%= form.label :supplier_id, "납품처", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <% suppliers = Supplier.active.or(Supplier.where(id: product.supplier_id)).order(:name) %>
+      <%= form.collection_select :supplier_id, suppliers, :id, :name, { include_blank: "선택 안 함" }, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm" %>
+    </div>
+    <div>
+      <%= form.label :supply_price, "공급가 (원)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.number_field :supply_price, min: 0, step: 1, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm" %>
+      <p class="text-xs text-gray-500 mt-1">공급가는 손님 화면에 표시되지 않습니다</p>
+    </div>
+  </div>
+
+  <div class="bg-white border border-gray-200 rounded-lg p-6">
+    <%= form.label :selling_points, "셀링포인트", class: "block text-lg font-bold mb-4" %>
+    <%= form.text_area :selling_points, rows: 10, maxlength: 10000, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm" %>
+    <p class="text-xs text-gray-500 mt-1">최대 10,000자 · 입력한 줄바꿈이 상품 상세에 유지됩니다.</p>
+  </div>
+
   <!-- 상품정보제공고시 (ISS-143) -->
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-bold mb-2 pb-2 border-b border-gray-200">상품정보제공고시 (필수)</h3>
-    <p class="text-sm text-gray-600 mb-4">모두 입력해야 상세페이지를 공개할 수 있습니다. 납품처에서 받은 내용을 그대로 적어 주세요.</p>
+    <p class="text-sm text-gray-600 mb-4">모두 입력해야 상세페이지를 공개할 수 있습니다. 납품처에서 받은 내용을 그대로 적어 주세요. <%= link_to "여러 상품 한 번에 입력", product_info_notices_path, class: "text-blue-600 underline" %></p>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <% Product::INFO_NOTICE_FIELDS.each_with_index do |field, index| %>
         <div>
@@ -124,7 +144,7 @@
               <%= check_box_tag "product[ai_attributes][mood][]", mood,
                   (product.mood.is_a?(Array) ? product.mood.include?(mood) : product.mood == mood),
                   class: "hidden peer" %>
-              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "minimal" => "미니멀", "casual" => "캐주얼", "vintage" => "빈티지", "modern" => "모던", "delicate" => "우아함" }[mood] %>
               </span>
             </label>
@@ -141,7 +161,7 @@
               <%= check_box_tag "product[ai_attributes][tpo][]", tpo,
                   (product.tpo.is_a?(Array) ? product.tpo.include?(tpo) : product.tpo == tpo),
                   class: "hidden peer" %>
-              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "daily" => "데일리", "office" => "오피스", "date" => "데이트", "party" => "파티", "casual" => "캐주얼" }[tpo] %>
               </span>
             </label>
@@ -158,7 +178,7 @@
               <%= radio_button_tag "product[ai_attributes][fit_style]", fit,
                   product.fit_style == fit,
                   class: "hidden peer" %>
-              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "slim" => "슬림", "regular" => "레귤러", "oversized" => "오버사이즈", "loose" => "루즈" }[fit] %>
               </span>
             </label>
@@ -175,7 +195,7 @@
               <%= radio_button_tag "product[ai_attributes][material_feel]", material,
                   product.material_feel == material,
                   class: "hidden peer" %>
-              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "soft" => "부드러움", "structured" => "구조감", "lightweight" => "가벼움", "warm" => "따뜻함" }[material] %>
               </span>
             </label>

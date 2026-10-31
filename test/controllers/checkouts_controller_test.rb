@@ -42,7 +42,8 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to customer_order_path(order.checkout_number)
     follow_redirect!
     assert_response :success
-    assert_includes response.body, "결제 기능은 준비 중입니다. 담당자가 확인 후 안내드립니다."
+    assert_select "#payment-instruction"
+    assert_includes response.body, "주문이 접수되었습니다."
     get cart_path
     assert_includes response.body, "장바구니가 비어 있습니다"
   end

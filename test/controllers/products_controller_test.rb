@@ -6,7 +6,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
       name: "Korean Fashion Dress",
       description: "Beautiful Korean style dress",
       price: 89000,
-      brand: "JIEUN Fashion",
+      brand: "JIEUM Fashion",
       category: "Dress",
       gender: "female",
       stock: 50,
@@ -79,6 +79,85 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".grid span", text: "재고: 17"
     assert_select ".grid span", text: "minimal"
     assert_select ".grid span", text: "daily"
+  end
+
+  test "관리자는 납품처 공급가와 장문 셀링포인트를 생성하고 수정한다" do
+    sign_in
+    supplier = Supplier.create!(name: "폼 테스트 납품처", phone: "010-0000-0000")
+    points = "가" * 1249 + "\n" + "나" * 1250
+    post products_path, params: { product: {
+      name: "장문 상품", brand: "테스트", category: "상의", price: 30000,
+      supplier_id: supplier.id, supply_price: 12345, selling_points: points
+    } }
+    product = Product.order(:id).last
+    assert_redirected_to product_path(product)
+    assert_equal supplier, product.supplier
+    assert_equal 12345, product.supply_price
+    assert_equal points, product.selling_points
+
+    patch product_path(product), params: { product: {
+      supplier_id: supplier.id, supply_price: 15000, selling_points: points.reverse
+    } }
+    assert_redirected_to product_path(product)
+    assert_equal supplier.id, product.reload.supplier_id
+    assert_equal 15000, product.supply_price
+    assert_equal points.reverse, product.selling_points
+  end
+
+  test "관리자 편집에는 가격 마진과 현재 비활성 납품처를 표시한다" do
+    supplier = Supplier.create!(name: "기존 비활성 납품처", phone: "010-0000-0000", active: false)
+    other = Supplier.create!(name: "다른 비활성 납품처", phone: "010-0000-0001", active: false)
+    active = Supplier.create!(name: "활성 납품처", phone: "010-0000-0002", active: true)
+    @product.update!(price: 30000, supply_price: 12345, supplier: supplier)
+    sign_in
+    get edit_product_path(@product)
+    assert_response :success
+    assert_select "section[aria-label='관리자 가격 요약']" do
+      assert_select "p", text: "판매가: 30,000원"
+      assert_select "p", text: "공급가: 12,345원"
+      assert_select "p", text: "마진: 17,655원 (58.9%)"
+    end
+    assert_select "select[name='product[supplier_id]'] option[selected][value=?]", supplier.id.to_s
+    assert_select "select[name='product[supplier_id]'] option[value=?]", active.id.to_s
+    assert_select "select[name='product[supplier_id]'] option[value=?]", other.id.to_s, count: 0
+    assert_select "input[name='product[supply_price]'][min='0'][step='1']"
+    assert_select "textarea[name='product[selling_points]'][rows='10']"
+
+    @product.update!(supply_price: nil)
+    get edit_product_path(@product)
+    assert_select "section[aria-label='관리자 가격 요약'] span.bg-gray-200", text: "공급가 미입력"
+  end
+
+  test "공개 응답은 공급가와 납품처를 노출하지 않고 셀링포인트 줄바꿈은 유지한다" do
+    supplier = Supplier.create!(name: "비공개전용납품처", phone: "010-0000-0000")
+    @product.update!(supply_price: 12345, supplier: supplier,
+      selling_points: "첫 번째 줄\n두 번째 줄\n<script>alert('unsafe')</script>")
+    [ product_path(@product), products_path, root_path(q: @product.name) ].each do |path|
+      get path
+      assert_response :success
+      [ "12345", "supply_price", "supplier", supplier.name ].each do |secret|
+        assert_not_includes response.body, secret
+      end
+    end
+    get product_path(@product)
+    assert_select "section[aria-label='셀링포인트']" do
+      assert_select "br", minimum: 1
+      assert_select "p", text: /첫 번째 줄.*두 번째 줄/m
+      assert_select "script", count: 0
+    end
+    assert_includes response.body, "&lt;script&gt;"
+
+    original_key = ENV["UCP_API_KEY"]
+    ENV["UCP_API_KEY"] = "iss126-test-key"
+    Rails.cache.clear
+    get "/api/v1/ucp/products", params: { category: @product.category }, headers: { "X-API-Key" => "iss126-test-key" }
+    assert_response :success
+    assert_includes response.body, @product.name
+    [ "12345", "supply_price", "supplier", supplier.name ].each do |secret|
+      assert_not_includes response.body, secret
+    end
+  ensure
+    original_key.nil? ? ENV.delete("UCP_API_KEY") : ENV["UCP_API_KEY"] = original_key
   end
 
   test "관리자 재고이력 탭은 옵션별 최신 20건과 빈 상태를 표시한다" do
@@ -471,5 +550,16 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_select "[data-testid=fit-scale]", text: /착용감 \(2명 응답\)/
     assert_select "span", text: "착용감 딱맞다"
     assert_select "span", text: "키 162cm"
+  end
+
+  test "AI 검색 속성 칩은 선택되면 검은 바탕 위 흰 글자로 읽힌다 (ISS-158)" do
+    @product.update!(ai_attributes: { "mood" => [ "casual" ] })
+    sign_in
+
+    get edit_product_path(@product)
+
+    assert_response :success
+    assert_select "label:has(input[name='product[ai_attributes][mood][]'][value=casual][checked]) span.peer-checked\\:text-white", text: "캐주얼"
+    assert_select "span.peer-checked\\:text-black", count: 0
   end
 end

@@ -1,0 +1,8 @@
+<div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
+  <h1 class="text-2xl font-bold mb-6">공급사 로그인</h1>
+  <%= form_with url: partner_login_path, class: "space-y-4" do |f| %>
+    <div><%= f.label :email, "이메일", class: "block font-medium" %><%= f.email_field :email, required: true, autocomplete: "username", class: "w-full border rounded p-2" %></div>
+    <div><%= f.label :password, "비밀번호", class: "block font-medium" %><%= f.password_field :password, required: true, autocomplete: "current-password", class: "w-full border rounded p-2" %></div>
+    <%= f.submit "로그인", class: "bg-black text-white px-4 py-2 rounded" %>
+  <% end %>
+</div>

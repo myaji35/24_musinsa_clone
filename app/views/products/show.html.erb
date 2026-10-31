@@ -152,6 +152,12 @@
         <details class="py-4" <%= "open" unless @product.detail_page %>>
           <summary class="font-bold cursor-pointer">상품 상세 설명</summary>
           <p class="pt-3 text-gray-700 leading-relaxed"><%= @product.description %></p>
+          <% if @product.selling_points.present? %>
+            <section aria-label="셀링포인트" class="pt-3 space-y-2">
+              <h2 class="font-bold text-black">셀링포인트</h2>
+              <div class="text-gray-700 leading-relaxed"><%= simple_format(h(@product.selling_points)) %></div>
+            </section>
+          <% end %>
         </details>
         <details class="py-4">
           <summary class="font-bold cursor-pointer">소재 · 세탁 · 상품정보</summary>

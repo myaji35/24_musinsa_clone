@@ -17,6 +17,9 @@ Rails.application.routes.draw do
 
   resources :feedbacks, only: [ :new, :create ]
 
+  get "product_info_notices", to: "product_info_notices#index"
+  patch "product_info_notices", to: "product_info_notices#update_all"
+
   # Products & Reviews
   resources :products do
     member do
@@ -64,7 +67,25 @@ Rails.application.routes.draw do
   end
 
   # Epic 8: 거래처 및 발주 관리
-  resources :suppliers
+  namespace :partner do
+    root "dashboard#index"
+    get "login", to: "sessions#new"
+    post "login", to: "sessions#create"
+    delete "logout", to: "sessions#destroy"
+    resources :inventory, only: :index
+    resources :purchase_orders, only: [ :index, :show ] do
+      member { post :confirm }
+    end
+    resources :claims, only: [ :index, :show, :update ]
+  end
+  resources :supplier_claims, only: [ :index, :new, :create, :show ] do
+    member { patch :resolve }
+  end
+  resources :suppliers do
+    resources :supplier_accounts, only: :create do
+      member { patch :toggle }
+    end
+  end
   resources :supplier_imports, only: [ :index, :new, :create, :show ] do
     member { post :retry }
   end
@@ -88,6 +109,8 @@ Rails.application.routes.draw do
   namespace :api do
     resources :content_uploads, only: :create
     namespace :v1 do
+      get "feedback_exports", to: "feedback_exports#index"
+      post "feedback_exports/ack", to: "feedback_exports#ack"
       get "ucp/products", to: "ucp#products"
     end
   end

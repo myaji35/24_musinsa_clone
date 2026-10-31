@@ -112,6 +112,9 @@ class ProductsController < ApplicationController
     params.require(:product).permit(
       :name,
       :description,
+      :selling_points,
+      :supplier_id,
+      :supply_price,
       :price,
       :stock,
       :category,

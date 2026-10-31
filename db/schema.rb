@@ -137,6 +137,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_000157) do
     t.string "reporter_hash"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "factory_feedback_id"
+    t.string "factory_issue_id"
+    t.string "factory_action"
+    t.text "factory_flags"
+    t.datetime "forwarded_at"
     t.index ["created_at"], name: "index_feedbacks_on_created_at"
     t.index ["kind"], name: "index_feedbacks_on_kind"
     t.index ["product_id"], name: "index_feedbacks_on_product_id"
@@ -290,6 +295,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_000157) do
     t.datetime "published_at"
     t.integer "published_by_id"
     t.text "info_notice"
+    t.text "selling_points"
     t.index ["status"], name: "index_products_on_status"
     t.index ["supplier_id", "supplier_product_code"], name: "index_products_on_supplier_id_and_supplier_product_code"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
@@ -393,6 +399,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_000157) do
     t.index ["variant_id"], name: "index_stock_logs_on_variant_id"
   end
 
+  create_table "supplier_accounts", force: :cascade do |t|
+    t.integer "supplier_id", null: false
+    t.string "email", null: false
+    t.string "name"
+    t.string "password_digest", null: false
+    t.datetime "last_sign_in_at"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_supplier_accounts_on_email", unique: true
+    t.index ["supplier_id"], name: "index_supplier_accounts_on_supplier_id"
+  end
+
+  create_table "supplier_claims", force: :cascade do |t|
+    t.integer "supplier_id", null: false
+    t.integer "purchase_order_id"
+    t.integer "variant_id"
+    t.string "claim_type", null: false
+    t.integer "quantity"
+    t.text "description", null: false
+    t.string "status", default: "open", null: false
+    t.text "supplier_response"
+    t.datetime "responded_at"
+    t.datetime "resolved_at"
+    t.integer "created_by_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_user_id"], name: "index_supplier_claims_on_created_by_user_id"
+    t.index ["purchase_order_id"], name: "index_supplier_claims_on_purchase_order_id"
+    t.index ["supplier_id"], name: "index_supplier_claims_on_supplier_id"
+    t.index ["variant_id"], name: "index_supplier_claims_on_variant_id"
+  end
+
   create_table "supplier_imports", force: :cascade do |t|
     t.integer "supplier_id"
     t.string "status", default: "pending"
@@ -485,5 +524,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_000157) do
   add_foreign_key "snap_products", "snaps"
   add_foreign_key "snaps", "users"
   add_foreign_key "stock_logs", "variants"
+  add_foreign_key "supplier_accounts", "suppliers"
+  add_foreign_key "supplier_claims", "purchase_orders", on_delete: :nullify
+  add_foreign_key "supplier_claims", "suppliers"
+  add_foreign_key "supplier_claims", "users", column: "created_by_user_id", on_delete: :nullify
+  add_foreign_key "supplier_claims", "variants", on_delete: :nullify
   add_foreign_key "variants", "products"
 end

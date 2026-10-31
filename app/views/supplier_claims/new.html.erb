@@ -1,0 +1,11 @@
+<div class="max-w-2xl mx-auto px-4 py-8 space-y-6">
+<h1 class="text-3xl font-bold">클레임 접수</h1>
+<%= form_with model: @claim, class: "bg-white rounded-lg shadow p-6 space-y-4" do |f| %>
+  <% @claim.errors.full_messages.each do |message| %><p class="text-red-700"><%= message %></p><% end %>
+  <div><%= f.label :supplier_id, "거래처", class: "block font-medium" %><%= f.collection_select :supplier_id, Supplier.order(:name), :id, :name, { prompt: "거래처 선택" }, class: "w-full border rounded p-2" %></div>
+  <div><%= f.label :claim_type, "유형", class: "block font-medium" %><%= f.select :claim_type, SupplierClaim::TYPES.map { |value, label| [label, value] }, {}, class: "w-full border rounded p-2" %></div>
+  <div><%= f.label :purchase_order_id, "관련 발주 (선택)", class: "block font-medium" %><%= f.collection_select :purchase_order_id, PurchaseOrder.order(created_at: :desc), :id, :order_number, { include_blank: "선택 안 함" }, class: "w-full border rounded p-2" %></div>
+  <div><%= f.label :quantity, "수량 (선택)", class: "block font-medium" %><%= f.number_field :quantity, min: 1, class: "w-full border rounded p-2" %></div>
+  <div><%= f.label :description, "내용", class: "block font-medium" %><%= f.text_area :description, required: true, rows: 5, class: "w-full border rounded p-2" %></div>
+  <%= f.submit "접수", class: "bg-blue-600 text-white px-4 py-2 rounded-lg" %>
+<% end %></div>

@@ -13,6 +13,10 @@ class Rack::Attack
     end
   end
 
+  throttle("api/v1/feedback_exports/ip", limit: 30, period: 1.minute) do |req|
+    req.ip if req.path.start_with?("/api/v1/feedback_exports")
+  end
+
   ### General API throttle (300 requests per 5 minutes) ###
   throttle("api/general", limit: 300, period: 5.minutes) do |req|
     if req.path.start_with?("/api/")

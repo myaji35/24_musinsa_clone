@@ -1,0 +1,21 @@
+<div id="payment-instruction" class="border border-black p-4 space-y-3">
+  <p>주문이 접수되었습니다.</p>
+  <% if instruction.ready? %>
+    <h2 class="font-bold">결제 방법 — 계좌이체</h2>
+    <div class="space-y-1">
+      <p>은행: <%= instruction.bank %></p>
+      <p>계좌번호: <span class="select-all"><%= instruction.account %></span></p>
+      <p>예금주: <%= instruction.holder %></p>
+      <p>입금 금액: <%= number_to_currency(pending_orders.sum(&:total_price), unit: "", precision: 0) %>원</p>
+      <p>입금 기한: <%= instruction.due_on(order_time).strftime("%Y년 %-m월 %-d일") %>까지</p>
+    </div>
+    <p>입금자명은 주문하신 분 성함으로 해 주세요. 입금이 확인되면 담당자가 결제 완료로 바꿔 드립니다(이 화면에서 상태를 확인하실 수 있습니다).</p>
+    <p>주문서 번호(<%= checkout_number %>)를 보관해 주세요. 상단 주문조회에서 주문서 번호와 휴대폰 뒤 4자리로 주문 내역을 확인하실 수 있습니다.</p>
+  <% else %>
+    <h2 class="font-bold">결제 안내를 준비 중입니다</h2>
+    <p>주문서 번호(<%= checkout_number %>)를 보관해 주세요. 입금 계좌가 준비되면 상단 주문조회(주문서 번호 + 휴대폰 뒤 4자리)에서 같은 화면으로 확인하실 수 있습니다.</p>
+  <% end %>
+  <% if instruction.contact.present? %>
+    <p>문의: <%= instruction.contact %></p>
+  <% end %>
+</div>

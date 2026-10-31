@@ -1,0 +1,33 @@
+<%= form_with model: feedback, class: "space-y-6" do |form| %>
+  <% if feedback.errors.any? %>
+    <div role="alert" class="bg-red-50 text-red-700 p-4">
+      <% feedback.errors.each do |error| %>
+        <p><%= error.message %></p>
+      <% end %>
+    </div>
+  <% end %>
+  <%= form.hidden_field :product_id %>
+  <%= form.hidden_field :page_url %>
+  <div>
+    <%= form.label :kind, "의견 종류", class: "block font-medium mb-2" %>
+    <%= form.select :kind, [["버그", "bug"], ["아이디어", "idea"], ["칭찬", "praise"], ["기타", "other"]], {}, class: "border border-gray-300 rounded p-3 w-full" %>
+  </div>
+  <div>
+    <%= form.label :body, "의견 내용", class: "block font-medium mb-2" %>
+    <p id="body-help" class="text-sm text-gray-500 mb-2">10~2000자로 적어 주세요.</p>
+    <%= form.text_area :body, rows: 8, required: true, minlength: 10, maxlength: 2000, aria: { describedby: "body-help" }, class: "border border-gray-300 rounded p-3 w-full" %>
+  </div>
+  <div>
+    <%= form.label :contact_email, "답변 받을 이메일 (선택)", class: "block font-medium mb-2" %>
+    <%= form.email_field :contact_email, class: "border border-gray-300 rounded p-3 w-full" %>
+    <label class="flex items-start gap-2 text-sm mt-3">
+      <%= form.check_box :contact_consent %>
+      <span>답변을 받기 위해 이메일 수집에 동의합니다(90일 보관 후 자동 삭제)</span>
+    </label>
+  </div>
+  <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
+    <label for="website">웹사이트</label>
+    <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+  </div>
+  <%= form.submit "의견 보내기", class: "bg-black text-white rounded px-6 py-3 cursor-pointer" %>
+<% end %>

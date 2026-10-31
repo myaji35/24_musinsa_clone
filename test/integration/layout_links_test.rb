@@ -59,9 +59,10 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_select '[href="#"]', count: 0
       assert_select "footer div:has(> h4)", text: /HELP/ do
-        assert_select "li", count: 2
+        assert_select "li", count: 3
         assert_select "a[href=?]", orders_lookup_path, text: "비회원 주문조회", count: 1
         assert_select "a[href=?]", returns_policy_path, text: "배송·반품 안내", count: 1
+        assert_select "a[href=?]", new_feedback_path, text: "의견 보내기", count: 1
       end
       assert_select "footer div:has(> h4)", text: /POLICY/ do
         assert_select "li", count: 2

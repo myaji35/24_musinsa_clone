@@ -108,6 +108,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_001000) do
     t.index ["handle"], name: "index_characters_on_handle", unique: true
   end
 
+  create_table "feedbacks", force: :cascade do |t|
+    t.string "kind", default: "other", null: false
+    t.text "body", null: false
+    t.string "source", default: "customer_web", null: false
+    t.string "status", default: "new", null: false
+    t.string "page_url", limit: 500
+    t.integer "product_id"
+    t.text "contact_email"
+    t.boolean "contact_consent", default: false, null: false
+    t.datetime "contact_purged_at"
+    t.datetime "answered_at"
+    t.string "reporter_hash"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_feedbacks_on_created_at"
+    t.index ["kind"], name: "index_feedbacks_on_kind"
+    t.index ["product_id"], name: "index_feedbacks_on_product_id"
+    t.index ["reporter_hash"], name: "index_feedbacks_on_reporter_hash"
+    t.index ["status"], name: "index_feedbacks_on_status"
+  end
+
   create_table "image_processings", force: :cascade do |t|
     t.integer "product_id", null: false
     t.string "kind", null: false
@@ -411,6 +432,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_001000) do
   add_foreign_key "campaign_deliveries", "anony_customers"
   add_foreign_key "campaign_deliveries", "campaigns"
   add_foreign_key "campaigns", "products"
+  add_foreign_key "feedbacks", "products", on_delete: :nullify
   add_foreign_key "image_processings", "products"
   add_foreign_key "notifications", "variants"
   add_foreign_key "orders", "anony_customers"

@@ -1,0 +1,46 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-3">상품정보 입력</h1>
+  <p class="font-bold mb-2">미완성 <%= @incomplete_count %>개 / 전체 <%= @total_count %>개</p>
+  <p class="text-sm text-gray-600 mb-4">납품처에서 받은 내용을 그대로 적어 주세요. 비워 둔 칸은 손님 화면에 '확인 중'으로 보입니다</p>
+  <div class="flex gap-4 mb-4 text-sm">
+    <%= link_to "미완성 상품만", product_info_notices_path, class: "text-blue-600 underline" %>
+    <%= link_to "전체 상품", product_info_notices_path(all: 1), class: "text-blue-600 underline" %>
+  </div>
+  <%= form_with url: product_info_notices_path, method: :patch do %>
+    <div class="overflow-x-auto border border-gray-200 rounded-lg mb-4">
+      <table class="w-full text-sm text-left">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="sticky left-0 z-10 bg-gray-50 p-3 min-w-56">상품</th>
+            <% Product::INFO_NOTICE_FIELDS.each do |field| %>
+              <th scope="col" class="p-3 min-w-48"><%= field %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @products.each do |product| %>
+            <% missing_fields = product.info_notice_missing_fields %>
+            <tr id="product_notice_<%= product.id %>" class="border-t border-gray-200">
+              <th scope="row" class="sticky left-0 z-10 bg-white p-3">
+                <%= link_to product.name, product_path(product), class: "block mb-2 underline" %>
+                <span class="inline-block rounded px-2 py-1 bg-gray-100"><%= product.published? ? "공개" : "비공개" %></span>
+                <span class="inline-block rounded px-2 py-1 bg-yellow-100 text-yellow-900">빠진 항목 <%= missing_fields.size %>개</span>
+              </th>
+              <% Product::INFO_NOTICE_FIELDS.each_with_index do |field, index| %>
+                <td class="p-3">
+                  <%= label_tag "notice_#{product.id}_#{index}", "#{product.name} #{field}", class: "sr-only" %>
+                  <%= text_field_tag "notices[#{product.id}][#{field}]", product.info_notice_value(field), id: "notice_#{product.id}_#{index}", class: "w-full rounded-md border px-3 py-2 #{missing_fields.include?(field) ? 'border-yellow-500 bg-yellow-50' : 'border-gray-300'}" %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if @products.empty? %>
+      <p class="text-gray-600">미완성 상품이 없습니다.</p>
+    <% else %>
+      <%= submit_tag "상품정보 모두 저장", class: "bg-black text-white rounded-md px-5 py-3 font-bold" %>
+    <% end %>
+  <% end %>
+</div>

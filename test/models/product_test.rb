@@ -228,4 +228,14 @@ class ProductTest < ActiveSupport::TestCase
     @product.supplier_product_code = nil
     assert_equal [], @product.gallery_image_urls
   end
+  test "상품정보 미완성은 공백과 TODO 값을 포함하고 공개 차단의 기존 판정은 유지한다" do
+    assert_equal Product::INFO_NOTICE_FIELDS, @product.info_notice_missing_fields
+    assert_not @product.info_notice_complete?
+    @product.info_notice = Product::INFO_NOTICE_FIELDS.index_with { "확정" }
+    assert @product.info_notice_complete?
+    @product.info_notice.merge!("소재" => "  ", "색상" => "  TODO: 확인", "치수" => nil)
+    assert_equal %w[소재 색상 치수], @product.info_notice_missing_fields
+    assert_not @product.info_notice_complete?
+    assert_equal [ "상품정보 · 소재", "상품정보 · 치수" ], @product.publish_blockers
+  end
 end

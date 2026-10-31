@@ -104,6 +104,17 @@ class Product < ApplicationRecord
     (info_notice || {})[field].to_s.strip
   end
 
+  def info_notice_missing_fields
+    INFO_NOTICE_FIELDS.select do |field|
+      value = info_notice_value(field)
+      value.blank? || value.start_with?("TODO:")
+    end
+  end
+
+  def info_notice_complete?
+    info_notice_missing_fields.empty?
+  end
+
   # 공개를 막는 항목 목록. 비어 있으면 공개 가능
   def publish_blockers
     blockers = INFO_NOTICE_FIELDS.select { |field| info_notice_value(field).blank? }.map { |field| "상품정보 · #{field}" }

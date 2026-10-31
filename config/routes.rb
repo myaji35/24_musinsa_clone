@@ -17,6 +17,9 @@ Rails.application.routes.draw do
 
   resources :feedbacks, only: [ :new, :create ]
 
+  get "product_info_notices", to: "product_info_notices#index"
+  patch "product_info_notices", to: "product_info_notices#update_all"
+
   # Products & Reviews
   resources :products do
     member do

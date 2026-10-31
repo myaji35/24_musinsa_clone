@@ -52,7 +52,7 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
     assert_mobile_menu(magazine_path)
   end
 
-  [ "/", "/returns" ].each do |path|
+  [ "/", "/returns", "/privacy" ].each do |path|
     test "#{path}의 레이아웃에는 죽은 링크가 없고 비회원 주문조회를 제공한다" do
       get path
 
@@ -66,15 +66,15 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
       end
       assert_select "footer div:has(> h4)", text: /POLICY/ do
         assert_select "li", count: 2
-        assert_select "a", count: 0
-        assert_select 'span[aria-disabled="true"].font-normal.text-gray-600', count: 2
+        assert_select "a[href=?].font-bold", privacy_policy_path, text: "개인정보처리방침", count: 1
+        assert_select 'span[aria-disabled="true"].font-normal.text-gray-600', count: 1
       end
       assert_not_includes response.body, "Solid Queue"
       assert_select "a", text: "회원가입", count: 0
       assert_select "footer a[href=?]", returns_policy_path, text: "배송·반품 안내", count: 1
-      assert_select 'footer span[aria-disabled="true"]', text: "개인정보처리방침 (준비 중)", count: 1
+      assert_select "footer a[href=?]", privacy_policy_path, text: "개인정보처리방침", count: 1
       assert_select 'footer span[aria-disabled="true"]', text: "이용약관 (준비 중)", count: 1
-      assert_select "footer a", text: /개인정보처리방침|이용약관/, count: 0
+      assert_select "footer a", text: "이용약관", count: 0
     end
   end
 

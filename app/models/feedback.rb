@@ -1,4 +1,6 @@
 class Feedback < ApplicationRecord
+  CONTACT_RETENTION_DAYS = 90
+
   encrypts :contact_email
   serialize :factory_flags, coder: JSON, type: Array
 
@@ -17,7 +19,7 @@ class Feedback < ApplicationRecord
 
   scope :contact_purgeable, -> {
     where.not(contact_email: nil).where(contact_purged_at: nil)
-      .where("created_at < ? OR status IN (?)", 90.days.ago, %w[answered closed])
+      .where("created_at < ? OR status IN (?)", CONTACT_RETENTION_DAYS.days.ago, %w[answered closed])
   }
 
   private

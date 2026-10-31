@@ -203,6 +203,7 @@
     </div>
 
     <% if logged_in? %>
+      <%= link_to "모델 선택", product_model_pick_path(@product), class: "inline-block border border-black px-4 py-2 mb-4 font-bold" %>
       <%= form_with model: [@product, Review.new], class: "border border-black p-6 mb-8 space-y-4" do |form| %>
         <div>
           <%= form.label :rating, "별점", class: "block text-sm font-bold text-black mb-2" %>

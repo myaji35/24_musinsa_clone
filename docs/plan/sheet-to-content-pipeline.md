@@ -88,6 +88,10 @@ flowchart LR
 - 판정 결과는 서버에도 저장해 공급사별 반려율을 본다(이미지 품질이 낮은 공급사 파악).
 
 ## 서버 업로드 방식
+- 구현: `POST /api/content_uploads`, `Authorization: Bearer <CONTENT_UPLOAD_TOKEN>` 및 multipart 사용. 필수: product_id, character_handle(또는 character_id), kind=cut, slot=1~3, file(PNG/JPEG/WebP, 10MB 이하). 선택: source_row, sha256(서버 계산값 검증).
+- 신규 201 `{id, duplicate:false}`, SHA256 중복 200 `{id, duplicate:true}`, 입력 오류 422 `{errors:[...]}`, 인증 실패 401, 토큰 미설정 503. 같은 상품·모델·종류·슬롯은 새 레코드로 대체한다.
+- 환경변수: 서버/클라이언트 `CONTENT_UPLOAD_TOKEN`, 클라이언트 `CONTENT_UPLOAD_URL`(전체 업로드 엔드포인트 URL). 토큰은 ENV만 사용한다.
+- 관리자 선택 화면: `GET /products/:product_id/model_pick`, 같은 경로 POST(character_id)로 최신 분석에 선택 저장. 클라이언트 `SheetPipeline::ContentUploader#upload`는 poller에 아직 연결하지 않았다.
 - 서버에 업로드 전용 API 1개(`POST /api/content_uploads`), 토큰 인증(토큰은 `.env`·kamal secrets에만).
 - 같은 파일 재업로드는 sha256으로 중복 방지. 실패는 시트 상태 칸에 `실패:사유`로 남긴다(가짜 성공 금지).
 

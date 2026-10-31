@@ -108,6 +108,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_001000) do
     t.index ["handle"], name: "index_characters_on_handle", unique: true
   end
 
+  create_table "content_uploads", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.integer "character_id", null: false
+    t.string "kind", null: false
+    t.integer "slot", null: false
+    t.string "sha256", null: false
+    t.string "source_row"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_content_uploads_on_character_id"
+    t.index ["product_id", "character_id", "kind", "slot"], name: "idx_on_product_id_character_id_kind_slot_9c7d0cbbfa", unique: true
+    t.index ["product_id"], name: "index_content_uploads_on_product_id"
+    t.index ["sha256"], name: "index_content_uploads_on_sha256", unique: true
+  end
+
   create_table "feedbacks", force: :cascade do |t|
     t.string "kind", default: "other", null: false
     t.text "body", null: false
@@ -225,6 +240,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_001000) do
     t.datetime "updated_at", null: false
     t.boolean "manually_assigned", default: false, null: false
     t.text "ranking_json"
+    t.integer "picked_character_id"
+    t.datetime "picked_at"
     t.index ["alt_character_id"], name: "index_product_analyses_on_alt_character_id"
     t.index ["character_id"], name: "index_product_analyses_on_character_id"
     t.index ["product_id"], name: "index_product_analyses_on_product_id"
@@ -432,6 +449,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_001000) do
   add_foreign_key "campaign_deliveries", "anony_customers"
   add_foreign_key "campaign_deliveries", "campaigns"
   add_foreign_key "campaigns", "products"
+  add_foreign_key "content_uploads", "characters"
+  add_foreign_key "content_uploads", "products"
   add_foreign_key "feedbacks", "products", on_delete: :nullify
   add_foreign_key "image_processings", "products"
   add_foreign_key "notifications", "variants"

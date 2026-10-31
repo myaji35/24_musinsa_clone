@@ -13,6 +13,25 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to cart_path
   end
 
+  test "계좌 미설정이면 주문서에 계좌 준비 중 안내를 표시한다" do
+    with_payout_env({}) do
+      post cart_items_path, params: { variant_id: variants(:one).id }
+      get new_checkout_path
+      assert_response :success
+      assert_select '[data-testid="checkout-payment-note"]', text: "결제는 주문 후 계좌이체로 진행됩니다. 입금 계좌는 준비 중이며, 준비되면 주문조회(주문서 번호 + 휴대폰 뒤 4자리)에서 확인하실 수 있습니다."
+      assert_not_includes response.body, "주문 완료 화면에서 입금 계좌 안내"
+    end
+  end
+
+  test "계좌 설정이 있으면 주문서에 완료 화면의 입금 계좌 안내를 예고한다" do
+    with_payout_env("PAYOUT_BANK" => "테스트은행", "PAYOUT_ACCOUNT" => "000-00-000000", "PAYOUT_HOLDER" => "테스트예금주") do
+      post cart_items_path, params: { variant_id: variants(:one).id }
+      get new_checkout_path
+      assert_response :success
+      assert_select '[data-testid="checkout-payment-note"]', text: "결제는 주문 후 계좌이체로 진행됩니다(주문 완료 화면에서 입금 계좌 안내)"
+    end
+  end
+
   test "동의와 주소 검증 실패는 입력값을 유지한다" do
     post cart_items_path, params: { variant_id: variants(:one).id }
     get new_checkout_path
@@ -45,5 +64,16 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "주문이 접수되었습니다."
     get cart_path
     assert_includes response.body, "장바구니가 비어 있습니다"
+  end
+  private
+
+  def with_payout_env(values)
+    keys = %w[PAYOUT_BANK PAYOUT_ACCOUNT PAYOUT_HOLDER PAYOUT_DUE_DAYS PAYOUT_CONTACT]
+    previous = ENV.to_h.slice(*keys)
+    keys.each { |key| ENV.delete(key) }
+    values.each { |key, value| ENV[key] = value }
+    yield
+  ensure
+    keys.each { |key| ENV[key] = previous[key] }
   end
 end

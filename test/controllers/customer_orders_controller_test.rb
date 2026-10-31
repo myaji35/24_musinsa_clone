@@ -50,14 +50,18 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
       assert_includes response.body, "2026년 10월 4일까지"
       assert_select "#payment-instruction", text: /입금 금액: #{ActiveSupport::NumberHelper.number_to_delimited(@order.total_price.to_i)}원/
       assert_includes response.body, "문의: 테스트 문의처"
+      assert_select '[data-testid="payment-contact-link"]', count: 0
       assert_not_includes response.body, "결제 기능은 준비 중입니다"
     end
   end
 
-  test "계좌 미설정이면 주문 접수와 주문서 번호 보관 안내만 표시한다" do
+  test "계좌 미설정이면 주문 접수와 주문서 번호 보관 안내 및 문의 링크를 표시한다" do
     with_payout_env("PAYOUT_BANK" => " ", "PAYOUT_ACCOUNT" => "000-00-000000", "PAYOUT_HOLDER" => "테스트예금주") do
       verify_order
       assert_includes response.body, "결제 안내를 준비 중입니다"
+      assert_select 'a[data-testid="payment-contact-link"]', count: 1, text: "결제 문의하기" do |links|
+        assert_equal new_feedback_path, links.first["href"]
+      end
       assert_includes response.body, "주문이 접수되었습니다"
       assert_includes response.body, @order.checkout_number
       [ "계좌번호:", "은행:", "예금주:", "000-00-000000", "테스트예금주" ].each do |value|

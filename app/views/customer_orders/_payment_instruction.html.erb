@@ -14,6 +14,7 @@
   <% else %>
     <h2 class="font-bold">결제 안내를 준비 중입니다</h2>
     <p>주문서 번호(<%= checkout_number %>)를 보관해 주세요. 입금 계좌가 준비되면 상단 주문조회(주문서 번호 + 휴대폰 뒤 4자리)에서 같은 화면으로 확인하실 수 있습니다.</p>
+    <%= link_to "결제 문의하기", new_feedback_path, class: "underline font-bold", data: { testid: "payment-contact-link" } %>
   <% end %>
   <% if instruction.contact.present? %>
     <p>문의: <%= instruction.contact %></p>

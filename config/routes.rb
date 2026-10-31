@@ -109,6 +109,8 @@ Rails.application.routes.draw do
   namespace :api do
     resources :content_uploads, only: :create
     namespace :v1 do
+      get "feedback_exports", to: "feedback_exports#index"
+      post "feedback_exports/ack", to: "feedback_exports#ack"
       get "ucp/products", to: "ucp#products"
     end
   end

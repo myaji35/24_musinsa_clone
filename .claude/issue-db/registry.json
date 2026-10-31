@@ -4548,7 +4548,32 @@
         "derived": [
           "ISS-161"
         ],
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-10-31T15:18:13Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "node persona/generate_sheet.mjs --person ChenMAYA --dry-run",
+              "status": "skipped",
+              "why": "검사 명령 아님: node persona/generate_sheet.mjs --person"
+            },
+            {
+              "cmd": "ls persona/MoreauLEA",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "01_full_front.png\n02_full_left.png\n03_full_right.png\n04_full_back.png\n05_face_smile.png\n06_face_cry.png\n07_face_neutral.png\n08_eyes_closeup.png\n09_hairstyle.png\nref.png"
+            },
+            {
+              "cmd": "tail -n +284 persona/cost-log.jsonl 합계(기록용)",
+              "status": "skipped",
+              "why": "허용 안 되는 연산자 ("
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-01T00:17:37.989828"
     },
@@ -5848,6 +5873,11 @@
             "evidence": [
               "/tmp/jieun_ut/05_checkout.png"
             ]
+          },
+          {
+            "at": "2026-10-31T15:25:48.014773+00:00",
+            "by": "factory-runner",
+            "observed": "개인정보처리방침 화면은 ISS-157 브랜치(35e0e99)에서 구현 — PRIVACY_* 설정값 방식. 이 카드에는 사업자 정보 푸터 고지·청약철회 안내·이용약관이 남음."
           }
         ]
       }
@@ -7479,7 +7509,29 @@
           }
         ],
         "follow_up": "ISS-127·132 는 ISS-126 의존이었음 — 다음 회차에서 상태 확인.",
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-10-31T15:18:13Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/products_controller_test.rb test/models/product_test.rb",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 12947\n\n# Running:\n\n..................................................................\n\nFinished in 2.042386s, 32.3151 runs/s, 220.8202 assertions/s.\n66 runs, 451 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && git log --oneline -1 5dfe28d",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "5dfe28d merge: factory/ISS-126 상품 폼 납품처·공급가·장문 셀링포인트 — 대표님 결정 A(지금 반영) (ISS-126)"
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-01T00:13:28.289850"
     },
@@ -8562,7 +8614,7 @@
         "ISS-133"
       ],
       "created_at": "2026-10-21T11:12:34.397444+00:00",
-      "updated_at": "2026-10-31T15:10:21.730853+00:00",
+      "updated_at": "2026-10-31T15:19:28.214820+00:00",
       "done_criteria": "키 없음/오류 키 → 401, ENV 미설정 → 503(UCP 패턴과 동일, 테스트); 응답 JSON 에 contact_email·screenshot·user_id·IP 키가 전혀 없다(테스트로 키 목록 고정); since 커서로 증분 조회(최대 200건); ack 로 factory_feedback_id·factory_issue_id·action·flags 저장 → flags 있으면 status needs_review, 없으면 forwarded(테스트); 지시성 문구가 든 본문도 text 그대로 전달될 뿐 서버가 해석하지 않는다(테스트); rack-attack /api/ 스로틀 적용 확인; .kamal/secrets·config/deploy.yml env 에 키 추가, 로그에 키 미출력",
       "payload": {
         "summary": "서버(Vultr)는 맥의 127.0.0.1:3737 에 닿을 수 없으므로, 맥이 가져가는 pull 방식의 서버 쪽 절반. 공장으로 가는 것은 FeedbackInput 모양(text·source·reporter_hash·url·kind·severity)뿐이다.",
@@ -8578,11 +8630,11 @@
         "gate": "deploy",
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "대표님 결정(B. 통로는 올리되 열쇠는 나중에 넣는다) — 이 결정대로 진행",
-          "risk": "—",
-          "effort": "—",
-          "by": "관제실 결정",
-          "at": "2026-10-31T15:07:51.088Z"
+          "reason": "구현·병합은 끝났고 재검증이 기준 4개 중 3개만 적혀 있어 되돌린 것 — 기준별 확인표만 보완하면 됨",
+          "risk": "낮음",
+          "effort": "작음",
+          "by": "factory-runner",
+          "at": "2026-10-31T15:19:28.214820+00:00"
         },
         "source": "대표님 지시(2026-10-21): 고객(관계자) 의견 수집 기능, Linear 미사용·제안 구성 승인 → Fable 기획",
         "decisions": [
@@ -8629,6 +8681,14 @@
             "effort": "—",
             "by": "관제실 결정",
             "at": "2026-10-31T14:29:43.443Z"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "실행기 재검증 실패로 되돌림 — 완료 기준 4개 중 3개만 확인",
+            "risk": "낮음",
+            "effort": "작음",
+            "by": "factory-recheck",
+            "at": "2026-10-31T15:18:13Z"
           }
         ],
         "branch": "factory/ISS-136",
@@ -8667,6 +8727,13 @@
             "at": "2026-10-31T15:10:21.730853+00:00",
             "by": "factory-runner",
             "note": "대표님 결정 B(통로는 올리되 열쇠는 나중에, 관제실 2026-10-31 15:07 — deploy-review 이후 본인 결정) — factory/ISS-136 main 병합·검증 착수"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-10-31T15:19:28.214820+00:00",
+            "by": "factory-runner",
+            "note": "재검증 보완 착수 — 완료 기준 4개 기준별 확인"
           }
         ],
         "start_approval": {
@@ -8726,50 +8793,58 @@
           "by": "대표님(관제실)",
           "at": "2026-10-31T15:07:51.088Z"
         },
-        "plan_mode": "code"
+        "plan_mode": "code",
+        "recheck_reopens": 1,
+        "recheck_fail": {
+          "at": "2026-10-31T15:18:13Z",
+          "sha": null,
+          "problems": [
+            "완료 기준 4개 중 3개만 확인"
+          ]
+        }
       },
       "result": {
-        "summary": "대표님 결정 B(통로는 올리되 열쇠는 나중에)에 따라 factory/ISS-136(ca91a0e)을 main 에 병합(a51d367). 충돌은 db/schema.rb 버전 줄 1곳(큰 버전 2026_10_22_001000 유지). 추가형 마이그레이션(feedbacks 에 nullable 컬럼 5개)이라 이전 코드와 호환. FEEDBACK_EXPORT_KEY 가 없으면 API 는 503 으로 잠김 — 열쇠는 나중에 서버 설정에만 넣으면 열린다. kamal 은 빈 시크릿을 오류 없이 빈 값으로 넘김을 확인. 개발 DB 에도 마이그레이션 적용.",
+        "summary": "재검증 보완: 완료 기준 4개를 원래 문구 그대로 기준별로 확인(기존 결과는 병합 관점 3개만 적혀 있었음). 코드 변경 없음 — 병합 커밋 a51d367 그대로. 서버에 열쇠(FEEDBACK_EXPORT_KEY)가 없으면 503 으로 잠김(대표님 결정 B).",
         "commit": "a51d367",
         "criteria_check": [
           {
-            "criterion": "공장이 X-API-Key 로 의견을 가져가고 ack 로 기록하는 통로가 main 에 들어간다",
+            "criterion": "공장(맥)이 올바른 열쇠로 요청하면 새로 들어온 고객 의견을 순서대로 최대 200건씩 받아 갈 수 있고, 열쇠가 없거나 틀리면 거절(401)되며 서버에 열쇠가 설정되지 않았으면 '준비 안 됨'(503)으로 답한다",
             "met": true,
-            "how": "병합 후 feedback_exports_controller_test(인증·화이트리스트 직렬화·since 커서·ack) 통과"
+            "how": "테스트 'GET and POST require configured key…'(키 미설정 503, 헤더 없음·틀린 키·쿼리 키 401), 'export uses exact whitelist and cursor…'(since 커서 순서), 'default limit is 100 and … capped at 200' 통과"
           },
           {
-            "criterion": "열쇠(FEEDBACK_EXPORT_KEY)가 없으면 통로는 잠겨 개인정보가 나가지 않는다",
+            "criterion": "받아 가는 내용에는 손님 이메일·스크린샷·회원 번호·접속 IP 가 전혀 들어 있지 않다",
             "met": true,
-            "how": "키 미설정 개발 서버(3153) 실측: 헤더 없이·임의 키 모두 HTTP 503"
+            "how": "테스트 'export uses exact whitelist…' — 응답 키가 FeedbackExport::KEYS 와 정확히 같고 이메일·contact·product_id·user_id·ip 문자열이 응답 본문에 없음"
           },
           {
-            "criterion": "열쇠 없이도 배포가 깨지지 않는다",
+            "criterion": "공장이 '받았다(ack)'고 알리면 의견에 공장 카드 번호가 기록되고, 주의 표시가 있으면 '확인 필요', 없으면 '전달됨' 상태가 된다",
             "met": true,
-            "how": "kamal Secrets 로 FEEDBACK_EXPORT_KEY 미설정 시 \"\" 반환(예외 없음) 확인, 마이그레이션은 nullable 추가만"
+            "how": "테스트 'ack records factory results…' — factory_issue_id·factory_feedback_id 저장, flags 있으면 needs_review·없으면 forwarded, 사람이 처리 중인 상태(in_review·answered·closed)는 유지, 본문·이메일은 못 바꿈"
+          },
+          {
+            "criterion": "의견 본문에 '배포해줘' 같은 지시 문장이 있어도 글자 그대로 전달될 뿐 서버가 아무 동작도 하지 않고, 이 주소도 과도한 요청은 막힌다",
+            "met": true,
+            "how": "테스트 'instruction text remains data…'(전체 모델 건수 불변·작업 큐 0건·본문 그대로), '31st request from same IP gets JSON rate limit response'(분당 30회 초과 429)"
           }
         ],
         "proof": [
           {
-            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/api/v1/feedback_exports_controller_test.rb",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/api/v1/feedback_exports_controller_test.rb -v",
             "exit_code": 0,
-            "output": "7 runs, 137 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "test_31st_request_from_same_IP_gets_JSON_rate_limit_response . / test_ack_processes_at_most_200_items . / test_ack_records_factory_results_and_preserves_human_managed_statuses . / test_GET_and_POST_require_configured_key_and_header_authentication . / test_export_uses_exact_whitelist_and_cursor_without_leaking_private_fields . / test_instruction_text_remains_data_and_causes_no_other_model_changes_or_jobs . / test_default_limit_is_100_and_requested_limit_is_capped_at_200 .\n7 runs, 137 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
             "cmd": "cd musinsa_clone && git log --oneline -1 a51d367",
             "exit_code": 0,
             "output": "a51d367 merge: factory/ISS-136 공장 전달용 의견 내보내기 API — 대표님 결정 B(통로는 올리되 열쇠는 나중에) (ISS-136)"
-          },
-          {
-            "cmd": "curl -H 'X-API-Key: abc' http://127.0.0.1:3153/api/v1/feedback_exports?since=0 (키 미설정 개발 서버, 기록용)",
-            "exit_code": 0,
-            "output": "no key header: 503 / with header (server key unset): 503"
           }
         ],
         "follow_up": "열쇠를 넣을 때: 배포 ENV 에 FEEDBACK_EXPORT_KEY(새 무작위 값) — 시크릿 신규 발급이라 대표님 승인 필요. ISS-137(맥 브리지)은 이 열쇠 이후.",
         "factory_inline_verification": true
       },
       "last_dispatched_at": "2026-11-01T00:09:56",
-      "completed_at": "2026-11-01T00:11:42.232052"
+      "completed_at": "2026-11-01T00:19:28.434638"
     },
     {
       "id": "ISS-137",
@@ -9993,7 +10068,34 @@
           }
         ],
         "notes": "검수 중 수정: codex 원안의 update!(전체 검증)는 다른 항목 옛 데이터 하나로 일괄 저장 전체가 실패 → 상품정보만 save(validate:false)로 저장, 바뀐 상품만 집계. 기존 ISS-143 공개 차단(publish_blockers)은 그대로.",
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-10-31T15:18:13Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/product_info_notices_controller_test.rb test/models/product_test.rb",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 1409\n\n# Running:\n\n...........................\n\nFinished in 0.388701s, 69.4621 runs/s, 434.7815 assertions/s.\n27 runs, 169 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && git log --oneline -1 95fa910",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "95fa910 feat(admin): 상품정보 미완성 상품 목록·일괄 입력 표 — 판매는 유지(대표님 결정 A) (ISS-152)"
+            },
+            {
+              "cmd": "node /tmp/ujt/pw1031/walk152.mjs http://127.0.0.1:3152 (개발 DB 사본, 실측 기록용)",
+              "status": "skipped",
+              "why": "허용 안 되는 연산자 ("
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-01T00:09:56.412907"
     },
@@ -10377,7 +10479,36 @@
           }
         ],
         "follow_up": "계좌 값(PAYOUT_BANK/ACCOUNT/HOLDER)은 대표님이 알려 주시면 서버 설정에만 추가(deploy_notes 참조). 입금 확인 관리자 화면은 ISS-156(백로그).",
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-10-31T15:18:13Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/customer_orders_controller_test.rb test/models/payment_instruction_test",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 59979\n\n# Running:\n\n.........\n\nFinished in 0.198244s, 45.3986 runs/s, 403.5431 assertions/s.\n9 runs, 80 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/checkouts_controller_test.rb",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 39057\n\n# Running:\n\n...\n\nFinished in 0.183592s, 16.3406 runs/s, 152.5121 assertions/s.\n3 runs, 28 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && git log --oneline -1 166f05d",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "166f05d merge: factory/ISS-155 비회원 주문 완료·주문조회 계좌이체 결제 안내 — 대표님 결정 B(계좌 없이 먼저 올리기) (ISS-155)"
+            }
+          ]
+        }
       },
       "last_dispatched_at": "2026-11-01T00:00:08",
       "completed_at": "2026-11-01T00:04:28.641638"
@@ -10429,12 +10560,12 @@
       "type": "FEATURE",
       "priority": "P1",
       "size": "M",
-      "status": "READY",
+      "status": "AWAITING_USER",
       "depends_on": [
         "ISS-106"
       ],
       "created_at": "2026-10-31T14:39:42.929692+00:00",
-      "updated_at": "2026-10-31T15:10:28.726Z",
+      "updated_at": "2026-10-31T15:25:48.014773+00:00",
       "payload": {
         "source": "ISS-106 대표님 결정 A(관제실 2026-10-31): 주문에 찍힌 배송 주소는 5년 따로 잠가 보관, 다음 주문용 '저장 주소'만 90일 뒤 삭제",
         "origin": "factory-runner",
@@ -10448,12 +10579,12 @@
         ],
         "summary": "현재 운영 코드는 배송 완료 90일 뒤 ShippingAddressPurgeJob 이 배송지를 통째로 삭제 → 전자상거래법 거래기록 5년 보존과 충돌(ISS-071 조사). 결정 A 대로 주문별 배송 정보 사본을 암호화해 5년 보관하고 저장 주소만 90일 삭제.",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "대표님 결정(B. 개인정보처리방침 화면과 같이 올린다) — 이 결정대로 진행",
-          "risk": "—",
-          "effort": "—",
-          "by": "관제실 결정",
-          "at": "2026-10-31T15:10:28.726Z"
+          "verdict": "대표님 결정 필요",
+          "reason": "결정 B대로 처리방침 화면까지 만들어 같은 브랜치에 넣음. 다만 개인정보 보호책임자 이름·연락처는 저장소에 없어 화면에 \"준비 중\"으로 나옴 — 이대로 올릴지, 값을 받은 뒤 올릴지 정해야 함",
+          "risk": "중간(개인정보 처리 방식·법정 고지)",
+          "effort": "작음(병합만 남음)",
+          "by": "factory-runner",
+          "at": "2026-10-31T15:25:48.014773+00:00"
         },
         "status_history": [
           {
@@ -10469,6 +10600,13 @@
             "at": "2026-10-31T14:44:30.998084+00:00",
             "by": "factory-runner",
             "note": "구현·테스트·커밋 완료(factory/ISS-157 cebc4b4), 개인정보 보관 방식 변경이라 배포 전 대표님 확인"
+          },
+          {
+            "from": "READY",
+            "to": "AWAITING_USER",
+            "at": "2026-10-31T15:25:48.014773+00:00",
+            "by": "factory-runner",
+            "note": "처리방침 화면 구현 후 배포 검토 재요청"
           }
         ],
         "recommendation_history": [
@@ -10479,46 +10617,46 @@
             "effort": "중간",
             "by": "factory-runner",
             "at": "2026-10-31T14:39:42.929692+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "대표님 결정(B. 개인정보처리방침 화면과 같이 올린다) — 이 결정대로 진행",
+            "risk": "—",
+            "effort": "—",
+            "by": "관제실 결정",
+            "at": "2026-10-31T15:10:28.726Z"
           }
         ],
         "gate_stage": "deploy-review",
         "branch": "factory/ISS-157",
-        "question": "주문 배송 주소를 5년 따로 잠가 보관하는 기능을 실제 쇼핑몰에 올릴까요?",
-        "plain_summary": "대표님이 고르신 방식(주문에 찍힌 주소는 법대로 5년 암호화 보관, 다음 주문용 저장 주소만 90일 뒤 삭제)을 만들어 두었습니다. 손님 개인정보 보관 방식이 바뀌는 일이라 올리기 전에 확인을 받습니다.",
+        "question": "배송 주소 5년 보관 기능과 새 개인정보처리방침 화면을 지금 함께 올릴까요?",
+        "plain_summary": "고르신 대로 개인정보처리방침 화면을 만들어 5년 보관 기능과 한 묶음으로 준비했습니다. 화면의 \"개인정보 보호책임자\" 칸만 실제 이름·연락처가 없어 \"준비 중\"으로 표시됩니다.",
         "options": [
           {
             "key": "A",
-            "label": "지금 올린다",
-            "pros": "전자상거래법 거래기록 5년 보관을 바로 지키게 되고, 주문서 동의 문구도 실제 보관 방식과 맞춰짐",
-            "cons": "하단 '개인정보처리방침' 화면은 아직 준비 중이라 같은 내용을 따로 적어야 함(별도 카드)"
+            "label": "지금 올리고 책임자 정보는 나중에 채운다",
+            "pros": "처리방침이 바로 손님에게 보이고, 법이 요구하는 5년 보관도 바로 시작됨. 책임자 정보는 나중에 서버 설정만 넣으면 화면에 나타남(코드 수정 없음)",
+            "cons": "그동안 책임자 칸이 \"준비 중\"으로 보임 — 법정 기재 항목 하나가 빈 상태"
           },
           {
             "key": "B",
-            "label": "개인정보처리방침 화면과 같이 올린다",
-            "pros": "손님에게 보이는 안내가 한 번에 모두 맞춰짐",
-            "cons": "처리방침 화면 작업이 끝날 때까지 지금처럼 90일 뒤 주소가 통째로 지워지는 상태가 계속됨"
+            "label": "책임자 이름·연락처를 알려 드리고 그걸 넣어서 올린다",
+            "pros": "처리방침이 빈칸 없이 완성된 상태로 올라감",
+            "cons": "대표님이 값(이름, 이메일 또는 전화)을 적어 주셔야 함 — 아래 입력칸에 \"이름 / 연락처\" 형식으로 적어 주세요"
           },
           {
             "key": "C",
-            "label": "올리지 않고 다시 검토한다",
-            "pros": "보관 방식을 더 따져볼 시간",
-            "cons": "법 보관 의무 위반 위험이 그대로 남음"
+            "label": "올리지 않고 처리방침 내용을 다시 본다",
+            "pros": "문구를 더 다듬을 시간",
+            "cons": "처리방침이 계속 \"준비 중\"이고, 첫 주문 90일이 지나면 배송 주소가 통째로 지워지는 상태가 계속됨"
           }
         ],
         "recommended_option": "A",
-        "recommended_why": "새 표만 더하는 안전한 변경이고, 첫 주문의 90일 삭제가 돌기 전에 올려야 주소가 사라지지 않습니다. 처리방침 문구는 뒤따라 맞추면 됩니다.",
-        "if_not_decided": "배송 완료 90일이 지난 주문부터 배송 주소가 통째로 지워져, 법이 요구하는 5년 거래기록에서 배송 정보가 빠지게 됩니다.",
-        "reversible": "예 — 새 표를 더하는 변경이라 되돌릴 수 있습니다(되돌리면 그동안 쌓인 보관 사본만 남음).",
+        "recommended_why": "처리방침이 아예 없는 지금보다 낫고, 책임자 정보는 나중에 코드 수정 없이 서버 설정만으로 채울 수 있습니다. 값이 바로 있으시면 B가 더 깔끔합니다.",
+        "if_not_decided": "개인정보처리방침이 계속 \"준비 중\"이고, 배송 완료 90일이 지난 주문부터 배송 주소가 통째로 지워져 5년 거래기록에서 빠집니다.",
+        "reversible": "예 — 새 표와 새 화면을 더하는 변경이라 되돌릴 수 있습니다.",
         "ask_kind": "decision",
-        "ask_prompt": "주문 배송 주소 5년 보관 기능을 지금 올릴지 A·B·C 중 골라 주세요.",
-        "decision": {
-          "choice": "B",
-          "label": "개인정보처리방침 화면과 같이 올린다",
-          "text": null,
-          "question": "주문 배송 주소를 5년 따로 잠가 보관하는 기능을 실제 쇼핑몰에 올릴까요?",
-          "by": "대표님(관제실)",
-          "at": "2026-10-31T15:10:28.726Z"
-        },
+        "ask_prompt": "배송 주소 5년 보관과 개인정보처리방침 화면을 지금 올릴지 A·B·C 중 골라 주세요(B면 책임자 이름·연락처를 함께 적어 주세요).",
         "decisions": [
           {
             "action": "decide",
@@ -10527,13 +10665,31 @@
             "note": "B. 개인정보처리방침 화면과 같이 올린다"
           }
         ],
-        "approved_at": "2026-10-31T15:10:28.726Z",
-        "approved_by": "대표님(관제실)",
-        "plan_mode": "code"
+        "plan_mode": "code",
+        "decision_history": [
+          {
+            "choice": "B",
+            "label": "개인정보처리방침 화면과 같이 올린다",
+            "text": null,
+            "question": "주문 배송 주소를 5년 따로 잠가 보관하는 기능을 실제 쇼핑몰에 올릴까요?",
+            "by": "대표님(관제실)",
+            "at": "2026-10-31T15:10:28.726Z"
+          }
+        ],
+        "prior_approval": {
+          "approved_at": "2026-10-31T15:10:28.726Z",
+          "approved_by": "대표님(관제실)",
+          "note": "결정 B(처리방침 화면과 같이 올리기) — 처리방침 화면 구현 후 재확인"
+        },
+        "screenshots": [
+          "docs/user-test/2026-11-01/iss157-privacy-desktop.png",
+          "docs/user-test/2026-11-01/iss157-privacy-mobile.png"
+        ],
+        "deploy_env_needed": "선택: PRIVACY_OFFICER_NAME, PRIVACY_OFFICER_CONTACT, PRIVACY_BUSINESS_NAME, PRIVACY_PROCESSORS(쉼표 구분), PRIVACY_EFFECTIVE_DATE — config/deploy.yml env.clear 에 평문 값(시크릿 아님)"
       },
       "result": {
-        "summary": "factory/ISS-157(cebc4b4): 주문별 배송 정보 암호화 사본(order_shipping_records, 5년 보관), 저장 주소만 90일 파기, 5년 뒤 자동 파기 잡, 주문 조회는 사본으로 배송지 표시, 동의 문구 수정. 구현은 codex e, 검수에서 rubocop 이 통째로 바꾼 schema.rb 를 정식 덤프로 다시 만듦.",
-        "commit": "cebc4b4",
+        "summary": "결정 B 반영: factory/ISS-157 에 main 최신을 병합(2fdba7f)하고 개인정보처리방침 화면을 추가(35e0e99). /privacy — 처리 목적·항목·보유 기간(저장 주소 90일, 주문 배송 기록 5년 암호화 보관)·파기·제3자 제공·위탁·권리 행사·안전성 조치·보호책임자·시행일. 숫자는 설정값에서 읽음. 사업자 고유값은 PRIVACY_* 서버 설정(없으면 \"준비 중\"). 푸터·주문서에 링크. 구현 codex e, 검수에서 손님 화면의 코드 이름(reporter_hash) 노출 문구를 쉬운 말로 고침.",
+        "commit": "35e0e99",
         "branch": "factory/ISS-157",
         "criteria_check": [
           {
@@ -10560,26 +10716,41 @@
             "criterion": "이미 있는 주문도 저장 주소가 지워지기 전에 주문 기록이 먼저 만들어져 배송 정보가 사라지지 않는다(기존 데이터 삭제·수정 없음)",
             "met": true,
             "how": "shipping_address_purge_job_test: 사본 없던 기존 주문도 주소 삭제 직전 사본 생성, 사본 실패 시 주소 보존. 마이그레이션은 새 표 추가뿐"
+          },
+          {
+            "criterion": "손님이 푸터와 주문서에서 개인정보처리방침을 열어 저장 주소 90일·주문 기록 5년 보관 내용을 볼 수 있다",
+            "met": true,
+            "how": "policies_controller_test(/privacy 200, 설정값 90일·5년 표시), layout_links_test(푸터 링크), checkouts_controller_test(주문서 링크); 3157 서버 실측 200·데스크톱·모바일 캡처"
+          },
+          {
+            "criterion": "처리방침에 지어낸 사업자 정보가 나오지 않는다 — 값이 없으면 \"준비 중\", 설정하면 그대로 표시",
+            "met": true,
+            "how": "policies_controller_test 두 경우 모두 확인, LANG 미설정 셸에서 한글 설정값 표시 200 실측"
           }
         ],
         "proof": [
           {
-            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/models/order_shipping_record_test.rb test/jobs/order_shipping_record_purge_job_test.rb test/jobs/shipping_address_purge_job_test.rb test/services/orders/intake_test.rb test/controllers/customer_orders_controller_test.rb test/controllers/checkouts_controller_test.rb",
+            "cmd": "cd wt157 && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/policies_controller_test.rb test/integration/layout_links_test.rb test/controllers/checkouts_controller_test.rb test/models/order_shipping_record_test.rb test/jobs/order_shipping_record_purge_job_test.rb test/jobs/shipping_address_purge_job_test.rb test/services/orders/intake_test.rb test/controllers/customer_orders_controller_test.rb test/integration/brand_name_test.rb",
             "exit_code": 0,
-            "output": "16 runs, 219 assertions, 0 failures, 0 errors, 0 skips (factory/ISS-157 작업 폴더에서 실행)"
+            "output": "33 runs, 439 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+            "cmd": "cd wt157 && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
             "exit_code": 0,
-            "output": "437 runs, 3069 assertions, 0 failures, 0 errors, 0 skips (factory/ISS-157)"
+            "output": "484 runs, 3697 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
+            "cmd": "cd wt157 && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
             "exit_code": 0,
-            "output": "260 files inspected, no offenses detected (factory/ISS-157)"
+            "output": "287 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "cd musinsa_clone && git log --oneline -1 35e0e99",
+            "exit_code": 0,
+            "output": "35e0e99 feat(ISS-157): 개인정보처리방침 화면 — 대표님 결정 B(처리방침과 같이 올리기)"
           }
         ],
-        "deploy_notes": "새 표 추가만(기존 표·데이터 변경 없음). 기존 주문은 백필 없이 저장 주소 파기 직전에 사본이 만들어짐. 이미 파기된 주소는 복원 불가(운영 개시 10월이라 90일 파기 아직 없었을 것). 개인정보처리방침 화면(ISS-107)에도 같은 보관 문구 필요.",
+        "deploy_notes": "새 표(order_shipping_records) 추가 마이그레이션 1개뿐(파괴적 변경 없음). 승인 시 factory/ISS-157 을 main 에 병합(이미 main 최신 병합돼 충돌 없을 것). 이용약관·사업자 정보 푸터 고지는 ISS-107 몫.",
         "external_cost_usd": 0
       },
       "last_dispatched_at": "2026-11-01T00:13:28"
@@ -11350,6 +11521,12 @@
         "issue_type": "FEATURE",
         "plan_created": 0,
         "timestamp": "2026-11-01T00:17:37.989828"
+      },
+      {
+        "issue_id": "ISS-136",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-11-01T00:19:28.434638"
       }
     ],
     "on_fail": [],
@@ -11362,7 +11539,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 84,
+    "completed": 85,
     "failed": 0,
     "evolved": 0
   },

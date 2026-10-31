@@ -6,9 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Project JIEUN (지은)** — AI-Native Fashion Operating System. "주소는 지우고 취향은 잇다."
+**Project JIEUM** — AI-Native Fashion Operating System. "주소는 지우고 취향은 잇다."
 
-Rails 8.1.x 앱. 저장소 이름은 `musinsa_clone`(무신사 클론 프로토타입에서 출발)이지만, **현재 코드베이스는 이미 JIEUN 도메인으로 전환되어 있다.** 커머스 프론트(상품·리뷰·스냅·검색) 위에 재고/발주/익명 CRM 백오피스가 얹힌 구조다.
+> 브랜드 표기는 **JIEUM**(소문자 jieum)으로 확정(2026-10-31 대표님 결정). JIEUN 과 폐기된 이전 후보 이름(ISS-114)은 쓰지 않는다. 단 개발 계정 이메일 `*@jieun.test`, 환경변수 `JIEUN_SHEET_ID`/`JIEUN_SHEET_TAB`, launchd 라벨 `com.gagahoho.jieun.*`, 상위 폴더명은 운영 연쇄 때문에 그대로 둔다.
+
+Rails 8.1.x 앱. 저장소 이름은 `musinsa_clone`(무신사 클론 프로토타입에서 출발)이지만, **현재 코드베이스는 이미 JIEUM 도메인으로 전환되어 있다.** 커머스 프론트(상품·리뷰·스냅·검색) 위에 재고/발주/익명 CRM 백오피스가 얹힌 구조다.
 
 프로젝트 루트는 이 디렉터리(`musinsa_clone/`)이며, 상위 디렉터리에 `legacy_docs/prd.md`, `legacy_docs/EPIC_STORY.md`가 있다.
 
@@ -82,7 +84,7 @@ Brakeman이 **경고에도 실패**하도록 설정되어 있고, seed replant�
 `Product` ← `Review`, `Snap`(스타일 피드) ↔ `SnapProduct` 다대다.
 컨트롤러: `Home`(랭킹), `Products`, `Search`(카테고리·브랜드·성별 필터), `Snaps`.
 
-**(B) 백오피스 / 운영** — JIEUN 본체
+**(B) 백오피스 / 운영** — JIEUM 본체
 `Product` → `Variant`(SKU) → `StockLog`(입출고 원장) / `Notification`.
 `Supplier` → `PurchaseOrder` → `PurchaseOrderItem` (발주, 토큰 기반 거래처 확인 URL).
 `AnonyCustomer` → `Order`. `Campaign`(마케팅).

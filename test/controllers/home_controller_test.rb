@@ -6,7 +6,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     @product1 = Product.create!(
       name: "Best Seller Product",
       price: 79000,
-      brand: "JIEUN",
+      brand: "JIEUM",
       category: "Dress",
       stock: 100,
       views_count: 500,

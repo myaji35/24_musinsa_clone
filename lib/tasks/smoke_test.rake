@@ -38,7 +38,7 @@ namespace :test do
 
     puts "\n📋 Scenario 1: Core Pages"
     puts "-" * 50
-    tests_passed += 1 if test_url("Homepage", "/", contains: "JIEUN")
+    tests_passed += 1 if test_url("Homepage", "/", contains: "JIEUM")
     tests_passed += 1 if test_url("Products List", "/products", contains: "grid")
     tests_passed += 1 if test_url("Health Check", "/up", expected_status: 200)
 

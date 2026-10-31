@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <title>JIEUN 파트너센터</title>
+  <title>JIEUM 파트너센터</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <%= csrf_meta_tags %><%= csp_meta_tag %>
   <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
@@ -10,7 +10,7 @@
 <body class="bg-gray-50 text-gray-900">
   <header class="bg-white border-b shadow-sm">
     <div class="max-w-7xl mx-auto p-4 flex flex-wrap items-center gap-6">
-      <%= link_to "JIEUN 파트너센터", partner_root_path, class: "text-xl font-bold" %>
+      <%= link_to "JIEUM 파트너센터", partner_root_path, class: "text-xl font-bold" %>
       <% if current_supplier_account&.active? && current_supplier&.active? %>
         <span class="font-medium"><%= current_supplier.name %></span>
         <nav class="flex flex-wrap gap-4" aria-label="파트너 메뉴">

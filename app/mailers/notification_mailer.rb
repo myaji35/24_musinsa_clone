@@ -20,7 +20,7 @@ class NotificationMailer < ApplicationMailer
 
     mail(
       to: ENV["ADMIN_EMAIL"] || "admin@jieun-fashion.com",
-      subject: "[JIEUN] 재고 부족 알림: #{@product.name}"
+      subject: "[JIEUM] 재고 부족 알림: #{@product.name}"
     )
   end
 
@@ -31,7 +31,7 @@ class NotificationMailer < ApplicationMailer
 
     mail(
       to: supplier.email,
-      subject: "[JIEUN] 발주서 확인 요청 (#{purchase_order.order_number})"
+      subject: "[JIEUM] 발주서 확인 요청 (#{purchase_order.order_number})"
     )
   end
 
@@ -45,7 +45,7 @@ class NotificationMailer < ApplicationMailer
     # Slack이나 SMS로 대체하거나, 내부 Notification 테이블에만 저장
     mail(
       to: "campaigns@jieun-fashion.com", # 내부 로그용
-      subject: "[JIEUN] 캠페인 알림: #{campaign.title}"
+      subject: "[JIEUM] 캠페인 알림: #{campaign.title}"
     )
   end
 end

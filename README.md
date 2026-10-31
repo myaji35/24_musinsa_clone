@@ -1,4 +1,4 @@
-# JIEUN (지은) - AI-Native Fashion OS
+# JIEUM - AI-Native Fashion OS
 
 [![CI](https://github.com/myaji35/24_musinsa_clone/workflows/CI/badge.svg)](https://github.com/myaji35/24_musinsa_clone/actions)
 [![CodeQL](https://github.com/myaji35/24_musinsa_clone/workflows/CodeQL/badge.svg)](https://github.com/myaji35/24_musinsa_clone/security/code-scanning)
@@ -9,7 +9,7 @@ AI 에이전트(ClaudeBot)와 공존하는 차세대 의류 운영 솔루션.
 
 ## 🎯 프로젝트 개요
 
-JIEUN은 다음과 같은 핵심 가치를 추구합니다:
+JIEUM은 다음과 같은 핵심 가치를 추구합니다:
 
 - **Privacy-First**: 상세 주소 없는 익명 CRM
 - **AI-Native**: UCP 및 GEO 최적화 상품 관리
@@ -172,7 +172,7 @@ This project is private and proprietary.
 
 ## 👤 Author
 
-**JIEUN Team**
+**JIEUM Team**
 - GitHub: [@myaji35](https://github.com/myaji35)
 
 ---

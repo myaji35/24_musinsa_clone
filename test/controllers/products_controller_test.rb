@@ -6,7 +6,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
       name: "Korean Fashion Dress",
       description: "Beautiful Korean style dress",
       price: 89000,
-      brand: "JIEUN Fashion",
+      brand: "JIEUM Fashion",
       category: "Dress",
       gender: "female",
       stock: 50,

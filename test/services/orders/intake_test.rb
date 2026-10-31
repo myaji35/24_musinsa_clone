@@ -21,6 +21,7 @@ class Orders::IntakeTest < ActiveSupport::TestCase
     assert_equal 1, result.orders.map(&:shipping_address_id).uniq.size
     result.orders.each do |order|
       assert_equal "pending", order.status
+      assert_equal @address[:address1], order.shipping_record.address1
       assert_equal order.product.price * order.quantity, order.total_price
     end
     customer = result.orders.first.anony_customer
@@ -69,7 +70,7 @@ class Orders::IntakeTest < ActiveSupport::TestCase
   private
 
   def assert_failed_intake(items:, address: @address)
-    assert_no_difference [ "Order.count", "ShippingAddress.count", "AnonyCustomer.count" ] do
+    assert_no_difference [ "Order.count", "ShippingAddress.count", "AnonyCustomer.count", "OrderShippingRecord.count" ] do
       result = Orders::Intake.call(items: items, address: address)
       assert_not result.success?
       assert_empty result.orders

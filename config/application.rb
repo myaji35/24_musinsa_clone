@@ -10,6 +10,7 @@ module MusinsaClone
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
+    config.x.order_record_retention_years = Integer(ENV.fetch("ORDER_RECORD_RETENTION_YEARS", "5"))
     config.x.shipping_address_retention_days = Integer(ENV.fetch("SHIPPING_ADDRESS_RETENTION_DAYS", "90"))
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do

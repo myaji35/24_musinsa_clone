@@ -31,11 +31,12 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "비밀상세 201호"
   end
 
-  test "배송지 파기 뒤에도 본인 확인 후 파기 안내를 표시한다" do
+  test "배송지 파기 뒤에도 본인 확인 후 주문 배송 기록을 표시한다" do
     @order.shipping_address.destroy!
     post orders_lookup_path, params: { checkout_number: @order.checkout_number, phone_suffix: "9876" }
     follow_redirect!
     assert_response :success
-    assert_includes response.body, "배송지 정보는 보관 기간이 지나 파기되었습니다"
+    assert_includes response.body, "서울시 테스트로 1"
+    assert_includes response.body, "홍*"
   end
 end

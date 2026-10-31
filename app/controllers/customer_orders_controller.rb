@@ -27,6 +27,6 @@ class CustomerOrdersController < ApplicationController
     @orders = Order.includes(:product, :variant, :shipping_address).where(checkout_number: params[:checkout_number]).order(:id)
     return redirect_to orders_lookup_path if @orders.empty?
 
-    @address = @orders.first.shipping_address
+    @address = @orders.first.delivery_address
   end
 end

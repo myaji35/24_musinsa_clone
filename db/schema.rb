@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_001000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_000157) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -187,6 +187,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_001000) do
     t.index ["sent_at"], name: "index_notifications_on_sent_at"
     t.index ["status"], name: "index_notifications_on_status"
     t.index ["variant_id"], name: "index_notifications_on_variant_id"
+  end
+
+  create_table "order_shipping_records", force: :cascade do |t|
+    t.integer "order_id", null: false
+    t.text "recipient_name", null: false
+    t.text "phone", null: false
+    t.text "postal_code", null: false
+    t.text "address1", null: false
+    t.text "address2"
+    t.string "country_code", default: "KR", null: false
+    t.datetime "retain_until", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_shipping_records_on_order_id", unique: true
+    t.index ["retain_until"], name: "index_order_shipping_records_on_retain_until"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -454,6 +469,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_001000) do
   add_foreign_key "feedbacks", "products", on_delete: :nullify
   add_foreign_key "image_processings", "products"
   add_foreign_key "notifications", "variants"
+  add_foreign_key "order_shipping_records", "orders"
   add_foreign_key "orders", "anony_customers"
   add_foreign_key "orders", "products"
   add_foreign_key "orders", "variants"

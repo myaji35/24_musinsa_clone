@@ -17,7 +17,8 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     post cart_items_path, params: { variant_id: variants(:one).id }
     get new_checkout_path
     assert_response :success
-    assert_includes response.body, "#{Rails.configuration.x.shipping_address_retention_days}일"
+    assert_includes response.body, "다음 주문용 저장 주소는 배송 완료 #{Rails.configuration.x.shipping_address_retention_days}일 뒤 파기"
+    assert_includes response.body, "전자상거래법에 따라 #{Rails.configuration.x.order_record_retention_years}년 보관 뒤 파기"
     assert_includes response.body, variants(:one).product.name
     assert_select 'input[name="checkout[save_consent]"]', count: 0
     assert_no_difference "Order.count" do

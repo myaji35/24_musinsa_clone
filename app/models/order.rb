@@ -7,6 +7,7 @@ class Order < ApplicationRecord
   belongs_to :product
   belongs_to :variant
   belongs_to :shipping_address, optional: true
+  has_one :shipping_record, class_name: "OrderShippingRecord"
 
   # Validations
   validates :quantity, numericality: { greater_than: 0 }
@@ -27,6 +28,10 @@ class Order < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
 
   # Methods
+
+  def delivery_address
+    shipping_address || shipping_record
+  end
 
   # 주문 완료 처리
   def complete!

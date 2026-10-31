@@ -124,7 +124,7 @@
               <%= check_box_tag "product[ai_attributes][mood][]", mood,
                   (product.mood.is_a?(Array) ? product.mood.include?(mood) : product.mood == mood),
                   class: "hidden peer" %>
-              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "minimal" => "미니멀", "casual" => "캐주얼", "vintage" => "빈티지", "modern" => "모던", "delicate" => "우아함" }[mood] %>
               </span>
             </label>
@@ -141,7 +141,7 @@
               <%= check_box_tag "product[ai_attributes][tpo][]", tpo,
                   (product.tpo.is_a?(Array) ? product.tpo.include?(tpo) : product.tpo == tpo),
                   class: "hidden peer" %>
-              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "daily" => "데일리", "office" => "오피스", "date" => "데이트", "party" => "파티", "casual" => "캐주얼" }[tpo] %>
               </span>
             </label>
@@ -158,7 +158,7 @@
               <%= radio_button_tag "product[ai_attributes][fit_style]", fit,
                   product.fit_style == fit,
                   class: "hidden peer" %>
-              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "slim" => "슬림", "regular" => "레귤러", "oversized" => "오버사이즈", "loose" => "루즈" }[fit] %>
               </span>
             </label>
@@ -175,7 +175,7 @@
               <%= radio_button_tag "product[ai_attributes][material_feel]", material,
                   product.material_feel == material,
                   class: "hidden peer" %>
-              <span class="text-sm font-medium text-gray-700 peer-checked:text-black peer-checked:font-bold">
+              <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "soft" => "부드러움", "structured" => "구조감", "lightweight" => "가벼움", "warm" => "따뜻함" }[material] %>
               </span>
             </label>

@@ -472,4 +472,15 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_select "span", text: "착용감 딱맞다"
     assert_select "span", text: "키 162cm"
   end
+
+  test "AI 검색 속성 칩은 선택되면 검은 바탕 위 흰 글자로 읽힌다 (ISS-158)" do
+    @product.update!(ai_attributes: { "mood" => [ "casual" ] })
+    sign_in
+
+    get edit_product_path(@product)
+
+    assert_response :success
+    assert_select "label:has(input[name='product[ai_attributes][mood][]'][value=casual][checked]) span.peer-checked\\:text-white", text: "캐주얼"
+    assert_select "span.peer-checked\\:text-black", count: 0
+  end
 end

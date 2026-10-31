@@ -5716,7 +5716,7 @@
       "type": "FEATURE_PLAN",
       "title": "쇼핑몰에 공급사들이 로그인해서 재고,크레임,입고예정 등을 관리하는 화면을 만들자.",
       "priority": "P2",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "created_at": "2026-10-19T04:29:35.160Z",
       "agent": "product-manager",
       "source": "agent-os-web",
@@ -5833,37 +5833,71 @@
           "at": "2026-10-31T14:41:30.132Z"
         },
         "approved_at": "2026-10-31T14:41:30.132Z",
-        "approved_by": "대표님(관제실)"
+        "approved_by": "대표님(관제실)",
+        "acceptance_criteria": [
+          "공급사 담당자가 전용 로그인(/partner/login)으로 들어가 자기 회사 상품의 재고, 입고예정 발주, 클레임을 볼 수 있다",
+          "공급사는 입고예정 발주를 확정하고 클레임에 답변할 수 있으며, 다른 거래처의 발주는 볼 수 없다(404)",
+          "공급사 로그인으로는 관리자 화면에, 관리자 로그인으로는 파트너센터에 들어갈 수 없다",
+          "관리자는 거래처 화면에서 공급사 계정을 발급하고 클레임을 등록할 수 있으며, 기존 쇼핑몰 화면과 전체 테스트는 그대로 동작한다"
+        ]
       },
-      "updated_at": "2026-10-31T14:45:30.080782+00:00",
+      "updated_at": "2026-10-31T14:46:46.374333+00:00",
       "result": {
         "tests": "전체 331 runs 0 failures",
         "rubocop": "223 files no offenses",
         "proof": [
           {
-            "cmd": "bin/rails test (factory/ISS-110, DATABASE_URL=storage/test_ISS-110)",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/integration/partner_portal_test.rb test/models/supplier_account_test.rb test/models/supplier_claim_test.rb",
             "exit_code": 0,
-            "output": "331 runs, 2082 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "12 runs, 110 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "bin/rubocop",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
             "exit_code": 0,
-            "output": "223 files inspected, no offenses detected"
+            "output": "445 runs, 3134 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "node /tmp/ujt110/run.mjs (dev DB 복사본, 포트 3053, partner@jieun.test)",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
             "exit_code": 0,
-            "output": "1-dashboard /partner 부족 재고 옵션 1건 입고예정 발주 1건 열린 클레임 1건 | 5-po-confirmed flash: 발주가 확정되었습니다 | 7-claim-answered 답변이 등록되었습니다 | 공급사 세션으로 /suppliers -> /login | 다른 거래처 발주 16 status 404"
+            "output": "271 files inspected, no offenses detected"
           },
           {
-            "cmd": "node /tmp/ujt110/admin.mjs (admin@jieun.test)",
+            "cmd": "git log --oneline -1 5ad6e1d",
             "exit_code": 0,
-            "output": "supplier page has 파트너센터: true | claims: [접수, 답변완료] | 관리자 세션으로 /partner -> /partner/login"
+            "output": "5ad6e1d merge: factory/ISS-110 공급사 파트너센터 — 대표님 결정 A(지금 합쳐서 다음 배포에 포함) (ISS-110)"
           }
         ],
-        "commit": "a1104c6 (factory/ISS-110)",
-        "limits": "공급사 비밀번호 재설정·초대 메일 없음(관리자가 초기 비밀번호 전달). 관리자 상단 메뉴가 늘어 1440px에서 검색창이 좁아짐(기존 메뉴 과밀)."
-      }
+        "commit": "5ad6e1d",
+        "limits": "공급사 비밀번호 재설정·초대 메일 없음(관리자가 초기 비밀번호 전달). 관리자 상단 메뉴가 늘어 1440px에서 검색창이 좁아짐(기존 메뉴 과밀).",
+        "summary": "대표님 결정 A(관제실 2026-10-31 14:41)에 따라 factory/ISS-110 을 main 에 병합(5ad6e1d). 충돌 2곳: db/schema.rb 버전 줄(main 의 큰 값), db/seeds.rb(main 이 characters:sync 를 이미 위로 옮김 → 끝 중복 호출 제거, 개발용 공급사 계정 블록만 추가). 개발 DB 복사본 migrate 덤프와 스키마 동일 확인. 새 표 2개(supplier_accounts·supplier_claims) 추가형.",
+        "merged_branch": "factory/ISS-110",
+        "criteria_check": [
+          {
+            "criterion": "공급사 담당자가 전용 로그인(/partner/login)으로 들어가 자기 회사 상품의 재고, 입고예정 발주, 클레임을 볼 수 있다",
+            "met": true,
+            "how": "partner_portal_test 통과; 10-18 Playwright 실측(대시보드 부족 재고·입고예정·열린 클레임 표시); 병합 후 3053 서버 /partner/login 200 '공급사 로그인', 비로그인 /partner → 로그인 이동"
+          },
+          {
+            "criterion": "공급사는 입고예정 발주를 확정하고 클레임에 답변할 수 있으며, 다른 거래처의 발주는 볼 수 없다(404)",
+            "met": true,
+            "how": "partner_portal_test(발주 확정·클레임 답변·타 거래처 발주 404) 통과; 10-18 실측 '발주가 확정되었습니다'·'답변이 등록되었습니다'·타 거래처 404"
+          },
+          {
+            "criterion": "공급사 로그인으로는 관리자 화면에, 관리자 로그인으로는 파트너센터에 들어갈 수 없다",
+            "met": true,
+            "how": "partner_portal_test 세션 분리 테스트 통과; 10-18 실측 공급사 세션 /suppliers → /login, 관리자 세션 /partner → /partner/login"
+          },
+          {
+            "criterion": "관리자는 거래처 화면에서 공급사 계정을 발급하고 클레임을 등록할 수 있으며, 기존 쇼핑몰 화면과 전체 테스트는 그대로 동작한다",
+            "met": true,
+            "how": "supplier_account_test·supplier_claim_test·partner_portal_test 통과; 병합 후 전체 445건 0 실패, rubocop 위반 0, / · /products 200"
+          }
+        ],
+        "deploy_notes": "새 표 2개 추가만. 운영 공급사 계정은 없음(관리자가 거래처 화면에서 발급). 비밀번호 재설정·초대 메일 없음. 계정 통합(User role=partner) 전환은 ISS-131 별도.",
+        "external_cost_usd": 0,
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-10-31T23:46:46.616168"
     },
     {
       "id": "ISS-111",
@@ -6918,10 +6952,10 @@
       "type": "FEATURE",
       "priority": "P1",
       "size": "M",
-      "status": "READY",
+      "status": "AWAITING_USER",
       "depends_on": [],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-31T14:44:39.303Z",
+      "updated_at": "2026-10-31T14:48:54.086598+00:00",
       "done_criteria": "마이그레이션 products.selling_points(text) 추가. /products/new·edit에서 납품처 select(Supplier.active)·공급가·셀포인트(2,000자 이상 저장 가능) 입력·저장됨(products_controller permit 포함). 상품 편집 화면 관리자 섹션에 공급가·소매가·마진(원·%) 표시. 공개 /products/:id·/products·/api/v1/ucp/products·검색 응답에 supply_price 문자열이 없음을 통합테스트로 단언. 셀포인트는 공개 상품페이지에 줄바꿈 유지(simple_format)로 표시. bin/rails test·brakeman 통과.",
       "payload": {
         "summary": "products.supply_price/supplier_id 컬럼은 이미 있으나 엑셀 가져오기(ISS-077)로만 채워지고 폼에는 없다. 장문 셀포인트는 description 500자 제한 때문에 별도 컬럼이 필요하다. 공급가는 관리자 화면에만 보이도록 테스트로 고정한다.",
@@ -6937,12 +6971,12 @@
         ],
         "gate": "deploy",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "대표님 결정(B. 화면을 먼저 직접 보고 결정(보류)) — 이 결정대로 진행",
-          "risk": "—",
-          "effort": "—",
-          "by": "관제실 결정",
-          "at": "2026-10-31T14:44:39.303Z"
+          "verdict": "대표님 결정 필요",
+          "reason": "대표님이 화면을 먼저 보시겠다고 하셔서 factory/ISS-126 을 개발 데이터로 띄워 상품 등록·수정 화면을 캡처해 둠(납품처 선택·공급가·셀링포인트 칸, 수정 화면 위 '관리자 가격 요약'). 손님 화면에는 공급가가 나오지 않음(테스트로 확인)",
+          "risk": "낮음",
+          "effort": "작음(병합)",
+          "by": "factory-runner",
+          "at": "2026-10-31T14:48:54.086598+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
         "decisions": [
@@ -6959,8 +6993,6 @@
             "note": "B. 화면을 먼저 직접 보고 결정(보류)"
           }
         ],
-        "approved_at": "2026-10-31T14:44:39.303Z",
-        "approved_by": "대표님(관제실)",
         "branch": "factory/ISS-126",
         "acceptance_criteria": [
           "관리자가 상품 등록·수정 화면에서 납품처를 고르고 공급가를 입력해 저장할 수 있다",
@@ -6982,6 +7014,13 @@
             "at": "2026-10-21T10:24:22.567338+00:00",
             "by": "factory-runner",
             "note": "구현·테스트 완료(factory/ISS-126 e3c2b48), 배포 전 대표님 확인 대기"
+          },
+          {
+            "from": "READY",
+            "to": "AWAITING_USER",
+            "at": "2026-10-31T14:48:54.086598+00:00",
+            "by": "factory-runner",
+            "note": "대표님 결정 B(화면 먼저 보고 결정) — 브랜치 화면 캡처 2장 첨부, 다시 결정 대기"
           }
         ],
         "recommendation_history": [
@@ -6992,30 +7031,44 @@
             "effort": "M",
             "by": "fable-review",
             "at": "2026-10-21T10:19:55.105048+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "대표님 결정(B. 화면을 먼저 직접 보고 결정(보류)) — 이 결정대로 진행",
+            "risk": "—",
+            "effort": "—",
+            "by": "관제실 결정",
+            "at": "2026-10-31T14:44:39.303Z"
           }
         ],
         "gate_stage": "deploy-review",
         "commit": "e3c2b48",
-        "question": "상품 등록 화면에 '납품처·공급가·셀링포인트' 입력칸을 추가한 것을 쇼핑몰에 반영할까요?",
-        "plain_summary": "관리자가 상품마다 어느 납품처 물건인지, 얼마에 받아오는지(공급가), 긴 판매 포인트 글을 적을 수 있게 했습니다. 공급가는 관리자 화면에서만 보이고 손님 화면에는 안 나오는 것을 자동 검사로 확인했습니다.",
+        "question": "캡처로 보신 '납품처·공급가·셀링포인트' 입력칸을 상품 관리 화면에 반영할까요?",
+        "plain_summary": "상품 등록 화면에 납품처·공급가·셀링포인트 입력칸을 넣은 화면을 캡처해 두었습니다(docs/user-test/2026-10-31/iss126-*.png). 보시고 쇼핑몰 관리 화면에 반영할지 정해 주세요.",
         "options": [
           {
             "key": "A",
-            "label": "반영(배포 묶음에 넣기)",
-            "pros": "다음 카드(납품처 30개 상품 연결·납품처 상품 탭·발주 단가 자동 입력)를 바로 이어서 할 수 있음",
-            "cons": "상품 표에 칸 1개가 추가됨(기존 데이터는 그대로)"
+            "label": "지금 반영한다",
+            "pros": "상품마다 공급처와 원가를 바로 기록해 마진을 볼 수 있음",
+            "cons": "이미 등록된 상품은 공급가 칸이 비어 있어 하나씩 채워야 함"
           },
           {
             "key": "B",
-            "label": "화면을 먼저 직접 보고 결정(보류)",
-            "pros": "대표님이 입력 화면 문구·배치를 먼저 확인",
-            "cons": "후속 카드 ISS-127·132 가 계속 대기"
+            "label": "화면을 고친 뒤 반영한다(고칠 점을 적어 주세요)",
+            "pros": "원하시는 모양으로 맞춘 뒤 올림",
+            "cons": "수정 시간만큼 늦어짐"
+          },
+          {
+            "key": "C",
+            "label": "반영하지 않는다",
+            "pros": "관리 화면이 지금처럼 단순하게 유지됨",
+            "cons": "원가·납품처 기록과 이후 납품처 기능(ISS-127·132)이 진행되지 않음"
           }
         ],
         "recommended_option": "A",
-        "recommended_why": "기존 데이터를 바꾸지 않는 칸 추가뿐이고, 공급가가 손님에게 보이지 않는 것을 자동 검사로 고정했습니다.",
-        "if_not_decided": "납품처 30개 상품 연결(ISS-127)과 납품처 상품 탭(ISS-132)이 시작되지 못합니다.",
-        "reversible": "예 — 칸 추가만이라 되돌리기 쉽습니다(입력한 공급가·셀링포인트만 사라짐).",
+        "recommended_why": "관리자만 보는 칸 추가이고 손님 화면에는 공급가가 나오지 않는 것을 테스트로 확인했습니다.",
+        "if_not_decided": "납품처·원가 기록이 계속 없고, 이에 기대는 후속 카드(ISS-127·131·132)가 대기합니다.",
+        "reversible": "예 — 빈 칸 허용 컬럼 추가라 되돌릴 수 있습니다.",
         "result": {
           "summary": "상품 폼에 납품처 선택·공급가·장문 셀링포인트 추가, 편집 화면 마진 요약, 공개 화면·API 공급가 비노출 테스트",
           "proof": [
@@ -7064,14 +7117,27 @@
           ],
           "note": "main 작업트리에 대화형 세션의 미커밋 변경(products/show.html.erb 갤러리 등)이 있음 — 병합 시 show.html.erb 우측 설명부(이 브랜치)와 좌측 갤러리(그 세션)가 같은 파일이라 충돌 여부 확인 필요."
         },
-        "decision": {
-          "choice": "B",
-          "label": "화면을 먼저 직접 보고 결정(보류)",
-          "text": null,
-          "question": "상품 등록 화면에 '납품처·공급가·셀링포인트' 입력칸을 추가한 것을 쇼핑몰에 반영할까요?",
-          "by": "대표님(관제실)",
-          "at": "2026-10-31T14:44:39.303Z"
-        }
+        "decision_history": [
+          {
+            "choice": "B",
+            "label": "화면을 먼저 직접 보고 결정(보류)",
+            "text": null,
+            "question": "상품 등록 화면에 '납품처·공급가·셀링포인트' 입력칸을 추가한 것을 쇼핑몰에 반영할까요?",
+            "by": "대표님(관제실)",
+            "at": "2026-10-31T14:44:39.303Z"
+          }
+        ],
+        "start_approval_ignored": {
+          "approved_at": "2026-10-31T14:44:39.303Z",
+          "approved_by": "대표님(관제실)",
+          "why": "대표님 선택 B(화면을 먼저 보고 결정)는 보류라 병합 승인 아님"
+        },
+        "preview_screenshots": [
+          "docs/user-test/2026-10-31/iss126-product-new-1440.png",
+          "docs/user-test/2026-10-31/iss126-product-edit-1440.png"
+        ],
+        "ask_kind": "decision",
+        "ask_prompt": "첨부한 상품 등록·수정 화면 캡처 2장을 보시고 반영할지 골라 주세요."
       }
     },
     {
@@ -7157,12 +7223,12 @@
       "type": "TASK",
       "priority": "P0",
       "size": "M",
-      "status": "READY",
+      "status": "BACKLOG",
       "depends_on": [
         "ISS-125"
       ],
       "created_at": "2026-10-21T10:19:55.105048+00:00",
-      "updated_at": "2026-10-31T14:44:45.457Z",
+      "updated_at": "2026-10-31T14:48:54.086598+00:00",
       "done_criteria": "마이그레이션: users.role string NOT NULL default 'member' + users.supplier_id(index) 추가, 기존 User 전부 role='admin'으로 백필(데이터 마이그레이션, 되돌리기 가능). ApplicationController#require_admin이 current_user&.admin?만 통과시킴. member/partner 세션으로 /suppliers·/purchase_orders·/inventory/*·/dashboard·/products/new·/kpi·/supplier_imports 요청 시 전부 리다이렉트(테스트). User#admin?/partner?/member? 헬퍼. 기존 181+ 테스트와 fixtures(users.yml에 role 추가) 통과, brakeman 경고 0.",
       "payload": {
         "summary": "현재 require_admin == logged_in? 이라 회원가입을 여는 순간 모든 가입자가 관리자가 된다. 회원가입(ISS-129)·승격(ISS-130)보다 반드시 먼저 들어가야 하는 보안 기반 작업.",
@@ -7175,12 +7241,12 @@
         ],
         "gate": "deploy",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "대표님 결정(B. 회원가입·승격 화면까지 다 만든 뒤 한꺼번에 반영(보류)) — 이 결정대로 진행",
+          "verdict": "보류 권장",
+          "reason": "대표님이 회원가입·승격 화면까지 다 만든 뒤 한꺼번에 반영하기로 하심(B). ISS-129·130 을 factory/ISS-128 위에 쌓아 구현한 뒤 세 카드를 묶어 다시 배포 검토로 올림",
           "risk": "—",
           "effort": "—",
-          "by": "관제실 결정",
-          "at": "2026-10-31T14:44:45.457Z"
+          "by": "factory-runner",
+          "at": "2026-10-31T14:48:54.086598+00:00"
         },
         "source": "대표님 지시(2026-10-21): 납품처 기능(옷·공급가·소매가·셀포인트·재고·발주) + 회원가입 후 관리자 승격 → Fable 기획",
         "blocked_reason": "선행 미완: ISS-125(납품처 계정 구조 대표님 결정) 미결",
@@ -7210,8 +7276,6 @@
             "note": "B. 회원가입·승격 화면까지 다 만든 뒤 한꺼번에 반영(보류)"
           }
         ],
-        "approved_at": "2026-10-31T14:44:45.457Z",
-        "approved_by": "대표님(관제실)",
         "recommendation_history": [
           {
             "verdict": "승인 권장",
@@ -7244,6 +7308,14 @@
             "effort": "M",
             "by": "factory-runner",
             "at": "2026-10-21T10:24:43.075263+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "대표님 결정(B. 회원가입·승격 화면까지 다 만든 뒤 한꺼번에 반영(보류)) — 이 결정대로 진행",
+            "risk": "—",
+            "effort": "—",
+            "by": "관제실 결정",
+            "at": "2026-10-31T14:44:45.457Z"
           }
         ],
         "auto_approval_ignored": {
@@ -7286,6 +7358,13 @@
             "at": "2026-10-21T10:28:20.867047+00:00",
             "by": "factory-runner",
             "note": "구현·테스트 완료(factory/ISS-128 76f8a02), 인증 변경이라 배포 전 대표님 확인 대기"
+          },
+          {
+            "from": "READY",
+            "to": "BACKLOG",
+            "at": "2026-10-31T14:48:54.086598+00:00",
+            "by": "factory-runner",
+            "note": "대표님 결정 B — 회원가입(ISS-129)·승격 화면(ISS-130) 완성 후 한꺼번에 반영. factory/ISS-128 은 그대로 보존"
           }
         ],
         "deferred_at": "2026-10-21T10:20:59.912Z",
@@ -7366,15 +7445,25 @@
           ],
           "note": "factory/ISS-126 과 함께 병합 시 db/schema.rb 버전 줄 1줄 충돌(더 큰 버전 2026_10_21_000128 선택). hold/ISS-098(로그인 후 복귀) 브랜치와 sessions_controller 가 겹칠 수 있음."
         },
-        "decision": {
-          "choice": "B",
-          "label": "회원가입·승격 화면까지 다 만든 뒤 한꺼번에 반영(보류)",
-          "text": null,
-          "question": "계정에 '관리자 / 일반 회원 / 납품처' 구분을 넣고 관리자만 관리 화면에 들어가게 한 변경을 쇼핑몰에 반영할까요?",
-          "by": "대표님(관제실)",
-          "at": "2026-10-31T14:44:45.457Z"
-        }
-      }
+        "plan_mode": "code",
+        "decision_history": [
+          {
+            "choice": "B",
+            "label": "회원가입·승격 화면까지 다 만든 뒤 한꺼번에 반영(보류)",
+            "text": null,
+            "question": "계정에 '관리자 / 일반 회원 / 납품처' 구분을 넣고 관리자만 관리 화면에 들어가게 한 변경을 쇼핑몰에 반영할까요?",
+            "by": "대표님(관제실)",
+            "at": "2026-10-31T14:44:45.457Z"
+          }
+        ],
+        "start_approval_ignored": {
+          "approved_at": "2026-10-31T14:44:45.457Z",
+          "approved_by": "대표님(관제실)",
+          "why": "대표님 선택 B(회원가입·승격 화면까지 만든 뒤 한꺼번에 반영)는 보류라 병합 승인 아님"
+        },
+        "deferred_until": "ISS-129(회원가입)·ISS-130(납품처 승격) 구현 완료 후 묶어서 배포 검토"
+      },
+      "last_dispatched_at": "2026-10-31T23:46:46"
     },
     {
       "id": "ISS-129",
@@ -7449,7 +7538,8 @@
             "note": "선행 미완: ISS-128 미완(ISS-125 결정 대기)"
           }
         ],
-        "deferred_at": "2026-10-21T10:20:59.912Z"
+        "deferred_at": "2026-10-21T10:20:59.912Z",
+        "factory_note": "대표님 결정(ISS-128 B, 2026-10-31): 회원가입·승격 화면까지 만든 뒤 한꺼번에 반영 → 이 카드는 factory/ISS-128 위에 쌓아 구현(gate=deploy)하고 ISS-128 과 함께 배포 검토로 올릴 것"
       }
     },
     {
@@ -7529,7 +7619,8 @@
             "note": "선행 미완: ISS-128·ISS-129 미완(ISS-125 결정 대기)"
           }
         ],
-        "deferred_at": "2026-10-21T10:20:59.912Z"
+        "deferred_at": "2026-10-21T10:20:59.912Z",
+        "factory_note": "대표님 결정(ISS-128 B, 2026-10-31): 회원가입·승격 화면까지 만든 뒤 한꺼번에 반영 → 이 카드는 factory/ISS-128 위에 쌓아 구현(gate=deploy)하고 ISS-128 과 함께 배포 검토로 올릴 것"
       }
     },
     {
@@ -9996,6 +10087,37 @@
         "deploy_notes": "새 표 추가만(기존 표·데이터 변경 없음). 기존 주문은 백필 없이 저장 주소 파기 직전에 사본이 만들어짐. 이미 파기된 주소는 복원 불가(운영 개시 10월이라 90일 파기 아직 없었을 것). 개인정보처리방침 화면(ISS-107)에도 같은 보관 문구 필요.",
         "external_cost_usd": 0
       }
+    },
+    {
+      "id": "ISS-158",
+      "title": "상품 등록·수정 화면 'AI 검색 속성' 선택 칩이 검은 바탕에 글자가 안 보임",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "size": "S",
+      "status": "READY",
+      "depends_on": [],
+      "created_at": "2026-10-31T14:48:54.086598+00:00",
+      "updated_at": "2026-10-31T14:48:54.086598+00:00",
+      "payload": {
+        "origin": "factory-runner",
+        "source": "2026-10-31 ISS-126 화면 캡처 중 발견(main 에도 동일 마크업)",
+        "summary": "app/views/products/_form.html.erb 감성·TPO·핏·소재감 칩에서 선택된 항목이 검은 알약으로만 보이고 글자(검정)가 묻혀 무엇을 골랐는지 읽을 수 없음. 칩을 검게 칠하는 규칙 출처(CSS/JS) 확인 후 선택 시 흰 글자 또는 테두리 강조로 수정",
+        "acceptance_criteria": [
+          "상품 수정 화면에서 선택된 AI 속성 칩의 글자가 읽힌다(선택/미선택 모두)",
+          "칩을 눌러 선택·해제해도 저장 값은 그대로 동작한다"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "관리자 화면 가독성 버그, 작은 수정",
+          "risk": "낮음",
+          "effort": "작음",
+          "by": "factory-runner",
+          "at": "2026-10-31T14:48:54.086598+00:00"
+        },
+        "evidence": [
+          "docs/user-test/2026-10-31/iss126-product-edit-1440.png"
+        ]
+      }
     }
   ],
   "hooks": {
@@ -10373,6 +10495,12 @@
         "issue_type": "FEATURE_PLAN",
         "plan_created": 0,
         "timestamp": "2026-10-31T23:38:39.293316"
+      },
+      {
+        "issue_id": "ISS-110",
+        "issue_type": "FEATURE_PLAN",
+        "plan_created": 0,
+        "timestamp": "2026-10-31T23:46:46.616168"
       }
     ],
     "on_fail": [],
@@ -10385,7 +10513,7 @@
   },
   "stats": {
     "total_issues": 36,
-    "completed": 74,
+    "completed": 75,
     "failed": 0,
     "evolved": 0
   },
@@ -10398,6 +10526,6 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-086:READY": 1
+    "ISS-128:READY": 1
   }
 }

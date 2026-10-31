@@ -52,6 +52,9 @@ class Product < ApplicationRecord
   validates :brand, presence: true
   validates :category, presence: true
   validates :description, length: { maximum: 500 }, allow_blank: true
+  validates :selling_points, length: { maximum: 10_000 }, allow_blank: true
+  validates :supply_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :supplier, presence: true, if: -> { supplier_id.present? }
   validate :validate_runway_video
   validate :validate_image
 
@@ -76,6 +79,18 @@ class Product < ApplicationRecord
 
   def sold_out?
     available_stock <= 0
+  end
+
+  def margin_amount
+    return if supply_price.nil? || price.nil?
+
+    price - supply_price
+  end
+
+  def margin_rate
+    return if margin_amount.nil? || price.zero?
+
+    (margin_amount / price * 100).round(1)
   end
 
   # 배지 관련 헬퍼 메서드

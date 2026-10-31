@@ -95,6 +95,26 @@
     </div>
   </div>
 
+  <div class="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+    <h3 class="text-lg font-bold pb-2 border-b border-gray-200">납품처·원가 (관리자 전용)</h3>
+    <div>
+      <%= form.label :supplier_id, "납품처", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <% suppliers = Supplier.active.or(Supplier.where(id: product.supplier_id)).order(:name) %>
+      <%= form.collection_select :supplier_id, suppliers, :id, :name, { include_blank: "선택 안 함" }, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm" %>
+    </div>
+    <div>
+      <%= form.label :supply_price, "공급가 (원)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.number_field :supply_price, min: 0, step: 1, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm" %>
+      <p class="text-xs text-gray-500 mt-1">공급가는 손님 화면에 표시되지 않습니다</p>
+    </div>
+  </div>
+
+  <div class="bg-white border border-gray-200 rounded-lg p-6">
+    <%= form.label :selling_points, "셀링포인트", class: "block text-lg font-bold mb-4" %>
+    <%= form.text_area :selling_points, rows: 10, maxlength: 10000, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm" %>
+    <p class="text-xs text-gray-500 mt-1">최대 10,000자 · 입력한 줄바꿈이 상품 상세에 유지됩니다.</p>
+  </div>
+
   <!-- 상품정보제공고시 (ISS-143) -->
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-bold mb-2 pb-2 border-b border-gray-200">상품정보제공고시 (필수)</h3>

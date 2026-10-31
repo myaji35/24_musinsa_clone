@@ -7,7 +7,7 @@
     <%= link_to "전체 상품", product_info_notices_path(all: 1), class: "text-blue-600 underline" %>
   </div>
   <%= form_with url: product_info_notices_path, method: :patch do %>
-    <div class="overflow-x-auto border border-gray-200 rounded-lg mb-4">
+    <div class="relative overflow-x-auto border border-gray-200 rounded-lg mb-4" data-testid="product-info-table">
       <table class="w-full text-sm text-left">
         <thead class="bg-gray-50">
           <tr>

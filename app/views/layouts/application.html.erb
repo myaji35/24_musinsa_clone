@@ -53,7 +53,7 @@
         <a href="/" class="text-2xl md:text-3xl font-bold tracking-tighter shrink-0 font-oswald italic pr-2">JIEUM</a>
         
         <!-- Search Bar (Hidden on mobile, visible on desktop) -->
-        <div class="hidden md:flex flex-1 max-w-xl mx-auto relative">
+        <div class="hidden md:flex flex-1 min-w-[160px] max-w-xl mx-auto relative">
             <%= form_with url: root_path, method: :get, local: true, class: "w-full" do |f| %>
                 <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", class: "w-full h-10 pl-4 pr-12 bg-gray-100 border-none rounded-sm text-sm focus:ring-1 focus:ring-black placeholder-gray-600 font-medium" %>
                 <button type="submit" aria-label="검색" class="absolute right-1 p-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black">
@@ -67,18 +67,6 @@
           <a href="/" class="hover:text-gray-500 hover:underline underline-offset-4 decoration-2">랭킹</a>
           <a href="/products" class="hover:text-gray-500">상품</a>
           <%= link_to "매거진", magazine_path, class: "hover:text-gray-500" if magazine_available? %>
-          <% if logged_in? %>
-            <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
-            <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
-            <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
-            <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
-          <%= link_to "클레임", supplier_claims_path, class: "hover:text-gray-500" %>
-            <%= link_to "상품 입고(엑셀)", supplier_imports_path, class: "hover:text-gray-500 text-green-600" %>
-            <%= link_to "상품정보 입력", product_info_notices_path, class: "hover:text-gray-500" %>
-            <%= link_to "상품분석", product_analyses_path, class: "hover:text-gray-500 text-green-600" %>
-            <%= link_to "트렌드", trends_path, class: "hover:text-gray-500 text-green-600" %>
-            <%= link_to "KPI", kpi_path, class: "hover:text-gray-500 text-green-600" %>
-          <% end %>
         </div>
 
         <!-- Mobile Menu & Icons -->
@@ -94,6 +82,22 @@
           </a>
         </div>
       </div>
+      <% if logged_in? %>
+        <div aria-label="데스크톱 관리자 메뉴" class="hidden md:block border-t border-gray-100">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm font-bold whitespace-nowrap">
+            <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
+            <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
+            <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
+            <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
+            <%= link_to "클레임", supplier_claims_path, class: "hover:text-gray-500" %>
+            <%= link_to "상품 입고(엑셀)", supplier_imports_path, class: "hover:text-gray-500 text-green-600" %>
+            <%= link_to "상품정보 입력", product_info_notices_path, class: "hover:text-gray-500" %>
+            <%= link_to "상품분석", product_analyses_path, class: "hover:text-gray-500 text-green-600" %>
+            <%= link_to "트렌드", trends_path, class: "hover:text-gray-500 text-green-600" %>
+            <%= link_to "KPI", kpi_path, class: "hover:text-gray-500 text-green-600" %>
+          </div>
+        </div>
+      <% end %>
       <div aria-label="모바일 메뉴" class="md:hidden flex items-center gap-5 overflow-x-auto whitespace-nowrap px-4 py-3 text-sm font-bold border-t border-gray-100">
         <% mobile_menu = [ [ "랭킹", root_path ], [ "상품", products_path ] ] %>
         <% mobile_menu << [ "매거진", magazine_path ] if magazine_available? %>

@@ -8,6 +8,7 @@ class ApplicationLayoutTest < ActionDispatch::IntegrationTest
     admin_paths.each do |path|
       assert_select "nav a[href=?]", path, count: 0
     end
+    assert_select 'nav [aria-label="데스크톱 관리자 메뉴"]', count: 0
     assert_select 'nav [aria-label="모바일 관리자 메뉴"]', count: 0
     assert_select 'nav a[href="/products"]', text: "상품"
   end
@@ -17,11 +18,16 @@ class ApplicationLayoutTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    [ "데스크톱 메뉴", "모바일 관리자 메뉴" ].each do |label|
+    [ "데스크톱 관리자 메뉴", "모바일 관리자 메뉴" ].each do |label|
       assert_select "nav [aria-label=?]", label do
         admin_paths.each do |path|
           assert_select "a[href=?]", path, count: 1
         end
+      end
+    end
+    assert_select 'nav [aria-label="데스크톱 메뉴"]' do
+      admin_paths.each do |path|
+        assert_select "a[href=?]", path, count: 0
       end
     end
   end
@@ -65,6 +71,6 @@ class ApplicationLayoutTest < ActionDispatch::IntegrationTest
 
   def admin_paths
     [ inventory_scan_path, dashboard_index_path, suppliers_path, purchase_orders_path,
-      supplier_imports_path, product_analyses_path, kpi_path, trends_path ]
+      supplier_claims_path, supplier_imports_path, product_info_notices_path, product_analyses_path, kpi_path, trends_path ]
   end
 end

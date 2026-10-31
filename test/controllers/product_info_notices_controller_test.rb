@@ -21,6 +21,8 @@ class ProductInfoNoticesControllerTest < ActionDispatch::IntegrationTest
     assert_select "#product_notice_#{complete.id}", count: 0
     assert_select "#product_notice_#{incomplete.id} input", count: 9
     assert_select "p", text: "미완성 1개 / 전체 2개"
+    # 숨김 라벨(sr-only, absolute)이 스크롤 상자 밖으로 빠져 문서 가로 스크롤을 만들지 않게 기준 상자를 둔다(ISS-163)
+    assert_select "[data-testid=product-info-table].relative.overflow-x-auto label.sr-only"
 
     get product_info_notices_path(all: 1)
     assert_select "tbody tr" do |rows|

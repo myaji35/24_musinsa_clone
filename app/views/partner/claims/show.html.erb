@@ -1,0 +1,11 @@
+<h1 class="text-2xl font-bold">클레임 상세</h1>
+<%= render "supplier_claims/details", claim: @claim %>
+<% unless @claim.status == "resolved" %>
+  <%= form_with model: @claim, url: partner_claim_path(@claim), class: "bg-white rounded-lg shadow p-6 space-y-4" do |f| %>
+    <% @claim.errors.full_messages.each do |message| %><p class="text-red-700"><%= message %></p><% end %>
+    <%= f.label :supplier_response, "답변", class: "block font-bold" %>
+    <%= f.text_area :supplier_response, required: true, rows: 5, class: "w-full border rounded p-2" %>
+    <%= f.submit "답변 등록", class: "bg-blue-600 text-white rounded px-4 py-2" %>
+  <% end %>
+<% end %>
+<%= link_to "목록", partner_claims_path, class: "text-blue-700" %>

@@ -1,0 +1,6 @@
+<div class="max-w-3xl mx-auto px-4 py-8 space-y-6">
+<h1 class="text-3xl font-bold">클레임 상세</h1>
+<%= render "details", claim: @claim %>
+<% unless @claim.status == "resolved" %><%= button_to "처리완료", resolve_supplier_claim_path(@claim), method: :patch, class: "bg-green-600 text-white px-4 py-2 rounded-lg" %><% end %>
+<%= link_to "목록", supplier_claims_path, class: "text-blue-700" %>
+</div>

@@ -48,6 +48,14 @@ class PurchaseOrder < ApplicationRecord
     )
   end
 
+  def confirm_by_supplier!
+    with_lock do
+      return false unless status == "submitted"
+
+      update!(status: "confirmed", confirmed_at: Time.current)
+    end
+  end
+
   # 실제 입고 처리
   def receive!
     return false unless status == "confirmed"

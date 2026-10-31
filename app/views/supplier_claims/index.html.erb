@@ -1,0 +1,7 @@
+<div class="container mx-auto px-4 py-8 space-y-6">
+<h1 class="text-3xl font-bold">클레임 관리</h1>
+<%= link_to "클레임 접수", new_supplier_claim_path, class: "inline-block bg-blue-600 text-white px-4 py-2 rounded-lg" %>
+<div class="bg-white rounded-lg shadow divide-y">
+<% @claims.each do |claim| %><div class="p-4"><%= link_to "#{claim.supplier.name} · #{SupplierClaim::TYPES[claim.claim_type]} · #{SupplierClaim::STATUSES[claim.status]}", claim, class: "text-blue-700" %><p><%= claim.description.truncate(100) %></p></div><% end %>
+<% if @claims.empty? %><p class="p-6">클레임이 없습니다.</p><% end %>
+</div></div>

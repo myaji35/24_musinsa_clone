@@ -1,0 +1,8 @@
+<h1 class="text-2xl font-bold">대시보드</h1>
+<div class="grid gap-4 md:grid-cols-3">
+  <% [["부족 재고 옵션", @low_stock_count, partner_inventory_index_path(low: 1)], ["입고예정 발주", @pending_count, partner_purchase_orders_path], ["열린 클레임", @open_claim_count, partner_claims_path(status: "open")]].each do |label, count, path| %>
+    <%= link_to path, class: "bg-white rounded-lg shadow p-6" do %>
+      <h2 class="font-medium text-gray-600"><%= label %></h2><p class="text-3xl font-bold mt-2"><%= count %>건</p>
+    <% end %>
+  <% end %>
+</div>

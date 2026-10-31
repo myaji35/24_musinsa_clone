@@ -1,0 +1,12 @@
+<h1 class="text-2xl font-bold">발주 <%= @purchase_order.order_number %></h1>
+<p><%= partner_order_status(@purchase_order.status) %> · 입고예정일: <%= @purchase_order.expected_delivery_date || "미정" %></p>
+<div class="bg-white rounded-lg shadow overflow-x-auto">
+<table class="min-w-full text-sm">
+  <thead class="bg-gray-100"><tr><% %w[상품명 옵션 수량 단가].each do |label| %><th class="p-3 text-left"><%= label %></th><% end %></tr></thead>
+  <tbody><% @purchase_order.purchase_order_items.includes(variant: :product).each do |item| %>
+    <tr class="border-t"><td class="p-3"><%= item.product_name %></td><td class="p-3"><%= item.variant_name %></td><td class="p-3"><%= item.quantity %></td><td class="p-3"><%= number_to_currency(item.unit_price, unit: "₩", precision: 0) %></td></tr>
+  <% end %></tbody>
+</table>
+</div>
+<% if @purchase_order.status == "submitted" %><%= button_to "발주 확정", confirm_partner_purchase_order_path(@purchase_order), class: "bg-blue-600 text-white px-4 py-2 rounded-lg" %><% end %>
+<%= link_to "목록", partner_purchase_orders_path, class: "text-blue-700" %>

@@ -42,6 +42,14 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "랭킹 갱신 시각은 한국 날짜와 시간을 표시한다" do
+    travel_to Time.utc(2026, 11, 1, 20, 30) do
+      get root_path
+      assert_response :success
+      assert_includes response.body, "11.02 05:00 갱신"
+    end
+  end
+
   test "끝 공백 검색은 공백 없는 검색과 같은 상품을 표시한다" do
     product = products(:one)
     query = "코튼"

@@ -27,6 +27,19 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
   end
 
   # GET /dashboard/index
+  test "UTC 저녁 주문 매출을 다음 한국 날짜에 합산한다" do
+    travel_to Time.utc(2026, 11, 1, 20, 30) do
+      orders(:one).update_columns(created_at: Time.utc(2026, 11, 1, 20, 30), total_price: 33_000)
+      orders(:two).update_columns(created_at: Time.utc(2026, 11, 1, 15, 0), total_price: 7_000)
+
+      get dashboard_index_url(period: 7)
+      assert_response :success
+      assert_select 'button[title="2026-11-02 · ₩40,000"][aria-label="11/2 ₩40,000"]', count: 1
+      assert_select 'button[title="2026-11-01 · ₩0"]', count: 1
+      assert_select "#total-revenue", text: "₩40,000"
+    end
+  end
+
   test "should get index" do
     get dashboard_index_url
     assert_response :success

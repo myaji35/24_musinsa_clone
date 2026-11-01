@@ -3,6 +3,14 @@ require "test_helper"
 class OrderTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
+  test "한국 오전 9시 전에도 주문번호는 한국 날짜를 사용한다" do
+    travel_to Time.utc(2026, 11, 1, 20, 30) do
+      order = Order.create!(anony_customer: anony_customers(:one), product: products(:one),
+                            variant: variants(:one), quantity: 1, total_price: 19900)
+      assert_match /\AORD-20261102-/, order.reload.order_number
+    end
+  end
+
   test "수량과 주문 상태를 검증한다" do
     order = orders(:one)
     order.assign_attributes(quantity: 0, status: "invalid")

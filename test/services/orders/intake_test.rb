@@ -6,6 +6,18 @@ class Orders::IntakeTest < ActiveSupport::TestCase
     @items = [ { variant_id: variants(:one).id, quantity: 2 }, { variant_id: variants(:two).id, quantity: 1 } ]
   end
 
+  test "한국 오전 9시 전 주문서와 주문번호는 한국 날짜를 사용한다" do
+    travel_to Time.utc(2026, 11, 1, 20, 30) do
+      result = Orders::Intake.call(items: @items, address: @address)
+      assert result.success?, result.errors.inspect
+      assert_match /\ACHK-20261102-/, result.checkout_number
+      result.orders.each do |order|
+        assert_match /\ACHK-20261102-/, order.reload.checkout_number
+        assert_match /\AORD-20261102-/, order.order_number
+      end
+    end
+  end
+
   test "품목별 주문은 같은 주문서와 배송지를 공유하고 익명 고객에는 세 자리만 저장한다" do
     stocks = Variant.order(:id).pluck(:stock)
     result = nil

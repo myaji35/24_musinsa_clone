@@ -48,7 +48,7 @@ class Order < ApplicationRecord
   end
 
   def generate_order_number
-    self.order_number ||= "ORD-#{Date.today.strftime('%Y%m%d')}-#{SecureRandom.hex(4).upcase}"
+    self.order_number ||= "ORD-#{Date.current.strftime('%Y%m%d')}-#{SecureRandom.hex(4).upcase}"
   end
 
   # Epic 4.2: 주문 생성 시 백그라운드로 취향 태그 학습

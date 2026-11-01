@@ -18,7 +18,9 @@ class DashboardController < ApplicationController
     # 지역별 판매 Top 5
     @regional_sales = regional_sales_data(since: period_start).first(5)
 
-    sales_by_date = period_orders.group("DATE(created_at)").sum(:total_price)
+    sales_by_date = period_orders.pluck(:created_at, :total_price).each_with_object(Hash.new(0)) do |(created_at, total_price), totals|
+      totals[created_at.in_time_zone.to_date.iso8601] += total_price
+    end
     @daily_sales = (period_start.to_date..Date.current).map do |date|
       { date: date, revenue: sales_by_date.fetch(date.iso8601, 0) }
     end
@@ -109,7 +111,7 @@ class DashboardController < ApplicationController
 
   # 연령대별 취향 트렌드
   def preference_trend_by_age
-    current_year = Date.today.year
+    current_year = Date.current.year
 
     AnonyCustomer.where.not(birth_year: nil, preference_tags: nil)
                  .map do |customer|

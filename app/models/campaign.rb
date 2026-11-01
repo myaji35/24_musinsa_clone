@@ -32,7 +32,7 @@ class Campaign < ApplicationRecord
     end
 
     if target_segment["age_group"].present?
-      current_year = Date.today.year
+      current_year = Date.current.year
       age_range = case target_segment["age_group"]
       when "10대" then (current_year - 19)..(current_year - 10)
       when "20대" then (current_year - 29)..(current_year - 20)

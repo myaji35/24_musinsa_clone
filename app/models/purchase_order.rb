@@ -97,7 +97,7 @@ class PurchaseOrder < ApplicationRecord
   private
 
   def generate_order_number
-    self.order_number ||= "PO-#{Date.today.strftime('%Y%m%d')}-#{SecureRandom.hex(2).upcase}"
+    self.order_number ||= "PO-#{Date.current.strftime('%Y%m%d')}-#{SecureRandom.hex(2).upcase}"
   end
 
   def generate_confirmation_token

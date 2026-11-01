@@ -90,7 +90,7 @@ class InventoryController < ApplicationController
     # CSV 내보내기
     respond_to do |format|
       format.html
-      format.csv { send_data stock_logs_to_csv(@stock_logs), filename: "stock_logs_#{Date.today}.csv" }
+      format.csv { send_data stock_logs_to_csv(@stock_logs), filename: "stock_logs_#{Date.current}.csv" }
     end
   end
 

@@ -10,6 +10,10 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def normalize_search_query
+    params[:q] = params[:q].strip if params[:q].is_a?(String)
+  end
+
   def current_user
     @current_user ||= User.find_by(id: session[:user_id])
   end

@@ -42,6 +42,55 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "끝 공백 검색은 공백 없는 검색과 같은 상품을 표시한다" do
+    product = products(:one)
+    query = "코튼"
+    get root_path, params: { q: query }
+
+    assert_response :success
+    assert_select "#ranking .grid h3", text: product.name
+    expected_names = css_select("#ranking .grid h3").map(&:text)
+
+    get root_path, params: { q: "#{query} " }
+
+    assert_response :success
+    assert_equal expected_names, css_select("#ranking .grid h3").map(&:text)
+    assert_select "input[name=q][value=?]", query
+    assert_select "[role=status]", count: 0
+  end
+
+  test "앞 공백 검색은 공백 없는 검색과 같은 상품을 표시한다" do
+    product = products(:one)
+    query = "코튼"
+    get root_path, params: { q: query }
+
+    assert_response :success
+    assert_select "#ranking .grid h3", text: product.name
+    expected_names = css_select("#ranking .grid h3").map(&:text)
+
+    get root_path, params: { q: " #{query}" }
+
+    assert_response :success
+    assert_equal expected_names, css_select("#ranking .grid h3").map(&:text)
+    assert_select "input[name=q][value=?]", query
+    assert_select "[role=status]", count: 0
+  end
+
+  test "공백만 검색하면 검색 결과 없음 대신 기본 목록을 표시한다" do
+    get root_path
+
+    assert_response :success
+    expected_names = css_select("#ranking .grid h3").map(&:text)
+    assert_not_empty expected_names
+
+    get root_path, params: { q: "   " }
+
+    assert_response :success
+    assert_equal expected_names, css_select("#ranking .grid h3").map(&:text)
+    assert_select "#ranking .grid h3", text: products(:one).name
+    assert_no_match "검색 결과가 없습니다", response.body
+  end
+
   test "특수 문자 검색은 전체 상품 대신 빈 결과를 표시한다" do
     [ "%", "_", "\\" ].each do |query|
       get root_path, params: { q: query }

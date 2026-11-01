@@ -1,5 +1,6 @@
 class ProductsController < ApplicationController
   skip_before_action :require_admin, only: [ :index, :show ]
+  before_action :normalize_search_query, only: :index
   before_action :set_product, only: [ :show, :edit, :update, :destroy, :publish, :unpublish ]
 
   def index

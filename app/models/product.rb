@@ -59,7 +59,7 @@ class Product < ApplicationRecord
   validate :validate_image
 
   scope :search_name_or_brand, ->(query) {
-    pattern = "%#{ActiveRecord::Base.sanitize_sql_like(query.to_s)}%"
+    pattern = "%#{ActiveRecord::Base.sanitize_sql_like(query.to_s.strip)}%"
     where("products.name LIKE ? ESCAPE '\\' OR products.brand LIKE ? ESCAPE '\\'", pattern, pattern)
   }
 

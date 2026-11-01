@@ -24,6 +24,55 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "끝 공백 검색은 공백 없는 검색과 같은 상품을 표시한다" do
+    product = products(:one)
+    query = "코튼"
+    get products_path, params: { q: query }
+
+    assert_response :success
+    assert_select ".grid a.font-medium", text: product.name
+    expected_names = css_select(".grid a.font-medium").map(&:text)
+
+    get products_path, params: { q: "#{query} " }
+
+    assert_response :success
+    assert_equal expected_names, css_select(".grid a.font-medium").map(&:text)
+    assert_select "input[name=q][value=?]", query
+    assert_select "[role=status]", count: 0
+  end
+
+  test "앞 공백 검색은 공백 없는 검색과 같은 상품을 표시한다" do
+    product = products(:one)
+    query = "코튼"
+    get products_path, params: { q: query }
+
+    assert_response :success
+    assert_select ".grid a.font-medium", text: product.name
+    expected_names = css_select(".grid a.font-medium").map(&:text)
+
+    get products_path, params: { q: " #{query}" }
+
+    assert_response :success
+    assert_equal expected_names, css_select(".grid a.font-medium").map(&:text)
+    assert_select "input[name=q][value=?]", query
+    assert_select "[role=status]", count: 0
+  end
+
+  test "공백만 검색하면 검색 결과 없음 대신 기본 목록을 표시한다" do
+    get products_path
+
+    assert_response :success
+    expected_names = css_select(".grid a.font-medium").map(&:text)
+    assert_not_empty expected_names
+
+    get products_path, params: { q: "   " }
+
+    assert_response :success
+    assert_equal expected_names, css_select(".grid a.font-medium").map(&:text)
+    assert_select ".grid a.font-medium", text: products(:one).name
+    assert_no_match "검색 결과가 없습니다", response.body
+  end
+
   test "게스트 목록은 옵션 재고가 있으면 재고 숫자와 품절을 표시하지 않는다" do
     @product.update!(stock: 0)
     get products_path, params: { q: @product.name }

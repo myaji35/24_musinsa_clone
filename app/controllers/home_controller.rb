@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   skip_before_action :require_admin, only: [ :index ]
+  before_action :normalize_search_query, only: :index
   def index
     @intro_cache_key = [
       "intro-ring", Character.maximum(:updated_at), Character.count,

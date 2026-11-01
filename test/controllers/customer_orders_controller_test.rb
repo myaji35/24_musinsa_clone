@@ -31,6 +31,16 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "비밀상세 201호"
   end
 
+  test "소문자와 앞뒤 공백이 있는 주문서 번호는 정규화하여 조회한다" do
+    verify_order(checkout_number: "  " + @order.checkout_number.downcase + " ", phone_suffix: " 9876 ")
+  end
+
+  test "소문자와 앞뒤 공백이 있는 주문서 번호도 틀린 뒤 네 자리는 거부한다" do
+    post orders_lookup_path, params: { checkout_number: "  " + @order.checkout_number.downcase + " ", phone_suffix: "0000" }
+    assert_response :unprocessable_entity
+    assert_includes response.body, "주문서 번호 또는 휴대폰 뒤 4자리를 확인해 주세요"
+  end
+
   test "배송지 파기 뒤에도 본인 확인 후 파기 안내를 표시한다" do
     @order.shipping_address.destroy!
     post orders_lookup_path, params: { checkout_number: @order.checkout_number, phone_suffix: "9876" }
@@ -80,8 +90,8 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
 
   private
 
-  def verify_order
-    post orders_lookup_path, params: { checkout_number: @order.checkout_number, phone_suffix: "9876" }
+  def verify_order(checkout_number: @order.checkout_number, phone_suffix: "9876")
+    post orders_lookup_path, params: { checkout_number: checkout_number, phone_suffix: phone_suffix }
     assert_redirected_to customer_order_path(@order.checkout_number)
     follow_redirect!
     assert_response :success

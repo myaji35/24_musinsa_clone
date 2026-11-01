@@ -7,9 +7,9 @@ class CustomerOrdersController < ApplicationController
   end
 
   def verify
-    number = params[:checkout_number].to_s
+    number = params[:checkout_number].to_s.strip.upcase
     order = Order.includes(:anony_customer).find_by(checkout_number: number)
-    suffix = params[:phone_suffix].to_s
+    suffix = params[:phone_suffix].to_s.strip
     if order && suffix.match?(/\A[0-9]{4}\z/) && ActiveSupport::SecurityUtils.secure_compare(order.anony_customer.phone_suffix.to_s, suffix)
       session[:allowed_checkout_numbers] = (Array(session[:allowed_checkout_numbers]) + [ number ]).uniq.last(20)
       redirect_to customer_order_path(number)

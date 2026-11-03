@@ -41,12 +41,13 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "주문서 번호 또는 휴대폰 뒤 4자리를 확인해 주세요"
   end
 
-  test "배송지 파기 뒤에도 본인 확인 후 파기 안내를 표시한다" do
+  test "배송지 파기 뒤에도 본인 확인 후 주문 배송 기록을 표시한다" do
     @order.shipping_address.destroy!
     post orders_lookup_path, params: { checkout_number: @order.checkout_number, phone_suffix: "9876" }
     follow_redirect!
     assert_response :success
-    assert_includes response.body, "배송지 정보는 보관 기간이 지나 파기되었습니다"
+    assert_includes response.body, "서울시 테스트로 1"
+    assert_includes response.body, "홍*"
   end
   test "계좌 설정이 있으면 조회 후 입금 안내를 표시한다" do
     with_payout_env("PAYOUT_BANK" => "테스트은행", "PAYOUT_ACCOUNT" => "000-00-000000",

@@ -44,6 +44,7 @@ module Orders
           orders << Order.create!(anony_customer: customer, product: variant.product, variant: variant,
                                   quantity: quantity.to_i, total_price: variant.product.price * quantity.to_i,
                                   status: "pending", shipping_address: address, checkout_number: checkout_number)
+          OrderShippingRecord.snapshot_for!(orders.last)
         end
       end
       Result.new(success: true, data: { orders: orders, checkout_number: checkout_number })

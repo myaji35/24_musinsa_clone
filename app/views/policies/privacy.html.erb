@@ -1,0 +1,75 @@
+<% privacy = Rails.configuration.x.privacy %>
+<div class="max-w-2xl mx-auto my-10 bg-white border border-gray-200">
+  <article class="px-6 py-16 space-y-6 text-sm text-gray-700 leading-relaxed">
+    <header class="text-center">
+      <h1 class="text-[26px] md:text-[32px] font-bold leading-tight tracking-[-0.025em] text-black">개인정보처리방침</h1>
+      <p class="mt-3"><%= privacy[:business_name].presence || "JIEUM" %>의 개인정보 처리에 대해 안내합니다.</p>
+    </header>
+    <section class="space-y-2">
+      <h2 class="text-[15px] font-bold text-black">① 처리 목적</h2>
+      <p>주문 접수·배송 및 주문 기록 보관, 익명 취향분석, 의견 접수·답변, 관리자·공급사 계정 인증과 업무 처리를 위해 개인정보를 처리합니다.</p>
+    </section>
+    <section class="space-y-2">
+      <h2 class="text-[15px] font-bold text-black">② 처리 항목</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>주문: 받는 분, 휴대폰, 우편번호, 주소, 상세주소(선택), 출생연도(선택), 개인정보 수집·이용 동의 여부를 처리합니다. 출생연도를 입력하지 않아도 주문할 수 있습니다.</li>
+        <li>익명 취향분석: 휴대폰 뒷4자리, 출생연도(선택), 우편번호 앞3자리, 임의 식별자와 구매에 따른 취향 태그를 처리합니다.</li>
+        <li>의견 보내기: 의견 종류·내용, 관련 페이지 주소·상품, 연락 이메일 수집 동의 여부를 처리합니다. 연락 이메일은 동의한 경우에만 저장합니다. 같은 분의 반복 접수를 구분하는 값은 접속 IP와 날짜를 비밀 키로 변환(해시)한 값이며, IP 원문은 저장하지 않습니다.</li>
+        <li>관리자·공급사 계정: 이메일, 이름, 비밀번호의 해시 값을 계정 인증과 관리에 사용합니다.</li>
+      </ul>
+    </section>
+    <section class="space-y-2">
+      <h2 class="text-[15px] font-bold text-black">③ 보유 기간과 파기</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>다음 주문용 저장 주소는 배송 완료 후 <%= Rails.configuration.x.shipping_address_retention_days %>일 뒤 파기합니다. 같은 배송지의 주문이 모두 배송 완료·취소된 뒤 파기 예정일을 정합니다.</li>
+        <li>주문 기록의 배송 정보는 전자상거래법에 따라 주문일 기준 <%= Rails.configuration.x.order_record_retention_years %>년 동안 암호화하여 분리 보관한 뒤 자동 파기합니다.</li>
+        <li>의견 연락 이메일은 답변 완료·접수 종료 또는 접수 후 <%= Feedback::CONTACT_RETENTION_DAYS %>일 경과 시 파기합니다.</li>
+      </ul>
+    </section>
+    <section class="space-y-2">
+      <h2 class="text-[15px] font-bold text-black">④ 파기 절차·방법</h2>
+      <p>매일 자동 작업으로 파기 기한이 지난 저장 주소와 주문 배송 기록을 데이터베이스에서 삭제하고, 파기 대상 의견의 연락 이메일을 지웁니다.</p>
+    </section>
+    <section class="space-y-2">
+      <h2 class="text-[15px] font-bold text-black">⑤ 제3자 제공</h2>
+      <p>법령에 따른 경우 외에는 개인정보를 제3자에게 제공하지 않습니다.</p>
+    </section>
+    <section class="space-y-2">
+      <h2 class="text-[15px] font-bold text-black">⑥ 처리 위탁</h2>
+      <% if privacy[:processors].present? %>
+        <ul class="list-disc pl-5">
+          <% privacy[:processors].split(",").map(&:strip).reject(&:blank?).each do |processor| %>
+            <li><%= processor %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>위탁 업체 정보 준비 중입니다.</p>
+      <% end %>
+    </section>
+    <section class="space-y-2">
+      <h2 class="text-[15px] font-bold text-black">⑦ 정보주체 권리와 행사 방법</h2>
+      <p>개인정보의 열람·정정·삭제·처리정지를 요청할 수 있습니다. <%= link_to "의견 보내기", new_feedback_path, class: "font-bold underline" %> 화면 또는 아래 개인정보 보호책임자 연락처로 요청해 주세요.</p>
+    </section>
+    <section class="space-y-2">
+      <h2 class="text-[15px] font-bold text-black">⑧ 안전성 확보 조치</h2>
+      <p>주문 기록의 배송 정보(받는 분·휴대폰·우편번호·주소·상세주소)와 의견 연락 이메일을 암호화하여 저장합니다. 계정 비밀번호는 해시 값으로 저장하며, 관리자·공급사 업무 화면에는 계정 인증을 적용합니다. 배송 정보와 이메일 등 민감한 요청 항목은 로그에서 필터링합니다.</p>
+    </section>
+    <section class="space-y-2">
+      <h2 class="text-[15px] font-bold text-black">⑨ 개인정보 보호책임자</h2>
+      <% if privacy[:officer_name].present? && privacy[:officer_contact].present? %>
+        <dl>
+          <dt class="font-bold">이름</dt><dd><%= privacy[:officer_name] %></dd>
+          <dt class="mt-2 font-bold">연락처</dt><dd><%= privacy[:officer_contact] %></dd>
+        </dl>
+      <% else %>
+        <p>보호책임자 정보 준비 중입니다. 그동안 개인정보 관련 요청은 '의견 보내기'로 보내 주세요.</p>
+      <% end %>
+    </section>
+    <% if privacy[:effective_date].present? %>
+      <section class="space-y-2">
+        <h2 class="text-[15px] font-bold text-black">⑩ 시행일</h2>
+        <p>시행일: <%= privacy[:effective_date] %></p>
+      </section>
+    <% end %>
+  </article>
+</div>

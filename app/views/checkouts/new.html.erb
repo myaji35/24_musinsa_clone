@@ -22,8 +22,9 @@
     <p class="text-sm text-gray-600">출생연도는 익명 취향분석용이며 입력하지 않아도 주문할 수 있습니다.</p>
     <div class="flex items-start gap-2">
       <%= f.check_box :privacy_consent, checked: @checkout["privacy_consent"] == "1", class: "mt-1 shrink-0" %>
-      <%= f.label :privacy_consent, "개인정보 수집·이용 동의(배송 목적, 배송 완료 후 #{Rails.configuration.x.shipping_address_retention_days}일 보관 뒤 파기)", class: "text-sm leading-relaxed" %>
+      <%= f.label :privacy_consent, "개인정보 수집·이용 동의(배송 목적. 다음 주문용 저장 주소는 배송 완료 #{Rails.configuration.x.shipping_address_retention_days}일 뒤 파기, 주문 기록의 배송 정보는 전자상거래법에 따라 #{Rails.configuration.x.order_record_retention_years}년 보관 뒤 파기)", class: "text-sm leading-relaxed" %>
     </div>
+    <%= link_to "개인정보처리방침 보기", privacy_policy_path, target: "_blank", rel: "noopener", class: "inline-block text-sm underline" %>
     <% instruction = PaymentInstruction.new %>
     <p class="text-sm text-gray-600" data-testid="checkout-payment-note">
       <% if instruction.ready? %>

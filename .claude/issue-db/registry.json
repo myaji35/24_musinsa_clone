@@ -10787,7 +10787,43 @@
         ],
         "deploy_notes": "새 표 order_shipping_records 추가 마이그레이션 1개(추가형). 배포 후 PRIVACY_OFFICER_NAME·PRIVACY_OFFICER_CONTACT 등을 config/deploy.yml env.clear 에 넣으면 '준비 중'이 실제 값으로 바뀜.",
         "cost_usd": 0,
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-11-03T04:42:29Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/policies_controller_test.rb test/integration/layout_links_test.rb test/",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 33041\n\n# Running:\n\n....................................\n\nFinished in 0.347063s, 103.7276 runs/s, 1322.5265 assertions/s.\n36 runs, 459 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "...................................................................................................................................................................................................\n\nFinished in 4.873010s, 102.1956 runs/s, 779.3951 assertions/s.\n498 runs, 3798 assertions, 0 failures, 0 errors, 0 skips\n\u001b[3m\u001b[1m\u001b[34m≈\u001b[39m\u001b[22m\u001b[23m tailwindcss \u001b[34mv4.1.18\u001b[39m\n\nDone in \u001b[34m95ms\u001b[39m"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Inspecting 287 files\n...............................................................................................................................................................................................................................................................................................\n\n287 files inspected, no offenses detected"
+            },
+            {
+              "cmd": "cd musinsa_clone && git log --oneline -1 3ac5e03",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "3ac5e03 merge(ISS-157): 주문 배송 기록 5년 분리 보관 + 개인정보처리방침 화면 병합 — 대표님 승인(11-03 결정 A)"
+            }
+          ]
+        }
       },
       "last_dispatched_at": "2026-11-01T00:13:28",
       "completed_at": "2026-11-03T13:41:41.116019"
@@ -11847,7 +11883,7 @@
       "origin": "factory-runner",
       "depends_on": [],
       "created_at": "2026-11-03T04:42:02.202119+00:00",
-      "updated_at": "2026-11-03T04:42:02.202119+00:00",
+      "updated_at": "2026-11-03T04:43:08.775198+00:00",
       "payload": {
         "origin": "factory-runner",
         "derived_from": "ISS-161",
@@ -11879,8 +11915,681 @@
             "at": "2026-11-03T04:42:02.202119+00:00",
             "by": "factory-runner",
             "note": "결정 A 집행 카드 생성 — 크레딧 충전 대기"
+          },
+          {
+            "from": "READY",
+            "to": "AWAITING_USER",
+            "at": "2026-11-03T04:43:08.775198+00:00",
+            "by": "factory-runner",
+            "note": "자동승인으로 READY 가 됐으나 대표님 충전(결제) 확인이 없어 대기로 되돌림"
           }
-        ]
+        ],
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-03T04:42:38.115Z",
+            "by": "auto",
+            "reason": "대표님이 ISS-161 에서 A(3명만, 충전 후 생성)를 고르셨음. 남은 잔액 약 0.7달러로는 1명분뿐이라 충전(결제)이 먼저 필요해 공장이 대신할 수 없음"
+          }
+        ],
+        "approved_at": "2026-11-03T04:42:38.115Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recall_used": "07-AI-Knowledge/프로젝트/0053-JIEUN-MUSINSA-/factory-runner-local-env.md (충전은 결제라 공장 금지)",
+        "prep_notes": "착수 시 필요: persona/generate_sheet.mjs 의 PERSONS 에 HanSOYUL·SoERIN·OhDAEUN 외형 문구 추가(ROSTER.md 기준) + runway-04/refs 기준 ref.png. 현재 foreign_cast.json 에는 없음. 잔액 약 0.66달러로는 1명분(약 0.61달러)뿐이라 충전 확인 전에는 생성하지 않음."
+      }
+    },
+    {
+      "id": "ISS-168",
+      "title": "판매하면 재고 자동 차감 + 판매현황 화면(상품·옵션별 판매량·남은 재고·부족 알림)",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "M",
+      "status": "AWAITING_USER",
+      "origin": "session",
+      "depends_on": [],
+      "created_at": "2026-11-05T23:34:56.910632+00:00",
+      "updated_at": "2026-11-05T23:51:20.537669+00:00",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-06: 주말(11-08)까지 판매재고 관리 + 거래처 카톡방 관리(중요 이슈·날짜·수량을 빠짐없이 → 일정·거래내역·수금 반영). 결정: 거래처=매입·매출 둘 다 / 카톡=맥 카톡 앱 자동 읽기 / 반영=승인 후",
+        "gate": "deploy",
+        "mission": "kakao-ledger-2026-11-08",
+        "acceptance_criteria": [
+          "주문 접수(Orders::Intake) 시 옵션 재고가 StockAdjuster 로 줄고 stock_logs 에 판매 출고(order_id 포함)가 남는다",
+          "재고보다 많이 주문하면 주문이 거절되고 안내 문구가 보인다(동시 주문에도 음수 재고 없음)",
+          "주문 취소 시 재고가 되돌아온다",
+          "관리자 판매현황 화면: 기간별 상품·옵션 판매량, 현재 재고, min_stock 이하 표시"
+        ],
+        "prep_notes": "시작점: app/services/orders/intake.rb 는 재고를 건드리지 않음. Inventory::StockAdjuster·StockLog#update_variant_stock 재사용. 재고=variants.stock 합계(ISS-149).",
+        "status_history": [
+          {
+            "from": null,
+            "to": "READY",
+            "at": "2026-11-05T23:34:56.910632+00:00",
+            "by": "session",
+            "note": "11-06 현황 점검 후 대표님 결정 반영해 생성"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-05T23:37:07.032810+00:00",
+            "by": "factory-runner",
+            "note": "factory/ISS-168 브랜치에서 구현 시작"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-11-05T23:46:18.721811+00:00",
+            "by": "factory-runner",
+            "note": "factory/ISS-168(7d69425) 구현·검수 완료, 배포 검토 대기"
+          }
+        ],
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-05T23:34:59.906Z",
+            "by": "auto",
+            "reason": "「판매하면 재고 자동 차감 + 판매현황 화면(상품·옵션별 판매량·남은 재고·부족 알림)」(GENERATE_CODE, P0)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-11-05T23:34:59.906Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "대표님 결정 필요",
+          "reason": "배포하면 재고가 0 인 옵션은 주문이 거절된다. 운영 재고 숫자가 실제와 맞는지 대표님 확인이 먼저 필요.",
+          "risk": "medium",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-11-05T23:46:18.721811+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "주문 접수 때 옵션 재고를 원자적으로 줄이고(재고보다 많으면 거절), 취소 시 되돌리며, 관리자 판매현황 화면을 추가한다. 스키마 변경 없이 기존 stock_logs(order_id 컬럼 있음)를 쓴다.",
+            "risk": "medium — 운영에서 재고 0 인 옵션은 이제 주문이 거절된다. 배포 전 운영 재고 숫자가 실제와 맞는지 확인 필요(gate=deploy)",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-11-05T23:37:07.032810+00:00"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "branch": "factory/ISS-168",
+        "commit": "7d69425",
+        "question": "판매 시 재고 자동 차감을 운영에 켤까요?",
+        "options": [
+          {
+            "key": "A",
+            "label": "지금 켜기",
+            "pros": "주문이 들어오는 즉시 재고가 줄고 판매현황 화면을 바로 쓸 수 있다",
+            "cons": "운영 재고 숫자가 실제보다 적으면 팔 수 있는 옷도 '재고 부족'으로 주문이 막힌다"
+          },
+          {
+            "key": "B",
+            "label": "운영 재고 숫자를 먼저 맞춘 뒤 켜기",
+            "pros": "잘못된 재고로 주문이 막히는 일이 없다",
+            "cons": "재고 실사(입고 화면에서 숫자 맞추기)가 끝날 때까지 기다림"
+          },
+          {
+            "key": "C",
+            "label": "보류",
+            "pros": "운영 변화 없음",
+            "cons": "주문해도 재고가 안 줄어 지금처럼 수기 관리"
+          }
+        ],
+        "recommended_option": "B",
+        "recommended_why": "재고 차감이 켜지면 숫자가 곧 판매 가능 여부가 됩니다. 운영 재고가 실제와 맞는지 먼저 확인하는 것이 안전합니다(개발 데이터는 114개 옵션 모두 재고 있음).",
+        "plain_summary": "주문이 들어오면 옵션별 재고가 자동으로 줄고, 재고보다 많이 주문하면 '재고가 부족합니다' 안내로 막습니다. 취소하면 재고가 돌아오고, 관리자 메뉴에 '판매현황' 화면이 생겼습니다.",
+        "if_not_decided": "주문해도 재고가 자동으로 줄지 않습니다.",
+        "reversible": "예 — 코드만 바뀌고 표 구조 변경 없음, 되돌리기 배포 가능",
+        "ask_kind": "decision",
+        "ask_prompt": "운영 재고 숫자를 맞춘 뒤 켤지(B 추천), 지금 켤지 골라 주세요.",
+        "result": {
+          "summary": "Orders::Intake 조건부 UPDATE 재고 차감·부족 거절·판매 출고 로그, Order 취소 저장 시 복원(중복 방지·배송 후 취소 불가), /sales 판매현황",
+          "tests": "전체 511건 0 실패, rubocop 289파일 위반 0",
+          "criteria_check": [
+            {
+              "criterion": "주문 접수(Orders::Intake) 시 옵션 재고가 StockAdjuster 로 줄고 stock_logs 에 판매 출고(order_id 포함)가 남는다",
+              "met": true,
+              "how": "StockAdjuster 는 바코드 기반이라 쓰지 않고 같은 규칙(재고 부족 검사·StockLog·LowStockAlertJob)을 조건부 UPDATE 로 원자 처리. stock_logs out + order_id + '판매 출고 ORD-…' (intake_test '판매 출고 이력과 주문을 연결하고 한 번만 차감한다')"
+            },
+            {
+              "criterion": "재고보다 많이 주문하면 주문이 거절되고 안내 문구가 보인다(동시 주문에도 음수 재고 없음)",
+              "met": true,
+              "how": "'재고가 부족합니다: 상품 색/사이즈 (남은 수량 N개)' 주문서에 표시(checkouts_controller_test), stock>=qty 조건부 UPDATE 로 재고 1에 두 번 접수 시 하나만 성공"
+            },
+            {
+              "criterion": "주문 취소 시 재고가 되돌아온다",
+              "met": true,
+              "how": "pending/paid→cancelled 저장 시 재고 복원·'주문 취소 복원' 로그, 두 번 저장해도 한 번만(order_test). 취소 버튼 화면은 ISS-169(주문 상태 화면)에서"
+            },
+            {
+              "criterion": "관리자 판매현황 화면: 기간별 상품·옵션 판매량, 현재 재고, min_stock 이하 표시",
+              "met": true,
+              "how": "/sales 오늘·7일·30일·직접, 취소 제외 수량·금액, 현재 재고·최소 재고·부족/품절 배지, 재고 부족 목록(sales_controller_test)"
+            }
+          ],
+          "proof": [
+            {
+              "cmd": "cd wt168 && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/services/orders/intake_test.rb test/models/order_test.rb test/controllers/sales_controller_test.rb test/controllers/checkouts_controller_test.rb",
+              "exit_code": 0,
+              "output": "33 runs, 310 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd wt168 && DATABASE_URL=sqlite3:storage/test_V168.sqlite3 PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "exit_code": 0,
+              "output": "511 runs, 3897 assertions, 0 failures, 0 errors, 0 skips"
+            }
+          ]
+        },
+        "session_review": {
+          "at": "2026-11-05T23:51:20.537669+00:00",
+          "by": "session",
+          "verdict": "검수 통과(배포는 대표님 승인 대기)",
+          "evidence": [
+            "전체 테스트 511 runs 0 failures, rubocop 변경 7파일 0 offenses (wt168, test_ISS168v DB)",
+            "브라우저 실측 3168: 손님 주문 → variant 326 재고 21→20, stock_logs out 1 '판매 출고 ORD-…' 기록",
+            "장바구니 담은 뒤 재고 0 → 주문서에서 '재고가 부족합니다: …/M (남은 수량 0개)', 주문 0건 생성, 음수 재고 0",
+            "/sales 200: 기간 필터·판매 수량·금액·부족 옵션 표시, 5xx 없음",
+            "스크린샷 /tmp/ujt/v168/*.png"
+          ],
+          "deploy_risk": "운영 DB 에 재고 0인 공개 옵션이 많으면 배포 즉시 그 옵션 주문이 막힘 — 배포 전 운영 재고 확인 필요(개발 DB 는 공개 옵션 111개 전부 재고 1 이상)"
+        }
+      }
+    },
+    {
+      "id": "ISS-169",
+      "title": "거래처 원장 — 매입·매출 거래처 구분, 거래내역(매출·매입), 수금·지급, 미수·미지급 잔액, 입금 확인",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "L",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-173"
+      ],
+      "created_at": "2026-11-05T23:34:56.910632+00:00",
+      "updated_at": "2026-11-05T23:54:58.384211+00:00",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-06: 주말(11-08)까지 판매재고 관리 + 거래처 카톡방 관리(중요 이슈·날짜·수량을 빠짐없이 → 일정·거래내역·수금 반영). 결정: 거래처=매입·매출 둘 다 / 카톡=맥 카톡 앱 자동 읽기 / 반영=승인 후",
+        "gate": "deploy",
+        "mission": "kakao-ledger-2026-11-08",
+        "acceptance_criteria": [
+          "거래처에 구분(매입처·매출처·둘 다)이 생기고 기존 suppliers 는 매입처로 이어진다",
+          "거래처별 거래내역(일자·품목·수량·단가·금액)과 수금·지급 기록을 넣고 볼 수 있다",
+          "거래처별 미수금·미지급 잔액과 입금 예정일이 계산돼 목록에 보인다",
+          "발주서 입고(receive!)는 매입 거래내역으로 자동 기록된다",
+          "ISS-156(주문 입금 확인→결제 완료) 흡수"
+        ],
+        "prep_notes": "suppliers 테이블 확장 vs 별도 partners — 설계 먼저(architect). 금액은 decimal, 날짜는 Date.current(ISS-166).",
+        "status_history": [
+          {
+            "from": null,
+            "to": "READY",
+            "at": "2026-11-05T23:34:56.910632+00:00",
+            "by": "session",
+            "note": "11-06 현황 점검 후 대표님 결정 반영해 생성"
+          }
+        ],
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-05T23:34:59.906Z",
+            "by": "auto",
+            "reason": "「거래처 원장 — 매입·매출 거래처 구분, 거래내역(매출·매입), 수금·지급, 미수·미지급 잔액, 입금 확인」(GENERATE_CODE, P0)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-11-05T23:34:59.906Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "factory_note": "2026-11-06 회차: 선행 ISS-173 이 배포 검토 대기(AWAITING_USER)라 착수 안 함. ISS-173 승인되면 factory/ISS-173(또는 병합된 main) 위에서 착수."
+      }
+    },
+    {
+      "id": "ISS-170",
+      "title": "일정(달력) — 납기·입금 예정·거래처 약속을 한 화면에, 거래처·발주·거래내역과 연결",
+      "type": "GENERATE_CODE",
+      "priority": "P1",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-169",
+        "ISS-173"
+      ],
+      "created_at": "2026-11-05T23:34:56.910632+00:00",
+      "updated_at": "2026-11-05T23:54:58.384211+00:00",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-06: 주말(11-08)까지 판매재고 관리 + 거래처 카톡방 관리(중요 이슈·날짜·수량을 빠짐없이 → 일정·거래내역·수금 반영). 결정: 거래처=매입·매출 둘 다 / 카톡=맥 카톡 앱 자동 읽기 / 반영=승인 후",
+        "gate": "deploy",
+        "mission": "kakao-ledger-2026-11-08",
+        "acceptance_criteria": [
+          "월·주 달력과 목록 보기, 거래처별 필터",
+          "발주 납기(expected_delivery_date)·수금 예정일이 자동으로 일정에 나타난다",
+          "일정마다 출처(카톡 메시지·발주·거래내역) 링크가 있다"
+        ],
+        "prep_notes": "카톡 추출 결과의 반영처 중 하나.",
+        "status_history": [
+          {
+            "from": null,
+            "to": "READY",
+            "at": "2026-11-05T23:34:56.910632+00:00",
+            "by": "session",
+            "note": "11-06 현황 점검 후 대표님 결정 반영해 생성"
+          }
+        ],
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-05T23:34:59.906Z",
+            "by": "auto",
+            "reason": "「일정(달력) — 납기·입금 예정·거래처 약속을 한 화면에, 거래처·발주·거래내역과 연결」(GENERATE_CODE, P1)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-11-05T23:34:59.906Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "factory_note": "2026-11-06 회차: 선행 ISS-169·173 미완료로 착수 안 함."
+      }
+    },
+    {
+      "id": "ISS-171",
+      "title": "카톡 무방해 수집 에이전트 — ① macOS 알림 DB 1분 수집(실시간) + ② 새벽 kmsg 보충(빠진·내가 보낸·잘린 메시지) → 기기 토큰으로 서버 전송",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "S",
+      "status": "AWAITING_USER",
+      "origin": "session",
+      "depends_on": [],
+      "created_at": "2026-11-05T23:34:56.910632+00:00",
+      "updated_at": "2026-11-05T23:54:42.324689+00:00",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-06: 주말(11-08)까지 판매재고 관리 + 거래처 카톡방 관리(중요 이슈·날짜·수량을 빠짐없이 → 일정·거래내역·수금 반영). 결정: 거래처=매입·매출 둘 다 / 카톡=맥 카톡 앱 자동 읽기 / 반영=승인 후",
+        "gate": "deploy",
+        "mission": "kakao-ledger-2026-11-08",
+        "acceptance_criteria": [
+          "① 알림 DB(~/Library/Group Containers/group.com.apple.usernoted/db2/db, 읽기 전용 mode=ro)에서 com.kakao.kakaotalkmac 알림을 1분마다 읽어 새 것만 보낸다 — 카톡 창·마우스·키보드를 전혀 건드리지 않는다",
+          "알림 plist(req.titl·body·usda NSKeyedArchiver)에서 방 이름·보낸 사람·본문·시각을 뽑고, 화면에서 등록한 거래처 방만 전송한다",
+          "② 설정한 시간대(기본 03:00, 사용자 지정)에만 등록 방을 kmsg read 로 읽어 빠진 메시지·내가 보낸 메시지·200자 잘린 메시지 원문을 채운다. 그 시간 외에는 kmsg 를 절대 실행하지 않는다",
+          "중복 없음: 방+보낸 사람+시각(분)+본문 앞부분 해시로 ①·② 결과를 합친다. 잘린 ① 메시지는 ② 원문으로 교체",
+          "사용자가 SaaS 화면 '기기 연결'에서 받은 토큰으로 자기 계정에만 전송. 에이전트 상태(마지막 수집 시각·권한 누락·실패 사유) 화면 표시",
+          "설치 안내: 전체 디스크 접근(①)·손쉬운 사용(②) 권한, 수집 시간대 잠자기 방지(pmset/caffeinate)",
+          "테스트는 고정 샘플(알림 plist·kmsg JSON)로. Air 실측은 세션이 대표님 허락 후"
+        ],
+        "prep_notes": "11-06 실측: Air 알림 DB 는 평문 SQLite, sshd 로 읽힘, 카톡 알림 98건(최신 08:38), titl 있음·subt 없음, 98건 중 8건 본문 정확히 200자(잘림 추정). 카톡 자체 DB(89MB)는 암호화 — 해독 안 함. Air: ~/.local/bin/kmsg 1.260921.0, 손쉬운 사용은 sshd-keygen-wrapper·kmsg 허용됨. 창을 안 띄우는 로컬 DB 읽기(kakaocli) 대안 검토. 보내기(send)는 범위 밖. 기억: 07-AI-Knowledge/프로젝트/_전역/kakaotalk-kmsg-air.md",
+        "status_history": [
+          {
+            "from": null,
+            "to": "AWAITING_USER",
+            "at": "2026-11-05T23:34:56.910632+00:00",
+            "by": "session",
+            "note": "11-06 현황 점검 후 대표님 결정 반영해 생성"
+          },
+          {
+            "from": "AWAITING_USER",
+            "to": "READY",
+            "at": "2026-11-05T23:35:33.844806+00:00",
+            "by": "session",
+            "note": "대표님 11-06 추가: 지금 MacBook Air(ssh air)에서 kmsg 로 카톡을 읽고 있음. 서비스는 SaaS — 사용자(가입 사업자)가 각자 자기 맥·카톡 환경을 설정해 운영. → 시험 불필요, 에이전트 제작으로 전환"
+          },
+          {
+            "from": "READY",
+            "to": "AWAITING_USER",
+            "at": "2026-11-05T23:42:46.724045+00:00",
+            "by": "session",
+            "note": "대표님: kmsg 는 읽을 때마다 마우스·키보드를 빼앗음 → 무방해 수집 방식(알림 DB 실시간 + 새벽 kmsg 보충 추천) 결정 대기"
+          },
+          {
+            "from": "AWAITING_USER",
+            "to": "READY",
+            "at": "2026-11-05T23:44:08.442918+00:00",
+            "by": "session",
+            "note": "대표님 결정 ①+② — 무방해 수집으로 재정의"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-05T23:45:28.278533+00:00",
+            "by": "factory-runner",
+            "note": "factory/ISS-171 (factory/ISS-173 위에 쌓음) 구현 시작"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-11-05T23:54:42.324689+00:00",
+            "by": "factory-runner",
+            "note": "factory/ISS-171(3efb287, ISS-173 위) 구현·검수 완료. Air 실측은 대표님 허락 대기"
+          }
+        ],
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-05T23:34:59.906Z",
+            "by": "auto",
+            "reason": "「[시험] 맥 카카오톡 앱 대화 자동 읽기 가능성 — 손쉬운 사용(Accessibility) API로 지정 방 새 메시지 수집」(GENERATE_CODE, P0)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-11-05T23:34:59.906Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "guard": "공장은 ssh air·kmsg 실행 금지(카톡 창 포커스를 빼앗아 대표님 업무 방해). 에이전트 코드는 kmsg 출력 샘플(JSON) 고정 데이터로 테스트하고, Air 실측은 세션이 대표님 허락 후 진행.",
+        "decision": "대표님 11-06: ①+② 방식으로 진행",
+        "recommendation": {
+          "verdict": "대표님 결정 필요",
+          "reason": "서버·에이전트는 완성·실측(가짜 kmsg) 통과. 남은 완료 기준 '대표님 Air 에서 실제 방 1~2개로 실측'은 허락받은 시간에만 할 수 있고, 개인 대화를 서버에 저장하므로 배포 전 확인이 필요.",
+          "risk": "medium",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-11-05T23:54:42.324689+00:00"
+        },
+        "depends_on_note": "카드에 depends_on 은 없지만 기기 토큰·메시지가 계정 소속이어야 해서 ISS-173 브랜치 위에 쌓음",
+        "air_test_window": "대표님 11-06 허락: 2026-11-07 새벽 03:00 에어 실측(세션이 진행, 03~05시 안, 방 1~2개). 공장은 여전히 ssh air 금지.",
+        "protocol": "/Volumes/GH_APFS/kakao-bridge/docs/PROTOCOL.md (v1) — 서버 수신 API 는 이 규격을 따른다: source(notification|backfill|open_window), external_id, sent_at ISO8601+time_precision, truncated, is_mine, ±10분·본문 앞 60자 병합, /config 의 realtime·backfill(03:00-05:00)·open_window. 맥 에이전트 코드는 kakao-bridge 저장소에 있다(이 앱에 넣지 않음).",
+        "review_note": "11-06 세션 검수: 공장 1차 구현(wt171)이 옛 kmsg 낮시간 설계(collect 9~19시·allow_focus)로 만들어짐 → 완료 후 PROTOCOL.md 기준으로 재위임 예정",
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "서버 쪽(기기 연결 토큰·방 선택·메시지 수신 API·중복 제거·상태 표시)과 맥 에이전트(파이썬 표준 라이브러리, kmsg read --background-safe 기본 = 카톡 창 포커스 안 뺏음)를 만든다. 거래처 연결·AI 추출은 ISS-172 몫. Air 실측은 대표님 허락 시간에만.",
+            "risk": "medium — 개인 대화 내용(개인정보)을 서버에 저장하므로 배포 전 확인 필요(gate=deploy). kmsg 는 비공식 도구라 카톡 업데이트로 깨질 수 있음",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-11-05T23:45:28.278533+00:00"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "branch": "factory/ISS-171",
+        "commit": "3efb287",
+        "stacked_on": "factory/ISS-173",
+        "question": "맥북 에어에서 실제 카톡방으로 수집 시험을 언제, 어떤 방식으로 할까요?",
+        "options": [
+          {
+            "key": "A",
+            "label": "창을 안 띄우는 방식으로 지금 시험(방 1개)",
+            "pros": "이미 열어 둔 카톡방 창만 읽어 업무 방해가 없다",
+            "cons": "그 방 창을 미리 열어 두어야 읽힌다"
+          },
+          {
+            "key": "B",
+            "label": "에어를 안 쓰는 시간(예: 밤)에 창을 여는 방식으로 방 2개 시험",
+            "pros": "창을 열어 두지 않아도 읽힌다",
+            "cons": "방당 약 1분 동안 카톡 창이 앞으로 튀어나와 그 시간엔 에어를 쓰기 어렵다"
+          },
+          {
+            "key": "C",
+            "label": "시험 보류",
+            "pros": "에어에 아무 영향 없음",
+            "cons": "실제 카톡에서 되는지 확인 못 한 채로 남는다"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_how": "",
+        "recommended_why": "10-28 에 창을 띄우는 방식이 업무를 방해해 중지하셨습니다. 창을 안 띄우는 방식이 기본값이라 그대로 시험하는 것이 안전합니다.",
+        "plain_summary": "대표님 맥에 까는 '카톡 수집 프로그램'과 서버 화면(기기 연결·방 등록·수집 상태)을 만들었습니다. 개발 서버에서는 수집·중복 제거가 확인됐고, 실제 카톡에서의 시험만 남았습니다.",
+        "if_not_decided": "실제 카톡방에서 동작하는지 모른 채로 카톡 관리(ISS-172) 개발이 진행됩니다.",
+        "reversible": "예 — 에이전트를 끄거나 기기 토큰을 폐기하면 즉시 멈춤",
+        "ask_kind": "decision",
+        "ask_prompt": "에어 실제 카톡 시험 방식을 골라 주세요(A 추천: 열어 둔 방 1개, 창 안 띄움). 방 이름도 알려 주시면 그 방으로 합니다.",
+        "result": {
+          "summary": "kakao_devices·rooms·messages(계정 소속), 기기 토큰(SHA256 저장, 한 번만 표시), /api/kakao_agent config·messages·status, /workspace/kakao 화면, agent/kakao 파이썬 에이전트(기본 --background-safe, 잠금파일, 로컬 중복 기록, 시간대·방 개수 제한)",
+          "tests": "전체 514건 0 실패, rubocop 304파일 위반 0, 파이썬 4건 통과",
+          "limits": "같은 분·같은 사람·같은 글은 1건으로 합쳐짐. 한 번에 방당 최근 30개만 읽어 15분 사이 30개 넘게 오가면 일부 누락 가능. 메시지 본문은 암호화 없이 저장(개인정보 — 배포 전 판단 필요).",
+          "criteria_check": [
+            {
+              "criterion": "사용자가 SaaS 화면에서 '기기 연결'로 토큰을 받아 자기 맥 에이전트에 넣으면 그 계정(테넌트)에만 메시지가 쌓인다",
+              "met": true,
+              "how": "/workspace/kakao 기기 연결 → 토큰 1회 표시 → agent setup; 실서버(3171) 실측에서 메시지 2건이 1번 계정에 저장, 다른 계정 토큰은 그 계정 방에만 쓰임(kakao_agent_test)"
+            },
+            {
+              "criterion": "화면에서 고른 카톡방만 읽고(kmsg read 이름 기반), 이미 보낸 메시지는 다시 보내지 않는다(방+보낸사람+시각+내용 해시)",
+              "met": true,
+              "how": "config 가 활성 방만 내려줌, 미등록 방 422. 실측 2회 실행: kmsg read '거래처A 방' 2번 호출, 저장은 2건 그대로(중복 0). 서버·에이전트 digest 같은 고정 예시로 양쪽 테스트"
+            },
+            {
+              "criterion": "수집 시간대·방 개수 제한 설정 — kmsg read 가 카톡 창 포커스를 빼앗아 방당 약 1분 걸리고 업무를 방해함(10-28 대표님 중지 지시)",
+              "met": true,
+              "how": "기기별 수집 시작·끝 시각, 방 개수 1~10, 포커스 허용(기본 꺼짐 → --background-safe 로 창 안 띄움). 실측 kmsg 인자 'read 거래처A 방 --limit 30 --json --background-safe', 시간대 밖이면 kmsg 미호출(파이썬 테스트)"
+            },
+            {
+              "criterion": "에이전트 상태(마지막 수집 시각·실패 사유)가 서버 화면에 보인다",
+              "met": true,
+              "how": "/status 로 마지막 연결·수집·오류 저장, 화면 배지 정상/오류/연결 안 됨/폐기. 실측 후 상태 '정상', last_collected_at 기록"
+            },
+            {
+              "criterion": "대표님 Air 에서 실제 방 1~2개로 실측(대표님 허락 받은 시간에)",
+              "met": false,
+              "how": "허락 전이라 미실시 — 이 카드의 결정(방식·시간·방 이름)을 받은 뒤 진행"
+            }
+          ],
+          "proof": [
+            {
+              "cmd": "cd wt171 && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/kakao_agent_test.rb test/models/kakao_collection_test.rb test/controllers/account_tenancy_test.rb",
+              "exit_code": 0,
+              "output": "0 failures, 0 errors"
+            },
+            {
+              "cmd": "cd wt171 && python3 -m unittest discover -s agent/kakao -p test_*.py",
+              "exit_code": 0,
+              "output": "Ran 4 tests ... OK"
+            },
+            {
+              "cmd": "cd wt171 && DATABASE_URL=sqlite3:storage/test_V171.sqlite3 PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "exit_code": 0,
+              "output": "514 runs, 3926 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "실서버 실측(포트 3171, 개발 DB 복사본, 가짜 kmsg): agent setup → run-once ×2",
+              "exit_code": 0,
+              "output": "수집 완료 ×2 / KakaoMessage.count=2 / [김사장 2026-11-06 15:47], [(me) 15:50] / 상태 정상 / 토큰 없이 config 401"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ISS-172",
+      "title": "거래처 카톡방 관리 — 방 등록·메시지 수집(맥 에이전트→서버)·AI 추출(이슈·날짜·수량·금액)·승인 대기열·일정/거래내역/수금 반영",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "L",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-169",
+        "ISS-170",
+        "ISS-171",
+        "ISS-173"
+      ],
+      "created_at": "2026-11-05T23:34:56.910632+00:00",
+      "updated_at": "2026-11-05T23:54:58.384211+00:00",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-06: 주말(11-08)까지 판매재고 관리 + 거래처 카톡방 관리(중요 이슈·날짜·수량을 빠짐없이 → 일정·거래내역·수금 반영). 결정: 거래처=매입·매출 둘 다 / 카톡=맥 카톡 앱 자동 읽기 / 반영=승인 후",
+        "gate": "deploy",
+        "mission": "kakao-ledger-2026-11-08",
+        "acceptance_criteria": [
+          "모든 카톡방·메시지·추출 항목은 계정(테넌트) 소속이며 사용자는 자기 계정 것만 본다",
+          "거래처마다 카톡방(방 이름)을 등록할 수 있다",
+          "맥 에이전트가 보낸 새 메시지가 거래처별로 쌓인다(중복 없음)",
+          "AI가 뽑은 항목마다 원문 메시지가 함께 보이고, 대표님이 수정·승인·버림을 고른다",
+          "승인한 항목만 일정·거래내역·수금에 들어가고, 원장 항목에서 원문 카톡으로 거슬러 갈 수 있다",
+          "추출 누락 점검: 날짜·숫자가 들어 있는데 추출 0건인 메시지를 따로 표시"
+        ],
+        "prep_notes": "반영은 반드시 승인 후(대표님 결정). claude_bot/message_generator.rb 의 LLM 호출 방식 참고. 수집은 ISS-171 에이전트가 API로 보냄.",
+        "status_history": [
+          {
+            "from": null,
+            "to": "READY",
+            "at": "2026-11-05T23:34:56.910632+00:00",
+            "by": "session",
+            "note": "11-06 현황 점검 후 대표님 결정 반영해 생성"
+          }
+        ],
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-05T23:34:59.906Z",
+            "by": "auto",
+            "reason": "「거래처 카톡방 관리 — 방 등록·메시지 수집(맥 에이전트→서버)·AI 추출(이슈·날짜·수량·금액)·승인 대기열·일정/거래내역/수금 반영」(GENERATE_CODE, P0)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-11-05T23:34:59.906Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "factory_note": "2026-11-06 회차: 선행 ISS-169·170·171·173 미완료로 착수 안 함. ISS-171 수신 테이블(kakao_rooms·kakao_messages)은 factory/ISS-171 에 있음 — 거래처 연결·AI 추출을 그 위에 쌓을 것."
+      }
+    },
+    {
+      "id": "ISS-173",
+      "title": "SaaS 기반 — 계정(테넌트)·사용자 가입·데이터 격리, 원장·일정·카톡 데이터는 모두 계정 소속(JIEUM = 1번 계정)",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "M",
+      "status": "AWAITING_USER",
+      "origin": "session",
+      "depends_on": [],
+      "created_at": "2026-11-05T23:35:33.844806+00:00",
+      "updated_at": "2026-11-05T23:52:08.339755+00:00",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 11-06 추가: 지금 MacBook Air(ssh air)에서 kmsg 로 카톡을 읽고 있음. 서비스는 SaaS — 사용자(가입 사업자)가 각자 자기 맥·카톡 환경을 설정해 운영.",
+        "gate": "deploy",
+        "mission": "kakao-ledger-2026-11-08",
+        "acceptance_criteria": [
+          "Account(테넌트) 모델과 계정별 로그인 사용자가 생긴다",
+          "새로 만드는 거래처 원장·일정·카톡 테이블은 account_id 필수이고, 다른 계정 데이터는 조회·수정 불가(테스트로 증명)",
+          "기존 JIEUM 데이터는 1번 계정으로 이어진다"
+        ],
+        "prep_notes": "기존 몰(상품·주문) 전체를 멀티테넌트로 바꾸는 것은 주말 범위 밖 — 새 기능부터 계정 소속으로.",
+        "status_history": [
+          {
+            "from": null,
+            "to": "READY",
+            "at": "2026-11-05T23:35:33.844806+00:00",
+            "by": "session",
+            "note": "SaaS 지시 반영해 생성"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-05T23:37:07.032810+00:00",
+            "by": "factory-runner",
+            "note": "factory/ISS-173 브랜치에서 구현 시작"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-11-05T23:46:18.721811+00:00",
+            "by": "factory-runner",
+            "note": "factory/ISS-173(29e90a9) 구현·검수 완료, 배포 검토 대기"
+          }
+        ],
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-05T23:35:34.180Z",
+            "by": "auto",
+            "reason": "「SaaS 기반 — 계정(테넌트)·사용자 가입·데이터 격리, 원장·일정·카톡 데이터는 모두 계정 소속(JIEUM = 1번 계정)」(GENERATE_CODE, P0)을 다음 실행에 착수할 만합니다."
+          }
+        ],
+        "approved_at": "2026-11-05T23:35:34.180Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "recommendation": {
+          "verdict": "대표님 결정 필요",
+          "reason": "계정 기반은 원장·일정·카톡 카드 전부의 바탕. 기존 사용자 1번 계정 이전이 들어 있어 배포 전 확인을 받는다. 가입 화면은 기능 플래그로 꺼져 있어 손님에게 보이지 않는다.",
+          "risk": "medium",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-11-05T23:46:18.721811+00:00"
+        },
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "원장·일정·카톡 카드(169·170·171·172)가 모두 이 계정 기반 위에 올라간다. 기존 몰(상품·주문)은 그대로 두고 새 기능만 계정 소속으로 만든다. 가입은 기능 플래그(기본 꺼짐)로 숨기고, 몰 관리자 화면은 1번 계정(JIEUM) 사용자만 들어가게 해 가입자가 몰을 건드리지 못하게 한다.",
+            "risk": "medium — users 에 nullable account_id 추가 + 기존 사용자를 1번 계정으로 채우는 데이터 이전이 있어 배포 전 확인 필요(gate=deploy)",
+            "effort": "M",
+            "by": "factory-runner",
+            "at": "2026-11-05T23:37:07.032810+00:00"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "branch": "factory/ISS-173",
+        "commit": "29e90a9",
+        "question": "계정(회사별 데이터 분리) 기반을 운영에 올릴까요?",
+        "options": [
+          {
+            "key": "A",
+            "label": "원장·카톡 기능과 묶어서 나중에 한 번에 올리기",
+            "pros": "화면에 보이는 변화가 생길 때 한 번만 배포·확인하면 된다",
+            "cons": "원장(ISS-169)·카톡(ISS-172) 카드가 이 브랜치 위에 계속 쌓여 병합이 커진다"
+          },
+          {
+            "key": "B",
+            "label": "지금 운영에 올리기(가입은 꺼둔 채)",
+            "pros": "기반이 먼저 들어가 다음 카드 병합이 작고 안전해진다",
+            "cons": "관리자 로그인 판정이 바뀌므로 배포 직후 관리자 로그인 확인이 필요"
+          },
+          {
+            "key": "C",
+            "label": "보류",
+            "pros": "운영 변화 없음",
+            "cons": "원장·일정·카톡 카드(169·170·171·172) 전부 시작 못 함"
+          }
+        ],
+        "recommended_option": "B",
+        "recommended_why": "가입이 꺼져 있어 손님 쪽 변화가 없고, 바탕을 먼저 넣어야 주말 미션 카드들을 차례로 병합할 수 있습니다.",
+        "plain_summary": "회사마다 자기 데이터만 보게 하는 '계정' 틀을 만들었습니다. 지금 JIEUM 관리자는 1번 계정으로 그대로 이어지고, 가입 화면은 꺼져 있습니다.",
+        "if_not_decided": "원장·일정·카톡방 카드가 이 위에 쌓여 대기합니다.",
+        "reversible": "예 — 마이그레이션 되돌리기(down)로 계정 표·열을 지울 수 있음",
+        "ask_kind": "decision",
+        "ask_prompt": "계정 기반을 지금 운영에 올릴지(B 추천), 원장과 묶어 나중에 올릴지 골라 주세요.",
+        "result": {
+          "summary": "accounts 테이블·users.account_id(nullable) 추가, 기존 사용자 1번 계정 JIEUM 이전, 몰 관리자=1번 계정만, /workspace, /signup(SAAS_SIGNUP_ENABLED 일 때만)",
+          "tests": "전체 507건 0 실패, rubocop 296파일 위반 0",
+          "criteria_check": [
+            {
+              "criterion": "Account(테넌트) 모델과 계정별 로그인 사용자가 생긴다",
+              "met": true,
+              "how": "Account has_many users, User belongs_to account; 로그인 후 1번 계정은 재고 화면, 다른 계정은 /workspace(account_tenancy_test)"
+            },
+            {
+              "criterion": "새로 만드는 거래처 원장·일정·카톡 테이블은 account_id 필수이고, 다른 계정 데이터는 조회·수정 불가(테스트로 증명)",
+              "met": true,
+              "how": "AccountScoped concern(belongs_to account 필수·for_account) + require_account_member; 다른 계정 사용자는 몰 관리자 화면 리다이렉트·/workspace 에 남의 사용자 안 보임·비공개 상품 404·매거진 초안 안 보임 테스트. 실제 원장·카톡 테이블은 ISS-171·169 에서 이 concern 사용"
+            },
+            {
+              "criterion": "기존 JIEUM 데이터는 1번 계정으로 이어진다",
+              "met": true,
+              "how": "개발 DB 복사본에 마이그레이션 실행: accounts=1|JIEUM|jieum, users 1명 중 account_id=1 1명"
+            }
+          ],
+          "proof": [
+            {
+              "cmd": "cd wt173 && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/account_tenancy_test.rb test/models/account_test.rb test/controllers/products_controller_test.rb test/controllers/magazine_controller_test.rb",
+              "exit_code": 0,
+              "output": "58 runs, 471 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd wt173 && DATABASE_URL=sqlite3:storage/test_V173.sqlite3 PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "exit_code": 0,
+              "output": "507 runs, 3880 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "DATABASE_URL=sqlite3:storage/dev_V173.sqlite3 bin/rails db:migrate (개발 DB 복사본, 확인 후 삭제)",
+              "exit_code": 0,
+              "output": "CreateAccounts: migrated / accounts: 1|JIEUM|jieum / users count=1, account_id=1: 1"
+            }
+          ]
+        },
+        "session_review": {
+          "at": "2026-11-05T23:52:08.339755+00:00",
+          "by": "session",
+          "verdict": "검수 통과(배포는 대표님 승인 대기)",
+          "evidence": [
+            "전체 테스트 507 runs 0 failures, rubocop 296 files 0 offenses (wt173)",
+            "관리자 판정 logged_in?→mall_admin?(JIEUM 계정 또는 account 없는 기존 사용자): require_admin·상품 초안·매거진·장바구니·TODO 표시",
+            "require_admin 예외 컨트롤러 전수 확인 — 관리 동작(publish 등)은 예외 밖",
+            "가입은 SAAS_SIGNUP_ENABLED 없으면 404, 마이그레이션은 JIEUM=1번 계정·기존 users 전부 1번에 연결"
+          ],
+          "merge_note": "ISS-168 과 routes.rb·layouts/application.html.erb 를 함께 고침 — 병합 순서 168→173, 충돌 확인 필요"
+        }
       }
     }
   ],

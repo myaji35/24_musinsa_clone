@@ -67,6 +67,16 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     get cart_path
     assert_includes response.body, "장바구니가 비어 있습니다"
   end
+
+  test "재고 부족 오류를 주문서에 표시한다" do
+    post cart_items_path, params: { variant_id: variants(:one).id, quantity: 2 }
+    variants(:one).update!(stock: 1)
+    post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
+    assert_response :unprocessable_entity
+    assert_includes response.body, "재고가 부족합니다:"
+    assert_includes response.body, "남은 수량 1개"
+  end
+
   private
 
   def with_payout_env(values)

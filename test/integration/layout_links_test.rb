@@ -18,6 +18,8 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_mobile_menu(root_path, magazine: true)
+    assert_select 'nav [aria-label="데스크톱 관리자 메뉴"] a[href=?]', sales_path, text: "판매현황", count: 1
+    assert_select 'nav [aria-label="모바일 관리자 메뉴"] a[href=?]', sales_path, text: "판매현황", count: 1
     assert_select 'nav [aria-label="데스크톱 관리자 메뉴"].hidden.md\\:block', count: 1
     assert_select 'nav [aria-label="데스크톱 메뉴"] a[href=?]', magazine_path, count: 1
     assert_select 'nav [aria-label="모바일 메뉴"] + [aria-label="모바일 관리자 메뉴"].md\\:hidden', count: 1

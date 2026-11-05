@@ -28,7 +28,8 @@ module Orders
 
       orders = []
       checkout_number = "CHK-#{Date.current.strftime('%Y%m%d')}-#{SecureRandom.hex(4).upcase}"
-      Order.transaction do
+      Order.transaction do |transaction|
+        low_stock = false
         address = ShippingAddress.create!(@address.merge(save_consent: @save_consent, consented_at: @save_consent ? Time.current : nil))
         customer = AnonyCustomer.find_or_create_by_identifier(address.phone.gsub(/[^0-9]/, "").last(4), @birth_year)
         customer.update!(zip_prefix: address.zip_prefix)
@@ -41,11 +42,23 @@ module Orders
           raise InvalidInput, "선택한 상품 옵션을 찾을 수 없습니다" unless variant
           raise InvalidInput, "상품 가격이 없습니다" unless variant.product.price&.positive?
 
+          deducted = Variant.where(id: variant.id).where("stock >= ?", quantity.to_i)
+                            .update_all([ "stock = stock - ?", quantity.to_i ])
+          if deducted.zero?
+            remaining = variant.reload.stock.to_i
+            raise InvalidInput, "재고가 부족합니다: #{variant.product.name} #{variant.color}/#{variant.size} (남은 수량 #{remaining}개)"
+          end
+
           orders << Order.create!(anony_customer: customer, product: variant.product, variant: variant,
                                   quantity: quantity.to_i, total_price: variant.product.price * quantity.to_i,
                                   status: "pending", shipping_address: address, checkout_number: checkout_number)
           OrderShippingRecord.snapshot_for!(orders.last)
+          StockLog.create!(variant: variant, log_type: "out", quantity: quantity.to_i,
+                           order_id: orders.last.id, note: "판매 출고 #{orders.last.order_number}",
+                           skip_variant_stock_update: true)
+          low_stock ||= variant.reload.low_stock?
         end
+        transaction.after_commit { LowStockAlertJob.perform_later } if low_stock
       end
       Result.new(success: true, data: { orders: orders, checkout_number: checkout_number })
     rescue InvalidInput => e

@@ -1,4 +1,6 @@
 class StockLog < ApplicationRecord
+  attr_accessor :skip_variant_stock_update
+
   belongs_to :variant
 
   # 유효성 검증
@@ -27,6 +29,7 @@ class StockLog < ApplicationRecord
   private
 
   def update_variant_stock
+    return if skip_variant_stock_update
     return unless variant
 
     if stock_in?

@@ -50,3 +50,7 @@ worktrees/
 .harness-worktree-meta
 .claude/worktrees.json
 .gstack/
+
+# Ignore Python caches.
+__pycache__/
+*.pyc

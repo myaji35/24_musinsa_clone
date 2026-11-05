@@ -1,0 +1,13 @@
+<div class="max-w-3xl mx-auto px-6 py-12 space-y-5">
+  <h1 class="text-2xl font-bold"><%= @device.name %> 연결 토큰</h1>
+  <p>토큰은 지금 한 번만 표시됩니다. 안전한 곳에 복사하세요. 잃어버리면 기기를 폐기하고 다시 연결하세요.</p>
+  <p class="border rounded p-4 break-all font-mono"><%= @token %></p>
+  <h2 class="text-lg font-bold">맥 에이전트 설치</h2>
+  <p>배포받은 agent/kakao 폴더를 ~/jieum-kakao에 복사한 후 터미널에서 실행하세요.</p>
+  <pre class="bg-gray-100 rounded p-4 overflow-x-auto">mkdir -p ~/jieum-kakao
+cp agent/kakao/jieum_kakao_agent.py ~/jieum-kakao/
+python3 ~/jieum-kakao/jieum_kakao_agent.py setup --server <%= request.base_url %> --token <%= @token %>
+python3 ~/jieum-kakao/jieum_kakao_agent.py run-once</pre>
+  <p>시스템 설정 → 개인정보 보호 및 보안 → 손쉬운 사용에서 kmsg 실행에 필요한 권한을 허용하세요. 기본 설정은 이미 열린 방만 읽습니다. 15분 자동 실행은 agent/kakao/README.md의 launchd 등록 안내를 따르세요.</p>
+  <%= link_to "연결 현황으로", workspace_kakao_path, class: "underline" %>
+</div>

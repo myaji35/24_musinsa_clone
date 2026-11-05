@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_000173) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_000174) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -186,6 +186,56 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000173) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_code", "image_sha256"], name: "index_image_quality_checks_on_product_code_and_image_sha256"
+  end
+
+  create_table "kakao_devices", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.string "name", null: false
+    t.string "token_digest", null: false
+    t.datetime "last_seen_at"
+    t.datetime "last_collected_at"
+    t.datetime "last_error_at"
+    t.datetime "revoked_at"
+    t.text "last_error"
+    t.integer "collect_start_hour", default: 9
+    t.integer "collect_end_hour", default: 19
+    t.integer "max_rooms_per_run", default: 2
+    t.boolean "allow_focus", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_kakao_devices_on_account_id"
+    t.index ["token_digest"], name: "index_kakao_devices_on_token_digest", unique: true
+  end
+
+  create_table "kakao_messages", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.integer "kakao_room_id", null: false
+    t.integer "kakao_device_id"
+    t.string "author"
+    t.string "time_raw"
+    t.text "body", null: false
+    t.date "sent_on"
+    t.datetime "sent_at"
+    t.string "digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "digest"], name: "index_kakao_messages_on_account_id_and_digest", unique: true
+    t.index ["account_id"], name: "index_kakao_messages_on_account_id"
+    t.index ["kakao_device_id"], name: "index_kakao_messages_on_kakao_device_id"
+    t.index ["kakao_room_id", "sent_at"], name: "index_kakao_messages_on_kakao_room_id_and_sent_at"
+    t.index ["kakao_room_id"], name: "index_kakao_messages_on_kakao_room_id"
+  end
+
+  create_table "kakao_rooms", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.string "name", null: false
+    t.boolean "active", default: true
+    t.datetime "last_collected_at"
+    t.integer "last_message_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "name"], name: "index_kakao_rooms_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_kakao_rooms_on_account_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -517,6 +567,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000173) do
   add_foreign_key "content_uploads", "products"
   add_foreign_key "feedbacks", "products", on_delete: :nullify
   add_foreign_key "image_processings", "products"
+  add_foreign_key "kakao_devices", "accounts"
+  add_foreign_key "kakao_messages", "accounts"
+  add_foreign_key "kakao_messages", "kakao_devices"
+  add_foreign_key "kakao_messages", "kakao_rooms"
+  add_foreign_key "kakao_rooms", "accounts"
   add_foreign_key "notifications", "variants"
   add_foreign_key "order_shipping_records", "orders"
   add_foreign_key "orders", "anony_customers"

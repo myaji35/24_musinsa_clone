@@ -1,6 +1,6 @@
 <div class="max-w-3xl mx-auto px-6 py-12">
   <h1 class="text-2xl font-bold mb-6"><%= current_account.name %> 워크스페이스</h1>
-  <p class="mb-8 text-gray-600">거래처 원장·일정·카톡방은 준비 중</p>
+  <p class="mb-8 text-gray-600">거래처 원장·일정은 준비 중 · <%= link_to "카톡 수집 기기 연결", workspace_kakao_path, class: "underline" %></p>
   <h2 class="text-lg font-bold mb-4">내 계정 사용자</h2>
   <ul class="divide-y border rounded-lg">
     <% @users.each do |user| %>

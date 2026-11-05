@@ -1,0 +1,50 @@
+<div class="max-w-5xl mx-auto px-6 py-12 space-y-8">
+  <h1 class="text-2xl font-bold">카톡 수집 연결</h1>
+  <%= link_to "워크스페이스", workspace_path, class: "underline" %>
+  <section class="border rounded-lg p-4 space-y-4">
+    <h2 class="text-lg font-bold">기기 연결</h2>
+    <%= form_with url: workspace_kakao_devices_path do |f| %>
+      <%= f.label :name, "기기 이름" %> <%= f.text_field :name, required: true, class: "border rounded p-2" %>
+      <%= f.submit "기기 연결", class: "bg-black text-white rounded px-4 py-2" %>
+    <% end %>
+    <% @devices.each do |device| %>
+      <div class="border-t pt-4 space-y-2">
+        <h3 class="font-bold"><%= device.name %> <span class="bg-gray-100 rounded px-2 py-1"><%= device.connection_status %></span></h3>
+        <p>마지막 연결: <%= device.last_seen_at || "없음" %> · 마지막 수집: <%= device.last_collected_at || "없음" %></p>
+        <p>마지막 오류: <%= device.last_error || "없음" %> <%= device.last_error_at %></p>
+        <%= form_with url: workspace_kakao_device_path(device), method: :patch, scope: :device do |f| %>
+          <%= f.label :collect_start_hour, "수집 시작 시각" %> <%= f.number_field :collect_start_hour, value: device.collect_start_hour, min: 0, max: 23, class: "border p-2 w-20" %>
+          <%= f.label :collect_end_hour, "끝 시각" %> <%= f.number_field :collect_end_hour, value: device.collect_end_hour, min: 0, max: 23, class: "border p-2 w-20" %>
+          <%= f.label :max_rooms_per_run, "방 개수 제한" %> <%= f.number_field :max_rooms_per_run, value: device.max_rooms_per_run, min: 1, max: 10, class: "border p-2 w-20" %>
+          <p><%= f.check_box :allow_focus, checked: device.allow_focus %> <%= f.label :allow_focus, "포커스 허용" %></p>
+          <p class="text-sm text-red-700">체크하면 카톡 창을 열어 읽습니다. 방당 약 1분, 그동안 맥을 쓰기 불편합니다</p>
+          <%= f.submit "설정 저장", class: "border rounded px-3 py-2" %>
+        <% end %>
+        <%= button_to "기기 폐기", workspace_kakao_device_path(device), method: :delete, class: "text-red-700 underline" unless device.revoked_at %>
+      </div>
+    <% end %>
+  </section>
+  <section class="border rounded-lg p-4 space-y-4">
+    <h2 class="text-lg font-bold">수집할 방</h2>
+    <%= form_with url: workspace_kakao_rooms_path do |f| %>
+      <%= f.label :name, "카톡 방 이름 그대로 입력" %> <%= f.text_field :name, required: true, class: "border rounded p-2" %> <%= f.submit "방 추가", class: "border rounded p-2" %>
+    <% end %>
+    <% @rooms.each do |room| %>
+      <div class="border-t pt-3">
+        <p class="font-bold"><%= room.name %> · <%= room.active? ? "활성" : "비활성" %></p>
+        <p>마지막 수집: <%= room.last_collected_at || "없음" %> · 쌓인 메시지: <%= room.kakao_messages.count %>개</p>
+        <%= button_to(room.active? ? "비활성화" : "활성화", workspace_kakao_room_path(room), method: :patch, params: { active: !room.active? }, class: "underline") %>
+        <%= button_to "방 삭제", workspace_kakao_room_path(room), method: :delete, class: "text-red-700 underline" %>
+      </div>
+    <% end %>
+  </section>
+  <section class="space-y-3">
+    <h2 class="text-lg font-bold">최근 메시지 50개</h2>
+    <% @messages.each do |message| %>
+      <article class="border rounded-lg p-4">
+        <p class="font-bold"><%= message.kakao_room.name %> · <%= message.author %> · <%= message.sent_at || [message.sent_on, message.time_raw].compact.join(" ") %></p>
+        <p class="whitespace-pre-wrap break-words"><%= message.body %></p>
+      </article>
+    <% end %>
+  </section>
+</div>

@@ -60,7 +60,8 @@ end
 puts "Created #{Product.count} products (Attributes by AI Model Generation)"
 
 # 개발용 관리자 계정 (샘플 스냅 작성자)
-user = User.create!(email: "admin@jieun.test", name: "관리자", password: "JieunDev!2026")
+primary_account = Account.find_or_create_by!(slug: "jieum") { |account| account.name = "JIEUM" }
+user = User.create!(account: primary_account, email: "admin@jieun.test", name: "관리자", password: "JieunDev!2026")
 
 # 리뷰는 만들지 않는다 — 시드 리뷰가 실제 후기처럼 보이는 문제(대표님 결정 2026-10-22로 운영에서도 삭제)
 

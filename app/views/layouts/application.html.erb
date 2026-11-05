@@ -37,6 +37,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-end space-x-4 text-xs text-gray-600 font-medium">
             <% if logged_in? %>
               <span><%= current_user.name.presence || current_user.email %></span>
+              <%= link_to "내 워크스페이스", workspace_path, class: "hover:text-black" unless mall_admin? %>
               <%= button_to "로그아웃", logout_path, method: :delete, class: "hover:text-black" %>
             <% else %>
               <%= link_to "로그인", login_path, class: "hover:text-black" %>
@@ -82,7 +83,7 @@
           </a>
         </div>
       </div>
-      <% if logged_in? %>
+      <% if mall_admin? %>
         <div aria-label="데스크톱 관리자 메뉴" class="hidden md:block border-t border-gray-100">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm font-bold whitespace-nowrap">
             <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
@@ -105,7 +106,7 @@
           <%= link_to label, path, class: "hover:text-gray-500#{' underline underline-offset-4 decoration-2' if current_page?(path)}", aria: { current: (current_page?(path) ? "page" : nil) } %>
         <% end %>
       </div>
-      <% if logged_in? %>
+      <% if mall_admin? %>
         <div aria-label="모바일 관리자 메뉴" class="md:hidden flex items-center gap-5 overflow-x-auto whitespace-nowrap px-4 py-3 text-sm font-bold border-t border-gray-100">
           <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
           <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>

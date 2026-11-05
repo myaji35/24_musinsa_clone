@@ -24,6 +24,45 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "다른 계정 사용자는 비공개 상품을 조회하거나 장바구니에 담을 수 없다" do
+    @product.update!(status: "draft")
+    post login_path, params: { email: users(:other).email, password: "TestPassword!2026" }
+    assert_redirected_to workspace_path
+
+    get product_path(@product)
+    assert_response :not_found
+
+    get products_path
+    assert_response :success
+    assert_select "h1", text: "상품 목록"
+    assert_select "h1", text: "상품 관리", count: 0
+    assert_select "a[href=?]", product_path(@product), count: 0
+    assert_select "a[href=?]", new_product_path, count: 0
+    assert_select "a[href=?]", workspace_path, text: "내 워크스페이스"
+    assert_select "button", text: "로그아웃"
+    assert_select "span", text: users(:other).name
+
+    post cart_items_path, params: { variant_id: @variant.id }
+    assert_response :not_found
+  end
+
+  test "다른 계정 사용자는 공개 상품의 관리자 UI와 미확정 원문을 볼 수 없다" do
+    @product.update!(supplier_product_code: "JIEUM-G01")
+    post login_path, params: { email: users(:other).email, password: "TestPassword!2026" }
+    assert_redirected_to workspace_path
+
+    get products_path
+    assert_response :success
+    assert_select "a[href=?]", edit_product_path(@product), count: 0
+
+    get product_path(@product)
+    assert_response :success
+    assert_select "[data-testid=publication-bar]", count: 0
+    assert_select "a[href=?]", edit_product_path(@product), count: 0
+    assert_select "[data-todo]", text: "확인 중"
+    assert_no_match "확인 필요", response.body
+  end
+
   test "끝 공백 검색은 공백 없는 검색과 같은 상품을 표시한다" do
     product = products(:one)
     query = "코튼"

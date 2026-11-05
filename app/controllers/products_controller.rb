@@ -5,7 +5,7 @@ class ProductsController < ApplicationController
 
   def index
     # 관리자(상품 관리)는 초안까지, 손님은 공개 상품만 본다
-    @products = logged_in? ? Product.with_attached_image : Product.published.with_attached_image
+    @products = mall_admin? ? Product.with_attached_image : Product.published.with_attached_image
 
     @products = @products.includes(:variants)
 
@@ -34,7 +34,7 @@ class ProductsController < ApplicationController
   end
 
   def show
-    raise ActiveRecord::RecordNotFound unless @product.published? || logged_in?
+    raise ActiveRecord::RecordNotFound unless @product.published? || mall_admin?
 
     @variants = @product.variants
     @selected_variant = @variants.first

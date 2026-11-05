@@ -1,0 +1,21 @@
+<div class="max-w-md mx-auto px-6 py-12">
+  <h1 class="text-2xl font-bold mb-6">사업자 계정 가입</h1>
+  <% if @account.errors.any? || @user.errors.any? %>
+    <div role="alert" class="p-4 mb-4 bg-red-50 text-red-800 border rounded-lg">가입 정보를 확인해 주세요. 회사 이름, 이름, 올바른 이메일과 비밀번호 확인이 필요합니다.</div>
+  <% end %>
+  <%= form_with scope: :signup, url: signup_path, class: "space-y-4" do |form| %>
+    <% [[:account_name, "회사(계정) 이름", @account.name], [:name, "이름", @user.name], [:email, "이메일", @user.email]].each do |field, label, value| %>
+      <div>
+        <%= form.label field, label, class: "block mb-1" %>
+        <%= form.public_send(field == :email ? :email_field : :text_field, field, value: value, required: true, class: "w-full border p-2") %>
+      </div>
+    <% end %>
+    <% [[:password, "비밀번호"], [:password_confirmation, "비밀번호 확인"]].each do |field, label| %>
+      <div>
+        <%= form.label field, label, class: "block mb-1" %>
+        <%= form.password_field field, required: true, autocomplete: "new-password", class: "w-full border p-2" %>
+      </div>
+    <% end %>
+    <%= form.submit "가입하기", class: "w-full bg-black text-white py-3 cursor-pointer" %>
+  <% end %>
+</div>

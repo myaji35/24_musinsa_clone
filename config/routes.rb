@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "home#index"
 
+  get "workspace", to: "workspace#show"
+  get "signup", to: "account_signups#new"
+  post "signup", to: "account_signups#create"
+
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"

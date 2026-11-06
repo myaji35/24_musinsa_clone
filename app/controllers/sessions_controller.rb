@@ -11,7 +11,8 @@ class SessionsController < ApplicationController
       return_to = session[:return_to]
       reset_session
       session[:user_id] = user.id
-      redirect_to safe_return_path(return_to) || inventory_scan_path, notice: "로그인되었습니다."
+      destination = mall_admin? ? (safe_return_path(return_to) || inventory_scan_path) : workspace_path
+      redirect_to destination, notice: "로그인되었습니다."
     else
       flash.now[:alert] = "이메일 또는 비밀번호가 올바르지 않습니다."
       render :new, status: :unprocessable_entity

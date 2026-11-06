@@ -28,6 +28,10 @@ class Rack::Attack
     req.ip if req.post? && req.path == "/feedbacks"
   end
 
+  throttle("signup/ip", limit: 5, period: 10.minutes) do |req|
+    req.ip if req.post? && req.path == "/signup"
+  end
+
   ### Custom response for throttled requests ###
   self.throttled_responder = lambda do |request|
     match_data = request.env["rack.attack.match_data"]

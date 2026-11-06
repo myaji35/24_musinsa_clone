@@ -105,7 +105,7 @@ module ProductsHelper
     text = value.to_s
     return text unless text.start_with?("TODO:")
 
-    label = logged_in? ? "확인 필요 · #{text.delete_prefix('TODO:').strip}" : "확인 중"
+    label = mall_admin? ? "확인 필요 · #{text.delete_prefix('TODO:').strip}" : "확인 중"
     content_tag(:span, label, class: "inline-block px-2 py-0.5 text-xs font-bold bg-amber-100 text-amber-800", data: { todo: true })
   end
 

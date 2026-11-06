@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_000157) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_000173) do
+  create_table "accounts", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_accounts_on_slug", unique: true
+  end
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -482,6 +490,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_000157) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_digest"
+    t.integer "account_id"
+    t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
@@ -529,5 +539,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_000157) do
   add_foreign_key "supplier_claims", "suppliers"
   add_foreign_key "supplier_claims", "users", column: "created_by_user_id", on_delete: :nullify
   add_foreign_key "supplier_claims", "variants", on_delete: :nullify
+  add_foreign_key "users", "accounts"
   add_foreign_key "variants", "products"
 end

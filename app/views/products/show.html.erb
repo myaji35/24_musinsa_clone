@@ -1,6 +1,6 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
-  <% if logged_in? %>
+  <% if mall_admin? %>
     <div data-testid="publication-bar" class="flex flex-wrap items-center justify-between gap-3 p-4 mb-6 text-sm border <%= @product.published? ? 'border-gray-300 bg-white' : 'border-amber-400 bg-amber-50' %>">
       <p class="font-medium text-gray-900">
         <% if @product.published? %>
@@ -208,7 +208,7 @@
       <% end %>
     </div>
 
-    <% if logged_in? %>
+    <% if mall_admin? %>
       <%= link_to "모델 선택", product_model_pick_path(@product), class: "inline-block border border-black px-4 py-2 mb-4 font-bold" %>
       <%= form_with model: [@product, Review.new], class: "border border-black p-6 mb-8 space-y-4" do |form| %>
         <div>

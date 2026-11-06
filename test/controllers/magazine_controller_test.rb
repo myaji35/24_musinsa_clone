@@ -1,6 +1,20 @@
 require "test_helper"
 
 class MagazineControllerTest < ActionDispatch::IntegrationTest
+  test "다른 계정 사용자에게 초안 호와 매거진 메뉴가 노출되지 않는다" do
+    post login_path, params: { email: users(:other).email, password: "TestPassword!2026" }
+    assert_redirected_to workspace_path
+
+    get magazine_path
+    assert_response :success
+    assert_select "[data-testid=magazine-issue]", count: 0
+    assert_select "[data-testid=magazine-empty]", count: 1
+    assert_select "nav a[href=?]", magazine_path, count: 0
+
+    get magazine_article_path(1, "waist-first-silhouette")
+    assert_response :not_found
+  end
+
   test "초안 호는 손님에게 보이지 않고 기사 주소는 404" do
     get magazine_path
     assert_response :success

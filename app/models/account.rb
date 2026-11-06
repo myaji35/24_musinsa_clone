@@ -1,5 +1,6 @@
 class Account < ApplicationRecord
   has_many :suppliers
+  has_many :schedule_events
   has_many :ledger_entries
   has_many :users
 

@@ -1,12 +1,15 @@
 <div class="max-w-4xl mx-auto p-6 space-y-6">
-  <h1 class="text-2xl font-bold">수금 예정</h1>
+  <h1 class="text-2xl font-bold">수금·지급 예정</h1>
   <%= link_to "거래처 원장", workspace_ledger_path %>
+  <% { "수금 예정" => @groups, "지급 예정" => @payables_groups }.each do |title, groups| %>
+    <h2 class="text-2xl font-bold"><%= title %></h2>
   <% ["예정일 지남", "7일 이내", "이후"].each do |bucket| %>
     <section><h2 class="text-xl font-bold"><%= bucket %></h2>
-      <% (@groups[bucket] || []).each do |row| %>
+      <% (groups[bucket] || []).each do |row| %>
         <p><%= row[:entry].due_on %> · <%= link_to row[:supplier].name, workspace_ledger_partner_path(row[:entry].supplier_id) %> · <%= row[:entry].item_name %> · <%= number_with_delimiter(row[:remaining].round) %>원</p>
       <% end %>
-      <p><%= "예정 내역 없음" if @groups[bucket].blank? %></p>
+      <p><%= "예정 내역 없음" if groups[bucket].blank? %></p>
     </section>
+  <% end %>
   <% end %>
 </div>

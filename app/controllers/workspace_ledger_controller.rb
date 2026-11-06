@@ -9,7 +9,9 @@ class WorkspaceLedgerController < ApplicationController
   end
 
   def receivables
-    @groups = Ledger::Balance.new(current_account).receivables
+    balance = Ledger::Balance.new(current_account)
+    @groups = balance.receivables
+    @payables_groups = balance.payables
   end
 
   def new

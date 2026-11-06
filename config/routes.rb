@@ -17,6 +17,16 @@ Rails.application.routes.draw do
     delete "partners/:id/entries/:entry_id", action: :destroy_entry
   end
 
+  get "workspace/schedule", to: "workspace_schedule#index", as: :workspace_schedule
+  scope "workspace/schedule", controller: :workspace_schedule, as: :workspace_schedule do
+    get "new", action: :new, as: :new
+    post "/", action: :create
+    get ":id/edit", action: :edit, as: :edit
+    patch ":id", action: :update, as: :event
+    patch ":id/complete", action: :complete, as: :complete
+    delete ":id", action: :destroy
+  end
+
   get "workspace", to: "workspace#show"
   get "signup", to: "account_signups#new"
   post "signup", to: "account_signups#create"

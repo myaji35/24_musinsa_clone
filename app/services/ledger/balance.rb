@@ -24,7 +24,14 @@ module Ledger
           remaining = entry.amount - applied
           { entry: entry, supplier: supplier, remaining: remaining, bucket: bucket(entry.due_on) } if remaining.positive? && entry.due_on
         end
-        { supplier: supplier, receivable: entries.sum(&:receivable_change), payable: entries.sum(&:payable_change), outstanding: outstanding,
+        payment = entries.select { |e| e.entry_type == "payment" }.sum(&:amount)
+        payables_outstanding = entries.select { |e| e.entry_type == "purchase" }.filter_map do |entry|
+          applied = [ payment, entry.amount ].min
+          payment -= applied
+          remaining = entry.amount - applied
+          { entry: entry, supplier: supplier, remaining: remaining, bucket: bucket(entry.due_on) } if remaining.positive? && entry.due_on
+        end
+        { supplier: supplier, payables_outstanding: payables_outstanding, receivable: entries.sum(&:receivable_change), payable: entries.sum(&:payable_change), outstanding: outstanding,
           next_due_on: outstanding.map { |row| row[:entry].due_on }.min }
       end
     end
@@ -35,6 +42,10 @@ module Ledger
 
     def receivables
       partners.flat_map { |row| row[:outstanding] }.sort_by { |row| [ row[:entry].due_on, row[:entry].id ] }.group_by { |row| row[:bucket] }
+    end
+
+    def payables
+      partners.flat_map { |row| row[:payables_outstanding] }.sort_by { |row| [ row[:entry].due_on, row[:entry].id ] }.group_by { |row| row[:bucket] }
     end
 
     private

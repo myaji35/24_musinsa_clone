@@ -49,6 +49,23 @@ class LedgerTest < ActiveSupport::TestCase
     assert_empty Ledger::Balance.new(accounts(:other), @supplier).partners
   end
 
+  test "payments consume purchases FIFO including undated purchases within each partner" do
+    entry("purchase", 100, occurred_on: Date.current - 3)
+    settled = entry("purchase", 200, occurred_on: Date.current - 2, due_on: Date.current + 8)
+    remaining = entry("purchase", 300, occurred_on: Date.current - 1, due_on: Date.current - 1)
+    entry("payment", 350)
+    entry("receipt", 999)
+    balance = Ledger::Balance.new(@account, @supplier)
+    rows = balance.partners.first[:payables_outstanding]
+    assert_equal [ remaining ], rows.map { |row| row[:entry] }
+    assert_equal 250, rows.first[:remaining]
+    assert_equal @supplier, rows.first[:supplier]
+    assert_equal "예정일 지남", rows.first[:bucket]
+    assert_equal rows, balance.payables["예정일 지남"]
+    assert_not_includes rows.map { |row| row[:entry] }, settled
+    assert_empty Ledger::Balance.new(accounts(:other), @supplier).payables
+  end
+
   test "validation default amount and supplier account isolation" do
     item = @account.ledger_entries.new(supplier: @supplier, entry_type: "sale", quantity: 3, unit_price: 1200, occurred_on: Date.current)
     assert item.save

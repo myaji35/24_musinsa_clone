@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_000176) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_000177) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -385,6 +385,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000176) do
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
+  create_table "schedule_events", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.integer "supplier_id"
+    t.string "title", null: false
+    t.date "starts_on", null: false
+    t.time "starts_at_time"
+    t.string "kind", default: "other", null: false
+    t.string "status", default: "open", null: false
+    t.text "memo"
+    t.string "source_type"
+    t.integer "source_id"
+    t.integer "created_by_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "starts_on"], name: "index_schedule_events_on_account_id_and_starts_on"
+    t.index ["account_id"], name: "index_schedule_events_on_account_id"
+    t.index ["created_by_user_id"], name: "index_schedule_events_on_created_by_user_id"
+    t.index ["source_type", "source_id"], name: "index_schedule_events_on_source"
+    t.index ["supplier_id"], name: "index_schedule_events_on_supplier_id"
+  end
+
   create_table "shipping_addresses", force: :cascade do |t|
     t.string "recipient_name", null: false
     t.string "phone", null: false
@@ -562,6 +583,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000176) do
   add_foreign_key "purchase_orders", "suppliers"
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"
+  add_foreign_key "schedule_events", "accounts"
+  add_foreign_key "schedule_events", "suppliers"
+  add_foreign_key "schedule_events", "users", column: "created_by_user_id"
   add_foreign_key "snap_products", "products"
   add_foreign_key "snap_products", "snaps"
   add_foreign_key "snaps", "users"

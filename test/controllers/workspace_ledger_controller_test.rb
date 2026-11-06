@@ -23,6 +23,26 @@ class WorkspaceLedgerControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "receivables page includes remaining payables in all due date buckets" do
+    [ -1, 7, 8 ].each_with_index do |offset, index|
+      accounts(:jieum).ledger_entries.create!(supplier: @partner, entry_type: "purchase", occurred_on: Date.current,
+        amount: 1_000_000, due_on: Date.current + offset, item_name: "매입 #{index}")
+    end
+    payment = accounts(:jieum).ledger_entries.create!(supplier: @partner, entry_type: "payment", occurred_on: Date.current, amount: 400_000)
+    get workspace_ledger_receivables_path
+    assert_response :success
+    assert_select "h2", text: "지급 예정"
+    [ "예정일 지남", "7일 이내", "이후" ].each_with_index do |bucket, index|
+      assert_select "section", text: /#{bucket}.*매입 #{index}/m
+    end
+    assert_includes response.body, "600,000원"
+    payment.update!(amount: 3_000_000)
+    get workspace_ledger_receivables_path
+    assert_not_includes response.body, "매입 0"
+    assert_not_includes response.body, "매입 1"
+    assert_not_includes response.body, "매입 2"
+  end
+
   test "blank transaction shows Korean validation messages without attribute names" do
     [ {}, { quantity: 2 }, { unit_price: 100 } ].each do |attributes|
       assert_no_difference "LedgerEntry.count" do

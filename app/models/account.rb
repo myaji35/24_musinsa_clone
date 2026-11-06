@@ -2,6 +2,9 @@ class Account < ApplicationRecord
   has_many :suppliers
   has_many :schedule_events
   has_many :ledger_entries
+  has_many :kakao_devices
+  has_many :kakao_rooms
+  has_many :kakao_messages
   has_many :users
 
   validates :name, :slug, presence: true

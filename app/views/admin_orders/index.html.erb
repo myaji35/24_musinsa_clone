@@ -1,0 +1,12 @@
+<div class="max-w-5xl mx-auto p-6">
+  <h1 class="text-2xl font-bold">주문 관리</h1>
+  <table class="w-full text-left"><thead><tr><th>주문번호</th><th>상태</th><th>처리</th></tr></thead><tbody>
+    <% @orders.each do |order| %>
+      <tr><td><%= order.order_number %></td><td><%= order.status %></td><td>
+        <% if order.status == "pending" %>
+          <%= button_to "입금 확인", confirm_payment_admin_order_path(order), method: :patch, data: { turbo_confirm: "입금을 확인하여 결제 완료 처리하시겠습니까?" } %>
+        <% end %>
+      </td></tr>
+    <% end %>
+  </tbody></table>
+</div>

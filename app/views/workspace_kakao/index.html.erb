@@ -1,5 +1,6 @@
 <div class="max-w-5xl mx-auto px-6 py-12 space-y-8">
   <p>kakao-bridge 에이전트 설치: install.sh, doctor 로 점검</p>
+  <%= render "workspace_kakao_extractions/counts" %>
   <h1 class="text-2xl font-bold">카톡 수집 연결</h1>
   <%= link_to "워크스페이스", workspace_path, class: "underline" %>
   <section class="border rounded-lg p-4 space-y-4">
@@ -43,11 +44,14 @@
         <p class="font-bold"><%= room.name %> · <%= room.active? ? "활성" : "비활성" %></p>
         <p>마지막 수집: <%= room.last_collected_at || "없음" %> · 쌓인 메시지: <%= room.kakao_messages.count %>개</p>
         <%= form_with url: workspace_kakao_room_path(room), method: :patch do |f| %>
+          <%= f.select :supplier_id, current_account.suppliers.order(:name).map { |supplier| [supplier.name, supplier.id] }, include_blank: "거래처 없음", selected: room.supplier_id %>
           <%= f.label :aliases, "방 별칭 (줄바꿈 구분)" %>
           <%= f.text_area :aliases, value: room.aliases, class: "border p-2" %>
           <%= f.submit "별칭 저장" %>
         <% end %>
         <%= button_to(room.active? ? "비활성화" : "활성화", workspace_kakao_room_path(room), method: :patch, params: { active: !room.active? }, class: "underline") %>
+        <p><%= room.last_extraction_error %></p>
+        <%= button_to "지금 분석", analyze_workspace_kakao_room_path(room) %>
         <%= button_to "방 삭제", workspace_kakao_room_path(room), method: :delete, class: "text-red-700 underline" %>
       </div>
     <% end %>

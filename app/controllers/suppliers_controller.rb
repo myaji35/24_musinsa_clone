@@ -3,7 +3,7 @@ class SuppliersController < ApplicationController
   before_action :set_supplier, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @suppliers = Supplier.active.recent
+    @suppliers = supplier_scope.active.recent
   end
 
   def show
@@ -11,11 +11,11 @@ class SuppliersController < ApplicationController
   end
 
   def new
-    @supplier = Supplier.new
+    @supplier = supplier_scope.new
   end
 
   def create
-    @supplier = Supplier.new(supplier_params)
+    @supplier = supplier_scope.new(supplier_params)
 
     if @supplier.save
       redirect_to suppliers_path, notice: "거래처가 등록되었습니다."
@@ -43,7 +43,11 @@ class SuppliersController < ApplicationController
   private
 
   def set_supplier
-    @supplier = Supplier.find(params[:id])
+    @supplier = supplier_scope.find(params[:id])
+  end
+
+  def supplier_scope
+    (current_account || Account.primary).suppliers
   end
 
   def supplier_params

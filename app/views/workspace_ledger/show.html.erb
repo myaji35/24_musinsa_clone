@@ -1,0 +1,14 @@
+<div class="max-w-6xl mx-auto p-6 space-y-6">
+  <%= link_to "거래처 목록", workspace_ledger_path %>
+  <h1 class="text-2xl font-bold"><%= @partner.name %> 원장</h1>
+  <table class="w-full text-left"><thead><tr><th>일자</th><th>유형</th><th>품목 / 메모</th><th>금액</th><th>예정일</th><th>누적 미수금</th><th>누적 미지급금</th><th>관리</th></tr></thead><tbody>
+    <% receivable = 0; payable = 0 %>
+    <% @entries.each do |entry| %>
+      <% receivable += entry.receivable_change; payable += entry.payable_change %>
+      <tr class="border-b"><td><%= entry.occurred_on %></td><td><%= LedgerEntry::TYPES[entry.entry_type] %></td><td><% if entry.source_type == "KakaoExtraction" %><%= link_to "카톡 근거 · #{KakaoExtraction::KIND_LABELS[entry.source.kind]} · #{KakaoExtraction::PROGRESS_LABELS[entry.source.progress]}", workspace_kakao_extraction_path(entry.source_id) %><% end %><%= entry.item_name %> <%= entry.memo %></td><td><%= number_with_delimiter(entry.amount.round) %>원</td><td><%= entry.due_on %></td><td><%= number_with_delimiter(receivable.round) %>원</td><td><%= number_with_delimiter(payable.round) %>원</td><td><%= link_to "수정", workspace_ledger_edit_entry_path(@partner, entry) %><%= button_to "삭제", workspace_ledger_entry_path(@partner, entry), method: :delete, data: { turbo_confirm: "이 거래를 삭제하시겠습니까?" } %></td></tr>
+    <% end %>
+  </tbody></table>
+  <h2 class="text-xl font-bold">거래 입력</h2>
+  <p>조정은 미수금에 반영됩니다. 감소 조정은 음수로 입력하세요.</p>
+  <%= render "form" %>
+</div>

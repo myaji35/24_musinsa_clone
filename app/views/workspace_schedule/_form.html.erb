@@ -1,0 +1,12 @@
+<% if @event.source_type == "KakaoExtraction" %><%= link_to "카톡 근거", workspace_kakao_extraction_path(@event.source_id) %><% end %>
+<p class="text-red-700"><%= @event.errors.map(&:message).join(", ") %></p>
+<%= form_with model: @event, url: @event.persisted? ? workspace_schedule_event_path(@event) : workspace_schedule_path, class: "space-y-4" do |f| %>
+  <div><%= f.label :title, "제목" %><%= f.text_field :title, required: true, class: "border" %></div>
+  <div><%= f.label :starts_on, "일자" %><%= f.date_field :starts_on, required: true %></div>
+  <div><%= f.label :starts_at_time, "시간" %><%= f.time_field :starts_at_time %></div>
+  <div><%= f.label :kind, "종류" %><%= f.select :kind, ScheduleEvent::KINDS.map { |value, label| [label, value] } %></div>
+  <div><%= f.label :status, "상태" %><%= f.select :status, ScheduleEvent::STATUSES.map { |value, label| [label, value] } %></div>
+  <div><%= f.label :supplier_id, "거래처" %><%= f.collection_select :supplier_id, current_account.suppliers.order(:name), :id, :name, include_blank: "없음" %></div>
+  <div><%= f.label :memo, "메모" %><%= f.text_area :memo, class: "border" %></div>
+  <%= f.submit "저장", class: "border p-2" %>
+<% end %>

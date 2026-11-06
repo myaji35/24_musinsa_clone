@@ -1,0 +1,23 @@
+<article class="border rounded p-4 space-y-3">
+  <h2><%= extraction.kakao_room.name %> · <%= extraction.supplier&.name %> · <%= extraction.status %></h2>
+  <p><%= KakaoExtraction::KIND_LABELS[extraction.kind] %> · <%= KakaoExtraction::PROGRESS_LABELS[extraction.progress] %></p>
+  <% if extraction.source_changed? %><strong>원문 바뀜 — 확인 필요</strong><% end %>
+  <% extraction.kakao_messages.each do |message| %>
+    <blockquote><%= message.author %> · <%= message.sent_at.in_time_zone('Asia/Seoul').strftime('%Y-%m-%d %H:%M') %><p><%= message.body %></p></blockquote>
+  <% end %>
+  <% if extraction.status == 'pending' %>
+    <%= form_with url: approve_workspace_kakao_extraction_path(extraction), scope: :extraction do |f| %>
+      <p><%= f.label :kind, "종류" %><%= f.select :kind, KakaoExtraction::KIND_LABELS.map { |value, label| [label, value] }, selected: extraction.kind %></p>
+      <p><%= f.label :progress, "진행 상태" %><%= f.select :progress, KakaoExtraction::PROGRESS_LABELS.map { |value, label| [label, value] }, selected: extraction.progress %></p>
+      <p><%= f.label :summary, "요약" %><%= f.text_area :summary, value: extraction.summary, required: true %></p>
+      <p><%= f.label :date, "일자" %><%= f.date_field :date, value: extraction.date %></p>
+      <p><%= f.label :quantity, "수량" %><%= f.number_field :quantity, value: extraction.quantity %></p>
+      <p><%= f.label :unit, "단위" %><%= f.text_field :unit, value: extraction.unit %></p>
+      <p><%= f.label :amount, "금액" %><%= f.number_field :amount, value: extraction.amount, step: '0.01' %></p>
+      <p><%= f.label :supplier_id, "거래처" %><%= f.select :supplier_id, current_account.suppliers.order(:name).map { |supplier| [supplier.name, supplier.id] }, include_blank: "없음", selected: extraction.supplier_id %></p>
+      <p><%= label_tag :target, "반영 대상" %><%= select_tag :target, options_for_select([['일정으로', 'schedule'], ['매출', 'sale'], ['매입', 'purchase'], ['수금', 'receipt'], ['지급', 'payment'], ['기록만', 'record']], extraction.default_target) %></p>
+      <%= f.submit "승인" %>
+    <% end %>
+    <%= button_to "거절", reject_workspace_kakao_extraction_path(extraction) %>
+  <% else %><p><%= extraction.summary %> · <%= extraction.date %> · <%= extraction.amount %></p><% end %>
+</article>

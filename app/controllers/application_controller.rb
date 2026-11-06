@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   before_action :set_current_context
   before_action :require_admin
-  helper_method :current_user, :logged_in?, :cart_count, :magazine_available?, :current_account, :mall_admin?
+  helper_method :current_user, :logged_in?, :cart_count, :magazine_available?, :current_account, :mall_admin?, :supplier_scope
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
@@ -12,6 +12,17 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   private
+
+  def supplier_scope
+    (current_account || Account.primary).suppliers
+  end
+
+  def supplier_in_account?(record)
+    return true if record.supplier_id.blank? || supplier_scope.exists?(id: record.supplier_id)
+
+    record.errors.add(:supplier_id, "는 이 계정의 거래처여야 합니다")
+    false
+  end
 
   def normalize_search_query
     params[:q] = params[:q].strip if params[:q].is_a?(String)

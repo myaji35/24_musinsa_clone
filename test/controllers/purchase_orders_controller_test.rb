@@ -1,9 +1,28 @@
 require "test_helper"
 
 class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
+  test "거래처 목록과 생성 수정은 현재 계정으로 제한된다" do
+    foreign = Supplier.create!(account: accounts(:other), name: "외부 거래처", phone: "02-9999-9999", active: true)
+    [ new_purchase_order_path, edit_purchase_order_path(@purchase_order) ].each do |path|
+      get path
+      assert_response :success
+      assert_select "select[name='purchase_order[supplier_id]'] option[value='#{foreign.id}']", count: 0
+      assert_select "select[name='purchase_order[supplier_id]'] option[value='#{@supplier.id}']", count: 1
+    end
+
+    assert_no_difference "PurchaseOrder.count" do
+      post purchase_orders_path, params: { purchase_order: { supplier_id: foreign.id } }
+    end
+    assert_response :unprocessable_entity
+    patch purchase_order_path(@purchase_order), params: { purchase_order: { supplier_id: foreign.id, notes: "변경 금지" } }
+    assert_response :unprocessable_entity
+    assert_equal @supplier.id, @purchase_order.reload.supplier_id
+    assert_not_equal "변경 금지", @purchase_order.notes
+  end
+
   def setup
     sign_in
-    @supplier = Supplier.create!(
+    @supplier = Supplier.create!(account: accounts(:jieum),
       name: "Test Supplier",
       email: "supplier@test.com",
       phone: "010-1234-5678",

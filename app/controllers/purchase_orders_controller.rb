@@ -16,32 +16,33 @@ class PurchaseOrdersController < ApplicationController
   def new
     @purchase_order = PurchaseOrder.new
     @purchase_order.purchase_order_items.build # 기본 1개 라인
-    @suppliers = Supplier.active
+    @suppliers = supplier_scope.active
     @variants = Variant.includes(:product).all
   end
 
   def create
     @purchase_order = PurchaseOrder.new(purchase_order_params)
 
-    if @purchase_order.save
+    if supplier_in_account?(@purchase_order) && @purchase_order.save
       redirect_to @purchase_order, notice: "발주서가 생성되었습니다."
     else
-      @suppliers = Supplier.active
+      @suppliers = supplier_scope.active
       @variants = Variant.includes(:product).all
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    @suppliers = Supplier.active
+    @suppliers = supplier_scope.active
     @variants = Variant.includes(:product).all
   end
 
   def update
-    if @purchase_order.update(purchase_order_params)
+    @purchase_order.assign_attributes(purchase_order_params)
+    if supplier_in_account?(@purchase_order) && @purchase_order.save
       redirect_to @purchase_order, notice: "발주서가 수정되었습니다."
     else
-      @suppliers = Supplier.active
+      @suppliers = supplier_scope.active
       @variants = Variant.includes(:product).all
       render :edit, status: :unprocessable_entity
     end

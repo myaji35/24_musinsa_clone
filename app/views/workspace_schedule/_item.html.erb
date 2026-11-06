@@ -1,0 +1,17 @@
+<article class="schedule-item <%= item.kind %>">
+  <span><%= ScheduleEvent::KINDS[item.kind] %></span>
+  <strong><%= item.title %></strong>
+  <% if item.starts_at_time %><time><%= item.starts_at_time.strftime("%H:%M") %></time><% end %>
+  <span><%= ScheduleEvent::STATUSES[item.status] %></span>
+  <% if item.status == "open" && item.starts_on < Date.current %><strong class="text-red-700">지남</strong><% end %>
+  <% if item.event %>
+    <% if item.event.source_type == "KakaoExtraction" %><%= link_to "카톡 근거 · #{KakaoExtraction::KIND_LABELS[item.event.source.kind]} · #{KakaoExtraction::PROGRESS_LABELS[item.event.source.progress]}", workspace_kakao_extraction_path(item.event.source_id) %><% end %>
+    <div class="schedule-actions">
+      <%= link_to "수정", workspace_schedule_edit_path(item.event) %>
+      <%= button_to "완료", workspace_schedule_complete_path(item.event), method: :patch if item.status == "open" %>
+      <%= button_to "삭제", workspace_schedule_event_path(item.event), method: :delete %>
+    </div>
+  <% else %>
+    <%= link_to "출처로 이동", item.source_path %>
+  <% end %>
+</article>

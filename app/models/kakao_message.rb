@@ -1,6 +1,10 @@
 class KakaoMessage < ApplicationRecord
   include AccountScoped
 
+  has_many :kakao_extraction_messages, dependent: :restrict_with_error
+  has_many :kakao_extractions, through: :kakao_extraction_messages
+  after_update :mark_changed_evidence, if: :saved_change_to_body?
+
   SOURCES = %w[notification backfill open_window].freeze
   has_many :kakao_message_external_ids, dependent: :delete_all
   belongs_to :kakao_room
@@ -57,6 +61,7 @@ class KakaoMessage < ApplicationRecord
       room.update!(last_collected_at: Time.current, last_message_count: entries.size)
       device.update!(last_seen_at: Time.current, last_collected_at: Time.current)
     end
+    room.schedule_extraction! if counts[:created].positive? || room.kakao_messages.where(needs_extraction: true).exists?
     counts
   end
 
@@ -89,6 +94,12 @@ class KakaoMessage < ApplicationRecord
   end
 
   private
+
+  def mark_changed_evidence
+    update_columns(needs_extraction: true)
+    kakao_extractions.where(status: "approved").update_all(source_changed: true)
+    kakao_extractions.where(status: "pending").update_all(status: "superseded")
+  end
 
   def matching_account
     errors.add(:account, "방과 기기의 계정이 일치해야 합니다") if kakao_room&.account_id != account_id || (kakao_device && kakao_device.account_id != account_id)

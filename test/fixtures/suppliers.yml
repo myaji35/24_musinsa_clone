@@ -1,6 +1,7 @@
 # 모델 검증과 연관 관계를 만족하는 테스트 데이터
 
 one:
+  account: jieum
   name: 동대문 코튼상사
   contact_person: 김민수
   phone: "02-1234-5678"
@@ -11,6 +12,7 @@ one:
   active: true
 
 two:
+  account: jieum
   name: 서울 데님상사
   contact_person: 이지은
   phone: "02-2345-6789"

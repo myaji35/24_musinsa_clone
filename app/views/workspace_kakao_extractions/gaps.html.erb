@@ -1,0 +1,4 @@
+<h1>누락 의심 메시지</h1>
+<% @messages.each do |message| %>
+  <article><%= message.kakao_room.name %> · <%= message.author %> · <%= message.sent_at %><p><%= message.body %></p><% message.kakao_extractions.each do |extraction| %><p><%= link_to "#{KakaoExtraction::KIND_LABELS[extraction.kind]} · #{KakaoExtraction::PROGRESS_LABELS[extraction.progress]}", workspace_kakao_extraction_path(extraction) %></p><% end %><%= button_to '수동으로 항목 만들기', workspace_kakao_extractions_path, params: { message_id: message.id } %></article>
+<% end %>

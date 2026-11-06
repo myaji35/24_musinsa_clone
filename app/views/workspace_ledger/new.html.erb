@@ -1,0 +1,11 @@
+<div class="max-w-xl mx-auto p-6">
+  <h1 class="text-2xl font-bold">거래처 추가</h1>
+  <p><%= @partner.errors.map(&:message).join(", ") %></p>
+  <%= form_with model: @partner, url: workspace_ledger_partners_path, class: "space-y-4" do |f| %>
+    <div><%= f.label :name, "거래처명" %><%= f.text_field :name, required: true, class: "border p-2 block" %></div>
+    <div><%= f.label :kind, "구분" %><%= f.select :kind, [["매입", "purchase"], ["매출", "sales"], ["매입·매출", "both"]] %></div>
+    <div><%= f.label :phone, "전화번호 (필수)" %><%= f.telephone_field :phone, required: true, class: "border p-2 block" %></div>
+    <div><%= f.label :business_number, "사업자번호" %><%= f.text_field :business_number, class: "border p-2 block" %></div>
+    <%= f.submit "거래처 등록", class: "border p-2" %>
+  <% end %>
+</div>

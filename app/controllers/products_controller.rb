@@ -53,7 +53,7 @@ class ProductsController < ApplicationController
     @product = Product.new(product_params)
     @product.status = "draft"
 
-    if @product.save
+    if supplier_in_account?(@product) && @product.save
       redirect_to @product, notice: "상품이 성공적으로 등록되었습니다."
     else
       render :new, status: :unprocessable_entity
@@ -77,7 +77,8 @@ class ProductsController < ApplicationController
   end
 
   def update
-    if @product.update(product_params)
+    @product.assign_attributes(product_params)
+    if supplier_in_account?(@product) && @product.save
       redirect_to @product, notice: "상품이 성공적으로 수정되었습니다."
     else
       render :edit, status: :unprocessable_entity

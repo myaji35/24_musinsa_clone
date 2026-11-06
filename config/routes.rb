@@ -2,6 +2,40 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "home#index"
 
+  resources :admin_orders, only: :index do
+    member { patch :confirm_payment }
+  end
+  scope "workspace/ledger", controller: :workspace_ledger, as: :workspace_ledger do
+    get "/", action: :index
+    get "receivables", action: :receivables
+    get "partners/new", action: :new, as: :new_partner
+    post "partners", action: :create, as: :partners
+    get "partners/:id", action: :show, as: :partner
+    post "partners/:id/entries", action: :create_entry, as: :entries
+    get "partners/:id/entries/:entry_id/edit", action: :edit_entry, as: :edit_entry
+    patch "partners/:id/entries/:entry_id", action: :update_entry, as: :entry
+    delete "partners/:id/entries/:entry_id", action: :destroy_entry
+  end
+
+  get "workspace/schedule", to: "workspace_schedule#index", as: :workspace_schedule
+  scope "workspace/schedule", controller: :workspace_schedule, as: :workspace_schedule do
+    get "new", action: :new, as: :new
+    post "/", action: :create
+    get ":id/edit", action: :edit, as: :edit
+    patch ":id", action: :update, as: :event
+    patch ":id/complete", action: :complete, as: :complete
+    delete ":id", action: :destroy
+  end
+
+  get "workspace/kakao/inbox", to: "workspace_kakao_extractions#index", as: :workspace_kakao_inbox
+  get "workspace/kakao/gaps", to: "workspace_kakao_extractions#gaps", as: :workspace_kakao_gaps
+  resources :workspace_kakao_extractions, path: "workspace/kakao/extractions", only: [ :show, :create ] do
+    member do
+      post :approve
+      post :reject
+    end
+  end
+  post "workspace/kakao/rooms/:id/analyze", to: "workspace_kakao#analyze", as: :analyze_workspace_kakao_room
   get "workspace/kakao", to: "workspace_kakao#index", as: :workspace_kakao
   post "workspace/kakao/devices", to: "workspace_kakao#create_device", as: :workspace_kakao_devices
   patch "workspace/kakao/devices/:id", to: "workspace_kakao#update_device", as: :workspace_kakao_device

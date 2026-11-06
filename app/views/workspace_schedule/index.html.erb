@@ -1,0 +1,64 @@
+<style>
+  .schedule { max-width: 1100px; margin: auto; padding: 20px; overflow-wrap: anywhere; }
+  .schedule nav, .schedule form { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+  .schedule select { max-width: 100%; }
+  .schedule-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .schedule-day { min-width: 0; min-height: 120px; border: 1px solid #ddd; padding: 6px; }
+  .schedule-today { background: #eff6ff; outline: 2px solid #2563eb; outline-offset: -2px; }
+  .schedule-item { margin: 6px 0; padding: 6px; border-left: 4px solid #64748b; background: #f8fafc; font-size: 14px; }
+  .schedule-item.delivery { border-color: #2563eb; } .schedule-item.payment { border-color: #15803d; }
+  .schedule-item.meeting { border-color: #9333ea; } .schedule-item.issue { border-color: #dc2626; }
+  .schedule-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+  .schedule-actions form { margin: 0; } .schedule-list-day { padding: 12px 0; border-bottom: 1px solid #ddd; }
+  .schedule-mobile { display: none; }
+  @media (max-width: 767px) { .schedule-calendar { display: none; } .schedule-mobile { display: block; } }
+</style>
+<div class="schedule">
+  <h1 class="text-2xl font-bold">일정</h1>
+  <nav><%= link_to "워크스페이스", workspace_path %><%= link_to "원장", workspace_ledger_path %><%= link_to "일정 추가", workspace_schedule_new_path %></nav>
+  <nav>
+    <%= link_to "월 달력", workspace_schedule_path(month: @month.strftime("%Y-%m"), supplier_id: @supplier&.id) %>
+    <%= link_to "주 목록 (오늘부터 14일)", workspace_schedule_path(view: "list", supplier_id: @supplier&.id) %>
+  </nav>
+  <%= form_with url: workspace_schedule_path, method: :get do |f| %>
+    <%= f.hidden_field :view, value: params[:view] %><%= f.hidden_field :month, value: @month.strftime("%Y-%m") %>
+    <%= f.label :supplier_id, "거래처" %>
+    <%= f.collection_select :supplier_id, current_account.suppliers.order(:name), :id, :name, selected: @supplier&.id, include_blank: "전체" %>
+    <%= f.submit "조회" %>
+  <% end %>
+  <% if @list %>
+    <section id="overdue" class="schedule-list-day">
+      <h2>지난 미완료 <%= @overdue_items.size %>건</h2>
+      <%= render partial: "item", collection: @overdue_items, as: :item %>
+      <% if @overdue_items.empty? %><p>지난 미완료 없음</p><% end %>
+    </section>
+  <% else %>
+    <%= link_to "지난 미완료 #{@overdue_items.size}건", workspace_schedule_path(view: "list", supplier_id: @supplier&.id, anchor: "overdue") %>
+  <% end %>
+  <% unless @list %>
+    <nav aria-label="월 이동">
+      <%= link_to "이전 달", workspace_schedule_path(month: @month.prev_month.strftime("%Y-%m"), supplier_id: @supplier&.id) %>
+      <strong><%= @month.strftime("%Y년 %m월") %></strong>
+      <%= link_to "다음 달", workspace_schedule_path(month: @month.next_month.strftime("%Y-%m"), supplier_id: @supplier&.id) %>
+    </nav>
+    <div class="schedule-calendar schedule-grid">
+      <% %w[월 화 수 목 금 토 일].each do |day| %><div><%= day %></div><% end %>
+      <% (@month.cwday - 1).times do %><div aria-hidden="true"></div><% end %>
+      <% (@from..@to).each do |date| %>
+        <section class="schedule-day <%= 'schedule-today' if date == Date.current %>">
+          <h2><time datetime="<%= date %>"><%= date.day %></time><%= " 오늘" if date == Date.current %></h2>
+          <%= render partial: "item", collection: @by_date.fetch(date, []), as: :item %>
+        </section>
+      <% end %>
+    </div>
+  <% end %>
+  <div class="<%= 'schedule-mobile' unless @list %>">
+    <% (@from..@to).each do |date| %>
+      <section class="schedule-list-day <%= 'schedule-today' if date == Date.current %>">
+        <h2><%= date.strftime("%m/%d") %><%= " 오늘" if date == Date.current %></h2>
+        <%= render partial: "item", collection: @by_date.fetch(date, []), as: :item %>
+        <% if @by_date.fetch(date, []).empty? %><p>일정 없음</p><% end %>
+      </section>
+    <% end %>
+  </div>
+</div>

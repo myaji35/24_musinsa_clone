@@ -6,7 +6,7 @@
       <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
         <p class="font-bold"><%= pluralize(@supplier.errors.count, "error") %> 발생:</p>
         <ul class="list-disc list-inside">
-          <% @supplier.errors.full_messages.each do |message| %>
+          <% @supplier.errors.map(&:message).each do |message| %>
             <li><%= message %></li>
           <% end %>
         </ul>

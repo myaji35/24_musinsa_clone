@@ -2,8 +2,11 @@ class KakaoDevice < ApplicationRecord
   include AccountScoped
 
   validates :name, :token_digest, presence: true
-  validates :collect_start_hour, :collect_end_hour, inclusion: { in: 0..23 }
-  validates :max_rooms_per_run, inclusion: { in: 1..10 }
+  validates :backfill_window, format: { with: /\A(?:[01]\d|2[0-3]):[0-5]\d-(?:[01]\d|2[0-3]):[0-5]\d\z/ }
+  validates :backfill_max_rooms, :backfill_limit_per_room, :open_window_poll_seconds, numericality: { only_integer: true, greater_than: 0 }
+  validate do
+    errors.add(:time_zone, "유효하지 않은 시간대입니다") unless ActiveSupport::TimeZone[time_zone]
+  end
 
   def self.issue!(account:, name:)
     token = SecureRandom.urlsafe_base64(32)

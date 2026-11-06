@@ -9,9 +9,9 @@ Rails.application.routes.draw do
   post "workspace/kakao/rooms", to: "workspace_kakao#create_room", as: :workspace_kakao_rooms
   patch "workspace/kakao/rooms/:id", to: "workspace_kakao#update_room", as: :workspace_kakao_room
   delete "workspace/kakao/rooms/:id", to: "workspace_kakao#destroy_room"
-  get "api/kakao_agent/config", to: "api/kakao_agent#configuration"
-  post "api/kakao_agent/messages", to: "api/kakao_agent#messages"
-  post "api/kakao_agent/status", to: "api/kakao_agent#report_status"
+  get "api/kakao_bridge/v1/config", to: "api/kakao_bridge/v1/agent#configuration"
+  post "api/kakao_bridge/v1/messages", to: "api/kakao_bridge/v1/agent#messages"
+  post "api/kakao_bridge/v1/status", to: "api/kakao_bridge/v1/agent#report_status"
   get "workspace", to: "workspace#show"
   get "signup", to: "account_signups#new"
   post "signup", to: "account_signups#create"

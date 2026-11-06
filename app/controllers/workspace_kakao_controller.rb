@@ -18,7 +18,7 @@ class WorkspaceKakaoController < ApplicationController
 
   def update_device
     device = current_account.kakao_devices.find(params[:id])
-    device.update!(params.require(:device).permit(:collect_start_hour, :collect_end_hour, :max_rooms_per_run, :allow_focus))
+    device.update!(params.require(:device).permit(:realtime_enabled, :backfill_enabled, :backfill_window, :time_zone, :backfill_max_rooms, :backfill_limit_per_room, :open_window_enabled, :open_window_poll_seconds))
     redirect_to workspace_kakao_path, notice: "기기 설정을 저장했습니다"
   rescue ActiveRecord::RecordInvalid => e
     redirect_to workspace_kakao_path, alert: e.record.errors.full_messages.join(", ")
@@ -30,14 +30,14 @@ class WorkspaceKakaoController < ApplicationController
   end
 
   def create_room
-    current_account.kakao_rooms.create!(params.permit(:name))
+    current_account.kakao_rooms.create!(params.permit(:name, :aliases))
     redirect_to workspace_kakao_path, notice: "방을 추가했습니다"
   rescue ActiveRecord::RecordInvalid => e
     redirect_to workspace_kakao_path, alert: e.record.errors.full_messages.join(", ")
   end
 
   def update_room
-    current_account.kakao_rooms.find(params[:id]).update!(active: params[:active] == "true")
+    current_account.kakao_rooms.find(params[:id]).update!(params.permit(:active, :aliases))
     redirect_to workspace_kakao_path
   end
 

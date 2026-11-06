@@ -1,4 +1,5 @@
 <div class="max-w-5xl mx-auto px-6 py-12 space-y-8">
+  <p>kakao-bridge 에이전트 설치: install.sh, doctor 로 점검</p>
   <h1 class="text-2xl font-bold">카톡 수집 연결</h1>
   <%= link_to "워크스페이스", workspace_path, class: "underline" %>
   <section class="border rounded-lg p-4 space-y-4">
@@ -11,13 +12,21 @@
       <div class="border-t pt-4 space-y-2">
         <h3 class="font-bold"><%= device.name %> <span class="bg-gray-100 rounded px-2 py-1"><%= device.connection_status %></span></h3>
         <p>마지막 연결: <%= device.last_seen_at || "없음" %> · 마지막 수집: <%= device.last_collected_at || "없음" %></p>
+        <p>에이전트 버전: <%= device.agent_version || "없음" %></p>
+        <p>마지막 실시간 수집: <%= device.last_realtime_at || "없음" %> · 마지막 보충 수집: <%= device.last_backfill_at || "없음" %></p>
+        <p>전체 디스크 접근: <%= device.permissions.to_h["full_disk_access"] == true ? "✅" : "❌" %> · 손쉬운 사용: <%= device.permissions.to_h["accessibility"] == true ? "✅" : "❌" %></p>
+        <p>시스템 설정 → 개인정보 보호 및 보안에서 전체 디스크 접근을 켜면 알림 수집, 손쉬운 사용을 켜면 보충 수집이 가능합니다.</p>
         <p>마지막 오류: <%= device.last_error || "없음" %> <%= device.last_error_at %></p>
         <%= form_with url: workspace_kakao_device_path(device), method: :patch, scope: :device do |f| %>
-          <%= f.label :collect_start_hour, "수집 시작 시각" %> <%= f.number_field :collect_start_hour, value: device.collect_start_hour, min: 0, max: 23, class: "border p-2 w-20" %>
-          <%= f.label :collect_end_hour, "끝 시각" %> <%= f.number_field :collect_end_hour, value: device.collect_end_hour, min: 0, max: 23, class: "border p-2 w-20" %>
-          <%= f.label :max_rooms_per_run, "방 개수 제한" %> <%= f.number_field :max_rooms_per_run, value: device.max_rooms_per_run, min: 1, max: 10, class: "border p-2 w-20" %>
-          <p><%= f.check_box :allow_focus, checked: device.allow_focus %> <%= f.label :allow_focus, "포커스 허용" %></p>
-          <p class="text-sm text-red-700">체크하면 카톡 창을 열어 읽습니다. 방당 약 1분, 그동안 맥을 쓰기 불편합니다</p>
+          <% { realtime_enabled: "실시간 수집", backfill_enabled: "보충 수집", open_window_enabled: "열린 창 수집" }.each do |field, label| %>
+            <p><%= f.check_box field, checked: device.public_send(field) %> <%= f.label field, label %></p>
+          <% end %>
+          <% { backfill_window: "보충 시간대 (HH:MM-HH:MM)", time_zone: "시간대" }.each do |field, label| %>
+            <p><%= f.label field, label %> <%= f.text_field field, value: device.public_send(field), required: true, class: "border p-2" %></p>
+          <% end %>
+          <% { backfill_max_rooms: "보충 방 개수", backfill_limit_per_room: "방당 보충 메시지", open_window_poll_seconds: "열린 창 수집 주기 (초)" }.each do |field, label| %>
+            <p><%= f.label field, label %> <%= f.number_field field, value: device.public_send(field), min: 1, required: true, class: "border p-2" %></p>
+          <% end %>
           <%= f.submit "설정 저장", class: "border rounded px-3 py-2" %>
         <% end %>
         <%= button_to "기기 폐기", workspace_kakao_device_path(device), method: :delete, class: "text-red-700 underline" unless device.revoked_at %>
@@ -33,6 +42,11 @@
       <div class="border-t pt-3">
         <p class="font-bold"><%= room.name %> · <%= room.active? ? "활성" : "비활성" %></p>
         <p>마지막 수집: <%= room.last_collected_at || "없음" %> · 쌓인 메시지: <%= room.kakao_messages.count %>개</p>
+        <%= form_with url: workspace_kakao_room_path(room), method: :patch do |f| %>
+          <%= f.label :aliases, "방 별칭 (줄바꿈 구분)" %>
+          <%= f.text_area :aliases, value: room.aliases, class: "border p-2" %>
+          <%= f.submit "별칭 저장" %>
+        <% end %>
         <%= button_to(room.active? ? "비활성화" : "활성화", workspace_kakao_room_path(room), method: :patch, params: { active: !room.active? }, class: "underline") %>
         <%= button_to "방 삭제", workspace_kakao_room_path(room), method: :delete, class: "text-red-700 underline" %>
       </div>

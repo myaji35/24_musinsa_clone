@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_000174) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_000176) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -197,14 +197,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000174) do
     t.datetime "last_error_at"
     t.datetime "revoked_at"
     t.text "last_error"
-    t.integer "collect_start_hour", default: 9
-    t.integer "collect_end_hour", default: 19
-    t.integer "max_rooms_per_run", default: 2
-    t.boolean "allow_focus", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "realtime_enabled", default: true
+    t.boolean "backfill_enabled", default: true
+    t.string "backfill_window", default: "03:00-05:00"
+    t.string "time_zone", default: "Asia/Seoul"
+    t.integer "backfill_max_rooms", default: 5
+    t.integer "backfill_limit_per_room", default: 100
+    t.boolean "open_window_enabled", default: false
+    t.integer "open_window_poll_seconds", default: 300
+    t.string "agent_version"
+    t.json "permissions", default: {}
+    t.boolean "ok"
+    t.datetime "last_realtime_at"
+    t.datetime "last_backfill_at"
     t.index ["account_id"], name: "index_kakao_devices_on_account_id"
     t.index ["token_digest"], name: "index_kakao_devices_on_token_digest", unique: true
+  end
+
+  create_table "kakao_message_external_ids", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.integer "kakao_message_id", null: false
+    t.string "external_id", null: false
+    t.index ["account_id", "external_id"], name: "index_kakao_message_external_ids_on_account_id_and_external_id", unique: true
+    t.index ["kakao_message_id"], name: "index_kakao_message_external_ids_on_kakao_message_id"
   end
 
   create_table "kakao_messages", force: :cascade do |t|
@@ -216,10 +233,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000174) do
     t.text "body", null: false
     t.date "sent_on"
     t.datetime "sent_at"
-    t.string "digest", null: false
+    t.string "digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id", "digest"], name: "index_kakao_messages_on_account_id_and_digest", unique: true
+    t.string "source"
+    t.string "sources"
+    t.string "external_id"
+    t.string "time_precision"
+    t.string "match_key"
+    t.boolean "truncated", default: false
+    t.boolean "is_mine", default: false
+    t.boolean "needs_extraction", default: true
+    t.index ["account_id", "external_id"], name: "index_kakao_messages_on_account_id_and_external_id", unique: true
+    t.index ["account_id", "kakao_room_id", "match_key", "sent_at"], name: "idx_on_account_id_kakao_room_id_match_key_sent_at_88eb2d5d43"
     t.index ["account_id"], name: "index_kakao_messages_on_account_id"
     t.index ["kakao_device_id"], name: "index_kakao_messages_on_kakao_device_id"
     t.index ["kakao_room_id", "sent_at"], name: "index_kakao_messages_on_kakao_room_id_and_sent_at"
@@ -234,6 +260,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000174) do
     t.integer "last_message_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "aliases"
     t.index ["account_id", "name"], name: "index_kakao_rooms_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_kakao_rooms_on_account_id"
   end
@@ -568,6 +595,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000174) do
   add_foreign_key "feedbacks", "products", on_delete: :nullify
   add_foreign_key "image_processings", "products"
   add_foreign_key "kakao_devices", "accounts"
+  add_foreign_key "kakao_message_external_ids", "accounts"
+  add_foreign_key "kakao_message_external_ids", "kakao_messages"
   add_foreign_key "kakao_messages", "accounts"
   add_foreign_key "kakao_messages", "kakao_devices"
   add_foreign_key "kakao_messages", "kakao_rooms"

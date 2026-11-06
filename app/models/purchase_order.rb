@@ -58,9 +58,8 @@ class PurchaseOrder < ApplicationRecord
 
   # 실제 입고 처리
   def receive!
-    return false unless status == "confirmed"
-
-    ActiveRecord::Base.transaction do
+    with_lock do
+      return false unless status == "confirmed"
       # 1. 각 아이템별로 StockLog 생성 및 재고 증가
       purchase_order_items.each do |item|
         StockLog.create!(
@@ -71,6 +70,14 @@ class PurchaseOrder < ApplicationRecord
           unit_cost: item.unit_price,
           note: "발주서 입고: #{order_number}"
         )
+      end
+
+      LedgerEntry.find_or_create_by!(source: self, entry_type: "purchase") do |entry|
+        entry.account = supplier.account
+        entry.supplier = supplier
+        entry.occurred_on = Date.current
+        entry.item_name = "발주 입고 #{order_number}"
+        entry.amount = purchase_order_items.sum { |item| item.quantity * item.unit_price }
       end
 
       # 2. 발주서 상태 변경

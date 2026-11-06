@@ -1,6 +1,26 @@
 require "test_helper"
 
 class ProductsControllerTest < ActionDispatch::IntegrationTest
+  test "상품 거래처 목록과 생성 수정은 현재 계정으로 제한된다" do
+    sign_in
+    foreign = Supplier.create!(account: accounts(:other), name: "외부 거래처", phone: "02-9999-9999", active: true)
+    @product.update!(supplier: foreign)
+    get edit_product_path(@product)
+    assert_response :success
+    assert_select "select[name='product[supplier_id]'] option[value='#{foreign.id}']", count: 0
+    assert_select "select[name='product[supplier_id]'] option[value='#{suppliers(:one).id}']", count: 1
+
+    @product.update!(supplier: suppliers(:one))
+    patch product_path(@product), params: { product: { supplier_id: foreign.id, name: "변경 금지" } }
+    assert_response :unprocessable_entity
+    assert_equal suppliers(:one).id, @product.reload.supplier_id
+    assert_not_equal "변경 금지", @product.name
+    assert_no_difference "Product.count" do
+      post products_path, params: { product: { supplier_id: foreign.id, name: "외부 상품", price: 1000 } }
+    end
+    assert_response :unprocessable_entity
+  end
+
   def setup
     @product = Product.create!(
       name: "Korean Fashion Dress",
@@ -171,7 +191,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
 
   test "관리자는 납품처 공급가와 장문 셀링포인트를 생성하고 수정한다" do
     sign_in
-    supplier = Supplier.create!(name: "폼 테스트 납품처", phone: "010-0000-0000")
+    supplier = Supplier.create!(account: accounts(:jieum), name: "폼 테스트 납품처", phone: "010-0000-0000")
     points = "가" * 1249 + "\n" + "나" * 1250
     post products_path, params: { product: {
       name: "장문 상품", brand: "테스트", category: "상의", price: 30000,
@@ -193,9 +213,9 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "관리자 편집에는 가격 마진과 현재 비활성 납품처를 표시한다" do
-    supplier = Supplier.create!(name: "기존 비활성 납품처", phone: "010-0000-0000", active: false)
-    other = Supplier.create!(name: "다른 비활성 납품처", phone: "010-0000-0001", active: false)
-    active = Supplier.create!(name: "활성 납품처", phone: "010-0000-0002", active: true)
+    supplier = Supplier.create!(account: accounts(:jieum), name: "기존 비활성 납품처", phone: "010-0000-0000", active: false)
+    other = Supplier.create!(account: accounts(:jieum), name: "다른 비활성 납품처", phone: "010-0000-0001", active: false)
+    active = Supplier.create!(account: accounts(:jieum), name: "활성 납품처", phone: "010-0000-0002", active: true)
     @product.update!(price: 30000, supply_price: 12345, supplier: supplier)
     sign_in
     get edit_product_path(@product)
@@ -217,7 +237,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "공개 응답은 공급가와 납품처를 노출하지 않고 셀링포인트 줄바꿈은 유지한다" do
-    supplier = Supplier.create!(name: "비공개전용납품처", phone: "010-0000-0000")
+    supplier = Supplier.create!(account: accounts(:jieum), name: "비공개전용납품처", phone: "010-0000-0000")
     @product.update!(supply_price: 12345, supplier: supplier,
       selling_points: "첫 번째 줄\n두 번째 줄\n<script>alert('unsafe')</script>")
     [ product_path(@product), products_path, root_path(q: @product.name) ].each do |path|

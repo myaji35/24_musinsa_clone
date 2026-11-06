@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_000173) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_000176) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -186,6 +186,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000173) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_code", "image_sha256"], name: "index_image_quality_checks_on_product_code_and_image_sha256"
+  end
+
+  create_table "ledger_entries", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.integer "supplier_id", null: false
+    t.string "entry_type", null: false
+    t.date "occurred_on", null: false
+    t.string "item_name"
+    t.integer "quantity"
+    t.string "unit"
+    t.decimal "unit_price", precision: 12, scale: 2
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.date "due_on"
+    t.text "memo"
+    t.string "source_type"
+    t.integer "source_id"
+    t.integer "created_by_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "supplier_id", "occurred_on"], name: "idx_on_account_id_supplier_id_occurred_on_5b137852c7"
+    t.index ["account_id"], name: "index_ledger_entries_on_account_id"
+    t.index ["created_by_user_id"], name: "index_ledger_entries_on_created_by_user_id"
+    t.index ["source_type", "source_id", "entry_type"], name: "index_ledger_purchase_source", unique: true, where: "source_id IS NOT NULL AND entry_type = 'purchase'"
+    t.index ["source_type", "source_id"], name: "index_ledger_entries_on_source"
+    t.index ["supplier_id"], name: "index_ledger_entries_on_supplier_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -465,8 +490,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000173) do
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id", null: false
+    t.string "kind", default: "purchase", null: false
+    t.string "business_number"
+    t.index ["account_id", "name"], name: "index_suppliers_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_suppliers_on_account_id"
     t.index ["active"], name: "index_suppliers_on_active"
-    t.index ["name"], name: "index_suppliers_on_name", unique: true
   end
 
   create_table "trend_snapshots", force: :cascade do |t|
@@ -517,6 +546,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000173) do
   add_foreign_key "content_uploads", "products"
   add_foreign_key "feedbacks", "products", on_delete: :nullify
   add_foreign_key "image_processings", "products"
+  add_foreign_key "ledger_entries", "accounts"
+  add_foreign_key "ledger_entries", "suppliers"
+  add_foreign_key "ledger_entries", "users", column: "created_by_user_id"
   add_foreign_key "notifications", "variants"
   add_foreign_key "order_shipping_records", "orders"
   add_foreign_key "orders", "anony_customers"
@@ -539,6 +571,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000173) do
   add_foreign_key "supplier_claims", "suppliers"
   add_foreign_key "supplier_claims", "users", column: "created_by_user_id", on_delete: :nullify
   add_foreign_key "supplier_claims", "variants", on_delete: :nullify
+  add_foreign_key "suppliers", "accounts"
   add_foreign_key "users", "accounts"
   add_foreign_key "variants", "products"
 end

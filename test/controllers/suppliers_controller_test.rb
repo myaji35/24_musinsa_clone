@@ -3,7 +3,7 @@ require "test_helper"
 class SuppliersControllerTest < ActionDispatch::IntegrationTest
   def setup
     sign_in
-    @supplier = Supplier.create!(
+    @supplier = Supplier.create!(account: accounts(:jieum),
       name: "Korea Fashion Wholesale",
       email: "supplier@kfashion.com",
       phone: "02-1234-5678",
@@ -91,7 +91,7 @@ class SuppliersControllerTest < ActionDispatch::IntegrationTest
 
   # Supplier status filter
   test "should show only active suppliers" do
-    inactive = Supplier.create!(
+    inactive = Supplier.create!(account: accounts(:jieum),
       name: "Inactive Supplier",
       email: "inactive@supplier.com",
       phone: "010-0000-0000",

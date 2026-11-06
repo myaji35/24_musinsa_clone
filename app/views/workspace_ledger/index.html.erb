@@ -1,0 +1,14 @@
+<div class="max-w-6xl mx-auto p-6 space-y-6">
+  <h1 class="text-2xl font-bold">거래처 원장</h1>
+  <nav><%= link_to "거래처 추가", workspace_ledger_new_partner_path %> · <%= link_to "수금 예정", workspace_ledger_receivables_path %></nav>
+  <div class="grid grid-cols-2 gap-4">
+    <% { receivable: "미수금", payable: "미지급금" }.each do |key, label| %>
+      <div class="border rounded p-4"><%= label %> <strong><%= number_with_delimiter(@balance.totals[key].round) %>원</strong></div>
+    <% end %>
+  </div>
+  <table class="w-full text-left"><thead><tr><th>거래처</th><th>구분</th><th>미수금</th><th>미지급금</th><th>다음 수금 예정일</th></tr></thead><tbody>
+    <% @balance.partners.each do |row| %>
+      <tr class="border-b"><td class="py-3"><%= link_to row[:supplier].name, workspace_ledger_partner_path(row[:supplier]) %></td><td><%= { "purchase" => "매입", "sales" => "매출", "both" => "매입·매출" }[row[:supplier].kind] %></td><td><%= number_with_delimiter(row[:receivable].round) %>원</td><td><%= number_with_delimiter(row[:payable].round) %>원</td><td><%= row[:next_due_on] %> <%= "예정일 지남" if row[:next_due_on] && row[:next_due_on] < Date.current %></td></tr>
+    <% end %>
+  </tbody></table>
+</div>

@@ -5,19 +5,19 @@ class SupplierImportsController < ApplicationController
 
   def new
     @supplier_import = SupplierImport.new
-    @suppliers = Supplier.active.order(:name)
+    @suppliers = supplier_scope.active.order(:name)
   end
 
   def create
     @supplier_import = SupplierImport.new(import_params)
-    if @supplier_import.save
+    if supplier_in_account?(@supplier_import) && @supplier_import.save
       if enqueue_import(@supplier_import)
         redirect_to @supplier_import, notice: "상품 입고 파일을 접수했습니다."
       else
         redirect_to @supplier_import, alert: @supplier_import.error_message
       end
     else
-      @suppliers = Supplier.active.order(:name)
+      @suppliers = supplier_scope.active.order(:name)
       flash.now[:alert] = "파일을 확인해 주세요."
       render :new, status: :unprocessable_entity
     end

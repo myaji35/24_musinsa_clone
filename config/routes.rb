@@ -2,6 +2,21 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "home#index"
 
+  resources :admin_orders, only: :index do
+    member { patch :confirm_payment }
+  end
+  scope "workspace/ledger", controller: :workspace_ledger, as: :workspace_ledger do
+    get "/", action: :index
+    get "receivables", action: :receivables
+    get "partners/new", action: :new, as: :new_partner
+    post "partners", action: :create, as: :partners
+    get "partners/:id", action: :show, as: :partner
+    post "partners/:id/entries", action: :create_entry, as: :entries
+    get "partners/:id/entries/:entry_id/edit", action: :edit_entry, as: :edit_entry
+    patch "partners/:id/entries/:entry_id", action: :update_entry, as: :entry
+    delete "partners/:id/entries/:entry_id", action: :destroy_entry
+  end
+
   get "workspace", to: "workspace#show"
   get "signup", to: "account_signups#new"
   post "signup", to: "account_signups#create"

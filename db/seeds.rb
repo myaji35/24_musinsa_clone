@@ -6,6 +6,7 @@ end
 
 # Clear existing data
 ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
+LedgerEntry.destroy_all
 SupplierClaim.destroy_all
 SupplierAccount.destroy_all
 PurchaseOrderItem.destroy_all
@@ -230,7 +231,7 @@ suppliers_data = [
 ]
 
 suppliers = suppliers_data.map do |data|
-  Supplier.create!(data)
+  Account.primary.suppliers.create!(data)
 end
 
 puts "✅ 생성 완료: Supplier #{Supplier.count}개"

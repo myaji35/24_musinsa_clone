@@ -4,6 +4,23 @@ require "minitest/mock"
 class SupplierImportsControllerTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
 
+  test "입고 거래처 목록과 업로드는 현재 계정으로 제한된다" do
+    sign_in
+    foreign = Supplier.create!(account: accounts(:other), name: "외부 거래처", phone: "02-9999-9999", active: true)
+    get new_supplier_import_path
+    assert_response :success
+    assert_select "select[name='supplier_import[supplier_id]'] option[value='#{foreign.id}']", count: 0
+    assert_select "select[name='supplier_import[supplier_id]'] option[value='#{suppliers(:one).id}']", count: 1
+
+    assert_no_enqueued_jobs do
+      assert_no_difference "SupplierImport.count" do
+        post supplier_imports_path, params: { supplier_import: { supplier_id: foreign.id,
+          file: fixture_file_upload("supplier_sample.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") } }
+      end
+    end
+    assert_response :unprocessable_entity
+  end
+
   def setup
     Bullet.enable = false
   end

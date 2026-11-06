@@ -88,6 +88,7 @@
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm font-bold whitespace-nowrap">
             <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
             <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
+            <%= link_to "주문 관리", admin_orders_path %>
             <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
             <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
             <%= link_to "클레임", supplier_claims_path, class: "hover:text-gray-500" %>
@@ -110,7 +111,8 @@
         <div aria-label="모바일 관리자 메뉴" class="md:hidden flex items-center gap-5 overflow-x-auto whitespace-nowrap px-4 py-3 text-sm font-bold border-t border-gray-100">
           <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
           <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
-          <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
+          <%= link_to "주문 관리", admin_orders_path %>
+            <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
           <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
           <%= link_to "클레임", supplier_claims_path, class: "hover:text-gray-500" %>
           <%= link_to "상품 입고(엑셀)", supplier_imports_path, class: "hover:text-gray-500 text-green-600" %>

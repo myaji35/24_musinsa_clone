@@ -1,0 +1,13 @@
+<p class="text-red-700"><%= @entry.errors.map(&:message).join(", ") %></p>
+<%= form_with model: @entry, url: @entry.persisted? ? workspace_ledger_entry_path(@partner, @entry) : workspace_ledger_entries_path(@partner), class: "grid grid-cols-2 gap-4" do |f| %>
+  <div><%= f.label :entry_type, "유형" %><%= f.select :entry_type, LedgerEntry::TYPES.map { |value, label| [label, value] } %></div>
+  <div><%= f.label :occurred_on, "일자" %><%= f.date_field :occurred_on, required: true %></div>
+  <div><%= f.label :item_name, "품목" %><%= f.text_field :item_name, class: "border" %></div>
+  <div><%= f.label :quantity, "수량" %><%= f.number_field :quantity, class: "border" %></div>
+  <div><%= f.label :unit, "단위" %><%= f.text_field :unit, class: "border" %></div>
+  <div><%= f.label :unit_price, "단가" %><%= f.number_field :unit_price, step: "0.01", class: "border" %></div>
+  <div><%= f.label :amount, "금액 (비우면 수량 × 단가)" %><%= f.number_field :amount, step: "0.01", class: "border" %></div>
+  <div><%= f.label :due_on, "결제·수금 예정일" %><%= f.date_field :due_on %></div>
+  <div><%= f.label :memo, "메모" %><%= f.text_area :memo, class: "border" %></div>
+  <%= f.submit "저장", class: "border p-2" %>
+<% end %>

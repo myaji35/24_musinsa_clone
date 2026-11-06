@@ -2,6 +2,16 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "home#index"
 
+  get "workspace/kakao", to: "workspace_kakao#index", as: :workspace_kakao
+  post "workspace/kakao/devices", to: "workspace_kakao#create_device", as: :workspace_kakao_devices
+  patch "workspace/kakao/devices/:id", to: "workspace_kakao#update_device", as: :workspace_kakao_device
+  delete "workspace/kakao/devices/:id", to: "workspace_kakao#revoke_device"
+  post "workspace/kakao/rooms", to: "workspace_kakao#create_room", as: :workspace_kakao_rooms
+  patch "workspace/kakao/rooms/:id", to: "workspace_kakao#update_room", as: :workspace_kakao_room
+  delete "workspace/kakao/rooms/:id", to: "workspace_kakao#destroy_room"
+  get "api/kakao_bridge/v1/config", to: "api/kakao_bridge/v1/agent#configuration"
+  post "api/kakao_bridge/v1/messages", to: "api/kakao_bridge/v1/agent#messages"
+  post "api/kakao_bridge/v1/status", to: "api/kakao_bridge/v1/agent#report_status"
   get "workspace", to: "workspace#show"
   get "signup", to: "account_signups#new"
   post "signup", to: "account_signups#create"

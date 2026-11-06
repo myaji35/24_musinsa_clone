@@ -1,0 +1,10 @@
+<div class="max-w-3xl mx-auto px-6 py-12 space-y-5">
+  <h1 class="text-2xl font-bold"><%= @device.name %> 연결 토큰</h1>
+  <p>토큰은 지금 한 번만 표시됩니다. 안전한 곳에 복사하세요. 잃어버리면 기기를 폐기하고 다시 연결하세요.</p>
+  <p class="border rounded p-4 break-all font-mono"><%= @token %></p>
+  <h2 class="text-lg font-bold">kakao-bridge 에이전트 설치: install.sh, doctor 로 점검</h2>
+  <p>별도 kakao-bridge 저장소의 install.sh로 설치하고 서버 주소와 위 토큰을 설정하세요.</p>
+  <p>서버 주소: <%= request.base_url %> · API: /api/kakao_bridge/v1</p>
+  <p>시스템 설정 → 개인정보 보호 및 보안 → 전체 디스크 접근(알림 수집), 손쉬운 사용(보충)을 켜세요.</p>
+  <%= link_to "연결 현황으로", workspace_kakao_path, class: "underline" %>
+</div>

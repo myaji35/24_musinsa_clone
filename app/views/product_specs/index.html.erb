@@ -1,0 +1,10 @@
+<div class="max-w-6xl mx-auto px-4 py-10 min-w-0">
+  <h1 class="text-2xl font-bold">상세스펙 현황</h1>
+  <p class="my-4">완성 <%= @complete_count %> / 전체 <%= @products.size %></p>
+  <div class="overflow-x-auto"><table class="w-full text-sm text-left">
+    <thead><tr><% %w[상품명 카테고리 색상수 사이즈 완성도 누락개수 편집].each do |label| %><th class="p-3 whitespace-nowrap"><%= label %></th><% end %></tr></thead>
+    <tbody><% @products.each do |product| %><% spec = product.product_spec %><tr id="product_spec_<%= product.id %>" class="border-t">
+      <td class="p-3"><%= product.name %></td><td class="p-3"><%= product.category %></td><td class="p-3"><%= spec.colors.size %></td><td class="p-3"><%= spec.sizes.join(" / ") %></td><td class="p-3"><%= spec.completion_rate %>%</td><td class="p-3"><%= spec.missing_items.size %></td><td class="p-3"><%= link_to "입력", edit_product_spec_path(product), class: "underline" %></td>
+    </tr><% end %></tbody>
+  </table></div>
+</div>

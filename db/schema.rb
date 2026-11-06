@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_000180) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_000181) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -452,6 +452,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000180) do
     t.integer "published_by_id"
     t.text "info_notice"
     t.text "selling_points"
+    t.text "spec"
     t.index ["status"], name: "index_products_on_status"
     t.index ["supplier_id", "supplier_product_code"], name: "index_products_on_supplier_id_and_supplier_product_code"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"

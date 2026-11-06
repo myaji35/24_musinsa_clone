@@ -1,0 +1,7 @@
+<div class="max-w-full overflow-x-auto">
+  <table class="w-full text-sm text-center">
+    <caption class="text-left py-2">실측 사이즈(cm)</caption>
+    <thead><tr><th class="p-3">사이즈</th><% spec.visible_measurement_items.each do |item| %><th class="p-3 whitespace-nowrap"><%= item %></th><% end %></tr></thead>
+    <tbody><% spec.sizes.each do |size| %><tr class="border-t"><th class="p-3"><%= size %></th><% spec.visible_measurement_items.each do |item| %><td class="p-3"><%= spec.measurement(size, item).presence || "-" %></td><% end %></tr><% end %></tbody>
+  </table>
+</div>

@@ -39,6 +39,13 @@ class Product < ApplicationRecord
   # 상품정보제공고시(전자상거래법, 의류) 필수 항목 — 하나라도 비면 공개할 수 없다 (ISS-143)
   INFO_NOTICE_FIELDS = %w[소재 색상 치수 제조자 제조국 세탁방법 제조연월 품질보증기준 A/S책임자].freeze
   serialize :info_notice, coder: JSON
+  serialize :spec, coder: JSON
+  validate :validate_product_spec
+  before_save :fill_spec_info_notice, if: :will_save_change_to_spec?
+
+  def product_spec
+    ProductSpec.new(self)
+  end
 
   # AI 속성을 JSON으로 저장/파싱
   serialize :ai_attributes, coder: JSON
@@ -231,6 +238,15 @@ class Product < ApplicationRecord
   end
 
   private
+
+  def validate_product_spec
+    details = product_spec
+    details.errors.full_messages.each { |message| errors.add(:base, message) } unless details.valid?
+  end
+
+  def fill_spec_info_notice
+    product_spec.fill_info_notice
+  end
 
   def validate_runway_video
     return unless runway_video.attached?

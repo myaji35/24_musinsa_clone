@@ -135,7 +135,7 @@
               </div>
             </div>
           <% end %>
-          <%= link_to "사이즈 안내", "#detail-size", class: "inline-block text-sm text-gray-700 underline" if @product.detail_page&.dig("size") %>
+          <%= link_to "사이즈 안내", (@product.detail_page&.dig("size") ? "#detail-size" : "#product-spec"), class: "inline-block text-sm text-gray-700 underline" %>
         </fieldset>
         <p class="text-sm text-gray-700"><span class="font-bold">무료배송</span> · <%= delivery_eta %> 도착 예정</p>
         <%= f.label :quantity, "수량", class: "block text-sm font-bold" %>
@@ -181,6 +181,7 @@
     </div>
   </div>
 
+  <%= render "products/spec", product: @product %>
   <%= render "detail_page", product: @product, page: @product.detail_page, pairings: @pairings, return_policy: return_policy if @product.detail_page %>
 
   <!-- 리뷰 섹션 -->

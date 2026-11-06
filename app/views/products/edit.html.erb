@@ -14,14 +14,7 @@
     </div>
   </div>
 
-  <nav class="flex gap-6 border-b border-gray-200 mb-6" aria-label="상품 편집 탭">
-    <%= link_to "상품 정보", edit_product_path(@product),
-        aria: { current: params[:tab] != "inventory" ? "page" : nil },
-        class: "px-1 py-3 text-sm font-medium #{params[:tab] != 'inventory' ? 'border-b-2 border-black text-gray-900' : 'text-gray-500'}" %>
-    <%= link_to "재고이력", edit_product_path(@product, tab: "inventory"),
-        aria: { current: params[:tab] == "inventory" ? "page" : nil },
-        class: "px-1 py-3 text-sm font-medium #{params[:tab] == 'inventory' ? 'border-b-2 border-black text-gray-900' : 'text-gray-500'}" %>
-  </nav>
+  <%= render "products/edit_tabs", product: @product %>
 
   <% if @inventory_variants %>
     <section aria-label="재고이력" class="space-y-6">

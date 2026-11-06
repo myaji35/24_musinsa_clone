@@ -1,0 +1,50 @@
+<% spec = @product.product_spec %>
+<div class="max-w-4xl min-w-0 mx-auto px-4 py-10">
+  <h1 class="text-2xl font-bold mb-4"><%= @product.name %> 상세스펙</h1>
+  <%= render "products/edit_tabs", product: @product, spec_tab: true %>
+  <p class="font-bold">완성도 <%= spec.completion_rate %>%</p>
+  <p class="text-sm text-gray-600 mb-6"><%= spec.missing_items.first(8).join(" · ") %><%= " 외 #{spec.missing_items.size - 8}개" if spec.missing_items.size > 8 %></p>
+  <% if @product.errors.any? %>
+    <ul role="alert" class="text-red-700 mb-4"><% @product.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul>
+  <% end %>
+  <p>색상: <%= spec.colors.join(" / ") %> · 사이즈: <%= spec.sizes.join(" / ") %></p>
+  <%= link_to "옵션 수정", edit_product_path(@product), class: "underline" %>
+  <%= form_with url: product_spec_path(@product), method: :patch, class: "space-y-8 mt-6" do %>
+    <section class="min-w-0">
+      <h2 class="font-bold mb-3">실측표 (cm)</h2>
+      <% if spec.sizes.empty? %>
+        <p>먼저 옵션(색상·사이즈)을 등록해 주세요</p>
+      <% else %>
+        <div class="max-w-full overflow-x-auto relative">
+          <table class="w-full text-sm text-center">
+            <thead><tr><th class="p-2">사이즈</th><% spec.measurement_items.each do |item| %><th class="p-2 whitespace-nowrap"><%= item %> (cm)</th><% end %></tr></thead>
+            <tbody><% spec.sizes.each do |size| %><tr>
+              <th class="p-2"><%= size %></th>
+              <% spec.measurement_items.each do |item| %><td class="p-2"><%= text_field_tag "product[spec][measurements][#{size}][#{item}]", spec.measurement(size, item), inputmode: "decimal", aria: { label: "#{size} #{item} (cm)" }, class: "border rounded p-2 w-24" %></td><% end %>
+            </tr><% end %></tbody>
+          </table>
+        </div>
+      <% end %>
+    </section>
+    <section><h2 class="font-bold mb-3">소재</h2><div class="grid sm:grid-cols-2 gap-4">
+      <% ProductSpec::MATERIAL_FIELDS.each do |field| %><label class="block"><%= field %><%= text_field_tag "product[spec][material][#{field}]", spec.material(field), maxlength: 100, class: "block w-full border rounded p-2" %></label><% end %>
+    </div></section>
+    <section class="space-y-4"><h2 class="font-bold">핏 정보</h2>
+      <% ProductSpec::FIT_OPTIONS.each do |field, choices| %>
+        <fieldset><legend class="mb-2"><%= field %></legend><div class="flex flex-wrap gap-2">
+          <% if field == "계절" %>
+            <%= hidden_field_tag "product[spec][fit][계절][]", "" %>
+          <% else %>
+            <label class="border rounded-full px-3 py-2"><%= radio_button_tag "product[spec][fit][#{field}]", "", spec.fit(field).blank? %> 미선택</label>
+          <% end %>
+          <% choices.each do |choice| %><label class="border rounded-full px-3 py-2 has-[:checked]:bg-gray-200">
+            <% if field == "계절" %><%= check_box_tag "product[spec][fit][계절][]", choice, spec.fit(field).include?(choice) %><% else %><%= radio_button_tag "product[spec][fit][#{field}]", choice, spec.fit(field) == choice %><% end %> <%= choice %>
+          </label><% end %>
+        </div></fieldset>
+      <% end %>
+    </section>
+    <label class="block">무게 (g)<%= text_field_tag "product[spec][weight_g]", spec.value(spec.data["weight_g"]), inputmode: "numeric", class: "block border rounded p-2" %></label>
+    <label class="block">메모<%= text_area_tag "product[spec][note]", spec.value(spec.data["note"]), maxlength: 300, class: "block border rounded p-2 w-full" %></label>
+    <%= submit_tag "저장", class: "bg-black text-white rounded px-6 py-3" %>
+  <% end %>
+</div>

@@ -68,8 +68,11 @@ Rails.application.routes.draw do
   get "product_info_notices", to: "product_info_notices#index"
   patch "product_info_notices", to: "product_info_notices#update_all"
 
+  get "product_specs", to: "product_specs#index"
+
   # Products & Reviews
   resources :products do
+    resource :spec, only: [ :edit, :update ], controller: "product_specs"
     member do
       post :publish
       post :unpublish

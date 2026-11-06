@@ -1,0 +1,16 @@
+<% spec = product.product_spec %>
+<div class="max-w-2xl min-w-0 mx-auto px-4 my-8">
+  <% if mall_admin? %><%= link_to "스펙 완성도 #{spec.completion_rate}% · 입력하기", edit_product_spec_path(product), class: "text-sm underline" %><% end %>
+  <section id="product-spec" class="space-y-4 mt-3">
+    <h2 class="text-xl font-bold">상세 스펙</h2>
+    <p>색상: <%= spec.colors.join(" / ") %></p>
+    <p>사이즈: <%= spec.sizes.join(" / ") %></p>
+    <% if spec.measurements? %><%= render "products/spec_measurements", spec: spec %><% else %><p>실측 정보 준비 중</p><% end %>
+    <dl><% ProductSpec::MATERIAL_FIELDS.each do |field| %><% if spec.material(field).present? %><div class="flex gap-4 py-2"><dt><%= field %></dt><dd><%= spec.material(field) %></dd></div><% end %><% end %></dl>
+    <table class="w-full text-sm"><tbody>
+      <% ProductSpec::FIT_OPTIONS.each do |field, choices| %><% if spec.fit(field).present? %><tr class="border-t"><th class="text-left py-3"><%= field %></th><td class="py-3"><div class="flex flex-wrap gap-2"><% choices.each do |choice| %><span class="<%= Array(spec.fit(field)).include?(choice) ? 'font-bold text-black bg-gray-100 px-2' : 'text-gray-400' %>"><%= choice %></span><% end %></div></td></tr><% end %><% end %>
+    </tbody></table>
+    <% if spec.value(spec.data["weight_g"]).present? %><p>무게: <%= spec.value(spec.data["weight_g"]) %>g</p><% end %>
+    <% if spec.value(spec.data["note"]).present? %><p class="whitespace-pre-line break-words"><%= spec.value(spec.data["note"]) %></p><% end %>
+  </section>
+</div>

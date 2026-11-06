@@ -12102,13 +12102,13 @@
       "type": "GENERATE_CODE",
       "priority": "P0",
       "size": "L",
-      "status": "READY",
+      "status": "IN_PROGRESS",
       "origin": "session",
       "depends_on": [
         "ISS-173"
       ],
       "created_at": "2026-11-05T23:34:56.910632+00:00",
-      "updated_at": "2026-11-05T23:56:36.899956+00:00",
+      "updated_at": "2026-11-06T00:07:20.556959+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 지시 2026-11-06: 주말(11-08)까지 판매재고 관리 + 거래처 카톡방 관리(중요 이슈·날짜·수량을 빠짐없이 → 일정·거래내역·수금 반영). 결정: 거래처=매입·매출 둘 다 / 카톡=맥 카톡 앱 자동 읽기 / 반영=승인 후",
@@ -12129,6 +12129,13 @@
             "at": "2026-11-05T23:34:56.910632+00:00",
             "by": "session",
             "note": "11-06 현황 점검 후 대표님 결정 반영해 생성"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-06T00:07:20.556959+00:00",
+            "by": "session",
+            "note": "세션이 factory/ISS-169(wt169, ISS-173 위에 쌓음)에서 Codex 위임 진행 — 공장은 가져가지 말 것. 설계: suppliers 확장(account_id·kind)+ledger_entries, ISS-156 흡수"
           }
         ],
         "decisions": [
@@ -12217,7 +12224,7 @@
       "origin": "session",
       "depends_on": [],
       "created_at": "2026-11-05T23:34:56.910632+00:00",
-      "updated_at": "2026-11-05T23:54:42.324689+00:00",
+      "updated_at": "2026-11-06T00:06:28.231916+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 지시 2026-11-06: 주말(11-08)까지 판매재고 관리 + 거래처 카톡방 관리(중요 이슈·날짜·수량을 빠짐없이 → 일정·거래내역·수금 반영). 결정: 거래처=매입·매출 둘 다 / 카톡=맥 카톡 앱 자동 읽기 / 반영=승인 후",
@@ -12396,6 +12403,25 @@
               "exit_code": 0,
               "output": "수집 완료 ×2 / KakaoMessage.count=2 / [김사장 2026-11-06 15:47], [(me) 15:50] / 상태 정상 / 토큰 없이 config 401"
             }
+          ]
+        },
+        "session_review": {
+          "at": "2026-11-06T00:06:28.231916+00:00",
+          "by": "session",
+          "verdict": "서버 측 검수 통과(c5075b4, factory/ISS-171 은 173 위에 쌓임) — 에어 실측(11-07 03시) 후 최종",
+          "evidence": [
+            "kakao-bridge e601af9·07be548 에이전트 unittest 18 OK",
+            "wt171 전체 테스트 520 runs 0 failures, rubocop 307 files 0 offenses",
+            "E2E(에이전트 코드→3171 서버): 잘린 알림+보충 원문 1건 병합(277자, sources notification,backfill), 같은 경로 3분 뒤 반복 2건 보존, 재전송 중복, 미등록 방 0건, 메일 앱 알림 제외",
+            "/workspace/kakao 200, 5xx 없음 — /tmp/ujt/v171/workspace-kakao.png"
+          ],
+          "rework": [
+            "공장 1차(3efb287)는 옛 낮 kmsg 설계 → PROTOCOL v1 로 재위임",
+            "병합 결함 2건(계정 전체 메모리 로드, 같은 경로 반복 메시지 소실) 재위임 수정"
+          ],
+          "followups": [
+            "상태 보고 전인 기기가 '정상'으로 표시됨 → '연결 대기'로(ISS-172 때 함께)",
+            "설치 안내 문구가 제목 위에 떠 있음(레이아웃)"
           ]
         }
       }

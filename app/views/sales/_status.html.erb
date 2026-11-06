@@ -1,0 +1,2 @@
+<% if variant.out_of_stock? %><span class="rounded bg-red-100 text-red-800 px-2 py-1 font-bold">품절</span><% end %>
+<% if variant.min_stock.present? && variant.stock.to_i <= variant.min_stock %><span class="rounded bg-amber-100 text-amber-800 px-2 py-1 font-bold">부족</span><% elsif !variant.out_of_stock? %><span class="text-gray-600">정상</span><% end %>

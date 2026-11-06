@@ -45,6 +45,8 @@ Rails.application.routes.draw do
   # Search
   get "search", to: "search#index"
 
+  get "sales", to: "sales#index"
+
   # Inventory Management (Epic 2)
   namespace :inventory do
     get :scan

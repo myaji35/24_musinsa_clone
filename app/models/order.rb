@@ -13,7 +13,10 @@ class Order < ApplicationRecord
   validates :quantity, numericality: { greater_than: 0 }
   validates :status, inclusion: { in: %w[pending paid shipped delivered cancelled] }
 
+  validate :prevent_cancellation_after_shipping
+
   # Callbacks
+  after_update :restore_cancelled_stock
   before_save :record_delivery_time
   after_save :schedule_shipping_address_purge, if: -> { saved_change_to_status? && status.in?(FINISHED_STATUSES) }
   before_create :generate_order_number
@@ -29,6 +32,16 @@ class Order < ApplicationRecord
 
   # Methods
 
+  def cancel!
+    with_lock do
+      return true if status == "cancelled"
+      return false unless status.in?(%w[pending paid])
+
+      update!(status: "cancelled")
+      true
+    end
+  end
+
   def delivery_address
     shipping_address || shipping_record
   end
@@ -39,6 +52,23 @@ class Order < ApplicationRecord
   end
 
   private
+
+  def prevent_cancellation_after_shipping
+    return unless will_save_change_to_status? && status == "cancelled"
+    return unless status_in_database.in?(%w[shipped delivered])
+
+    errors.add(:status, "배송 이후 주문은 취소 불가합니다")
+  end
+
+  def restore_cancelled_stock
+    return unless saved_change_to_status? && status == "cancelled"
+    return unless status_before_last_save.in?(%w[pending paid])
+    return if StockLog.exists?(order_id: id, log_type: "in")
+
+    Variant.where(id: variant_id).update_all([ "stock = COALESCE(stock, 0) + ?", quantity ])
+    StockLog.create!(variant: variant, log_type: "in", quantity: quantity, order_id: id,
+                     note: "주문 취소 복원 #{order_number}", skip_variant_stock_update: true)
+  end
 
   def record_delivery_time
     self.delivered_at = Time.current if will_save_change_to_status? && status == "delivered"

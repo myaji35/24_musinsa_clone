@@ -1,0 +1,33 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+  <h1 class="text-2xl font-bold">판매현황</h1>
+  <%= form_with url: sales_path, method: :get, class: "flex flex-wrap gap-3 items-end" do |f| %>
+    <div><%= f.label :period, "기간", class: "block text-sm font-bold" %><%= f.select :period, [["오늘", "today"], ["7일", "7"], ["30일", "30"], ["직접", "custom"]], selected: @period %></div>
+    <div><%= f.label :from, "시작일", class: "block text-sm font-bold" %><%= f.date_field :from, value: @from %></div>
+    <div><%= f.label :to, "종료일", class: "block text-sm font-bold" %><%= f.date_field :to, value: @to %></div>
+    <%= f.submit "조회", class: "bg-black text-white px-4 py-2 rounded" %>
+  <% end %>
+  <p class="text-sm text-gray-600"><%= @from %> ~ <%= @to %> · 취소 주문 제외</p>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <% [["판매 수량", "#{@total_quantity}개"], ["판매 금액", number_to_currency(@total_amount, unit: "원", format: "%n%u", precision: 0)], ["부족 옵션 수", "#{@low_stock_count}개"]].each do |label, value| %>
+      <div class="bg-gray-50 border rounded-lg p-5"><p class="text-sm text-gray-600"><%= label %></p><p class="text-2xl font-bold"><%= value %></p></div>
+    <% end %>
+  </div>
+  <div class="relative overflow-x-auto border rounded-lg">
+    <table class="w-full text-sm whitespace-nowrap">
+      <thead class="bg-gray-50"><tr><% ["상품명", "옵션", "판매 수량", "판매 금액", "현재 재고", "최소 재고", "상태"].each do |label| %><th class="p-3 text-left"><%= label %></th><% end %></tr></thead>
+      <tbody>
+        <% @variants.each do |variant| %>
+          <tr class="border-t"><td class="p-3"><%= variant.product.name %></td><td class="p-3"><%= variant.color %>/<%= variant.size %></td><td class="p-3"><%= @quantities[variant.id] %>개</td><td class="p-3"><%= number_to_currency(@amounts[variant.id], unit: "원", format: "%n%u", precision: 0) %></td><td class="p-3"><%= variant.stock.to_i %></td><td class="p-3"><%= variant.min_stock || "미설정" %></td><td class="p-3"><%= render "status", variant: variant %></td></tr>
+        <% end %>
+        <% if @variants.empty? %><tr><td colspan="7" class="p-6 text-center text-gray-600">기간 내 판매가 없습니다</td></tr><% end %>
+      </tbody>
+    </table>
+  </div>
+  <h2 class="text-xl font-bold">재고 부족 옵션</h2>
+  <ul class="border rounded-lg divide-y">
+    <% @low_stock_variants.each do |variant| %>
+      <li class="p-4 flex flex-wrap gap-3"><span><%= variant.product.name %> <%= variant.color %>/<%= variant.size %></span><span>현재 재고 <%= variant.stock.to_i %>개 / 최소 재고 <%= variant.min_stock || "미설정" %></span><%= render "status", variant: variant %></li>
+    <% end %>
+    <% if @low_stock_variants.empty? %><li class="p-4 text-gray-600">재고 부족 옵션이 없습니다</li><% end %>
+  </ul>
+</div>

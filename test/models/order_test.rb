@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class OrderTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
@@ -108,5 +109,75 @@ class OrderTest < ActiveSupport::TestCase
       assert_nil order.reload.delivered_at
       assert_equal Time.current + 90.days, address.reload.purge_after
     end
+  end
+
+  test "접수 주문 취소는 재고를 한 번만 복원한다" do
+    order = orders(:one)
+    stock = order.variant.stock
+    assert order.cancel!
+    assert_equal "cancelled", order.reload.status
+    assert_equal stock + order.quantity, order.variant.reload.stock
+    log = StockLog.find_by!(order_id: order.id, log_type: "in")
+    assert_equal "주문 취소 복원 #{order.order_number}", log.note
+    assert_no_difference "StockLog.count" do
+      assert Order.find(order.id).cancel!
+    end
+    assert_equal stock + order.quantity, order.variant.reload.stock
+  end
+
+  test "직접 취소 상태 저장은 접수와 결제 주문의 재고를 한 번만 복원한다" do
+    %w[pending paid].each do |status|
+      order = Order.create!(anony_customer: anony_customers(:one), product: products(:one),
+                            variant: variants(:one), quantity: 2, total_price: 39800, status: status)
+      stock = order.variant.reload.stock
+
+      assert_difference "StockLog.where(order_id: order.id, log_type: 'in').count", 1 do
+        assert order.update(status: "cancelled")
+      end
+      assert_equal stock + 2, order.variant.reload.stock
+      assert_equal "주문 취소 복원 #{order.order_number}", StockLog.find_by!(order_id: order.id, log_type: "in").note
+      assert_no_difference "StockLog.count" do
+        assert order.update(status: "cancelled")
+        assert order.save
+        order.update!(status: status)
+        assert order.update(status: "cancelled")
+      end
+      assert_equal stock + 2, order.variant.reload.stock
+    end
+  end
+
+  test "배송 중과 배송 완료 주문의 직접 취소 저장은 검증 오류가 된다" do
+    %w[shipped delivered].each do |status|
+      order = orders(:one)
+      order.update!(status: status)
+      stock = order.variant.reload.stock
+      assert_no_difference "StockLog.count" do
+        assert_not order.update(status: "cancelled")
+      end
+      assert_includes order.errors[:status], "배송 이후 주문은 취소 불가합니다"
+      assert_equal status, order.reload.status
+      assert_equal stock, order.variant.reload.stock
+    end
+  end
+
+  test "복원 로그 저장 실패는 취소 상태와 재고 복원을 함께 롤백한다" do
+    order = orders(:one)
+    stock = order.variant.stock
+    original_status = order.status
+    StockLog.stub :create!, ->(**) { raise ActiveRecord::RecordInvalid.new(StockLog.new) } do
+      assert_raises(ActiveRecord::RecordInvalid) { order.update!(status: "cancelled") }
+    end
+    assert_equal original_status, order.reload.status
+    assert_equal stock, order.variant.reload.stock
+    assert_not StockLog.exists?(order_id: order.id, log_type: "in")
+  end
+
+  test "배송 이후 주문은 취소할 수 없다" do
+    order = orders(:one)
+    order.update!(status: "shipped")
+    assert_no_difference "StockLog.count" do
+      assert_not order.cancel!
+    end
+    assert_equal "shipped", order.reload.status
   end
 end

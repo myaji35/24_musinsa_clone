@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_000177) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_000180) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -216,6 +216,47 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000177) do
     t.index ["token_digest"], name: "index_kakao_devices_on_token_digest", unique: true
   end
 
+  create_table "kakao_extraction_messages", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.integer "kakao_extraction_id", null: false
+    t.integer "kakao_message_id", null: false
+    t.index ["account_id"], name: "index_kakao_extraction_messages_on_account_id"
+    t.index ["kakao_extraction_id", "kakao_message_id"], name: "idx_kakao_extraction_evidence", unique: true
+    t.index ["kakao_extraction_id"], name: "index_kakao_extraction_messages_on_kakao_extraction_id"
+    t.index ["kakao_message_id"], name: "index_kakao_extraction_messages_on_kakao_message_id"
+  end
+
+  create_table "kakao_extractions", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.integer "kakao_room_id", null: false
+    t.integer "supplier_id"
+    t.string "kind", null: false
+    t.text "summary", null: false
+    t.date "date"
+    t.string "time_text"
+    t.integer "quantity"
+    t.string "unit"
+    t.decimal "amount", precision: 12, scale: 2
+    t.string "product_hint"
+    t.string "counterparty_hint"
+    t.decimal "confidence"
+    t.string "status", default: "pending", null: false
+    t.string "applied_type"
+    t.integer "applied_id"
+    t.integer "reviewed_by_user_id"
+    t.datetime "reviewed_at"
+    t.string "model_name"
+    t.boolean "source_changed", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "progress", default: "unknown", null: false
+    t.index ["account_id"], name: "index_kakao_extractions_on_account_id"
+    t.index ["applied_type", "applied_id"], name: "index_kakao_extractions_on_applied"
+    t.index ["kakao_room_id"], name: "index_kakao_extractions_on_kakao_room_id"
+    t.index ["reviewed_by_user_id"], name: "index_kakao_extractions_on_reviewed_by_user_id"
+    t.index ["supplier_id"], name: "index_kakao_extractions_on_supplier_id"
+  end
+
   create_table "kakao_message_external_ids", force: :cascade do |t|
     t.integer "account_id", null: false
     t.integer "kakao_message_id", null: false
@@ -244,6 +285,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000177) do
     t.boolean "truncated", default: false
     t.boolean "is_mine", default: false
     t.boolean "needs_extraction", default: true
+    t.boolean "extraction_gap", default: false, null: false
     t.index ["account_id", "external_id"], name: "index_kakao_messages_on_account_id_and_external_id", unique: true
     t.index ["account_id", "kakao_room_id", "match_key", "sent_at"], name: "idx_on_account_id_kakao_room_id_match_key_sent_at_88eb2d5d43"
     t.index ["account_id"], name: "index_kakao_messages_on_account_id"
@@ -261,8 +303,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000177) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "aliases"
+    t.integer "supplier_id"
+    t.datetime "extraction_scheduled_at"
+    t.text "last_extraction_error"
     t.index ["account_id", "name"], name: "index_kakao_rooms_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_kakao_rooms_on_account_id"
+    t.index ["supplier_id"], name: "index_kakao_rooms_on_supplier_id"
   end
 
   create_table "ledger_entries", force: :cascade do |t|
@@ -398,14 +444,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000177) do
     t.integer "supplier_import_id"
     t.string "supplier_product_code"
     t.integer "supplier_id"
+    t.boolean "cutout_adopted", default: false, null: false
     t.integer "worn_character_id"
     t.string "worn_size"
-    t.boolean "cutout_adopted", default: false, null: false
-    t.text "selling_points"
     t.string "status", default: "published", null: false
     t.datetime "published_at"
     t.integer "published_by_id"
     t.text "info_notice"
+    t.text "selling_points"
     t.index ["status"], name: "index_products_on_status"
     t.index ["supplier_id", "supplier_product_code"], name: "index_products_on_supplier_id_and_supplier_product_code"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
@@ -645,12 +691,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000177) do
   add_foreign_key "feedbacks", "products", on_delete: :nullify
   add_foreign_key "image_processings", "products"
   add_foreign_key "kakao_devices", "accounts"
+  add_foreign_key "kakao_extraction_messages", "accounts"
+  add_foreign_key "kakao_extraction_messages", "kakao_extractions"
+  add_foreign_key "kakao_extraction_messages", "kakao_messages"
+  add_foreign_key "kakao_extractions", "accounts"
+  add_foreign_key "kakao_extractions", "kakao_rooms"
+  add_foreign_key "kakao_extractions", "suppliers"
+  add_foreign_key "kakao_extractions", "users", column: "reviewed_by_user_id"
   add_foreign_key "kakao_message_external_ids", "accounts"
   add_foreign_key "kakao_message_external_ids", "kakao_messages"
   add_foreign_key "kakao_messages", "accounts"
   add_foreign_key "kakao_messages", "kakao_devices"
   add_foreign_key "kakao_messages", "kakao_rooms"
   add_foreign_key "kakao_rooms", "accounts"
+  add_foreign_key "kakao_rooms", "suppliers"
   add_foreign_key "ledger_entries", "accounts"
   add_foreign_key "ledger_entries", "suppliers"
   add_foreign_key "ledger_entries", "users", column: "created_by_user_id"

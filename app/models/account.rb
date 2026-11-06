@@ -4,6 +4,8 @@ class Account < ApplicationRecord
   has_many :ledger_entries
   has_many :kakao_devices
   has_many :kakao_rooms
+  has_many :kakao_extractions
+  has_many :kakao_extraction_messages
   has_many :kakao_messages
   has_many :users
 

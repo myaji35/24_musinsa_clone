@@ -1,0 +1,10 @@
+<div class="max-w-5xl mx-auto p-6 space-y-4">
+<h1>카톡 승인함</h1>
+<%= render 'counts' %>
+<%= form_with url: workspace_kakao_inbox_path, method: :get do |f| %>
+  <%= f.select :kakao_room_id, current_account.kakao_rooms.map { |room| [room.name, room.id] }, include_blank: '모든 방', selected: params[:kakao_room_id] %>
+  <%= f.select :supplier_id, current_account.suppliers.map { |supplier| [supplier.name, supplier.id] }, include_blank: '모든 거래처', selected: params[:supplier_id] %>
+  <%= f.select :kind, KakaoExtraction::KIND_LABELS.map { |value, label| [label, value] }, include_blank: '모든 종류', selected: params[:kind] %><%= f.submit '필터' %>
+<% end %>
+<% @extractions.each do |extraction| %><%= render 'item', extraction: extraction %><% end %>
+</div>

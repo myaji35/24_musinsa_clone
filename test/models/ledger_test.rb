@@ -10,6 +10,17 @@ class LedgerTest < ActiveSupport::TestCase
     @account.ledger_entries.create!({ supplier: @supplier, entry_type: type, amount: amount, occurred_on: Date.current }.merge(attributes))
   end
 
+  test "future settlements are rejected but sales remain allowed" do
+    %w[receipt payment].each do |type|
+      record = @account.ledger_entries.new(supplier: @supplier, entry_type: type, amount: 1560000, occurred_on: Date.tomorrow)
+      assert_not record.save
+      assert_includes record.errors[:base], "미래 날짜의 수금·지급은 기록할 수 없습니다 — 일정으로 반영해 주세요"
+      record.occurred_on = Date.current
+      assert record.valid?
+    end
+    assert entry("sale", 100, occurred_on: Date.tomorrow).persisted?
+  end
+
   test "balances FIFO and due date boundaries are account scoped" do
     travel_to Time.zone.local(2026, 11, 6, 12) do
       first = entry("sale", 100, occurred_on: Date.current - 5, due_on: Date.current - 1)

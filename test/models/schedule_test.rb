@@ -31,13 +31,13 @@ class ScheduleTest < ActiveSupport::TestCase
     2.times do |i|
       @account.ledger_entries.create!(supplier: @supplier, entry_type: "sale", amount: 1000, occurred_on: @date - 2 + i, due_on: @date + i)
     end
-    @account.ledger_entries.create!(supplier: @supplier, entry_type: "receipt", amount: 1250, occurred_on: @date)
+    @account.ledger_entries.create!(supplier: @supplier, entry_type: "receipt", amount: 1250, occurred_on: Date.current)
     @account.ledger_entries.create!(supplier: @supplier, entry_type: "purchase", amount: 100, occurred_on: @date, due_on: @date)
     items = feed
     assert_equal [ "지급 예정 #{@supplier.name} 100원", "수금 예정 #{@supplier.name} 750원" ], items.map(&:title)
     assert_equal [ @date, @date + 1 ], items.map(&:starts_on)
     assert items.all? { |item| item.source_path == Rails.application.routes.url_helpers.workspace_ledger_partner_path(@supplier) }
-    @account.ledger_entries.create!(supplier: @supplier, entry_type: "receipt", amount: 750, occurred_on: @date)
+    @account.ledger_entries.create!(supplier: @supplier, entry_type: "receipt", amount: 750, occurred_on: Date.current)
     assert_equal 1, feed.size
   end
 

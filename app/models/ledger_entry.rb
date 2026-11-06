@@ -13,6 +13,7 @@ class LedgerEntry < ApplicationRecord
   validates :amount, numericality: { greater_than: 0, message: ->(_record, data) { data[:count] == 0 ? "금액은 0보다 커야 합니다" : "금액은 숫자여야 합니다" } }, allow_blank: true, unless: -> { entry_type == "adjustment" }
   validates :amount, numericality: { message: "금액은 숫자여야 합니다" }, allow_blank: true, if: -> { entry_type == "adjustment" }
   validate :supplier_account_matches
+  validate :no_future_settlement
 
   def receivable_change
     case entry_type
@@ -31,6 +32,12 @@ class LedgerEntry < ApplicationRecord
   end
 
   private
+
+  def no_future_settlement
+    if entry_type.in?(%w[receipt payment]) && occurred_on && occurred_on > Date.current
+      errors.add(:base, "미래 날짜의 수금·지급은 기록할 수 없습니다 — 일정으로 반영해 주세요")
+    end
+  end
 
   def default_amount
     self.amount = quantity * unit_price if amount.nil? && entry_type.in?(%w[sale purchase]) && quantity && unit_price

@@ -1,3 +1,4 @@
+<% if @event.source_type == "KakaoExtraction" %><%= link_to "카톡 근거", workspace_kakao_extraction_path(@event.source_id) %><% end %>
 <p class="text-red-700"><%= @event.errors.map(&:message).join(", ") %></p>
 <%= form_with model: @event, url: @event.persisted? ? workspace_schedule_event_path(@event) : workspace_schedule_path, class: "space-y-4" do |f| %>
   <div><%= f.label :title, "제목" %><%= f.text_field :title, required: true, class: "border" %></div>

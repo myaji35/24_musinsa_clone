@@ -1,0 +1,1 @@
+<p><%= link_to "승인 대기 #{current_account.kakao_extractions.where(status: 'pending').count}건", workspace_kakao_inbox_path %> · <%= link_to "누락 의심 메시지 #{current_account.kakao_messages.where(extraction_gap: true).count}건", workspace_kakao_gaps_path %></p>

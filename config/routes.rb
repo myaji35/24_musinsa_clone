@@ -27,6 +27,15 @@ Rails.application.routes.draw do
     delete ":id", action: :destroy
   end
 
+  get "workspace/kakao/inbox", to: "workspace_kakao_extractions#index", as: :workspace_kakao_inbox
+  get "workspace/kakao/gaps", to: "workspace_kakao_extractions#gaps", as: :workspace_kakao_gaps
+  resources :workspace_kakao_extractions, path: "workspace/kakao/extractions", only: [ :show, :create ] do
+    member do
+      post :approve
+      post :reject
+    end
+  end
+  post "workspace/kakao/rooms/:id/analyze", to: "workspace_kakao#analyze", as: :analyze_workspace_kakao_room
   get "workspace/kakao", to: "workspace_kakao#index", as: :workspace_kakao
   post "workspace/kakao/devices", to: "workspace_kakao#create_device", as: :workspace_kakao_devices
   patch "workspace/kakao/devices/:id", to: "workspace_kakao#update_device", as: :workspace_kakao_device

@@ -36,9 +36,18 @@ class WorkspaceKakaoController < ApplicationController
     redirect_to workspace_kakao_path, alert: e.record.errors.full_messages.join(", ")
   end
 
+  def analyze
+    room = current_account.kakao_rooms.find(params[:id])
+    KakaoExtractJob.perform_later(room.id)
+    redirect_to workspace_kakao_path, notice: "분석을 예약했습니다"
+  end
+
   def update_room
-    current_account.kakao_rooms.find(params[:id]).update!(params.permit(:active, :aliases))
+    current_account.suppliers.find(params[:supplier_id]) if params[:supplier_id].present?
+    current_account.kakao_rooms.find(params[:id]).update!(params.permit(:active, :aliases, :supplier_id))
     redirect_to workspace_kakao_path
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to workspace_kakao_path, alert: e.record.errors.full_messages.join(", ")
   end
 
   def destroy_room

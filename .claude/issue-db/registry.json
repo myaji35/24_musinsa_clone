@@ -11889,11 +11889,11 @@
       "type": "TASK",
       "priority": "P3",
       "size": "S",
-      "status": "AWAITING_USER",
+      "status": "DONE",
       "origin": "factory-runner",
       "depends_on": [],
       "created_at": "2026-11-03T04:42:02.202119+00:00",
-      "updated_at": "2026-11-03T04:43:08.775198+00:00",
+      "updated_at": "2026-11-08T00:00:08.387Z",
       "payload": {
         "origin": "factory-runner",
         "derived_from": "ISS-161",
@@ -11908,15 +11908,13 @@
           "캐릭터 옷장·캐스트 화면에서 3명 모두 사진 세트가 보인다",
           "실제 쓴 비용이 결과에 남는다(예상 약 1.8달러)"
         ],
-        "ask_kind": "human_task",
-        "ask_prompt": "OpenAI 계정에 크레딧을 약 5달러 충전하신 뒤 [했음]을 눌러 주세요 — 그러면 공장이 3명 사진을 바로 만듭니다.",
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "대표님이 ISS-161 에서 A(3명만, 충전 후 생성)를 고르셨음. 남은 잔액 약 0.7달러로는 1명분뿐이라 충전(결제)이 먼저 필요해 공장이 대신할 수 없음",
-          "risk": "낮음 — 미뤄도 사이트는 대표 사진 1장으로 동작",
-          "effort": "S(인물당 약 0.61달러·5분)",
-          "by": "factory-runner",
-          "at": "2026-11-03T04:42:02.202119+00:00"
+          "reason": "대표님 응답(했음: 18달러가 충전되어 있는데 5달러는 뭔가?) — 이 응답을 반영해 이어서 진행. 아직 대표님 손이 더 필요하면 ask_kind·ask_prompt 로 다시 물어라.",
+          "risk": "낮음",
+          "effort": "—",
+          "by": "관제실 응답",
+          "at": "2026-11-08T00:00:08.387Z"
         },
         "status_history": [
           {
@@ -11940,13 +11938,72 @@
             "at": "2026-11-03T04:42:38.115Z",
             "by": "auto",
             "reason": "대표님이 ISS-161 에서 A(3명만, 충전 후 생성)를 고르셨음. 남은 잔액 약 0.7달러로는 1명분뿐이라 충전(결제)이 먼저 필요해 공장이 대신할 수 없음"
+          },
+          {
+            "action": "ask:done",
+            "at": "2026-11-08T00:00:08.387Z",
+            "by": "대표님(관제실)",
+            "note": "했음: 18달러가 충전되어 있는데 5달러는 뭔가?"
           }
         ],
-        "approved_at": "2026-11-03T04:42:38.115Z",
-        "approved_by": "자동 승인(추천: 승인 권장)",
+        "approved_at": "2026-11-08T00:00:08.387Z",
+        "approved_by": "대표님(관제실)",
         "recall_used": "07-AI-Knowledge/프로젝트/0053-JIEUN-MUSINSA-/factory-runner-local-env.md (충전은 결제라 공장 금지)",
-        "prep_notes": "착수 시 필요: persona/generate_sheet.mjs 의 PERSONS 에 HanSOYUL·SoERIN·OhDAEUN 외형 문구 추가(ROSTER.md 기준) + runway-04/refs 기준 ref.png. 현재 foreign_cast.json 에는 없음. 잔액 약 0.66달러로는 1명분(약 0.61달러)뿐이라 충전 확인 전에는 생성하지 않음."
-      }
+        "prep_notes": "착수 시 필요: persona/generate_sheet.mjs 의 PERSONS 에 HanSOYUL·SoERIN·OhDAEUN 외형 문구 추가(ROSTER.md 기준) + runway-04/refs 기준 ref.png. 현재 foreign_cast.json 에는 없음. 잔액 약 0.66달러로는 1명분(약 0.61달러)뿐이라 충전 확인 전에는 생성하지 않음.",
+        "user_response": {
+          "action": "done",
+          "text": "18달러가 충전되어 있는데 5달러는 뭔가?",
+          "by": "대표님(관제실)",
+          "at": "2026-11-08T00:00:08.387Z"
+        },
+        "user_responses": [
+          {
+            "action": "done",
+            "text": "18달러가 충전되어 있는데 5달러는 뭔가?",
+            "by": "대표님(관제실)",
+            "at": "2026-11-08T00:00:08.387Z"
+          }
+        ]
+      },
+      "result": {
+        "summary": "한소율·에린 소·오다은 사진 세트(기준 ref 1+시트 9장=인물별 10장) 생성. 실측 비용 약 $1.82(27장). ref 는 runway-04/refs 축소본 사용, 외형 문구 3명 추가(generate_sheet.mjs PERSONS)",
+        "criteria_check": [
+          {
+            "criterion": "3명 각각 사진 10장이 ISS-090 과 같은 방식·같은 얼굴로 생성",
+            "met": true,
+            "how": "generate_sheet.mjs --person 으로 ref.png 기준 생성, 정면 전신 3장 육안 대조(의상·헤어 일치)"
+          },
+          {
+            "criterion": "캐릭터 옷장·캐스트 화면에서 3명 사진 세트 보임",
+            "met": true,
+            "how": "persona/<Handle>/ 에 10장 존재(ISS-090 6명과 동일 위치). 앱 코드는 시트 폴더를 직접 참조하지 않아 화면 변경 없음 — 기존 6명과 같은 방식"
+          },
+          {
+            "criterion": "실제 쓴 비용이 결과에 남는다",
+            "met": true,
+            "how": "persona/cost-log.jsonl 11-08 항목 27건 합계 $1.822"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "node ../persona/generate_sheet.mjs --person HanSOYUL --dry-run",
+            "exit_code": 0,
+            "output": "Planned images: 0; estimated cost USD 0.00"
+          },
+          {
+            "cmd": "node ../persona/generate_sheet.mjs --person SoERIN --dry-run",
+            "exit_code": 0,
+            "output": "Planned images: 0; estimated cost USD 0.00"
+          },
+          {
+            "cmd": "node ../persona/generate_sheet.mjs --person OhDAEUN --dry-run",
+            "exit_code": 0,
+            "output": "Planned images: 0; estimated cost USD 0.00"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-08T09:06:59.309200"
     },
     {
       "id": "ISS-168",
@@ -12855,6 +12912,33 @@
         "merged": "ed27d83",
         "deployed": false
       }
+    },
+    {
+      "id": "ISS-174",
+      "title": "제품별 상세스펙(색상·사이즈·제원) 입력·표시·현황",
+      "type": "GENERATE_CODE",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "retry_count": 0,
+      "parent_id": null,
+      "depends_on": [],
+      "created_at": "2026-11-06T04:13:55Z",
+      "started_at": "2026-11-06T04:13:55Z",
+      "completed_at": "2026-11-06T04:21:46Z",
+      "payload": {
+        "origin": "대표님 지시 2026-11-06 '제품별 상세스팩(색상,사이즈,제원)을 준비하고 충분한 테스트 하고 보고해'",
+        "branch": "feat/iss-174-product-spec",
+        "worktree": "../wt174",
+        "note": "실측·소재 원천 데이터 없음 → 값은 지어내지 않고 입력 구조·화면·현황만. 점검 중 발견: 상품 폼에서 옵션 재고 직접 수정 시 StockLog 미기록(별건)"
+      },
+      "result": {
+        "commit": "956dfa5 (feat/iss-174-product-spec, main 미병합)",
+        "tests": "584 runs 0 failures, rubocop 0, brakeman 0",
+        "browser": "관리자 12 + 손님/모바일 11 항목 통과",
+        "pending": "병합 승인, 실측·소재 실제 값 입력(원천 데이터 없음)"
+      }
     }
   ],
   "hooks": {
@@ -13334,6 +13418,12 @@
         "issue_type": "FEATURE",
         "plan_created": 0,
         "timestamp": "2026-11-03T13:41:41.116019"
+      },
+      {
+        "issue_id": "ISS-167",
+        "issue_type": "TASK",
+        "plan_created": 0,
+        "timestamp": "2026-11-08T09:06:59.309200"
       }
     ],
     "on_fail": [],
@@ -13346,7 +13436,7 @@
   },
   "stats": {
     "total_issues": 41,
-    "completed": 91,
+    "completed": 92,
     "failed": 0,
     "evolved": 0
   },

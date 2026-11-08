@@ -12427,7 +12427,7 @@
       "origin": "session",
       "depends_on": [],
       "created_at": "2026-11-05T23:34:56.910632+00:00",
-      "updated_at": "2026-11-06T01:44:36.947583+00:00",
+      "updated_at": "2026-11-08T09:42:56+09:00",
       "payload": {
         "origin": "session",
         "source": "대표님 지시 2026-11-06: 주말(11-08)까지 판매재고 관리 + 거래처 카톡방 관리(중요 이슈·날짜·수량을 빠짐없이 → 일정·거래내역·수금 반영). 결정: 거래처=매입·매출 둘 다 / 카톡=맥 카톡 앱 자동 읽기 / 반영=승인 후",
@@ -12633,6 +12633,39 @@
             "상태 보고 전인 기기가 '정상'으로 표시됨 → '연결 대기'로(ISS-172 때 함께)",
             "설치 안내 문구가 제목 위에 떠 있음(레이아웃)"
           ]
+        },
+        "air_measurement_2026_11_07": {
+          "window": "2026-11-07 03:02~03:10 KST (대표님 허락분)",
+          "agent_installed_on_air": false,
+          "notification_db": {
+            "path": "~/Library/Group Containers/group.com.apple.usernoted/db2/db (+wal), macOS 27",
+            "readable_via_ssh_readonly_copy": true,
+            "kakao_records": 96,
+            "retention": "약 3일(11-04~11-06)",
+            "fields": "req.titl, req.body (subt·thre 없음)",
+            "time": "delivered_date, 초 단위",
+            "sender_in_group_room": "미확인 — 표본 34개 방 모두 1:1·채널, body 에 '이름:' 접두 없음",
+            "truncation": "알림톡(비즈 채널) 200자(일부 199) 말줄임표 없이 잘림 21건, 공지채널 1024자 상한 1건, 개인 메시지 표본은 150자 미만"
+          },
+          "kmsg_backfill": {
+            "rooms": 2,
+            "time_per_room": "1~4분",
+            "chats_list": "1개 방만 반환(불완전)",
+            "pitfalls": [
+              "실패해도 rc=0 + --json 인데 평문 오류 → JSON 파싱 실패=실패 처리, --deep-recovery 재시도로 성공",
+              "채널방 맨 위 2줄이 author '(me)'·날짜 없음 머리글 → 걸러야 함",
+              "연속 메시지 묶음은 date 비어 있음, 시각은 분 단위 '오후 6:40'",
+              "한 줄이 2024년 날짜로 나옴(실제 여부 확인 필요)",
+              "limit 30 이어도 화면 노출분(5·9건)만, 최신 1건 누락 사례"
+            ]
+          },
+          "reconcile": {
+            "truncated_notifs_replaced": "3/3 (방+분 단위 시각+본문 앞 150자 정규화 일치)",
+            "notif_only": "1건 — kmsg 에 없음, 중복 제거 시 알림 단독 건 보존 필요",
+            "exact_duplicates": 0
+          },
+          "privacy": "원문은 보고·기록에 옮기지 않음, 에어 임시 사본 삭제",
+          "follow_up": "위 함정을 에이전트에 반영하는 수정 카드 필요(Codex 위임), 단체방 알림 형식 재실측"
         }
       },
       "completed_at": "2026-11-06T01:44:36.947583+00:00",

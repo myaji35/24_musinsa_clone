@@ -8,8 +8,8 @@ class ProductsTest < ApplicationSystemTestCase
     # 상품 카드가 표시되는가
     assert_selector ".grid"
 
-    # 브랜드명이 표시되는가
-    assert_selector ".font-bold", minimum: 1
+    # 가격이 표시되는가
+    assert_selector ".price", minimum: 1
   end
 
   # 시나리오 7: 상품 상세 페이지
@@ -29,7 +29,7 @@ class ProductsTest < ApplicationSystemTestCase
     visit root_path
 
     # 첫 번째 상품 카드 클릭
-    first("a.group.block.relative").click
+    first("#ranking h3 a").click
 
     # 상세 페이지로 이동했는가
     assert_current_path %r{/products/\d+}

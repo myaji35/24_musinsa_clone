@@ -25,67 +25,101 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <%# 한글 기본 글꼴 Pretendard(필요한 글자만 내려받는 동적 서브셋) %>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" crossorigin>
   </head>
 
-  <body class="bg-white text-gray-900 font-sans antialiased" data-controller="lazy-load">
-    <!-- Top Utility Bar -->
-    <div class="bg-white border-b border-gray-100 hidden md:block">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-end space-x-4 text-xs text-gray-600 font-medium">
+  <body class="bg-paper text-ink font-sans antialiased" data-controller="lazy-load">
+    <div class="relative h-8 md:h-band bg-ink text-inverse text-caption flex items-center justify-center px-gutter">
+      <p>전 상품 무료배송 · 7일 내 반품</p>
+      <nav class="absolute right-gutter hidden md:flex items-center gap-4" aria-label="계정 메뉴">
             <% if logged_in? %>
               <span><%= current_user.name.presence || current_user.email %></span>
-              <%= link_to "내 워크스페이스", workspace_path, class: "hover:text-black" unless mall_admin? %>
-              <%= button_to "로그아웃", logout_path, method: :delete, class: "hover:text-black" %>
+              <%= link_to "내 워크스페이스", workspace_path, class: "hover:underline" unless mall_admin? %>
+              <%= button_to "로그아웃", logout_path, method: :delete, class: "hover:underline" %>
             <% else %>
-              <%= link_to "로그인", login_path, class: "hover:text-black" %>
+              <%= link_to "로그인", login_path, class: "hover:underline" %>
             <% end %>
-            <%= link_to "주문조회", orders_lookup_path, class: "hover:text-black" %>
-            <%= link_to "장바구니 (#{cart_count})", cart_path, class: "hover:text-black" %>
-        </div>
+            <%= link_to "주문조회", orders_lookup_path, class: "hover:underline" %>
+            <%= link_to "장바구니 (#{cart_count})", cart_path, class: "hover:underline" %>
+      </nav>
     </div>
+    <header class="sticky top-0 z-50 bg-paper border-b border-line h-header-m md:h-header px-gutter grid grid-cols-[1fr_auto_1fr] items-center">
+      <div class="flex items-center gap-4">
+        <details name="header-panel" class="menu">
+          <summary class="text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">메뉴</summary>
+          <div class="absolute left-0 right-0 top-full bg-scrim border-b border-line px-gutter py-6">
+            <div class="md:hidden mb-4">
+              <%= form_with url: root_path, method: :get, local: true, class: "flex items-center gap-2 w-full" do |f| %>
+                  <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", aria: { label: "검색어" }, class: "field h-11 border-0 border-b border-line" %>
+                  <button type="submit" class="sym text-ui font-medium shrink-0">검색</button>
+                <% end %>
+            </div>
+            <nav aria-label="사이트 메뉴">
+              <% [ [ "데스크톱 메뉴", "hidden md:flex" ], [ "모바일 메뉴", "md:hidden" ] ].each do |label, visibility| %>
+                <nav aria-label="<%= label %>" class="<%= visibility %> gap-4">
+                  <% menu_links = [ [ "랭킹", root_path ], [ "상품", products_path ] ] %>
+                  <% menu_links << [ "매거진", magazine_path ] if magazine_available? %>
+                  <% menu_links.each do |name, path| %>
+                    <%= link_to name, path, class: "text-ui font-medium py-2 block#{' underline' if current_page?(path)}", aria: { current: (current_page?(path) ? "page" : nil) } %>
+                  <% end %>
+                </nav>
+              <% end %>
+              <% if mall_admin? %>
+                <div aria-label="모바일 관리자 메뉴" class="md:hidden border-b border-hairline px-gutter py-2 text-caption flex flex-wrap gap-x-4 gap-y-1">
+                  <%= link_to "판매현황", sales_path, class: "hover:text-gray-500" %>
+                  <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
+                  <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
+                  <%= link_to "주문 관리", admin_orders_path %>
+                    <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
+                  <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
+                  <%= link_to "클레임", supplier_claims_path, class: "hover:text-gray-500" %>
+                  <%= link_to "상품 입고(엑셀)", supplier_imports_path, class: "hover:text-gray-500 text-green-600" %>
+                  <%= link_to "상품정보 입력", product_info_notices_path, class: "hover:text-gray-500" %>
+                  <%= link_to "상품분석", product_analyses_path, class: "hover:text-gray-500 text-green-600" %>
+                  <%= link_to "트렌드", trends_path, class: "hover:text-gray-500 text-green-600" %>
+                  <%= link_to "KPI", kpi_path, class: "hover:text-gray-500 text-green-600" %>
+                </div>
+              <% end %>
 
-    <!-- Main Navigation Bar -->
-    <nav class="bg-white sticky top-0 z-50 shadow-sm border-b border-black">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 md:h-20 flex items-center justify-between gap-4 md:gap-8">
-        <!-- Logo -->
-        <a href="/" class="text-2xl md:text-3xl font-bold tracking-tighter shrink-0 font-oswald italic pr-2">JIEUM</a>
-        
-        <!-- Search Bar (Hidden on mobile, visible on desktop) -->
-        <div class="hidden md:flex flex-1 min-w-[160px] max-w-xl mx-auto relative">
-            <%= form_with url: root_path, method: :get, local: true, class: "w-full" do |f| %>
-                <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", class: "w-full h-10 pl-4 pr-12 bg-gray-100 border-none rounded-sm text-sm focus:ring-1 focus:ring-black placeholder-gray-600 font-medium" %>
-                <button type="submit" aria-label="검색" class="absolute right-1 p-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black">
-                   <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </button>
-            <% end %>
-        </div>
-
-        <!-- Navigation Links -->
-        <div aria-label="데스크톱 메뉴" class="hidden md:flex items-center space-x-6 md:space-x-8 font-bold text-sm md:text-[15px] tracking-tight whitespace-nowrap">
-          <a href="/" class="hover:text-gray-500 hover:underline underline-offset-4 decoration-2">랭킹</a>
-          <a href="/products" class="hover:text-gray-500">상품</a>
-          <%= link_to "매거진", magazine_path, class: "hover:text-gray-500" if magazine_available? %>
-        </div>
-
-        <!-- Mobile Menu & Icons -->
-        <div class="flex items-center space-x-3 md:space-x-5 shrink-0">
-          <a href="<%= cart_path %>" aria-label="장바구니" class="relative hover:text-gray-500">
-             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-             <% if cart_count.positive? %>
-               <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[11px] leading-4 font-bold px-1 rounded-full tabular-nums"><%= cart_count %></span>
-             <% end %>
-          </a>
-          <a href="<%= orders_lookup_path %>" aria-label="주문조회" class="hover:text-gray-500">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-          </a>
-        </div>
+            </nav>
+            <ul>
+              <li><%= link_to "전체", root_path, class: "text-ui font-medium py-2 block" %></li>
+              <% shop_categories.map(&:first).each do |name| %>
+                <li><%= link_to name, root_path(category: name, anchor: "ranking"), class: "text-ui font-medium py-2 block" %></li>
+              <% end %>
+              <li class="md:hidden"><%= link_to "주문조회", orders_lookup_path, class: "text-ui font-medium py-2 block" %></li>
+            </ul>
+          </div>
+        </details>
+        <details name="header-panel" class="search hidden md:block">
+          <summary class="text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">검색</summary>
+          <div class="absolute left-0 right-0 top-full bg-scrim border-b border-line px-gutter py-6">
+            <%= form_with url: root_path, method: :get, local: true, class: "flex items-center gap-2 w-full" do |f| %>
+                  <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", aria: { label: "검색어" }, class: "field h-11 border-0 border-b border-line" %>
+                  <button type="submit" class="sym text-ui font-medium shrink-0">검색</button>
+                <% end %>
+          </div>
+        </details>
       </div>
+      <a href="/" class="font-display font-medium text-[18px] md:text-[22px] tracking-wordmark uppercase">JIEUM</a>
+      <div class="flex items-center justify-end gap-4 text-ui font-medium whitespace-nowrap">
+        <%= link_to "주문조회", orders_lookup_path, class: "hidden md:inline-flex" %>
+        <a href="<%= cart_path %>" aria-label="장바구니">장바구니 (<% if cart_count.positive? %><%= cart_count %><% else %>0<% end %>)</a>
+      </div>
+    </header>
+    <div class="h-catrow border-b border-hairline px-gutter flex items-center gap-2 overflow-x-auto">
+      <%= link_to "전체", root_path(anchor: "ranking"), class: "chip", aria: { current: (params[:category].blank? && current_page?(root_path) ? "page" : nil) } %>
+      <% shop_categories.map(&:first).each do |name| %>
+        <%= link_to name, root_path(category: name, anchor: "ranking"), class: "chip", aria: { current: (params[:category] == name ? "page" : nil) } %>
+      <% end %>
+    </div>
       <% if mall_admin? %>
-        <div aria-label="데스크톱 관리자 메뉴" class="hidden md:block border-t border-gray-100">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm font-bold whitespace-nowrap">
+        <nav aria-label="관리 메뉴">
+        <div aria-label="데스크톱 관리자 메뉴" class="hidden md:block">
+          <div class="border-b border-hairline px-gutter py-2 text-caption flex flex-wrap gap-x-4 gap-y-1">
             <%= link_to "판매현황", sales_path, class: "hover:text-gray-500" %>
             <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
             <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
@@ -100,52 +134,18 @@
             <%= link_to "KPI", kpi_path, class: "hover:text-gray-500 text-green-600" %>
           </div>
         </div>
+        </nav>
       <% end %>
-      <div aria-label="모바일 메뉴" class="md:hidden flex items-center gap-5 overflow-x-auto whitespace-nowrap px-4 py-3 text-sm font-bold border-t border-gray-100">
-        <% mobile_menu = [ [ "랭킹", root_path ], [ "상품", products_path ] ] %>
-        <% mobile_menu << [ "매거진", magazine_path ] if magazine_available? %>
-        <% mobile_menu.each do |label, path| %>
-          <%= link_to label, path, class: "hover:text-gray-500#{' underline underline-offset-4 decoration-2' if current_page?(path)}", aria: { current: (current_page?(path) ? "page" : nil) } %>
-        <% end %>
-      </div>
-      <% if mall_admin? %>
-        <div aria-label="모바일 관리자 메뉴" class="md:hidden flex items-center gap-5 overflow-x-auto whitespace-nowrap px-4 py-3 text-sm font-bold border-t border-gray-100">
-          <%= link_to "판매현황", sales_path, class: "hover:text-gray-500" %>
-          <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
-          <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
-          <%= link_to "주문 관리", admin_orders_path %>
-            <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
-          <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
-          <%= link_to "클레임", supplier_claims_path, class: "hover:text-gray-500" %>
-          <%= link_to "상품 입고(엑셀)", supplier_imports_path, class: "hover:text-gray-500 text-green-600" %>
-          <%= link_to "상품정보 입력", product_info_notices_path, class: "hover:text-gray-500" %>
-          <%= link_to "상품분석", product_analyses_path, class: "hover:text-gray-500 text-green-600" %>
-          <%= link_to "트렌드", trends_path, class: "hover:text-gray-500 text-green-600" %>
-          <%= link_to "KPI", kpi_path, class: "hover:text-gray-500 text-green-600" %>
-        </div>
-      <% end %>
-    </nav>
-    
-    <!-- Secondary Category Nav (Visual) -->
-    <div class="border-b border-gray-200 bg-white hidden md:block">
-         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-10 flex items-center space-x-6 text-xs font-bold text-gray-700 overflow-x-auto">
-             <%= link_to "전체", root_path(anchor: "ranking"), class: (params[:category].blank? && current_page?(root_path) ? "text-black" : "hover:text-black") %>
-             <% shop_categories.map(&:first).each do |name| %>
-               <%= link_to name, root_path(category: name, anchor: "ranking"), class: (params[:category] == name ? "text-black" : "hover:text-black"), aria: { current: (params[:category] == name ? "page" : nil) } %>
-             <% end %>
-         </div>
-    </div>
-
     <main>
       <% if flash[:notice].present? || flash[:alert].present? %>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-3">
+        <div class="px-gutter pt-6 space-y-3">
           <% if flash[:notice].present? %>
-            <div role="status" class="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm leading-relaxed">
+            <div role="status" class="border border-ink px-4 py-3 text-body text-notice">
               <%= flash[:notice] %>
             </div>
           <% end %>
           <% if flash[:alert].present? %>
-            <div role="alert" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm leading-relaxed">
+            <div role="alert" class="border border-ink px-4 py-3 text-body text-sale">
               <%= flash[:alert] %>
             </div>
           <% end %>
@@ -154,34 +154,34 @@
       <%= yield %>
     </main>
     
-    <footer class="bg-gray-100 border-t border-gray-200 pt-16 pb-20 mt-20 text-xs text-gray-600">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer class="border-t border-line bg-paper px-gutter pt-12 pb-20 mt-20 text-caption text-ink-2">
+        <div class="">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div class="col-span-1 md:col-span-2">
-                    <h3 class="text-2xl font-bold text-black mb-4 font-oswald italic">JIEUM</h3>
-                    <p class="leading-relaxed mb-4">
+                    <h3 class="font-display font-medium text-display tracking-wordmark uppercase mb-4">JIEUM</h3>
+                    <p class="text-caption text-ink-3 mb-4">
                         "2027 겨울, 가장 먼저 입어보세요"
                     </p>
-                    <p class="text-[11px] text-gray-500 mb-4">사이트의 모델 이미지는 AI로 생성되었으며, 의류는 실제 판매 상품입니다.</p>
+                    <p class="text-caption text-ink-3 mb-4">사이트의 모델 이미지는 AI로 생성되었으며, 의류는 실제 판매 상품입니다.</p>
                 </div>
                 <div>
-                   <h4 class="font-bold text-black mb-3">HELP</h4>
+                   <h4 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">HELP</h4>
                    <ul class="space-y-3">
-                       <li><%= link_to "비회원 주문조회", orders_lookup_path, class: "inline-block py-1 hover:underline" %></li>
-                       <li><%= link_to "배송·반품 안내", returns_policy_path, class: "inline-block py-1 hover:underline" %></li>
-                       <li><%= link_to "의견 보내기", new_feedback_path, class: "inline-block py-1 hover:underline" %></li>
+                       <li><%= link_to "비회원 주문조회", orders_lookup_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
+                       <li><%= link_to "배송·반품 안내", returns_policy_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
+                       <li><%= link_to "의견 보내기", new_feedback_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
                    </ul>
                 </div>
                 <div>
-                   <h4 class="font-bold text-black mb-3">POLICY</h4>
+                   <h4 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">POLICY</h4>
                    <ul class="space-y-3">
-                       <li><%= link_to "개인정보처리방침", privacy_policy_path, class: "inline-block py-1 font-bold hover:underline" %></li>
-                       <li><span class="inline-block py-1 font-normal text-gray-600" aria-disabled="true">이용약관 <span class="text-[11px] text-gray-500">(준비 중)</span></span></li>
+                       <li><%= link_to "개인정보처리방침", privacy_policy_path, class: "inline-block py-1 font-medium text-ink-2 hover:text-ink" %></li>
+                       <li><span class="inline-block py-1 font-normal text-ink-2" aria-disabled="true">이용약관 <span class="text-caption text-ink-3">(준비 중)</span></span></li>
                    </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-200 pt-8 text-center md:text-left text-xs text-gray-600">
-                <p>🤖 Generated with <a href="https://claude.com/claude-code" class="underline hover:text-black">Claude Code</a> · COPYRIGHT (C) 2026 JIEUM ALL RIGHTS RESERVED.</p>
+            <div class="border-t border-hairline pt-6 text-center md:text-left text-caption text-ink-3">
+                <p>🤖 Generated with <a href="https://claude.com/claude-code" class="underline hover:text-ink">Claude Code</a> · COPYRIGHT (C) 2026 JIEUM ALL RIGHTS RESERVED.</p>
             </div>
         </div>
     </footer>

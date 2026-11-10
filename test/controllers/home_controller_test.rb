@@ -1,6 +1,14 @@
 require "test_helper"
 
 class HomeControllerTest < ActionDispatch::IntegrationTest
+  test "홈 랭킹 카드는 원화 가격을 span으로 표시한다" do
+    get root_path
+
+    assert_response :success
+    assert_select "#ranking h3 a", minimum: 1
+    assert_select "#ranking .grid span.price", minimum: 1
+  end
+
   def setup
     # Create products with different attributes for ranking
     @product1 = Product.create!(
@@ -313,18 +321,20 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_match /images\.unsplash\.com/, response.body
   end
 
-  # New arrival badge
-  test "should show new arrival badge" do
+  # 장식 배지는 Phase 1 결정 5-A로 제거한다.
+  test "product cards omit new arrival badges" do
     get root_url
     assert_response :success
-    assert_match /신상/, response.body
+    assert_select "#ranking .group a.font-medium", text: @product1.name
+    assert_select "#ranking .group", text: /신상/, count: 0
   end
 
-  # Free shipping badge
-  test "should show free shipping badge for eligible products" do
+  # 배송 안내는 공통 띠에서 제공한다.
+  test "product cards omit free shipping badges while the layout keeps shipping information" do
     get root_url
     assert_response :success
-    # 무료배송 배지 확인
+    assert_select "#ranking .group", text: /무료배송/, count: 0
+    assert_includes response.body, "전 상품 무료배송"
   end
 
   # Navigation menu

@@ -69,8 +69,8 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
       end
       assert_select "footer div:has(> h4)", text: /POLICY/ do
         assert_select "li", count: 2
-        assert_select "a[href=?].font-bold", privacy_policy_path, text: "개인정보처리방침", count: 1
-        assert_select 'span[aria-disabled="true"].font-normal.text-gray-600', count: 1
+        assert_select "a[href=?].font-medium", privacy_policy_path, text: "개인정보처리방침", count: 1
+        assert_select 'span[aria-disabled="true"].font-normal.text-ink-2', count: 1
       end
       assert_not_includes response.body, "Solid Queue"
       assert_select "a", text: "회원가입", count: 0

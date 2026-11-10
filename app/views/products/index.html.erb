@@ -1,3 +1,4 @@
+<% if mall_admin? %>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
   <!-- Header -->
   <div class="flex justify-between items-center mb-8">
@@ -107,3 +108,29 @@
     </div>
   <% end %>
 </div>
+<% else %>
+  <div class="px-gutter py-8">
+    <div class="mb-8">
+      <p class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3">ALL PRODUCTS</p>
+      <h1 class="text-title font-semibold">상품 목록</h1>
+      <p class="text-caption text-ink-3">총 <%= @products.count %>개</p>
+    </div>
+    <% if @products.any? %>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-3 gap-y-7 md:gap-y-10">
+        <%= render partial: "products/card", collection: @products, as: :product, locals: { show_category: true } %>
+      </div>
+    <% elsif params[:q].present? %>
+    <div class="text-center py-20" role="status">
+      <h2 class="text-title font-semibold">검색 결과가 없습니다</h2>
+      <p class="mt-2 text-body text-ink-3">“<%= params[:q] %>”에 해당하는 상품이 없습니다.</p>
+      <p class="mt-1 text-body text-ink-3">다른 검색어를 입력하거나 검색을 초기화해보세요.</p>
+      <%= link_to "검색 초기화", products_path(request.query_parameters.except("q")), class: "mt-6 btn btn-secondary" %>
+    </div>
+    <% else %>
+      <div class="text-center py-20">
+        <h3 class="text-title font-semibold">등록된 상품이 없습니다</h3>
+        <p class="mt-1 text-body text-ink-3">상품을 준비 중입니다. 잠시 후 다시 방문해주세요.</p>
+      </div>
+    <% end %>
+  </div>
+<% end %>

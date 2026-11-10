@@ -12,7 +12,7 @@ class HomeController < ApplicationController
       File.exist?(Rails.public_path.join("intro/runway/#{character.handle}.mp4"))
     end
 
-    @products = Product.published.includes(:reviews, :variants, :worn_character).with_attached_image
+    @products = Product.published.includes(:variants, :worn_character).with_attached_image
 
     # 1. 카테고리(상단 메뉴·아이콘 판): 실제 판매 중인 묶음만
     case params[:category]
@@ -62,7 +62,7 @@ class HomeController < ApplicationController
   def prepare_stories
     Rails.cache.fetch("home-stories", expires_in: 1.hour) do
       STORIES.filter_map do |story|
-        products = Product.published.public_send(story[:scope]).includes(:reviews, :variants, :worn_character).with_attached_image
+        products = Product.published.public_send(story[:scope]).includes(:variants, :worn_character).with_attached_image
           .order(sales_count: :desc, id: :asc).limit(4).to_a
         next if products.empty?
 

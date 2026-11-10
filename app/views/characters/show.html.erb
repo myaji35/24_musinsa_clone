@@ -1,3 +1,6 @@
+<%# 공통 카드는 리뷰를 읽지 않고 옵션과 착용 인물로 캐시를 구성한다. %>
+<% @products = @products.except(:includes).with_attached_image.includes(:variants, :worn_character) %>
+<% @recommended_products = @recommended_products.except(:includes).with_attached_image.includes(:variants, :worn_character) if @recommended_products %>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
   <p class="text-[11px] text-gray-500 mb-4">AI로 만든 가상 인물입니다 · 실존 인물이 아닙니다</p>
   <div class="flex items-center gap-3 mb-6">
@@ -21,14 +24,14 @@
   </dl>
   <% if @products.any? %>
     <h2 class="text-xl font-bold mb-4">착용 상품</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-3 gap-y-7 md:gap-y-10">
       <%= render partial: "products/card", collection: @products, as: :product %>
     </div>
   <% elsif @recommended_products.any? %>
     <section aria-labelledby="recommended-products-title">
       <h2 id="recommended-products-title" class="text-xl font-bold mb-2"><%= @character.name %>에게 추천하는 코디</h2>
       <p class="text-sm text-gray-500 mb-4"><%= @character.name %>이(가) 직접 입은 상품은 아니에요 · 스타일 분석으로 고른 추천이에요</p>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-3 gap-y-7 md:gap-y-10">
         <%= render partial: "products/card", collection: @recommended_products, as: :product %>
       </div>
     </section>

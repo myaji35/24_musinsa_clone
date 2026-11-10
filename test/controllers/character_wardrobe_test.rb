@@ -86,8 +86,8 @@ class CharacterWardrobeTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "section[aria-labelledby=recommended-products-title]" do |section|
       assert_select "h2", text: "강유나에게 추천하는 코디"
-      assert_select "a[href=?]", product_path(@product), count: 1
-      assert_select "a[href=?]", product_path(alternative), count: 1
+      assert_select "h3 a[href=?]", product_path(@product), text: @product.name, count: 1
+      assert_select "h3 a[href=?]", product_path(alternative), text: alternative.name, count: 1
       assert_select "a[href=?]", product_path(excluded), count: 0
       assert_not_includes section.text, "착용"
       assert_includes section.text, "직접 입은 상품은 아니에요"

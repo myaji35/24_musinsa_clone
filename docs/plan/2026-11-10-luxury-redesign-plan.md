@@ -117,7 +117,7 @@ kill $(cat tmp/pids/server3053.pid)
 }
 
 @layer components {
-  /* 가격 — 헬퍼 won() 이 찍는 span 에 붙는다 */
+  /* 가격 — 헬퍼 price_won() 이 찍는 span 에 붙는다 */
   .price { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-ink-2); font-size: var(--text-ui); line-height: var(--text-ui--line-height); }
   .price-lg { font-size: 14px; line-height: 20px; }
   .price-sale { color: var(--color-sale); }
@@ -162,14 +162,14 @@ Oswald 700 은 `intro.css` 가 쓰므로 이 단계에서는 유지한다(Phase 
 ```ruby
 # 가격 표기 단일 지점(DESIGN.md Typography/Price). 되돌릴 때는 이 메서드만 바꾼다.
 # variant: :default(13px) | :lg(14px, 상세·합계)
-def won(amount, variant: :default, sale: false)
+def price_won(amount, variant: :default, sale: false)
   classes = [ "price", ("price-lg" if variant == :lg), ("price-sale" if sale) ].compact.join(" ")
   tag.span("₩ #{number_with_delimiter(amount.to_i)}", class: classes)
 end
 ```
 
-- 이 단계에서 `won()` 을 쓰는 곳: `products/_card.html.erb`, `products/index.html.erb`(손님 분기). 나머지 뷰(상세·장바구니·주문서·매거진·스냅)는 Phase 2·4 에서 차례로 바꾼다.
-- 테스트: `test/helpers/application_helper_test.rb` 에 `won(239000)` → `"₩ 239,000"` 포함·`class="price"` 단언 추가.
+- 이 단계에서 `price_won()` 을 쓰는 곳: `products/_card.html.erb`, `products/index.html.erb`(손님 분기). 나머지 뷰(상세·장바구니·주문서·매거진·스냅)는 Phase 2·4 에서 차례로 바꾼다.
+- 테스트: `test/helpers/application_helper_test.rb` 에 `price_won(239000)` → `"₩ 239,000"` 포함·`class="price"` 단언 추가.
 
 ### 1-4. 헤더·푸터 — `app/views/layouts/application.html.erb` `<body>`
 
@@ -225,8 +225,8 @@ body.bg-paper.text-ink.font-sans.antialiased  (data-controller="lazy-load" 유�
   </div>
   <div class="mt-3 text-left">
     <h3 class="text-ui font-medium text-ink line-clamp-2"><%= product.name %></h3>
-    <p class="mt-1"><%= won(product.price, sale: discount_rate(product) > 0) %>
-      <% if discount_rate(product) > 0 %><s class="ml-2 text-caption text-ink-3"><%= won(discounted_price(product)) %></s><% end %>  <%# 정가/할인가 의미는 기존 헬퍼 동작을 확인한 뒤 맞춘다 %>
+    <p class="mt-1"><%= price_won(product.price, sale: discount_rate(product) > 0) %>
+      <% if discount_rate(product) > 0 %><s class="ml-2 text-caption text-ink-3"><%= price_won(discounted_price(product)) %></s><% end %>  <%# 정가/할인가 의미는 기존 헬퍼 동작을 확인한 뒤 맞춘다 %>
     </p>
     <% if (colors = product.color_names).size > 1 %>
       <p class="mt-1 text-caption text-ink-3"><%= colors.size %>가지 색상</p>
@@ -283,7 +283,7 @@ body.bg-paper.text-ink.font-sans.antialiased  (data-controller="lazy-load" 유�
 ### 1-10. 되돌리기 (Phase 1)
 
 - 전체: `git revert <p1 커밋>`.
-- 가격 표기만: `ApplicationHelper#won` 본문을 `tag.span("#{number_with_delimiter(amount.to_i)}원", class: classes)` 로 바꾸고 시스템 테스트 단언 복원.
+- 가격 표기만: `ApplicationHelper#price_won` 본문을 `tag.span("#{number_with_delimiter(amount.to_i)}원", class: classes)` 로 바꾸고 시스템 테스트 단언 복원.
 - 카드만: `_card.html.erb` 를 `git checkout main -- app/views/products/_card.html.erb` 후 캐시 키를 v5 로 올린다(v3 으로 내리면 10분 캐시가 옛 v3 조각을 되살릴 수 있으므로 **항상 위로** 올린다).
 - 헤더만: 레이아웃 파일을 main 에서 복원하면 폰트 링크도 같이 돌아간다 → 1-2 의 링크 줄을 다시 넣어 토큰(`font-mono`)이 깨지지 않게 한다.
 
@@ -303,7 +303,7 @@ body.bg-paper.text-ink.font-sans.antialiased  (data-controller="lazy-load" 유�
   - `h1.text-2xl.md:text-3xl.font-bold` → `text-title font-semibold`.
   - `detail-headline` p → `text-body text-ink`, sub → `text-body text-ink-2`.
   - 착용 모델 p → `text-caption text-ink-2`, 링크 `font-bold underline` → `underline underline-offset-3`.
-  - 가격 `p.text-3xl.font-bold` → `<%= won(@product.price, variant: :lg) %>`.
+  - 가격 `p.text-3xl.font-bold` → `<%= price_won(@product.price, variant: :lg) %>`.
   - `div.h-px.bg-gray-200` 삭제(선택 행이 선을 가진다).
   - **선택 행**(`fieldset[data-testid="variant-picker"]`): fieldset 에 `border-y border-line py-4 space-y-4`. legend "색상 / 사이즈" → `text-ui font-medium`(legend 는 fieldset 밖으로 그려지므로 `float-left w-full mb-3` 처리). 색상 라벨 `w-28 text-sm text-gray-800` → `w-28 text-ui`. 사이즈 라벨 span: `min-w-12 h-11 px-3 border border-gray-300 text-sm font-medium … peer-checked:ring-1` → `min-w-12 h-11 px-3 border border-hairline text-ui font-medium peer-checked:border-ink peer-disabled:text-ink-3 peer-disabled:line-through`(ring 제거). "사이즈 안내" → `btn-text text-ui`.
   - 배송 p → `text-caption text-ink-2`, `font-bold` → `font-medium`.
@@ -323,7 +323,7 @@ body.bg-paper.text-ink.font-sans.antialiased  (data-controller="lazy-load" 유�
 <% heading = "text-[20px] md:text-[22px] font-semibold leading-snug tracking-[-0.015em] text-balance" %>
 ```
 
-추가 교체: `bg-[#f6f2ec]`·`bg-gray-50` → `bg-paper-2`; `bg-gray-100` → `bg-placeholder`; `text-gray-700/800` → `text-ink-2`; `text-gray-500/600` → `text-ink-3`; `text-[#8a6a4a]` → `text-ink-3`; `text-[#e7c9a5]` → `text-inverse`; `font-bold` → `font-semibold`; `text-lg font-bold` → `text-title font-semibold`; `text-[15px]` → `text-body`; `text-[17px] font-bold tabular-nums … 원` → `won(item.price, variant: :lg)`; `text-xs font-bold` 배지("실물 디테일"·"실물") → `text-caption font-medium`; 하단 CTA `a.bg-white.text-black.font-bold.py-4` → `btn btn-primary w-full` 의 반전(`bg-inverse text-ink border-inverse`). `bg-[#1b1b1d]` 섹션은 `bg-ink` 로. 모바일 구매 바: `bg-white border-t border-gray-200` → `bg-paper border-t border-line`, 가격 → `won(product.price, variant: :lg)`, 버튼 → `btn btn-primary h-11 flex-1 max-w-[60%]`.
+추가 교체: `bg-[#f6f2ec]`·`bg-gray-50` → `bg-paper-2`; `bg-gray-100` → `bg-placeholder`; `text-gray-700/800` → `text-ink-2`; `text-gray-500/600` → `text-ink-3`; `text-[#8a6a4a]` → `text-ink-3`; `text-[#e7c9a5]` → `text-inverse`; `font-bold` → `font-semibold`; `text-lg font-bold` → `text-title font-semibold`; `text-[15px]` → `text-body`; `text-[17px] font-bold tabular-nums … 원` → `price_won(item.price, variant: :lg)`; `text-xs font-bold` 배지("실물 디테일"·"실물") → `text-caption font-medium`; 하단 CTA `a.bg-white.text-black.font-bold.py-4` → `btn btn-primary w-full` 의 반전(`bg-inverse text-ink border-inverse`). `bg-[#1b1b1d]` 섹션은 `bg-ink` 로. 모바일 구매 바: `bg-white border-t border-gray-200` → `bg-paper border-t border-line`, 가격 → `price_won(product.price, variant: :lg)`, 버튼 → `btn btn-primary h-11 flex-1 max-w-[60%]`.
 
 ### 2-3. `app/views/products/_spec.html.erb`, `_spec_measurements.html.erb`, `_return_policy.html.erb`
 
@@ -352,7 +352,7 @@ body.bg-paper.text-ink.font-sans.antialiased  (data-controller="lazy-load" 유�
 
 ### 2-7. 되돌리기
 
-`git revert <p2 커밋>`. 상세만 되돌리고 Phase 1 을 유지해도 `won()`·토큰은 그대로라 깨지지 않는다(상세 가격은 `원` 표기로 돌아가고 테스트 단언도 같이 되돌아간다).
+`git revert <p2 커밋>`. 상세만 되돌리고 Phase 1 을 유지해도 `price_won()`·토큰은 그대로라 깨지지 않는다(상세 가격은 `원` 표기로 돌아가고 테스트 단언도 같이 되돌아간다).
 
 ---
 
@@ -392,15 +392,15 @@ body.bg-paper.text-ink.font-sans.antialiased  (data-controller="lazy-load" 유�
 
 | 파일 | 바꿀 것 |
 |---|---|
-| `app/views/carts/show.html.erb` | h1 → 아이브로 "CART" + `text-title font-semibold`. 항목 `border-b border-gray-300 py-4` → `border-b border-hairline py-5`. 상품명 `font-bold` → `text-ui font-medium`. 옵션 `text-sm` → `text-caption text-ink-3`. 금액 → `won(item.line_total)`. 수량 입력 `w-20 border border-gray-400 p-2` → `field w-24 h-11`. "변경" → `btn btn-secondary h-11 px-4`. "삭제" → `btn-text text-caption`. 합계 `text-xl font-bold` → `flex justify-between border-t border-line pt-4 text-ui font-medium` + `won(@cart.total, variant: :lg)`. "비회원 주문하기" → `btn btn-primary w-full`. 빈 장바구니: `text-body text-ink-2` + "상품 둘러보기" `btn btn-secondary`. |
-| `app/views/checkouts/new.html.erb` | h1 동일 패턴("CHECKOUT"). 오류 박스 `border border-black p-4` → `border border-sale text-sale px-4 py-3 text-body`. 항목 ul `border border-gray-300 divide-y divide-gray-200` → `border-y border-line divide-y divide-hairline`, 금액 → `won()`. 합계 → `won(@cart.total, variant: :lg)`. 라벨 `text-sm font-bold` → `text-ui font-medium`. 입력 `w-full min-w-0 border border-gray-400 p-3` → `field`. 안내문 `text-sm text-gray-600` → `text-caption text-ink-3`. 제출 버튼 → `btn btn-primary w-full`. 필드 이름·`inputmode`·`required`·체크박스·`data-testid` 는 유지. |
-| `app/views/customer_orders/lookup.html.erb`, `show.html.erb`, `_payment_instruction.html.erb` | 같은 매핑(제목·라벨·입력·버튼·금액 `won()`). 표가 있으면 머리 `text-ui font-medium text-ink-3`, 셀 `text-body`, 행 `border-hairline`. |
+| `app/views/carts/show.html.erb` | h1 → 아이브로 "CART" + `text-title font-semibold`. 항목 `border-b border-gray-300 py-4` → `border-b border-hairline py-5`. 상품명 `font-bold` → `text-ui font-medium`. 옵션 `text-sm` → `text-caption text-ink-3`. 금액 → `price_won(item.line_total)`. 수량 입력 `w-20 border border-gray-400 p-2` → `field w-24 h-11`. "변경" → `btn btn-secondary h-11 px-4`. "삭제" → `btn-text text-caption`. 합계 `text-xl font-bold` → `flex justify-between border-t border-line pt-4 text-ui font-medium` + `price_won(@cart.total, variant: :lg)`. "비회원 주문하기" → `btn btn-primary w-full`. 빈 장바구니: `text-body text-ink-2` + "상품 둘러보기" `btn btn-secondary`. |
+| `app/views/checkouts/new.html.erb` | h1 동일 패턴("CHECKOUT"). 오류 박스 `border border-black p-4` → `border border-sale text-sale px-4 py-3 text-body`. 항목 ul `border border-gray-300 divide-y divide-gray-200` → `border-y border-line divide-y divide-hairline`, 금액 → `price_won()`. 합계 → `price_won(@cart.total, variant: :lg)`. 라벨 `text-sm font-bold` → `text-ui font-medium`. 입력 `w-full min-w-0 border border-gray-400 p-3` → `field`. 안내문 `text-sm text-gray-600` → `text-caption text-ink-3`. 제출 버튼 → `btn btn-primary w-full`. 필드 이름·`inputmode`·`required`·체크박스·`data-testid` 는 유지. |
+| `app/views/customer_orders/lookup.html.erb`, `show.html.erb`, `_payment_instruction.html.erb` | 같은 매핑(제목·라벨·입력·버튼·금액 `price_won()`). 표가 있으면 머리 `text-ui font-medium text-ink-3`, 셀 `text-body`, 행 `border-hairline`. |
 | `app/views/sessions/new.html.erb` | h1 "관리자 로그인" 문구 유지, `text-title font-semibold`. 라벨 `text-ui font-medium mb-2`, 입력 `field`, 버튼 `btn btn-primary w-full`. `max-w-md` → `max-w-[400px]`. |
 | `app/views/account_signups/new.html.erb` | 같은 폼 매핑(가입 플래그 꺼짐이라 노출 안 되지만 통일). |
 | `app/views/policies/privacy.html.erb`, `returns.html.erb` | 읽기 열. h1 `text-title font-semibold`, h2 `text-ui font-medium mt-10 mb-3`, 본문 `text-body text-ink-2`, 표 hairline. |
-| `app/views/magazine/index.html.erb`, `show.html.erb` | 제목·본문 매핑, 상품 그리드는 Phase 1 공통 그리드(이미 적용), 금액 `won()`. |
+| `app/views/magazine/index.html.erb`, `show.html.erb` | 제목·본문 매핑, 상품 그리드는 Phase 1 공통 그리드(이미 적용), 금액 `price_won()`. |
 | `app/views/characters/show.html.erb` | 머리 매핑, 카드 그리드는 Phase 1 적용 확인. |
-| `app/views/snaps/show.html.erb` | 금액 `won()`·색 매핑만(링크 안 되는 화면이라 최소). |
+| `app/views/snaps/show.html.erb` | 금액 `price_won()`·색 매핑만(링크 안 되는 화면이라 최소). |
 | `app/views/feedbacks/new.html.erb` | 폼 매핑(`field`, `btn`). |
 
 테스트: `grep -rn "원\"\|원<\|원 " test/ --include=*.rb` 로 가격 단언을 찾아 `₩ ` 형식으로 수정. `bin/rails test`(전체).
@@ -448,7 +448,7 @@ body.bg-paper.text-ink.font-sans.antialiased  (data-controller="lazy-load" 유�
 | `border border-black`(버튼) | `btn btn-secondary` | |
 | `underline`(링크 버튼) | `btn-text` | |
 | `px-3 py-1.5 text-xs border …`(칩) | `chip` (+`is-selected`) | |
-| `number_to_currency(x, unit: "", precision: 0)` + `원` | `won(x)` / `won(x, variant: :lg)` | |
+| `number_to_currency(x, unit: "", precision: 0)` + `원` | `price_won(x)` / `price_won(x, variant: :lg)` | |
 | `transition-all`, `duration-300`, `ease-in-out` | `transition-colors duration-200 ease-[var(--ease-out)]` | transform 이면 `duration-400` |
 
 ## 부록 B. 캡처 체크리스트(모든 단계 공통)
@@ -471,3 +471,5 @@ body.bg-paper.text-ink.font-sans.antialiased  (data-controller="lazy-load" 유�
 | 5 | 카드에서 빼는 정보 | A 배지·별점·색상 점·사이즈 범위를 카드에서 빼고 상세로(두 레퍼런스 동일) / B "N가지 색상" 외에 품절·신상 글자 캡션은 남김 | **A**. 품절은 Phase 2 상세에서 사이즈별로 보임 |
 
 **결정(2026-11-10 대표님 "추천대로 진행해"):** 1-A `₩ 239,000` · 2-A Oswald 500 정체 대문자 · 3-A 기본 13px(두 줄 이상 한글 14/22) · 4-A 인트로 유지·글자만 · 5-A 카드는 이름·가격(+N가지 색상)만.
+
+**구현 중 발견(2026-11-10 Phase 1):** 가격 헬퍼를 `won` 으로 만들면 `ProductAnalysesHelper#won`(관리자 분석 화면)에 덮여 손님 가격이 span 없이 평문으로 나온다(Rails 는 모든 헬퍼를 한 공간에 섞음). 이름을 `price_won` 으로 바꾸고, 컨트롤러 테스트에 `span.price` 단언을 넣어 회귀를 막았다. 새 헬퍼는 `grep -rn "def <이름>" app/helpers` 로 충돌부터 확인할 것.

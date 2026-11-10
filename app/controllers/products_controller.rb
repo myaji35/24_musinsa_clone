@@ -8,6 +8,7 @@ class ProductsController < ApplicationController
     @products = mall_admin? ? Product.with_attached_image : Product.published.with_attached_image
 
     @products = @products.includes(:variants)
+    @products = @products.includes(:worn_character) unless mall_admin?
 
     # 카테고리 필터
     @products = @products.where(category: params[:category]) if params[:category].present?

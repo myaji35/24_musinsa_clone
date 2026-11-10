@@ -2,9 +2,14 @@
   <%= render 'home/intro' %>
 <% end %>
 
-<div id="shop" class="max-w-[1600px] mx-auto px-4 md:px-8 py-6">
+<div id="shop" class="px-gutter py-6">
   <% if params[:q].present? && @ranked_products.empty? %>
-    <%= render "products/search_empty", reset_path: root_path(request.query_parameters.except("q")) %>
+    <div class="text-center py-20" role="status">
+      <h2 class="text-title font-semibold">검색 결과가 없습니다</h2>
+      <p class="mt-2 text-body text-ink-3">“<%= params[:q] %>”에 해당하는 상품이 없습니다.</p>
+      <p class="mt-1 text-body text-ink-3">다른 검색어를 입력하거나 검색을 초기화해보세요.</p>
+      <%= link_to "검색 초기화", root_path(request.query_parameters.except("q")), class: "mt-6 btn btn-secondary" %>
+    </div>
   <% else %>
     <% if @stories.present? %>
       <%= render "home/category_grid" %>
@@ -15,19 +20,19 @@
 
     <%# 랭킹 섹션 %>
     <div class="mt-16" id="ranking">
-      <div class="flex items-center justify-between mb-4 border-b border-black pb-3">
-          <h2 class="text-2xl font-bold text-black tracking-tight">JIEUM 랭킹</h2>
-          <div class="text-xs text-gray-600 font-medium tabular-nums">
+      <div class="flex items-center justify-between mb-4 border-b border-line pb-3">
+          <div><p class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3">RANKING</p><h2 class="text-title font-semibold">JIEUM 랭킹</h2></div>
+          <div class="text-caption text-ink-3 tabular-nums">
             <%= Time.current.strftime("%m.%d %H:00") %> 갱신
           </div>
       </div>
 
       <%# 카테고리 필터 %>
       <div class="flex flex-wrap gap-2 mb-8">
-         <%= link_to "전체", root_path(q: params[:q], sort: params[:sort]), class: "px-3 py-1.5 text-xs font-bold border transition-all #{params[:category].blank? || params[:category] == '전체' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:text-black'}" %>
+         <%= link_to "전체", root_path(q: params[:q], sort: params[:sort]), class: "chip #{params[:category].blank? || params[:category] == '전체' ? 'is-selected' : ''}" %>
 
          <% shop_categories.map(&:first).each do |cat| %>
-            <%= link_to cat, root_path(category: cat, q: params[:q], sort: params[:sort]), class: "px-3 py-1.5 text-xs font-medium border transition-all #{params[:category] == cat ? 'bg-black text-white border-black font-bold' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:text-black'}" %>
+            <%= link_to cat, root_path(category: cat, q: params[:q], sort: params[:sort]), class: "chip #{params[:category] == cat ? 'is-selected' : ''}" %>
          <% end %>
       </div>
 
@@ -35,15 +40,13 @@
       <%= render 'home/filter_section' %>
 
       <%# 상품 그리드 (ProductCard partial 사용) - Russian Doll Caching %>
-      <% cache(["ranked-products-grid", @ranked_products.maximum(:updated_at), params[:category], params[:sort], params[:q]], expires_in: 10.minutes) do %>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-8 sm:gap-x-4">
+      <% cache(["ranked-products-grid-v3", @ranked_products.maximum(:updated_at), params[:category], params[:sort], params[:q]], expires_in: 10.minutes) do %>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-3 gap-y-7 md:gap-y-10">
           <% @ranked_products.each_with_index do |product, index| %>
             <div class="relative">
               <%# 랭킹 배지 오버레이 %>
-              <div class="absolute top-0 left-0 z-10">
-                  <div class="bg-black/90 text-white font-oswald text-lg px-2.5 py-1 leading-none font-bold">
+              <div class="absolute top-0 left-0 z-10 w-6 h-6 grid place-items-center bg-ink text-inverse font-display text-caption">
                       <%= index + 1 %>
-                  </div>
               </div>
 
               <%= render 'products/card', product: product %>

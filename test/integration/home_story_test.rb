@@ -5,7 +5,7 @@ class HomeStoryTest < ActionDispatch::IntegrationTest
     assert_kind_of ActiveSupport::Cache::NullStore, Rails.cache
   end
 
-  test "홈은 룩북 사진 다음에 그 묶음 상품 4개를 보여주고 카테고리 아이콘 판을 둔다" do
+  test "홈은 룩북 사진 다음에 그 묶음 상품 4개를 보여주고 카테고리 텍스트 목록을 둔다" do
     coat = Product.create!(name: "숄칼라 벨티드 울 랩코트", price: 189000, brand: "JIEUM", category: "Outer", supplier_product_code: "JIEUM-G01")
     coat.variants.create!(color: "카멜", size: "M", stock: 3)
 
@@ -18,6 +18,11 @@ class HomeStoryTest < ActionDispatch::IntegrationTest
       assert_select "img[srcset*=?]", "look1-1440.webp"
     end
     assert_select "#category-grid", text: "카테고리로 찾기"
+    assert_select 'section[aria-labelledby="category-grid"]' do
+      assert_select "ul li", count: 5
+      assert_select "a[href=?]", root_path(category: "패딩", anchor: "ranking"), text: "▸ 패딩"
+      assert_select "svg, img", count: 0
+    end
     assert_select "a[href=?]", root_path(category: "패딩", anchor: "ranking")
   end
 

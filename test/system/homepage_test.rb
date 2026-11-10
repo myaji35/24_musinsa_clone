@@ -53,7 +53,10 @@ class HomepageTest < ApplicationSystemTestCase
     visit root_url
 
     # 상품 메뉴 클릭
-    click_link "상품", match: :first
+    find("summary", text: "메뉴").click
+    within "header details[open]" do
+      click_link "상품", exact: true
+    end
     assert_current_path products_path
 
     # 홈으로 돌아가기

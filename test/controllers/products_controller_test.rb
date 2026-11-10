@@ -1,6 +1,15 @@
 require "test_helper"
 
 class ProductsControllerTest < ActionDispatch::IntegrationTest
+  test "손님 상품 목록은 원화 가격을 span으로 표시한다" do
+    get products_path
+
+    assert_response :success
+    assert_select ".grid span.price", minimum: 1 do |prices|
+      prices.each { |price| assert_match(/\A₩ /, price.text) }
+    end
+  end
+
   test "상품 거래처 목록과 생성 수정은 현재 계정으로 제한된다" do
     sign_in
     foreign = Supplier.create!(account: accounts(:other), name: "외부 거래처", phone: "02-9999-9999", active: true)
@@ -138,6 +147,11 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select ".grid a", text: @product.name
+    assert_select ".grid a.font-medium.text-ui.text-ink[href=?]", product_path(@product), text: @product.name
+    assert_select '.grid a[tabindex="-1"][href=?]', product_path(@product), count: 1
+    assert_select '.grid a[tabindex="-1"][aria-hidden]', count: 0
+    assert_select ".grid a button", count: 0
+    assert_select '.grid button[data-wishlist-target="button"][aria-pressed="false"]', count: 1
     assert_select ".grid", text: /재고:/, count: 0
     assert_select ".grid span", text: "품절", count: 0
   end

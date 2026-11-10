@@ -1,0 +1,17 @@
+<% business = BusinessInfo.new %>
+<div role="region" class="space-y-3 text-xs leading-relaxed break-words" aria-label="사업자 정보">
+  <h2 class="font-bold text-black">사업자 정보</h2>
+  <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+    <% BusinessInfo::LABELS.each do |key, label| %>
+      <div>
+        <dt class="inline font-bold"><%= label %>:</dt>
+        <dd class="inline">
+          <%= business.public_send(key) || "등록 준비 중" %>
+          <% if key == :registration_number && business.registration_digits.present? %>
+            <%= link_to "사업자정보 확인", "https://www.ftc.go.kr/bizCommPop.do?wrkr_no=#{business.registration_digits}", target: "_blank", rel: "noopener", class: "underline" %>
+          <% end %>
+        </dd>
+      </div>
+    <% end %>
+  </dl>
+</div>

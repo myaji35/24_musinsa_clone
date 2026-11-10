@@ -176,10 +176,11 @@
                    <h4 class="font-bold text-black mb-3">POLICY</h4>
                    <ul class="space-y-3">
                        <li><%= link_to "개인정보처리방침", privacy_policy_path, class: "inline-block py-1 font-bold hover:underline" %></li>
-                       <li><span class="inline-block py-1 font-normal text-gray-600" aria-disabled="true">이용약관 <span class="text-[11px] text-gray-500">(준비 중)</span></span></li>
+                       <li><%= link_to "이용약관", terms_policy_path, class: "inline-block py-1 hover:underline" %></li>
                    </ul>
                 </div>
             </div>
+            <div class="mb-8"><%= render "shared/business_info" %></div>
             <div class="border-t border-gray-200 pt-8 text-center md:text-left text-xs text-gray-600">
                 <p>🤖 Generated with <a href="https://claude.com/claude-code" class="underline hover:text-black">Claude Code</a> · COPYRIGHT (C) 2026 JIEUM ALL RIGHTS RESERVED.</p>
             </div>

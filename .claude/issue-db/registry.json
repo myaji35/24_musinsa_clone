@@ -3405,7 +3405,7 @@
     },
     {
       "id": "ISS-070",
-      "status": "BACKLOG",
+      "status": "DONE",
       "priority": "P1",
       "type": "FEATURE",
       "title": "유입원 추적 — 캐릭터·플랫폼·영상별 링크 + 주문에 유입원 저장",
@@ -3428,17 +3428,23 @@
             "at": "2026-10-19T04:01:58.960Z",
             "by": "auto",
             "reason": "유입원을 저장할 주문(ISS-059)이 아직 main 에 병합되지 않음. ISS-059 배포 승인 후 자동으로 착수 가능"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "SeoulLive ISS-187 선행 — 주문에 유입 링크 코드(utm) 저장"
           }
         ],
-        "approved_at": null,
-        "approved_by": null,
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
         "recommendation": {
-          "verdict": "보류 권장",
-          "reason": "유입원을 저장할 주문(ISS-059)이 아직 main 에 병합되지 않음. ISS-059 배포 승인 후 자동으로 착수 가능",
-          "risk": "low",
+          "verdict": "승인 권장",
+          "reason": "orders 에 nullable 컬럼만 추가(확장 단계)하고 유입 링크 파라미터를 세션에 30일 보관해 주문 생성 시 기록. 결제·개인정보 흐름은 건드리지 않아 main 직행, SeoulLive ISS-187 의 링크 집계 기반",
+          "risk": "낮음",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-10-19T03:55:28.287983+00:00"
+          "at": "2026-11-09T23:57:08.918256+00:00"
         },
         "auto_approval_ignored": {
           "approved_at": "2026-10-19T03:54:26.224Z",
@@ -3452,12 +3458,106 @@
             "at": "2026-10-19T03:55:28.287983+00:00",
             "by": "factory-runner",
             "note": "선행 ISS-059(자사몰 커머스 코어)가 배포 전 대표님 검토 대기 — 주문 테이블이 main 에 없어 착수 불가"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-09T23:57:08.918256+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — 주문 유입원(utm·캐릭터·영상) 저장, nullable 컬럼 추가형이라 main"
           }
         ],
         "blocked_reason": "선행 ISS-059(자사몰 커머스 코어)가 배포 전 대표님 검토 대기 — 주문 테이블이 main 에 없어 착수 불가",
-        "deferred_at": "2026-10-19T04:01:58.960Z"
+        "deferred_at": "2026-10-19T04:01:58.960Z",
+        "promoted_by": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "SeoulLive ISS-187 선행 — 주문에 유입 링크 코드(utm) 저장",
+            "risk": "낮음",
+            "effort": "M",
+            "by": "session",
+            "at": "2026-11-09T23:56:06.276013+00:00"
+          }
+        ],
+        "acceptance_criteria": [
+          "캐릭터·플랫폼·영상이 들어간 링크(예: /?utm_source=youtube&utm_content=<영상ID>&ch=<캐릭터 handle>)로 들어온 손님이 주문하면 그 주문에 플랫폼·캐릭터·영상 ID·링크 코드가 저장된다",
+          "링크 없이 들어온 주문은 유입원이 비어 있고 주문은 그대로 정상 처리된다(기존 주문·이전 코드 영향 없음)",
+          "관리자 주문 화면에서 주문별 유입원을 보고, 플랫폼·캐릭터·영상별 주문 수·매출 집계를 볼 수 있다",
+          "추가형 변경(nullable 컬럼·인덱스)만 쓰고 전체 테스트·rubocop 이 통과한다"
+        ]
       },
-      "updated_at": "2026-10-19T04:01:58.960Z"
+      "updated_at": "2026-11-09T23:57:08.918256+00:00",
+      "status_history": [
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "SeoulLive ISS-187 선행 — 주문에 유입 링크 코드(utm) 저장"
+        }
+      ],
+      "result": {
+        "summary": "주문 유입원 추적 구현(c65ee6e). utm_source·utm_campaign·utm_content·ch(캐릭터 handle)·lc(링크 코드) 링크로 들어온 손님의 유입을 세션에 30일 보관하고 주문 생성 시 orders.source_* 에 저장. 관리자 주문 화면에 주문별 '유입' 열과 플랫폼·캐릭터·영상별 주문 수·매출 집계 추가. nullable 컬럼 6개·인덱스 3개만 추가(확장 단계). SeoulLive ISS-187 링크 집계의 기반",
+        "files_changed": [
+          "app/controllers/concerns/traffic_source_tracking.rb",
+          "app/controllers/application_controller.rb",
+          "app/controllers/checkouts_controller.rb",
+          "app/services/orders/intake.rb",
+          "app/models/order.rb",
+          "app/controllers/admin_orders_controller.rb",
+          "app/views/admin_orders/index.html.erb",
+          "db/migrate/20261110000070_add_traffic_source_to_orders.rb",
+          "db/schema.rb",
+          "test/controllers/checkouts_controller_test.rb",
+          "test/controllers/admin_orders_controller_test.rb",
+          "test/services/orders/intake_test.rb",
+          "test/models/order_test.rb"
+        ],
+        "commit": "c65ee6e",
+        "criteria_check": [
+          {
+            "criterion": "캐릭터·플랫폼·영상이 들어간 링크(예: /?utm_source=youtube&utm_content=<영상ID>&ch=<캐릭터 handle>)로 들어온 손님이 주문하면 그 주문에 플랫폼·캐릭터·영상 ID·링크 코드가 저장된다",
+            "met": true,
+            "how": "실제 앱(포트 3170, 개발 DB 복사본)에서 /products/228?utm_source=YouTube&utm_campaign=snow-runway&utm_content=vid_ABC123&ch=SoERIN&lc=SL01 → 바로구매 → 주문서 제출 → DB 주문 행 source_platform=youtube, campaign=snow-runway, video_id=vid_ABC123, link_code=SL01, source_character_id=10(SoERIN). 통합 테스트 '유입 링크부터 주문까지…' 통과"
+          },
+          {
+            "criterion": "링크 없이 들어온 주문은 유입원이 비어 있고 주문은 그대로 정상 처리된다(기존 주문·이전 코드 영향 없음)",
+            "met": true,
+            "how": "테스트 '링크 없는 주문에는 유입 정보가 없다'·'31일 지난 유입은…' 통과, 기존 주문 43건은 관리자 화면에 '직접'으로 표시, Intake 의 traffic_source 는 선택 인자라 API 등 다른 호출부 무변경"
+          },
+          {
+            "criterion": "관리자 주문 화면에서 주문별 유입원을 보고, 플랫폼·캐릭터·영상별 주문 수·매출 집계를 볼 수 있다",
+            "met": true,
+            "how": "관리자 로그인 후 /admin_orders 화면 실측: 집계 표 3개(플랫폼별 youtube 3건 657,000원 / 캐릭터별 에린 소 / 영상별 vid_ABC123), 주문 행 '유입' 열 'youtube · 에린 소 · vid_ABC123' 확인(스크린샷 /tmp/ujt/scripts1110f/iss070-admin.png)"
+          },
+          {
+            "criterion": "추가형 변경(nullable 컬럼·인덱스)만 쓰고 전체 테스트·rubocop 이 통과한다",
+            "met": true,
+            "how": "마이그레이션은 add_column(nullable)·add_index 만. 전체 bin/rails test 592 runs 0 failures, bin/rubocop 341 files no offenses"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd musinsa_clone && source ~/.claude/factory-runner/scripts/env0053.sh && LANG=en_US.UTF-8 bin/rails test test/controllers/checkouts_controller_test.rb test/controllers/admin_orders_controller_test.rb test/services/orders/intake_test.rb test/models/order_test.rb",
+            "exit_code": 0,
+            "output": "41 runs, 348 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "cd musinsa_clone && source ~/.claude/factory-runner/scripts/env0053.sh && LANG=en_US.UTF-8 bin/rails test",
+            "exit_code": 0,
+            "output": "592 runs, 4682 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "cd musinsa_clone && source ~/.claude/factory-runner/scripts/env0053.sh && bin/rubocop",
+            "exit_code": 0,
+            "output": "341 files inspected, no offenses detected"
+          }
+        ],
+        "notes": "공용 개발 DB(development)에는 아직 마이그레이션을 적용하지 않았다(main 병합분이라 적용 가능, 다음 서버 기동 시 db:migrate 필요). 운영 반영은 실행기 출고 순서를 따른다. 유입 쿠키는 1st-party 세션이며 IP·UA·개인정보는 저장하지 않는다.",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T09:06:07.877751"
     },
     {
       "id": "ISS-071",
@@ -5832,13 +5932,13 @@
     },
     {
       "id": "ISS-107",
-      "status": "BACKLOG",
+      "status": "READY",
       "priority": "P2",
       "type": "FEATURE",
       "origin": "factory-runner",
       "title": "몰 하단 사업자 정보 고지 + 주문서 청약철회·환불 안내 + 이용약관·개인정보처리방침 화면",
       "created_at": "2026-10-19T03:59:23.677324+00:00",
-      "updated_at": "2026-10-28T20:59:30.069357+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
       "depends_on": [
         "ISS-059"
       ],
@@ -5848,12 +5948,12 @@
         "gate": "deploy",
         "blocked_reason": "선행 ISS-059 미병합 + 사업자 실제 값(사업자등록번호·통신판매업 신고번호 등) 미수령 — 가짜 값으로 고지하면 허위 표시가 더 위험",
         "recommendation": {
-          "verdict": "보류 권장",
-          "reason": "주문서(ISS-059)가 main 에 들어오고 대표님이 사업자 정보를 주면 바로 구현 가능. 법적 고지라 배포 전 대표님 확인(gate=deploy)",
-          "risk": "medium",
+          "verdict": "승인 권장",
+          "reason": "SeoulLive ISS-179 선행 — 화면 구조 먼저, 사업자 정보 값(상호·대표자·주소·사업자번호·통신판매업 번호)은 ask_kind provide_value 로 대표님께 요청(기억 검색 결과 없음, 값 지어내기 금지)",
+          "risk": "낮음",
           "effort": "M",
-          "by": "factory-runner",
-          "at": "2026-10-19T03:59:23.677324+00:00"
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
         },
         "decisions": [
           {
@@ -5861,6 +5961,12 @@
             "at": "2026-10-19T04:01:58.960Z",
             "by": "auto",
             "reason": "주문서(ISS-059)가 main 에 들어오고 대표님이 사업자 정보를 주면 바로 구현 가능. 법적 고지라 배포 전 대표님 확인(gate=deploy)"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "SeoulLive ISS-179 선행 — 화면 구조 먼저, 사업자 정보 값(상호·대표자·주소·사업자번호·통신판매업 번호)은 ask_kind provide_value 로 대표님께 요청(기억 검색 결과 없음, 값 지어내기 금지)"
           }
         ],
         "deferred_at": "2026-10-19T04:01:58.960Z",
@@ -5879,8 +5985,20 @@
             "by": "factory-runner",
             "observed": "개인정보처리방침 화면은 ISS-157 브랜치(35e0e99)에서 구현 — PRIVACY_* 설정값 방식. 이 카드에는 사업자 정보 푸터 고지·청약철회 안내·이용약관이 남음."
           }
-        ]
-      }
+        ],
+        "promoted_by": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "status_history": [
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "SeoulLive ISS-179 선행 — 화면 구조 먼저, 사업자 정보 값(상호·대표자·주소·사업자번호·통신판매업 번호)은 ask_kind provide_value 로 대표님께 요청(기억 검색 결과 없음, 값 지어내기 금지)"
+        }
+      ]
     },
     {
       "id": "ISS-108",
@@ -12972,6 +13090,2620 @@
         "browser": "관리자 12 + 손님/모바일 11 항목 통과",
         "pending": "병합 승인, 실측·소재 실제 값 입력(원천 데이터 없음)"
       }
+    },
+    {
+      "id": "ISS-175",
+      "title": "[SeoulLive 결정] 개발 위치 — 새 앱 vs JIEUM 몰(musinsa_clone) 확장",
+      "type": "DECISION",
+      "priority": "P0",
+      "size": "S",
+      "status": "DONE",
+      "origin": "session",
+      "depends_on": [],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "ask_kind": "decision",
+        "ask_prompt": "SeoulLive를 어디에 만들까요?",
+        "question": "SeoulLive를 어디에 만들까요?",
+        "plain_summary": "라이브 송출·플레이아웃·셀러 플랫폼은 지금 쇼핑몰과 성격이 다릅니다. 새 앱으로 따로 만들지, 지금 몰 코드에 붙일지 정해야 첫 개발을 시작할 수 있습니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "방송·플랫폼은 새 앱(seoullive), 상품·재고·주문은 JIEUM 몰을 기준 데이터로 연결",
+            "pros": "몰 운영에 영향 없음, 미디어 서버·실시간 처리를 따로 키울 수 있음",
+            "cons": "두 앱 사이 연동(API) 작업이 생김"
+          },
+          {
+            "key": "B",
+            "label": "JIEUM 몰(musinsa_clone)에 모두 추가",
+            "pros": "계정·상품·재고를 바로 씀(ISS-173 테넌트 재사용)",
+            "cons": "몰이 무거워지고 방송 장애가 몰 장애로 번질 수 있음"
+          },
+          {
+            "key": "C",
+            "label": "검증 단계(ISS-176 A)가 끝날 때까지 보류",
+            "pros": "검증은 몰·쇼피파이·유튜브만으로 가능",
+            "cons": "플랫폼 개발 시작이 늦어짐"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "몰 운영 안정성을 지키면서 재고 단일 소스 원칙(PRD 4.1)도 지킬 수 있음",
+        "if_not_decided": "개발 카드 ISS-184~202 착수 불가",
+        "reversible": "예 — 초기에 바꾸면 비용 작음",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "대표님이 추천안 A 선택",
+          "risk": "낮음",
+          "effort": "S",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decision": {
+          "key": "A",
+          "label": "방송·플랫폼은 새 앱(seoullive), 상품·재고·주문은 JIEUM 몰을 기준 데이터로 연결",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "대표님(대화)",
+          "note": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'"
+        },
+        "decisions": [
+          {
+            "action": "decide",
+            "at": "2026-11-09T23:54:35.669Z",
+            "by": "대표님(헤르메스)",
+            "note": "관제 자율 결정"
+          }
+        ],
+        "approved_at": "2026-11-09T23:56:06.276013+00:00",
+        "approved_by": "대표님(대화)",
+        "user_response": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "AWAITING_USER",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "DONE",
+          "to": "DONE",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "대표님 결정 A: 방송·플랫폼은 새 앱(seoullive), 상품·재고·주문은 JIEUM 몰을 기준 데이터로 연결"
+        }
+      ],
+      "completed_at": "2026-11-09T23:56:06.276013+00:00"
+    },
+    {
+      "id": "ISS-176",
+      "title": "[SeoulLive 결정] MVP 범위 — AI 트랙 검증 먼저 vs PRD 원안(셀러 베타까지)",
+      "type": "DECISION",
+      "priority": "P0",
+      "size": "S",
+      "status": "DONE",
+      "origin": "session",
+      "depends_on": [],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "ask_kind": "decision",
+        "ask_prompt": "MVP를 AI 방송 판매 검증부터 할까요, PRD 원안대로 셀러 플랫폼까지 한 번에 만들까요?",
+        "question": "MVP를 AI 방송 판매 검증부터 할까요, PRD 원안대로 셀러 플랫폼까지 한 번에 만들까요?",
+        "plain_summary": "PRD 원안의 MVP(3~8주)에는 모듈 13개, 스튜디오 2개, 셀러 10명이 들어 있습니다. 핵심 질문인 'AI 방송이 시간당 몇 벌 파는가'는 유튜브 라이브와 기존 몰·쇼피파이만으로도 먼저 확인할 수 있습니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "검증 먼저(약 4주): AI 15분 사이클을 유튜브 라이브로 송출하고, QR·링크로 JIEUM 몰·쇼피파이로 보내 링크별 판매를 측정",
+            "pros": "스튜디오·CDN·셀러 모집 투자 전에 숫자를 확인",
+            "cons": "셀러 매출은 늦게 시작"
+          },
+          {
+            "key": "B",
+            "label": "PRD 원안대로 3~8주에 AI 트랙과 셀러 베타를 동시에",
+            "pros": "두 매출원을 빨리 확보",
+            "cons": "1인+AI 개발로 6주 안에 끝내기 어려움, 실패하면 투자 손실이 큼"
+          },
+          {
+            "key": "C",
+            "label": "셀러 트랙 먼저",
+            "pros": "시간당 사용료라 현금 흐름이 확실",
+            "cons": "AI 차별점 없이 경쟁사와 같은 조건으로 셀러를 모아야 함"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "가장 비싼 결정(스튜디오·미디어 인프라)을 실측 판매량을 본 뒤로 미룰 수 있음",
+        "if_not_decided": "Phase 1 범위를 확정하지 못함",
+        "reversible": "예",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "대표님이 추천안 A 선택",
+          "risk": "낮음",
+          "effort": "S",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decision": {
+          "key": "A",
+          "label": "검증 먼저(약 4주): AI 15분 사이클을 유튜브 라이브로 송출, QR·링크로 JIEUM 몰·쇼피파이로 보내 링크별 판매 측정",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "대표님(대화)",
+          "note": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'"
+        },
+        "decisions": [
+          {
+            "action": "decide",
+            "at": "2026-11-09T23:54:38.102Z",
+            "by": "대표님(헤르메스)",
+            "note": "관제 자율 결정"
+          }
+        ],
+        "approved_at": "2026-11-09T23:56:06.276013+00:00",
+        "approved_by": "대표님(대화)",
+        "user_response": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "AWAITING_USER",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "DONE",
+          "to": "DONE",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "대표님 결정 A: 검증 먼저(약 4주): AI 15분 사이클을 유튜브 라이브로 송출, QR·링크로 JIEUM 몰·쇼피파이로 보내 링크별 판매 측정"
+        }
+      ],
+      "completed_at": "2026-11-09T23:56:06.276013+00:00"
+    },
+    {
+      "id": "ISS-177",
+      "title": "[SeoulLive 결정] 해외 판매가 배수 — PRD 1.3~1.5배 vs 11-06 결정 2배",
+      "type": "DECISION",
+      "priority": "P0",
+      "size": "S",
+      "status": "DONE",
+      "origin": "session",
+      "depends_on": [],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "ask_kind": "decision",
+        "ask_prompt": "해외 판매가를 국내가의 몇 배로 할까요?",
+        "question": "해외 판매가를 국내가의 몇 배로 할까요?",
+        "plain_summary": "PRD에는 1.3~1.5배라고 적혀 있지만, 11-06에 대표님이 쇼피파이 가격을 국내가×2(달러 환산 후 끝자리 9)로 정하셨습니다. 미국은 소액 면세가 없어져 관세를 매 건 부담하므로 PRD도 1.5배 이상을 권장합니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "2배 유지 (PRD를 2배로 수정, 쇼피파이 33개에 계산해 둔 $149~$339 반영)",
+            "pros": "관세·특송비·환율 변동에도 손실 여유",
+            "cons": "가격 경쟁력이 낮아짐"
+          },
+          {
+            "key": "B",
+            "label": "1.5배로 낮춤",
+            "pros": "가격 경쟁력",
+            "cons": "관세를 우리가 부담(DDP)하면 손실 가능"
+          },
+          {
+            "key": "C",
+            "label": "국가별로 따로 (미국 2배, 그 외 1.5배)",
+            "pros": "시장별 최적화",
+            "cons": "가격 관리가 복잡"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "대표님이 이미 정하신 값이고, 관세 실측 전에는 여유가 있는 쪽이 안전함",
+        "if_not_decided": "쇼피파이 가격 미반영 상태 유지(현재 Price coming soon)",
+        "reversible": "예 — 가격은 언제든 변경 가능",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "대표님이 추천안 A 선택",
+          "risk": "낮음",
+          "effort": "S",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "related": [
+          "shopify/products_draft.csv",
+          "scratchpad prices.json(11-06 계산)"
+        ],
+        "decision": {
+          "key": "A",
+          "label": "2배 유지 — 쇼피파이 33개 $149~$339 반영 완료(2026-11-10 세션, 재고 0이라 구매 불가 유지)",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "대표님(대화)",
+          "note": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'"
+        },
+        "decisions": [
+          {
+            "action": "decide",
+            "at": "2026-11-09T23:54:38.769Z",
+            "by": "대표님(헤르메스)",
+            "note": "관제 자율 결정"
+          }
+        ],
+        "approved_at": "2026-11-09T23:56:06.276013+00:00",
+        "approved_by": "대표님(대화)",
+        "user_response": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "AWAITING_USER",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "DONE",
+          "to": "DONE",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "대표님 결정 A: 2배 유지 — 쇼피파이 33개 $149~$339 반영 완료(2026-11-10 세션, 재고 0이라 구매 불가 유지)"
+        }
+      ],
+      "completed_at": "2026-11-09T23:56:06.276013+00:00"
+    },
+    {
+      "id": "ISS-178",
+      "title": "[SeoulLive 결정] 5:5 순익 계산 — 광고비 처리 방식",
+      "type": "DECISION",
+      "priority": "P0",
+      "size": "S",
+      "status": "DONE",
+      "origin": "session",
+      "depends_on": [],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "ask_kind": "decision",
+        "ask_prompt": "AI 트랙 5:5 정산에서 광고비를 어떻게 처리할까요?",
+        "question": "AI 트랙 5:5 정산에서 광고비를 어떻게 처리할까요?",
+        "plain_summary": "순익 = 판매가 - 입고가 - 수수료 - 배송 - 반품 - 관세 - 광고비 - 할인입니다. 광고비를 누가 얼마나 부담하는지가 정해지지 않아 정산 화면을 만들 수 없습니다. 최종안은 파트너 계약서에 들어갑니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "광고비를 순익에서 빼서 반반 부담, 단 월 상한(예: 매출의 15%)",
+            "pros": "파트너도 광고 효율에 관심, 과다 지출 방지",
+            "cons": "상한값 협의 필요"
+          },
+          {
+            "key": "B",
+            "label": "광고비는 JIEUM 단독 부담(순익 계산에서 제외)",
+            "pros": "파트너 설득 쉬움",
+            "cons": "JIEUM 몫이 크게 줄어듦"
+          },
+          {
+            "key": "C",
+            "label": "광고비 전액을 순익에서 차감(상한 없음)",
+            "pros": "단순",
+            "cons": "파트너 반발 가능"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "양쪽 이해를 맞추면서 과다 광고를 막는 가장 흔한 방식",
+        "if_not_decided": "정산(ISS-192) 설계 불가",
+        "reversible": "계약 체결 전까지는 예",
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "대표님이 추천안 A 선택",
+          "risk": "낮음",
+          "effort": "S",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "ask_note": "정해진 뒤 계약서 문구는 별도 법무 검토",
+        "decision": {
+          "key": "A",
+          "label": "광고비를 순익에서 빼서 반반 부담, 월 상한(기본값 매출의 15%, 관리자 설정)",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "대표님(대화)",
+          "note": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'"
+        },
+        "user_response": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
+        "approved_at": "2026-11-09T23:56:06.276013+00:00",
+        "approved_by": "대표님(대화)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "AWAITING_USER",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "AWAITING_USER",
+          "to": "DONE",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "대표님 결정 A: 광고비를 순익에서 빼서 반반 부담, 월 상한(기본값 매출의 15%, 관리자 설정)"
+        }
+      ],
+      "completed_at": "2026-11-09T23:56:06.276013+00:00"
+    },
+    {
+      "id": "ISS-179",
+      "title": "[SeoulLive 법무] 출시 차단 조건 — AI 생성물 표시·국외 이전 고지·AI 착용 이미지 고지 (ISS-107 선행)",
+      "type": "TASK",
+      "priority": "P0",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-107"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "0",
+        "prd_ref": "§8",
+        "acceptance_criteria": [
+          "ISS-107 이 끝나 몰 하단에 사업자 정보가 보인다(값은 ISS-107 에서 대표님 입력)",
+          "개인정보처리방침에 '국외 이전(OpenAI 등 해외 AI 서비스로 음성·텍스트 전송)' 항목과 '라이브 구매 알림의 마스킹 이름' 처리 항목이 추가된다",
+          "seoullive/docs/ai-disclosure.md 에 AI 쇼호스트·AI 모델·AI 이미지 표시 문구(국문·영문)와 화면 위치 규칙이 정리된다",
+          "AI 착용 장면 고지 문구 'AI 이미지 — 실제 착용감과 다를 수 있음 / AI-generated, actual fit may vary' 가 오버레이 규칙에 포함된다",
+          "법률 판단이 필요한 문장은 '법무 검토 필요' 표시로 남기고 단정하지 않는다"
+        ],
+        "related": [
+          "ISS-107"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "note": "PRD에 빠진 것: AI 모델 '완벽한 핏' 연출은 표시광고법상 기만 표시 리스크",
+        "repo": "musinsa_clone/ (JIEUM 몰) + seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "gate": "deploy",
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "plan_mode": "code"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ],
+      "last_dispatched_at": "2026-11-10T09:06:08"
+    },
+    {
+      "id": "ISS-180",
+      "title": "[SeoulLive 스파이크] gpt-realtime-translate 한→영 실측 — 지원 여부·지연·실제 분당 비용·다중 언어 과금",
+      "type": "SPIKE",
+      "priority": "P0",
+      "size": "S",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-207"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "0",
+        "prd_ref": "M7",
+        "acceptance_criteria": [
+          "한국어 판매 멘트 3분 샘플을 영어 자막·음성으로 바꾼 결과물과 지연(초) 실측값이 남는다",
+          "실제 청구 비용과 PRD의 분당 $0.034를 비교한 값이 남는다",
+          "출력 언어 2개를 동시에 낼 때 세션·과금 방식이 확인된다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수",
+          "risk": "낮음",
+          "effort": "S",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "note": "외부 API 과금 — $10 이하 예상",
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.093Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.093Z"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        }
+      ]
+    },
+    {
+      "id": "ISS-181",
+      "title": "[SeoulLive 스파이크] 플레이아웃 시제품 — OBS+obs-websocket v5 vs FFmpeg 비교, 4시간 무중단",
+      "type": "SPIKE",
+      "priority": "P0",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-204"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "0",
+        "prd_ref": "M8",
+        "acceptance_criteria": [
+          "seoullive/playout/ 에 클립 목록(JSON)을 받아 다음 클립을 미리 열고 cut point에서 전환하는 컨트롤러 시제품이 있다",
+          "로컬에서 MediaMTX(또는 동등 RTMP 서버)로 30분 연속 송출하는 자동 테스트가 블랙 프레임 0·오디오 끊김 0을 ffmpeg blackdetect/silencedetect 출력으로 증명한다(4시간 장시간 시험은 ISS-206 운영 단계)",
+          "OBS+obs-websocket v5 방식과 FFmpeg 단독 방식의 비교표(안정성·CPU·클라우드 무GPU 가능 여부·원가)가 seoullive/docs/playout-spike.md 에 남고, 하나를 추천한다",
+          "PRD의 'obs-websocket 5.7 교착 이슈' 출처(이슈 링크)를 찾거나, 못 찾으면 '출처 미확인'으로 기록한다. OBS MCP 구현체를 쓰면 라이선스를 기록한다",
+          "컨트롤러 프로세스가 클립 결정 입력을 못 받아도(에이전트 정지) 기본 순서로 계속 송출함이 테스트로 증명된다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.093Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.093Z",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에) — playout/ 하위",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-182",
+      "title": "[SeoulLive 확인] 외부 송출 정책 — 유튜브 24시간 AI 반복 송출·합성 콘텐츠 표시, 틱톡 LIVE 자격",
+      "type": "TASK",
+      "priority": "P0",
+      "size": "S",
+      "status": "DONE",
+      "origin": "session",
+      "depends_on": [],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "0",
+        "prd_ref": "M3·§8",
+        "acceptance_criteria": [
+          "유튜브: 사전 제작 클립을 반복하는 24시간 라이브가 정책상 허용되는지, 필요한 '변경되거나 합성된 콘텐츠' 표시와 설정 위치를 공식 문서 링크와 함께 정리",
+          "틱톡: LIVE 송출 키(Live Studio/RTMP) 자격 조건을 공식 출처와 함께 정리하고 JIEUM 계정 충족 여부를 '대표님 확인 필요'로 표시",
+          "결론: 검증 단계 송출 채널 추천(1순위 유튜브)과 금지·주의 사항 목록"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "S",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.093Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.093Z",
+        "repo": "문서만 — seoullive/docs/channel-policy.md",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-09T23:57:08.918256+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — 유튜브·틱톡 송출 정책 공식 문서 조사"
+          }
+        ]
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:57:08.918256+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ],
+      "result": {
+        "summary": "SeoulLive 외부 송출 정책 문서 작성(e9353cb). 유튜브·틱톡 공식 도움말 기준(확인일 2026-11-10), 각 사실에 [공식]/[색인 발췌]/[확인 못함] 표시와 URL. 결론: 검증 단계 1순위 유튜브 PC 라이브(사전녹화 금지 조항 없음, 사실적 AI 인물은 AI 표시 의무, 12시간 넘으면 보관 안 될 수 있어 12시간 미만 단위 편성, 설명란 링크는 고급 기능 인증 필요, 수익화는 inauthentic content 조항으로 기대 안 함), 2순위 틱톡 일반 영상 업로드(녹화 LIVE 비권장, 한국 TikTok Shop 미운영). 금지·주의 10개. 외부 과금 $0",
+        "commit": "e9353cb",
+        "files_changed": [
+          "musinsa_clone/docs/seoullive/channel-policy.md"
+        ],
+        "criteria_check": [
+          {
+            "criterion": "유튜브: 사전 제작 클립을 반복하는 24시간 라이브가 정책상 허용되는지, 필요한 '변경되거나 합성된 콘텐츠' 표시와 설정 위치를 공식 문서 링크와 함께 정리",
+            "met": true,
+            "how": "1-1(명시 금지 조항 없음 — 확인 못함으로 표시, 관련 스팸·inauthentic 조항 인용), 1-2(표시 대상·Studio 속성 'AI use' 위치·라이브 위치는 확인 못함 → 화면 자막 상시 표시), 1-4(12시간 보관 한도) 각 support.google.com 링크"
+          },
+          {
+            "criterion": "틱톡: LIVE 송출 키(Live Studio/RTMP) 자격 조건을 공식 출처와 함께 정리하고 JIEUM 계정 충족 여부를 '대표님 확인 필요'로 표시",
+            "met": true,
+            "how": "2-1에 18세·팔로워 1,000(색인 발췌)·LIVE Studio 신청 조건(공식)·RTMP 키 조건 확인 못함, 'JIEUM 틱톡 계정… 대표님 확인 필요' 문구와 4절 확인 목록"
+          },
+          {
+            "criterion": "결론: 검증 단계 송출 채널 추천(1순위 유튜브)과 금지·주의 사항 목록",
+            "met": true,
+            "how": "결론 절 1순위 유튜브 PC 라이브·2순위 틱톡 일반 영상, 3절 체크리스트 10개"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd musinsa_clone && grep -c \"support.google.com/youtube\\|tiktok.com\" docs/seoullive/channel-policy.md && grep -c \"대표님 확인 필요\" docs/seoullive/channel-policy.md",
+            "exit_code": 0,
+            "output": "28\n2"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T09:07:59.071354"
+    },
+    {
+      "id": "ISS-183",
+      "title": "[SeoulLive 확인] 도메인·상표 — seoullive.kr·단축 도메인 가용성, 'SeoulLive' 상표 검색",
+      "type": "TASK",
+      "priority": "P1",
+      "size": "XS",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "0",
+        "prd_ref": "M1·M2",
+        "acceptance_criteria": [
+          "seoullive.kr·seoullive.com·단축 도메인 후보 3개의 등록 가능 여부·연간 가격을 조회 근거와 함께 기록(구매는 하지 않음)",
+          "KIPRIS 에서 'SeoulLive'·'서울라이브' 상표 선등록·출원 여부와 지정상품(35류 등) 기록"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "XS",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "note": "구매는 대표님 승인 후",
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.093Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.093Z",
+        "repo": "문서만 — seoullive/docs/domain-trademark.md",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-203",
+      "title": "[SeoulLive] 수익 가정 재산정 — 벌당 수익 20만원 오류 수정, 손익분기 판매량·영업이익률 재계산",
+      "type": "TASK",
+      "priority": "P1",
+      "size": "S",
+      "status": "DONE",
+      "origin": "session",
+      "depends_on": [],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "0",
+        "prd_ref": "§11·부록A",
+        "acceptance_criteria": [
+          "JIEUM 33개 실제 국내가로 벌당 순익·승식 몫(5:5, 광고비 공동 부담·상한 15%)을 표로 재계산",
+          "월 원가 180만/400만/600만원 기준 손익분기 시간당 판매량",
+          "인건비·임차·CDN·광고비를 넣은 1년 차 월 손익 3개 시나리오, 가정은 모두 '가정'으로 표시"
+        ],
+        "related": [
+          "seoullive/REVIEW.md"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "S",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "repo": "문서 — seoullive/docs/unit-economics.md + PRD 반영",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-09T23:57:08.918256+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — 실제 상품가로 수익 재계산"
+          }
+        ]
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:57:08.918256+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ],
+      "result": {
+        "summary": "SeoulLive AI 트랙 수익 재산정 문서 작성(4bcce48) + PRD v0.2 절에 확정 숫자 반영. 벌당 JIEUM 몫 광고 0% 3.9만~9.2만원(평균 7.2만), 광고 10% 공동부담 3.4만~7.9만원. 손익분기 AI 원가만 0.04~0.17벌/시간, 고정비 포함 0.14~0.37벌. 1년 차 월 손익 보수 −161만/기본 +340만/도전 +788만원. 문서 위치는 seoullive/ 가 아직 git 저장소가 아니라(ISS-204 개발 위치 재결정 대기) musinsa_clone/docs/seoullive/ 에 두고 커밋 — 앱 위치가 정해지면 옮긴다",
+        "commit": "4bcce48",
+        "files_changed": [
+          "musinsa_clone/docs/seoullive/unit-economics.md",
+          "seoullive/PRD_v0.1.md(git 밖, v0.2 절 추가)"
+        ],
+        "criteria_check": [
+          {
+            "criterion": "JIEUM 33개 실제 국내가로 벌당 순익·승식 몫(5:5, 광고비 공동 부담·상한 15%)을 표로 재계산",
+            "met": true,
+            "how": "JIEUM 몰 상품 30개 실제 국내가(개발 DB products.price, 가격대 12개)로 표 작성, 광고 0·10·15·20% 열(15% 초과분 JIEUM 단독 부담). 쇼피파이 33룩 달러가를 ×1,450÷2 로 되돌린 10.8만~24.6만원(평균 195,025원)과 같은 범위임을 교차 확인 — 33룩 국내가 원본표는 따로 없어 30개 DB 가격 사용을 문서에 명시"
+          },
+          {
+            "criterion": "월 원가 180만/400만/600만원 기준 손익분기 시간당 판매량",
+            "met": true,
+            "how": "3절 (1) 표: 180만 0.041~0.052벌, 400만 0.092~0.116벌, 600만 0.138~0.174벌(광고 0/10/15%), (2) 고정비 포함 0.140/0.209/0.372벌"
+          },
+          {
+            "criterion": "인건비·임차·CDN·광고비를 넣은 1년 차 월 손익 3개 시나리오, 가정은 모두 '가정'으로 표시",
+            "met": true,
+            "how": "4절 표: 보수·기본·도전, 항목별 근거 열에 '가정' 표시(문서 내 '가정' 13회), 임차는 서울라이브 스튜디오 후보 조건 85만원 인용"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd musinsa_clone && grep -c \"가정\" docs/seoullive/unit-economics.md && grep -E \"^\\| \\*\\*평균 198,000\\*\\*|^\\| \\*\\*월 영업이익\" docs/seoullive/unit-economics.md",
+            "exit_code": 0,
+            "output": "13\n| **평균 198,000** | 30 | 144,896 | **72,448** | **62,548** | **57,598** | 47,698 |\n| **월 영업이익** | **−161.0만원** | **+339.9만원** | **+787.5만원** | 계산 |"
+          },
+          {
+            "cmd": "python3 -c \"p=198000;n=p-p/5-p*0.033-4000-p*0.015;print(round(n),round(n/2))\"",
+            "exit_code": 0,
+            "output": "144896 72448"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T09:07:58.598979"
+    },
+    {
+      "id": "ISS-184",
+      "title": "[SeoulLive AI] 캐릭터 설정집 2명(AI 쇼호스트 1·AI 모델 1) — 기존 persona 등록부에서 선정",
+      "type": "TASK",
+      "priority": "P0",
+      "size": "S",
+      "status": "DONE",
+      "origin": "session",
+      "depends_on": [],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M9.1",
+        "acceptance_criteria": [
+          "persona/ 의 기존 캐릭터 중 AI 쇼호스트 1명·AI 모델 1명을 고른 이유가 seoullive/characters/README.md 에 남는다(새 인물 임의 생성 금지, 슬림 체형 원칙)",
+          "각 캐릭터 설정집(이름·나이 설정·말투 예시 10문장 국문/영문·금지 발언·기준 이미지 경로·목소리 후보)이 있다",
+          "쇼호스트는 단점도 말하는 신뢰형 말투, 화면 표시 라벨은 'AI 쇼호스트 / AI Host', 'AI 모델 / AI Model'"
+        ],
+        "related": [
+          "persona/",
+          "ISS-090"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "S",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.093Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.093Z",
+        "repo": "문서·이미지 — seoullive/characters/",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-09T23:57:08.918256+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — persona 등록부에서 쇼호스트·모델 선정"
+          }
+        ]
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:57:08.918256+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ],
+      "result": {
+        "summary": "SeoulLive 캐릭터 설정집 작성(867b3b3). 기존 등록부에서 AI 쇼호스트 에린 소(SoERIN, 전직 패션 에디터·뉴욕 교포·롱 슬림)와 AI 모델 레아 모로(MoreauLEA, 171cm 긴 팔다리 슬림·FW26 런웨이 자산 보유) 선정. 새 인물 생성 없음, 기준 그림 정면 전신 육안 확인(둘 다 슬림). 목소리는 ISS-208 클립 제작 때 2~3개 합성·STT 검증 후 대표님 선택으로 넘김. 문서 위치는 ISS-204 결정 대기로 musinsa_clone/docs/seoullive/characters/",
+        "commit": "867b3b3",
+        "files_changed": [
+          "musinsa_clone/docs/seoullive/characters/README.md"
+        ],
+        "criteria_check": [
+          {
+            "criterion": "persona/ 의 기존 캐릭터 중 AI 쇼호스트 1명·AI 모델 1명을 고른 이유가 seoullive/characters/README.md 에 남는다(새 인물 임의 생성 금지, 슬림 체형 원칙)",
+            "met": true,
+            "how": "1절에 선정 이유 4가지씩·탈락 후보(강유나·외국인 10명·한소율) 사유 기록. 둘 다 ROSTER.md·config/characters.yml 기존 인물, 체형 '롱 슬림'·'긴 팔다리 슬림'. 파일은 musinsa_clone/docs/seoullive/characters/README.md(seoullive/ 가 아직 저장소가 아니어서)"
+          },
+          {
+            "criterion": "각 캐릭터 설정집(이름·나이 설정·말투 예시 10문장 국문/영문·금지 발언·기준 이미지 경로·목소리 후보)이 있다",
+            "met": true,
+            "how": "2·3절에 항목 표, 말투 예시 각 10문장(국문/영문 병기, 번호 목록 20개), 금지 발언 목록, 기준 그림 persona/SoERIN·MoreauLEA ref.png·시트 경로(존재 확인), 목소리 후보"
+          },
+          {
+            "criterion": "쇼호스트는 단점도 말하는 신뢰형 말투, 화면 표시 라벨은 'AI 쇼호스트 / AI Host', 'AI 모델 / AI Model'",
+            "met": true,
+            "how": "말투 규칙 '장점 2개면 아쉬운 점 1개' + 예시 2·3·5번이 단점·안 맞는 사람 언급, 라벨 문구 문서 상단·각 절에 고정"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd musinsa_clone && grep -c \"^[0-9]*\\. \" docs/seoullive/characters/README.md && grep -o \"AI 쇼호스트 / AI Host\\|AI 모델 / AI Model\" docs/seoullive/characters/README.md | sort | uniq -c && ls ../persona/SoERIN/ref.png ../persona/MoreauLEA/ref.png",
+            "exit_code": 0,
+            "output": "20\n   3 AI 모델 / AI Model\n   3 AI 쇼호스트 / AI Host\n../persona/MoreauLEA/ref.png\n../persona/SoERIN/ref.png"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T09:07:58.831725"
+    },
+    {
+      "id": "ISS-185",
+      "title": "[SeoulLive AI] 클립 라이브러리 — clips·characters 스키마, 제작 규격, 상품 5~10개 클립 세트",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "L",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-204",
+        "ISS-184"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M9.2",
+        "acceptance_criteria": [
+          "clips·characters·schedule_slots 테이블(PRD §6 필드) 과 클립 등록 화면/명령이 있다",
+          "등록 시 ffprobe 로 해상도·fps(30)·코덱·GOP·오디오 샘플레이트를 검사해 규격(seoullive/docs/clip-spec.md)과 다르면 거부한다(테스트)",
+          "cut_points 는 길이 범위 안의 ms 배열이어야 한다(검증 테스트)",
+          "기존 설경 런웨이 33룩 영상 중 3개를 B-roll 클립으로 등록하는 시드가 동작한다"
+        ],
+        "related": [
+          "ISS-074",
+          "설경 런웨이 33룩 영상"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "L",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-186",
+      "title": "[SeoulLive AI] 15분 사이클 편성기 + 플레이아웃 컨트롤러(폴백·직렬화 큐·수동 오버라이드·AI 끄기)",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "L",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-181",
+        "ISS-185"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M8·M9.3·M9.5",
+        "acceptance_criteria": [
+          "15분 사이클(오프닝2·상품A5·Q&A1·상품B4·이벤트1·마감2분)을 클립 라이브러리에서 조합해 재생 목록을 만든다",
+          "구간별 2~3개 버전을 섞어 연속 3사이클 동안 같은 조합이 반복되지 않는다(테스트)",
+          "편성표 화면에서 시간대(KST)별 언어·캐릭터·상품 세트를 입력하고, 미국 서머타임 이동이 반영된다(테스트)",
+          "재생 목록이 ISS-181 컨트롤러로 넘어가 실제 송출 테스트(30분)가 통과한다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "L",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-187",
+      "title": "[SeoulLive AI] 채널별 단축 링크·QR 자동 생성 + 링크별 유입·주문 집계 (ISS-070 흡수)",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-204",
+        "ISS-070"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M2",
+        "acceptance_criteria": [
+          "방송(또는 편성 슬롯)마다 채널별(유튜브·인스타·틱톡)·대상몰별(JIEUM 몰·쇼피파이) 단축 링크와 QR PNG가 자동 생성된다",
+          "단축 링크 클릭이 기록되고 대상 URL에 utm_source/utm_campaign/utm_content(링크 코드)가 붙는다",
+          "JIEUM 몰 주문에 유입 링크 코드가 저장된다(ISS-070), 쇼피파이 주문은 UTM으로 회수해 링크별 주문 수·매출이 한 화면에 집계된다"
+        ],
+        "related": [
+          "ISS-070"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에) + musinsa_clone/ (JIEUM 몰)(ISS-070)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-188",
+      "title": "[SeoulLive AI] 실구매 알림·재고 카운트다운 오버레이 — 실제 order_id 연결, 감사 로그",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-204",
+        "ISS-205"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M6·M4",
+        "acceptance_criteria": [
+          "JIEUM 몰·쇼피파이 주문 웹훅(또는 폴링)을 받아 실제 order_id 가 있을 때만 '김*님 구매' 알림 이벤트가 생긴다 — order_id 없이 알림을 만드는 경로가 없음을 테스트로 증명",
+          "OBS 브라우저 소스/플레이아웃이 쓸 오버레이 페이지(구매 알림·재고 카운트다운·QR·AI 라벨)가 있다",
+          "재고 카운트다운이 JIEUM 몰 재고 API 값과 일치한다(테스트)",
+          "모든 알림이 audit_logs 에 근거 order_id 와 함께 남는다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-189",
+      "title": "[SeoulLive AI] 댓글 수집(YouTube Live Chat)·6분류·자동 숨김·불만/환불 운영자 큐",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-204"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M5",
+        "acceptance_criteria": [
+          "YouTube Live Chat API(liveChatMessages.list, 폴링 간격은 응답의 pollingIntervalMillis 준수)로 댓글을 수집한다 — 키·OAuth 가 없으면 ask_kind provide_value/human_task 로 대표님께 요청(키 값은 출력·커밋 금지)",
+          "댓글을 상품 질문/구매 의사/인사·반응/불만·환불/장난·도발/스팸 6분류(저가 LLM + 규칙)하고 분류 결과를 저장한다",
+          "욕설·도발은 자동 숨김(유튜브 API 숨김은 권한 있을 때만), 불만·환불은 운영자 큐로 간다(테스트는 녹화된 댓글 픽스처로)"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-190",
+      "title": "[SeoulLive AI] AI 댓글 응답 3단계 — FAQ 클립 / B-roll+음성 / 운영자 이관, DB 근거·금지 표현 필터·ai_utterances 감사",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "L",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-185",
+        "ISS-189"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M9.4·M7",
+        "acceptance_criteria": [
+          "20~30초마다 댓글 묶음에서 1~3개를 골라 ①FAQ 클립 ②B-roll+TTS 답변 ③'확인 후 알려드릴게요' 클립+운영자 이관 중 하나로 처리한다",
+          "가격·혜택·배송 문장은 상품 DB 값으로만 채우고, DB에 없는 할인·사은품·배송일 약속과 금지 표현('치료','100%' 등)은 필터가 차단한다(테스트)",
+          "모든 AI 발화가 ai_utterances(근거 레코드·필터 결과·승인자)에 남는다",
+          "기본값은 반자동(운영자 승인 전 송출 안 함), 자동 모드는 콘솔에서 켤 때만",
+          "답 못한 질문은 '클립 없는 질문' 목록으로 쌓인다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "L",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-191",
+      "title": "[SeoulLive AI] 운영자 콘솔 기초 — 방송 모니터링·승인/자동 모드·강제 개입·장애 푸시",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-186"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M14",
+        "acceptance_criteria": [
+          "운영자 콘솔에서 송출 상태·현재 클립·다음 클립·최근 댓글·AI 응답 대기열을 한 화면에서 본다",
+          "클립 강제 재생·오버레이 숨김·AI 즉시 끄기·방송 중단 버튼이 동작한다(시스템 테스트)",
+          "송출 끊김·재고 API 오류 시 알림이 간다(기존 관제실/푸시 경로 재사용, 없으면 로그+메일)"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-192",
+      "title": "[SeoulLive AI] AI 트랙 검증 지표 — 링크·시간대별 판매량·시간당 판매량·장당 광고비·반품률 (정산서는 ISS-209)",
+      "type": "GENERATE_CODE",
+      "priority": "P1",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-187"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M12·M13",
+        "acceptance_criteria": [
+          "방송·시간대·링크별 시청 유입·주문 수·매출·시간당 판매량 지표 화면이 있다",
+          "장당 광고비(광고비 수기 입력 ÷ 판매량)와 반품률(몰 반품 데이터) 칸이 있다",
+          "판정 기준선(시간당 0.14벌 = 월 원가 600만원 회수, ISS-203 재산정 후 갱신)이 화면에 표시된다"
+        ],
+        "related": [
+          "ISS-131"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "note_rescope": "5:5 정산서는 ISS-209 로 분리",
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-193",
+      "title": "[SeoulLive AI] 재고 단일 소스 — JIEUM 몰 재고·가격 → 쇼피파이 동기화(Admin API)",
+      "type": "GENERATE_CODE",
+      "priority": "P1",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-177"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M4·4.1",
+        "acceptance_criteria": [
+          "JIEUM 몰 상품↔쇼피파이 상품 매핑 표(33개, shopify/products_draft.csv 기준)가 있다",
+          "몰 재고 변경 시 쇼피파이 재고가 같아지고, 쇼피파이 주문 웹훅이 오면 몰 재고가 차감된다(테스트는 Shopify API 모킹)",
+          "해외가 = 국내가×2÷환율 후 $□9 반올림(ISS-177 A) 계산 함수와 테스트",
+          "실제 쇼피파이 재고를 0이 아닌 값으로 올리는 동기화(=판매 개시)는 대표님 승인 전 비활성(설정 플래그 기본 off)"
+        ],
+        "related": [
+          "shopify/"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "musinsa_clone/ (JIEUM 몰)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "gate": "deploy",
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-194",
+      "title": "[SeoulLive] 방송 재고 할당·10분 홀드·원자 차감 — 동시 500 주문 중 정확히 50건 성공",
+      "type": "GENERATE_CODE",
+      "priority": "P1",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "prd_ref": "M4",
+        "acceptance_criteria": [
+          "재고 50개 상품에 동시 500 주문 부하 테스트에서 정확히 50건 성공(행 잠금 또는 원자 갱신)",
+          "주문 버튼 시 10분 홀드, 미결제면 자동 해제(잡 테스트)",
+          "무통장 입금 기한 경과 시 자동 취소"
+        ],
+        "related": [
+          "ISS-060"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          },
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z",
+        "repo": "musinsa_clone/ (JIEUM 몰)",
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "gate": "deploy",
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        },
+        {
+          "from": "BACKLOG",
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "결정 반영 상세화 → 착수대기"
+        }
+      ]
+    },
+    {
+      "id": "ISS-195",
+      "title": "[SeoulLive 셀러] 멀티테넌트 셀러 서브도메인 + 와일드카드 TLS (ISS-173 계정 모델 재사용 검토)",
+      "type": "GENERATE_CODE",
+      "priority": "P2",
+      "size": "M",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-183",
+        "ISS-207"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "2",
+        "prd_ref": "M1",
+        "acceptance_criteria": [
+          "신규 셀러 가입 후 5분 안에 {seller}.도메인 접속",
+          "다른 셀러 데이터 접근 불가(테스트)"
+        ],
+        "related": [
+          "ISS-173"
+        ],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수",
+          "risk": "낮음",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        }
+      ]
+    },
+    {
+      "id": "ISS-196",
+      "title": "[SeoulLive 셀러] 방송 관리 + RTMP 수신 → HLS 배포 + 서버 동시 송출(restream)",
+      "type": "GENERATE_CODE",
+      "priority": "P2",
+      "size": "L",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-207"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "2",
+        "prd_ref": "M2·M3",
+        "acceptance_criteria": [
+          "scheduled→live→ended→replay 상태에 따라 같은 URL이 예고·라이브·다시보기로 바뀐다",
+          "OBS RTMP 한 번 업로드로 자체 플레이어와 유튜브에 동시 송출된다",
+          "외부 채널 하나가 끊겨도 나머지는 유지되고 개별 재연결된다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수",
+          "risk": "낮음",
+          "effort": "L",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "note": "모바일 앱 송출은 범위에서 빼고 브라우저 송출(WHIP)이나 OBS로 대체할 것을 권장",
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        }
+      ]
+    },
+    {
+      "id": "ISS-197",
+      "title": "[SeoulLive 셀러] 송출·옵션 분 단위 미터링 + 셀러 월 청구서",
+      "type": "GENERATE_CODE",
+      "priority": "P2",
+      "size": "M",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-196",
+        "ISS-207"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "2",
+        "prd_ref": "M12·3.2",
+        "acceptance_criteria": [
+          "기본·호응·통역·AI PD·스튜디오를 켠 시간만 분 단위로 집계한다",
+          "요금표를 관리자 화면에서 바꿀 수 있다",
+          "월 청구서가 나온다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수",
+          "risk": "낮음",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        }
+      ]
+    },
+    {
+      "id": "ISS-198",
+      "title": "[SeoulLive 셀러] AI 호응·이벤트 — 퀴즈·추첨·선착순 쿠폰·타임딜, 'AI 도우미' 배지",
+      "type": "GENERATE_CODE",
+      "priority": "P2",
+      "size": "M",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-188",
+        "ISS-207"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "2",
+        "prd_ref": "M6",
+        "acceptance_criteria": [
+          "가짜 시청자·댓글·구매 알림을 만드는 코드 경로가 없음이 테스트로 증명된다",
+          "리액션 증폭이 실제 입력에 비례한다",
+          "AI 진행 멘트에 정체 표시 배지가 붙는다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수",
+          "risk": "낮음",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        }
+      ]
+    },
+    {
+      "id": "ISS-199",
+      "title": "[SeoulLive 셀러] 실시간 통역 자막·더빙 연동 + 용어집 + 금지 표현 필터(번역 전후)",
+      "type": "GENERATE_CODE",
+      "priority": "P2",
+      "size": "L",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-180",
+        "ISS-196",
+        "ISS-207"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "2",
+        "prd_ref": "M7",
+        "acceptance_criteria": [
+          "셀러 음성이 2~5초 지연 안에 영어 자막·음성으로 나간다",
+          "상품별 용어집이 적용된다",
+          "화면에 'AI 통역 중'이 표시된다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수",
+          "risk": "낮음",
+          "effort": "L",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:54:38.094Z",
+            "by": "auto",
+            "reason": "SEOULLIVE 결정 카드(ISS-175·176) 확정 후 착수 — 그 전엔 BACKLOG 보관"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:54:38.094Z"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:06.276013+00:00",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        }
+      ]
+    },
+    {
+      "id": "ISS-200",
+      "title": "[SeoulLive 셀러] 스튜디오 예약(방 2개) — 시간 단위, 19~23시 셀러 우선, 대관료 투자자 정산",
+      "type": "GENERATE_CODE",
+      "priority": "P2",
+      "size": "M",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-207"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "2",
+        "prd_ref": "M11",
+        "acceptance_criteria": [
+          "방별 시간 예약과 겹침 방지가 된다",
+          "대관료가 투자자 정산 대상으로 따로 집계된다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수",
+          "risk": "낮음",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:56:11.018Z",
+            "by": "auto",
+            "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:56:11.018Z"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:11.018Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        }
+      ]
+    },
+    {
+      "id": "ISS-201",
+      "title": "[SeoulLive 셀러] 셀러 로컬 에이전트 — obs-websocket(localhost)만 접속, 아웃바운드 연결, 오버레이 자동 로딩",
+      "type": "GENERATE_CODE",
+      "priority": "P3",
+      "size": "L",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-196",
+        "ISS-207"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "2",
+        "prd_ref": "M10",
+        "acceptance_criteria": [
+          "에이전트가 바깥으로 포트를 열지 않는다",
+          "예약 정보로 장면·오버레이가 자동 로딩된다",
+          "단축키로 AI를 끌 수 있다"
+        ],
+        "related": [],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수",
+          "risk": "낮음",
+          "effort": "L",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:56:11.018Z",
+            "by": "auto",
+            "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:56:11.018Z"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:11.018Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        }
+      ]
+    },
+    {
+      "id": "ISS-202",
+      "title": "[SeoulLive] 해외 배송·DDP·사이즈 환산(US/EU) — ISS-061 연계",
+      "type": "GENERATE_CODE",
+      "priority": "P2",
+      "size": "M",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-177",
+        "ISS-207"
+      ],
+      "payload": {
+        "origin": "session",
+        "source": "대표님 지시 2026-11-10 'fable 내용 검토하고 개발이슈로 정리해줘' — seoullive/PRD_v0.1.md, 검토 seoullive/REVIEW.md",
+        "epic": "SEOULLIVE",
+        "phase": "2",
+        "prd_ref": "M15",
+        "acceptance_criteria": [
+          "국가별 관세·부가세 표가 있고 상품 화면에 관세 포함 가격이 표시된다",
+          "US/EU 사이즈 환산표와 실측이 영어로 나온다"
+        ],
+        "related": [
+          "ISS-061",
+          "shopify/"
+        ],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수",
+          "risk": "낮음",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:56:11.018Z",
+            "by": "auto",
+            "reason": "ISS-176 A(검증 먼저) 결정 — AI 트랙 검증(ISS-207 판정) 통과 후 착수"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:56:11.018Z"
+      },
+      "created_at": "2026-11-09T23:50:33.902774+00:00",
+      "updated_at": "2026-11-09T23:56:11.018Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:50:33.902774+00:00",
+          "by": "session",
+          "note": "SeoulLive PRD v0.1 검토로 생성"
+        }
+      ]
+    },
+    {
+      "id": "ISS-204",
+      "title": "[SeoulLive 기반] seoullive 앱 골격 — 새 git 저장소, Rails 8.1(JIEUM과 같은 스택), 관리자 로그인, 테스트·CI",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "M",
+      "status": "BLOCKED",
+      "origin": "session",
+      "depends_on": [],
+      "created_at": "2026-11-09T23:56:06.276013+00:00",
+      "updated_at": "2026-11-10T00:08:39.179466+00:00",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
+        "epic": "SEOULLIVE",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15 + Prisma SQLite, LiveKit, 데모 https://seoullive.158.247.235.31.nip.io) — 0053/seoullive Rails 새 앱은 만들지 않음",
+        "acceptance_criteria": [
+          "서울라이브(0060) 관리자 화면에 'AI 방송 채널(JIEUM)' 메뉴가 생기고, 기존 셀러 화면·주문 흐름은 그대로 동작한다(기존 테스트 통과)",
+          "AI 채널 화면은 관리자 로그인 없이는 열리지 않는다(비로그인 접근 차단 테스트)",
+          "JIEUM 몰 상품·재고를 읽어 올 연결 설정 자리(UCP API 주소·키는 환경변수, 값 미설정 시 '연결 안 됨' 안내)가 있다 — 실제 연동은 ISS-205",
+          "서울라이브 저장소의 검사(npx tsc --noEmit, npm run lint, npx vitest run)가 통과한다"
+        ],
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "결정 A는 받았지만 구현 위치가 다른 저장소(0060_seoullive)이고, 그쪽에 다른 세션의 미커밋 변경과 자체 공장이 있어 0053 공장이 동시에 손대면 충돌·책임 구분이 어려움. 대표님이 '다시 진행'을 누르면 다음 회차에 0060 쪽 카드로 옮겨 착수",
+          "risk": "중간",
+          "effort": "M",
+          "by": "factory-runner",
+          "at": "2026-11-10T00:08:39.179466+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A)에 따른 검증 단계 카드"
+          },
+          {
+            "action": "decide",
+            "at": "2026-11-10T00:06:01.918Z",
+            "by": "대표님(헤르메스)",
+            "note": "관제 자율 결정"
+          }
+        ],
+        "approved_at": "2026-11-10T00:06:01.918Z",
+        "approved_by": "대표님(헤르메스)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-09T23:57:08.918256+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — seoullive 새 저장소 골격(codex e 위임)"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-11-09T23:59:13.355640+00:00",
+            "by": "factory-runner",
+            "note": "착수 직후 중단 — 대표님의 기존 서울라이브 앱(0060_seoullive, Next.js·데모 배포 중)과 같은 이름·같은 영역의 Rails 앱을 새로 만드는 중복 발견. 개발 위치 재확인 필요"
+          },
+          {
+            "from": "READY",
+            "to": "BLOCKED",
+            "at": "2026-11-10T00:08:39.179466+00:00",
+            "by": "factory-runner",
+            "note": "결정 A(기존 서울라이브 앱에 AI 채널로 넣기)로 작업 저장소가 0060_seoullive 로 바뀜. 그 저장소는 자체 이슈 저장소·공장이 있고 다른 세션의 미커밋 변경(registry.json·docs/plan/voice/*.wav)이 있어 0053 공장이 동시에 손대지 않음"
+          }
+        ],
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "ISS-175·176 결정(A)에 따른 검증 단계 카드",
+            "risk": "중간",
+            "effort": "M",
+            "by": "session",
+            "at": "2026-11-09T23:56:06.276013+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "대표님 결정(A. 기존 서울라이브 앱에 'AI 방송 채널(JIEUM)'로 넣는다) — 이 결정대로 진행",
+            "risk": "—",
+            "effort": "—",
+            "by": "관제실 결정",
+            "at": "2026-11-10T00:06:01.918Z"
+          }
+        ],
+        "ask_kind": "blocked_review",
+        "ask_prompt": "AI 방송 채널 작업을 서울라이브(0060) 쪽 공장으로 넘겨 진행할지 눌러 주세요 — '다시 진행'이면 다음 회차에 서울라이브 저장소에 카드를 옮겨 만들고 착수합니다.",
+        "question": "AI 방송 판매 기능을 이미 있는 '서울라이브' 앱에 넣을까요, 아니면 따로 새 앱을 만들까요?",
+        "plain_summary": "11-10 결정(새 앱 seoullive)을 만들 때 대표님의 기존 서울라이브 앱(라이브커머스 서비스, 11-05부터 개발·데모 서버 운영 중)이 고려되지 않았습니다. 그대로 진행하면 같은 이름의 앱이 두 개 생겨 방송·주문·관리자 화면을 이중으로 만들게 됩니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "기존 서울라이브 앱에 'AI 방송 채널(JIEUM)'로 넣는다",
+            "pros": "앱 하나로 관리, 이미 있는 방송·주문·관리자 화면 재사용, 데모 서버 바로 사용",
+            "cons": "서울라이브는 JIEUM 몰과 다른 기술(Next.js)이라 몰 연동은 API로 붙여야 함, 서울라이브 진행 작업과 일정이 섞임"
+          },
+          {
+            "key": "B",
+            "label": "원래 결정대로 새 앱을 따로 만든다(이름은 'JIEUM 라이브 운영기'로 바꿔 구분)",
+            "pros": "JIEUM 몰과 같은 기술이라 빨리 만들 수 있음, 서울라이브 작업과 독립",
+            "cons": "방송·주문·관리자 기능이 서울라이브와 겹쳐 두 번 만들고 두 번 운영"
+          },
+          {
+            "key": "C",
+            "label": "JIEUM 몰 관리자 안에 AI 방송 운영 화면을 넣는다",
+            "pros": "상품·재고·주문이 바로 연결, 새 앱 없음",
+            "cons": "실사용자가 있는 몰에 방송 기능이 섞여 배포 위험이 커짐(11-10에 한 번 제외한 안)"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "서울라이브가 이미 같은 목적의 앱이고 데모 서버까지 있어, 따로 만들면 같은 일을 두 번 하게 됩니다. JIEUM 몰은 상품·재고·주문을 주는 쪽으로만 연결하면 11-10 결정의 취지(방송은 몰 밖, 데이터는 몰 기준)도 그대로 지켜집니다.",
+        "if_not_decided": "AI 방송 개발 카드 13장(플레이아웃·클립·편성·댓글·송출 등)이 이 결정을 기다리며 멈춰 있습니다. 문서 카드(정책 조사·캐릭터·수익 재계산)는 계속 진행됩니다.",
+        "reversible": "되돌릴 수 있음 — 아직 코드는 만들지 않았습니다(시작 직후 중단, 생성분은 /tmp/f1110/seoullive_skeleton_aborted 로 옮겨 둠).",
+        "recall_used": "07-AI-Knowledge/프로젝트/0060-seoullive/seoullive-project.md, seoullive-demo-deploy.md",
+        "decision": {
+          "choice": "A",
+          "label": "기존 서울라이브 앱에 'AI 방송 채널(JIEUM)'로 넣는다",
+          "text": "관제 자율 결정",
+          "question": "AI 방송 판매 기능을 이미 있는 '서울라이브' 앱에 넣을까요, 아니면 따로 새 앱을 만들까요?",
+          "by": "대표님(헤르메스)",
+          "at": "2026-11-10T00:06:01.918Z"
+        },
+        "decision_note": "payload.decision 은 by '대표님(헤르메스)', text '관제 자율 결정' — 관제실이 추천안 A를 자율로 고른 것. 대표님 본인 선택이 아닐 수 있어 회차 보고에 명시함",
+        "rescoped_for_decision": "A",
+        "acceptance_criteria_superseded": [
+          "seoullive/ 독립 git 저장소 Rails 8.1 앱(포트 3060)",
+          "관리자 로그인(Rails 8 기본 인증)",
+          "bin/rails test·rubocop",
+          "README 실행 방법"
+        ],
+        "follow_up": "하위 카드 181·185~191·205·206·208 은 'seoullive Rails 앱'을 전제로 쓰여 있음 → 서울라이브(Next.js) 기준으로 문구를 고쳐 0060 이슈 저장소로 옮겨야 함(ISS-204 재개 시 함께 처리)",
+        "rollback_ref": "중단된 Rails 뼈대 생성분은 /tmp/f1110/seoullive_skeleton_aborted 로 이동(0053/seoullive 에는 PRD_v0.1.md·REVIEW.md 만 남음)",
+        "blocked_reason": "결정 A(기존 서울라이브 앱에 AI 채널로 넣기)로 작업 저장소가 0060_seoullive 로 바뀜. 그 저장소는 자체 이슈 저장소·공장이 있고 다른 세션의 미커밋 변경(registry.json·docs/plan/voice/*.wav)이 있어 0053 공장이 동시에 손대지 않음"
+      },
+      "status_history": [
+        {
+          "from": null,
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "SeoulLive 결정 반영 상세 카드"
+        }
+      ]
+    },
+    {
+      "id": "ISS-205",
+      "title": "[SeoulLive 기반] JIEUM 몰 커머스 연동 — UCP API(api/ucp/products) 클라이언트, 상품·재고·가격 캐시",
+      "type": "GENERATE_CODE",
+      "priority": "P0",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-204"
+      ],
+      "created_at": "2026-11-09T23:56:06.276013+00:00",
+      "updated_at": "2026-11-09T23:56:10.942Z",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
+        "epic": "SEOULLIVE",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에) (+ 필요 시 musinsa_clone/ (JIEUM 몰) API 보강)",
+        "acceptance_criteria": [
+          "seoullive 가 JIEUM 몰 UCP API 로 상품·옵션·재고·가격을 읽어 캐시하고 5분마다 갱신한다(API 키는 credentials/ENV, 값 출력 금지)",
+          "몰 API 에 실측·소재·주의점 필드가 없으면 musinsa_clone 쪽 API 에 추가(ISS-174 상세스펙 재사용)하고 몰 테스트 통과",
+          "몰 API 가 죽으면 마지막 캐시로 동작하고 콘솔에 경고가 뜬다(테스트)"
+        ],
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A)에 따른 검증 단계 카드",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:10.942Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A)에 따른 검증 단계 카드"
+          }
+        ],
+        "approved_at": "2026-11-09T23:56:10.942Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "status_history": [
+        {
+          "from": null,
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "SeoulLive 결정 반영 상세 카드"
+        }
+      ]
+    },
+    {
+      "id": "ISS-206",
+      "title": "[SeoulLive 검증] 유튜브 라이브 송출 연결 — 비공개(unlisted) 4시간 시험 송출 후 공개는 대표님 승인",
+      "type": "TASK",
+      "priority": "P0",
+      "size": "M",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-182",
+        "ISS-186",
+        "ISS-188"
+      ],
+      "created_at": "2026-11-09T23:56:06.276013+00:00",
+      "updated_at": "2026-11-09T23:56:11.018Z",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
+        "epic": "SEOULLIVE",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "acceptance_criteria": [
+          "플레이아웃 출력을 유튜브 RTMP 로 보낸다 — 스트림 키는 대표님께 human_task 로 받아 ENV 에만 저장(출력·커밋 금지)",
+          "유튜브 '변경되거나 합성된 콘텐츠' 표시와 설명란 AI 고지가 설정된다(ISS-182 결과 반영)",
+          "비공개(일부 공개) 4시간 시험 송출에서 블랙 프레임 0·끊김 0 기록(녹화본 blackdetect 결과)",
+          "공개 송출 전환은 payload.gate=deploy — 대표님 승인 후"
+        ],
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A)에 따른 검증 단계 카드",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "gate": "deploy",
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:11.018Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A)에 따른 검증 단계 카드"
+          }
+        ],
+        "approved_at": "2026-11-09T23:56:11.018Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "status_history": [
+        {
+          "from": null,
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "SeoulLive 결정 반영 상세 카드"
+        }
+      ]
+    },
+    {
+      "id": "ISS-207",
+      "title": "[SeoulLive 검증] 4주 검증 판정 리포트 — 시간당 판매량·장당 광고비·반품률, 셀러 트랙 착수 여부 결정 카드",
+      "type": "TASK",
+      "priority": "P1",
+      "size": "S",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-206",
+        "ISS-192",
+        "ISS-203"
+      ],
+      "created_at": "2026-11-09T23:56:06.276013+00:00",
+      "updated_at": "2026-11-09T23:56:11.018Z",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
+        "epic": "SEOULLIVE",
+        "repo": "문서 — seoullive/docs/validation-report.md",
+        "acceptance_criteria": [
+          "송출 시작 후 4주 데이터로 시간당 판매량, 링크·채널별 전환, 장당 광고비, 반품률을 정리",
+          "판정선(ISS-203)과 비교해 '셀러 트랙 착수/AI 트랙 조정/중단' 결정 카드(DECISION, 선택지 포함)를 만든다"
+        ],
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "선행 결과 후 착수",
+          "risk": "중간",
+          "effort": "S",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "start_after": "ISS-206 공개 송출 후 4주",
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:56:11.018Z",
+            "by": "auto",
+            "reason": "선행 결과 후 착수"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:56:11.018Z"
+      },
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "SeoulLive 결정 반영 상세 카드"
+        }
+      ]
+    },
+    {
+      "id": "ISS-208",
+      "title": "[SeoulLive 검증] 클립 제작 1차 — 상품 3개(설명·사이즈·소재) + 공통(오프닝·대기·반응·배송·환불·이벤트·마감), 영어",
+      "type": "TASK",
+      "priority": "P0",
+      "size": "L",
+      "status": "READY",
+      "origin": "session",
+      "depends_on": [
+        "ISS-184",
+        "ISS-185"
+      ],
+      "created_at": "2026-11-09T23:56:06.276013+00:00",
+      "updated_at": "2026-11-09T23:56:11.018Z",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
+        "epic": "SEOULLIVE",
+        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에) — clips/ (영상 파일은 git 제외, 경로만 등록)",
+        "acceptance_criteria": [
+          "ISS-184 캐릭터 기준 이미지로만 만들고, 생성 후 기준 그림과 나란히 대조한 시트가 남는다",
+          "모든 클립이 clip-spec(ISS-185) 검사를 통과하고 동일 자세로 시작·종료한다",
+          "영어 음성은 STT(whisper)로 받아써 원문과 대조한 결과가 남는다(가격·숫자·브랜드명 정확)",
+          "가격·혜택은 클립에 직접 말하지 않고 오버레이(DB 값)로 표시",
+          "외부 생성 비용 실측을 결과에 남기고, 1회 실행 $10 초과 예상이면 대표님 결정 카드로 멈춘다"
+        ],
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-175·176 결정(A)에 따른 검증 단계 카드",
+          "risk": "중간",
+          "effort": "L",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-09T23:56:11.018Z",
+            "by": "auto",
+            "reason": "ISS-175·176 결정(A)에 따른 검증 단계 카드"
+          }
+        ],
+        "approved_at": "2026-11-09T23:56:11.018Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "status_history": [
+        {
+          "from": null,
+          "to": "READY",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "SeoulLive 결정 반영 상세 카드"
+        }
+      ]
+    },
+    {
+      "id": "ISS-209",
+      "title": "[SeoulLive] AI 트랙 5:5 순익 정산서 — order_costs, 광고비 공동 부담·월 상한 15%(ISS-178 A), 파트너 읽기 전용",
+      "type": "GENERATE_CODE",
+      "priority": "P2",
+      "size": "M",
+      "status": "BACKLOG",
+      "origin": "session",
+      "depends_on": [
+        "ISS-128",
+        "ISS-131"
+      ],
+      "created_at": "2026-11-09T23:56:06.276013+00:00",
+      "updated_at": "2026-11-09T23:56:11.018Z",
+      "payload": {
+        "origin": "session",
+        "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
+        "epic": "SEOULLIVE",
+        "repo": "musinsa_clone/ (JIEUM 몰) 또는 seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)(착수 시 결정)",
+        "acceptance_criteria": [
+          "주문별 원가·수수료·배송·반품·관세·광고비 배분·할인으로 순익을 계산하고 50:50 몫을 월 정산서로 낸다",
+          "광고비 월 상한(기본 매출의 15%)은 관리자 설정, 상한 초과분은 JIEUM 부담으로 계산(테스트)",
+          "파트너는 자기 상품 실적만 읽는다(ISS-128·131 역할 체계)"
+        ],
+        "work_rules": [
+          "코드 작성은 codex e 위임, 검수·테스트는 직접",
+          "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
+          "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
+        ],
+        "recommendation": {
+          "verdict": "보류 권장",
+          "reason": "파트너 5:5 계약 체결 전 — 계약 후 READY",
+          "risk": "중간",
+          "effort": "M",
+          "by": "session",
+          "at": "2026-11-09T23:56:06.276013+00:00"
+        },
+        "backlog_reason": "파트너 5:5 계약 체결 전 — 계약 후 READY",
+        "decisions": [
+          {
+            "action": "defer",
+            "at": "2026-11-09T23:56:11.018Z",
+            "by": "auto",
+            "reason": "파트너 5:5 계약 체결 전 — 계약 후 READY"
+          }
+        ],
+        "deferred_at": "2026-11-09T23:56:11.018Z"
+      },
+      "status_history": [
+        {
+          "from": null,
+          "to": "BACKLOG",
+          "at": "2026-11-09T23:56:06.276013+00:00",
+          "by": "session",
+          "note": "SeoulLive 결정 반영 상세 카드"
+        }
+      ]
     }
   ],
   "hooks": {
@@ -13457,6 +16189,30 @@
         "issue_type": "TASK",
         "plan_created": 0,
         "timestamp": "2026-11-08T09:06:59.309200"
+      },
+      {
+        "issue_id": "ISS-070",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T09:06:07.877751"
+      },
+      {
+        "issue_id": "ISS-203",
+        "issue_type": "TASK",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T09:07:58.598979"
+      },
+      {
+        "issue_id": "ISS-184",
+        "issue_type": "TASK",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T09:07:58.831725"
+      },
+      {
+        "issue_id": "ISS-182",
+        "issue_type": "TASK",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T09:07:59.071354"
       }
     ],
     "on_fail": [],
@@ -13469,7 +16225,7 @@
   },
   "stats": {
     "total_issues": 41,
-    "completed": 92,
+    "completed": 96,
     "failed": 0,
     "evolved": 0
   },
@@ -13478,10 +16234,10 @@
     "issues": []
   },
   "issue_budget": {
-    "date": "2026-11-02",
+    "date": "2026-11-10",
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-166:READY": 1
+    "ISS-179:READY": 1
   }
 }

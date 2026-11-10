@@ -17485,7 +17485,25 @@
             "output": "Tests 461 passed (461) — 7회 중 6회 연속 통과(첫 1회 1 failed, 이후 재현 안 됨, 별개 테스트로 추정)"
           }
         ],
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "unverifiable",
+          "at": "2026-11-10T05:18:05Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/streaming.test.ts",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            },
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-10T14:17:18.218279"
     }

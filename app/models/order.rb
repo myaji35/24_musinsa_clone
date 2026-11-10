@@ -23,6 +23,8 @@ class Order < ApplicationRecord
   before_create :generate_order_number
   after_create :enqueue_preference_update_job # Epic 4.2: 주문 생성 시 자동 취향 학습
 
+  after_commit :enqueue_seoullive_webhook, on: :update, if: -> { saved_change_to_status?(to: "paid") }
+
   # Scopes
   scope :pending, -> { where(status: "pending") }
   scope :paid, -> { where(status: "paid") }
@@ -58,6 +60,14 @@ class Order < ApplicationRecord
   end
 
   private
+
+  def enqueue_seoullive_webhook
+    return unless Seoullive::OrderWebhook.enabled?
+
+    SeoulliveOrderWebhookJob.perform_later(id)
+  rescue StandardError
+    Rails.logger.warn("order_id=#{id} code=enqueue_error")
+  end
 
   def prevent_cancellation_after_shipping
     return unless will_save_change_to_status? && status == "cancelled"

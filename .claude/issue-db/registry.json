@@ -5955,13 +5955,13 @@
     },
     {
       "id": "ISS-107",
-      "status": "AWAITING_USER",
+      "status": "DONE",
       "priority": "P2",
       "type": "FEATURE",
       "origin": "factory-runner",
       "title": "몰 하단 사업자 정보 고지 + 주문서 청약철회·환불 안내 + 이용약관·개인정보처리방침 화면",
       "created_at": "2026-10-19T03:59:23.677324+00:00",
-      "updated_at": "2026-11-10T00:33:29.127157+00:00",
+      "updated_at": "2026-11-10T19:03:16.033Z",
       "depends_on": [
         "ISS-059"
       ],
@@ -5971,12 +5971,12 @@
         "gate": "deploy",
         "blocked_reason": "선행 ISS-059 미병합 + 사업자 실제 값(사업자등록번호·통신판매업 신고번호 등) 미수령 — 가짜 값으로 고지하면 허위 표시가 더 위험",
         "recommendation": {
-          "verdict": "대표님 결정 필요",
-          "reason": "법정 고지 화면이라 배포 전 대표님 확인 필요(gate=deploy). 사업자 실제 값은 기억에서 못 찾아 '등록 준비 중'으로 표시 — 값은 서버 설정이라 코드 재작업 없이 나중에 채울 수 있음",
-          "risk": "낮음",
-          "effort": "M",
-          "by": "factory-runner",
-          "at": "2026-11-10T00:33:29.127157+00:00"
+          "verdict": "승인 권장",
+          "reason": "대표님 결정(B. 지금 '등록 준비 중'으로 먼저 올리고 값은 나중에 채우기) — 이 결정대로 진행",
+          "risk": "—",
+          "effort": "—",
+          "by": "관제실 결정",
+          "at": "2026-11-10T19:03:16.033Z"
         },
         "decisions": [
           {
@@ -5990,6 +5990,12 @@
             "at": "2026-11-09T23:56:10.942Z",
             "by": "auto",
             "reason": "SeoulLive ISS-179 선행 — 화면 구조 먼저, 사업자 정보 값(상호·대표자·주소·사업자번호·통신판매업 번호)은 ask_kind provide_value 로 대표님께 요청(기억 검색 결과 없음, 값 지어내기 금지)"
+          },
+          {
+            "action": "decide",
+            "at": "2026-11-10T19:03:16.033Z",
+            "by": "대표님(헤르메스)",
+            "note": "관제 자율 결정"
           }
         ],
         "deferred_at": "2026-10-19T04:01:58.960Z",
@@ -6010,8 +6016,8 @@
           }
         ],
         "promoted_by": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
-        "approved_at": null,
-        "approved_by": null,
+        "approved_at": "2026-11-10T19:03:16.033Z",
+        "approved_by": "대표님(헤르메스)",
         "branch": "factory/ISS-107",
         "acceptance_criteria": [
           "몰 하단에 상호·대표자·주소·전화·이메일·사업자등록번호·통신판매업 신고번호·호스팅 제공자 칸이 보이고, 값이 없으면 '등록 준비 중'으로 표시(가짜 번호 0)",
@@ -6046,7 +6052,7 @@
             "at": "2026-11-09T23:56:06.276013+00:00"
           }
         ],
-        "gate_stage": "deploy-review",
+        "gate_stage": "merged",
         "worktree": "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/wt107",
         "start_approval": {
           "approved_at": "2026-11-09T23:56:10.942Z",
@@ -6097,7 +6103,15 @@
           "/tmp/f107/shots/footer.png",
           "/tmp/f107/shots/terms.png",
           "/tmp/f107/shots/checkout.png"
-        ]
+        ],
+        "decision": {
+          "choice": "B",
+          "label": "지금 '등록 준비 중'으로 먼저 올리고 값은 나중에 채우기",
+          "text": "관제 자율 결정",
+          "question": "몰 맨 아래 사업자 정보와 이용약관·주문서 환불 안내를 운영 몰에 언제 올릴까요?",
+          "by": "대표님(헤르메스)",
+          "at": "2026-11-10T19:03:16.033Z"
+        }
       },
       "status_history": [
         {
@@ -6109,49 +6123,55 @@
         }
       ],
       "result": {
-        "commit": "49c8299",
-        "branch": "factory/ISS-107",
+        "summary": "대표님 결정 B(등록 준비 중으로 먼저 공개) 반영 — factory/ISS-107 을 main 에 병합(0c45ac5). 럭셔리 리디자인과 충돌 3곳 해결(푸터 이용약관 링크 활성화·사업자 정보 블록·주문서 주문 전 확인 섹션을 ink 토큰 스타일로).",
+        "commit": "0c45ac5",
         "criteria_check": [
           {
-            "criterion": "몰 하단에 사업자 정보 9칸이 보이고 값이 없으면 '등록 준비 중'(가짜 번호 0)",
+            "criterion": "몰 하단 사업자 정보 칸, 값 없으면 '등록 준비 중'",
             "met": true,
-            "how": "브랜치 서버(3107, 개발 DB 사본) 홈 푸터 캡처 — 9칸 모두 '등록 준비 중', business_disclosures_test 가 가짜 번호 패턴 없음을 단언"
+            "how": "business_disclosures_test 통과(가짜 번호 없음 검사 포함)"
           },
           {
-            "criterion": "푸터 '이용약관' → 이용약관 화면, 청약철회 7일·환급 3영업일 조항",
+            "criterion": "푸터 '이용약관' → 약관 화면, 청약철회 7일·환급 3영업일",
             "met": true,
-            "how": "/terms 200, 16개 조(제10조 환급·제11조 청약철회), layout_links_test 가 푸터 /terms 링크 1개·200 단언"
+            "how": "layout_links_test 에서 /terms 링크·200 확인, business_disclosures_test 조항 단언"
           },
           {
-            "criterion": "주문서에 청약철회·환불·미성년자 안내와 정책 링크 3개",
+            "criterion": "주문서 결제 버튼 근처 청약철회·환불·미성년자 안내와 정책 링크 3개",
             "met": true,
-            "how": "상품 바로구매 → /checkout/new '주문 전 확인' 블록 캡처(배송·반품 안내·이용약관·개인정보처리방침 링크)"
+            "how": "checkouts/new 에 '주문 전 확인' 섹션, 테스트 통과"
           },
           {
-            "criterion": "값을 설정하면 표시되고 사업자등록번호에 공정위 확인 링크",
+            "criterion": "값 설정 시 표시 + 사업자등록번호 공정위 확인 링크",
             "met": true,
-            "how": "business_disclosures_test 에서 설정값 주입 후 표시·ftc.go.kr 확인 링크 단언"
+            "how": "business_disclosures_test 의 설정값 표시·ftc 링크 단언 통과"
           }
         ],
         "proof": [
           {
-            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS107.sqlite3 bin/rails test test/controllers/business_disclosures_test.rb test/integration/layout_links_test.rb",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/business_disclosures_test.rb test/integration/layout_links_test.rb",
             "exit_code": 0,
-            "output": "12 runs, 204 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "12 runs, 210 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS107.sqlite3 bin/rails test",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
             "exit_code": 0,
-            "output": "596 runs, 4758 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "644 runs, 6917 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "bin/rubocop app/models/business_info.rb app/controllers/policies_controller.rb config/application.rb config/routes.rb test/controllers/business_disclosures_test.rb",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop app test config",
             "exit_code": 0,
-            "output": "5 files inspected, no offenses detected"
+            "output": "301 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "cd musinsa_clone && git log --oneline -1 0c45ac5",
+            "exit_code": 0,
+            "output": "0c45ac5 merge(ISS-107): 사업자 정보 고지·이용약관·주문서 청약철회 안내 main 병합"
           }
         ],
-        "notes": "1차 구현에서 기존 테스트 4건 회귀(푸터 구조 변경) → Codex 재위임으로 수정. 약관 문안은 표준약관 구성 기반 초안 — 판매 개시 전 법률 검토 권장."
-      }
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-11T04:05:26.724944"
     },
     {
       "id": "ISS-108",
@@ -13599,7 +13619,7 @@
       "type": "TASK",
       "priority": "P0",
       "size": "M",
-      "status": "READY",
+      "status": "AWAITING_USER",
       "origin": "session",
       "depends_on": [
         "ISS-107"
@@ -13622,11 +13642,11 @@
         ],
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
-          "risk": "중간",
-          "effort": "M",
-          "by": "session",
-          "at": "2026-11-09T23:56:06.276013+00:00"
+          "reason": "구현·테스트 완료. 현재 해외 전송이 없어 '이전하지 않음' 문구가 사실이고, 법무 쟁점은 숨김 주석·문서로만 남겨 단정하지 않음",
+          "risk": "낮음 — 정책 화면 문구·오버레이 배지 추가뿐, 스키마 변경 없음",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-11-10T19:12:01.566302+00:00"
         },
         "note": "PRD에 빠진 것: AI 모델 '완벽한 핏' 연출은 표시광고법상 기만 표시 리스크",
         "repo": "musinsa_clone/ (JIEUM 몰) + seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
@@ -13647,10 +13667,34 @@
         "approved_at": "2026-11-09T23:56:10.942Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
         "plan_mode": "code",
-        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋.",
+        "branch": "factory/ISS-179 (0053 musinsa_clone 15a3e3c, 작업트리 wt179) + factory/ISS-179 (0060_seoullive d9c554a, 작업트리 0060_wt179)",
+        "gate_stage": "deploy-review",
+        "ask_kind": "decision",
+        "ask_prompt": "몰 개인정보처리방침에 '국외 이전'·'라이브 구매 알림 이름 가림' 항목을 넣고, 방송 화면에 'AI 이미지 — 실제 착용감과 다를 수 있음' 고지를 항상 띄우도록 만들었습니다. 운영 몰에 올려도 되는지 승인해 주세요.",
+        "question": "개인정보처리방침 보강과 AI 착용 고지를 운영에 올릴까요?",
+        "plain_summary": "법으로 알려야 하는 문구(개인정보 국외 이전 예정, 구매 알림 이름 가림, AI 이미지 고지)를 화면에 추가했습니다. 법적인 문구라 올리기 전에 대표님 확인을 받습니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "지금 올리기",
+            "pros": "AI 방송 출시 차단 조건 하나가 풀림. 현재는 해외 전송이 없다고 정직하게 밝힌 문구라 위험이 낮음",
+            "cons": "법무 검토 전에 공개됨(검토 필요 쟁점 3개는 문서에만 표시)"
+          },
+          {
+            "key": "B",
+            "label": "법무 검토 뒤에 올리기",
+            "pros": "문구를 전문가가 확인한 뒤 공개",
+            "cons": "AI 방송 출시가 법무 검토만큼 늦어짐"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "지금은 실제로 해외로 보내는 개인정보가 없어 '이전하지 않음'이 사실이고, 해외 AI 도입 전에 다시 고치게 되어 있어 먼저 올려도 위험이 작습니다.",
+        "if_not_decided": "방침·고지 변경이 브랜치에만 있고 운영 몰과 방송 화면에는 반영되지 않습니다. AI 방송 출시 조건이 계속 미충족입니다.",
+        "reversible": "되돌릴 수 있음 — 화면 문구 변경뿐이라 이전 버전으로 바로 돌릴 수 있습니다."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T00:47:34.202548+00:00",
+      "updated_at": "2026-11-10T19:12:01.566302+00:00",
       "status_history": [
         {
           "from": null,
@@ -13665,9 +13709,73 @@
           "at": "2026-11-09T23:56:06.276013+00:00",
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
+        },
+        {
+          "status": "IN_PROGRESS",
+          "at": "2026-11-10T19:06:30.226935+00:00",
+          "by": "factory-runner"
+        },
+        {
+          "status": "AWAITING_USER",
+          "at": "2026-11-10T19:12:01.566302+00:00",
+          "by": "factory-runner",
+          "note": "deploy-review"
         }
       ],
-      "last_dispatched_at": "2026-11-10T15:38:27"
+      "last_dispatched_at": "2026-11-11T04:05:26",
+      "result": {
+        "summary": "0053: 개인정보처리방침에 '라이브 방송 구매 알림(이름 가림)' 처리 항목과 '⑦ 개인정보의 국외 이전'(현재 없음·OpenAI 등 도입 시 고지 항목) 추가, 법무 쟁점은 화면에 안 보이는 주석. 0060: 고지 문구 상수(lib/ai-channel/disclosure.ts), 오버레이에 착용 고지 항상 표시(숨김에도 유지), docs/ai-disclosure.md(국/영문 문구·화면 위치·금지 표현·법무 검토 필요 3곳).",
+        "criteria_check": [
+          {
+            "criterion": "ISS-107 이 끝나 몰 하단에 사업자 정보가 보인다",
+            "met": true,
+            "how": "ISS-107 main 병합 0c45ac5, business_disclosures_test 통과"
+          },
+          {
+            "criterion": "개인정보처리방침에 국외 이전·마스킹 이름 항목 추가",
+            "met": true,
+            "how": "policies_controller_test '국외 이전과 라이브 구매 알림 마스킹을 안내한다' 통과"
+          },
+          {
+            "criterion": "seoullive/docs/ai-disclosure.md 에 표시 문구(국/영)와 화면 위치 규칙",
+            "met": true,
+            "how": "0060 docs/ai-disclosure.md 1·2절"
+          },
+          {
+            "criterion": "AI 착용 고지 문구가 오버레이 규칙에 포함",
+            "met": true,
+            "how": "오버레이 API fitNotice·화면 상시 표시, ai-overlay.test 38건 통과"
+          },
+          {
+            "criterion": "법률 판단 문장은 '법무 검토 필요' 표시",
+            "met": true,
+            "how": "문서 3곳·방침 ERB 주석(화면 비노출 테스트)"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/policies_controller_test.rb",
+            "exit_code": 0,
+            "output": "5 runs, 64 assertions, 0 failures, 0 errors, 0 skips (factory/ISS-179 작업트리 wt179 기준)"
+          },
+          {
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+            "exit_code": 0,
+            "output": "645 runs, 6921 assertions, 0 failures, 0 errors, 0 skips (wt179)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_wt179 && npx vitest run tests/unit/ai-overlay.test.ts",
+            "exit_code": 0,
+            "output": "Test Files 1 passed (1) / Tests 38 passed (38)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_wt179 && npx tsc --noEmit -p .",
+            "exit_code": 0,
+            "output": "(출력 없음)"
+          }
+        ],
+        "notes": "0060 전체 vitest 478건 중 tenant.test 1건이 부하 시 5초 타임아웃(기존 알려진 문제) — 단독 재실행 통과. 0060 은 0053 출고 대상이 아니므로 승인 시 0060 main 병합·서울라이브 배포는 따로."
+      }
     },
     {
       "id": "ISS-180",
@@ -18251,6 +18359,12 @@
         "issue_type": "GENERATE_CODE",
         "plan_created": 0,
         "timestamp": "2026-11-10T15:41:29.870660"
+      },
+      {
+        "issue_id": "ISS-107",
+        "issue_type": "FEATURE",
+        "plan_created": 0,
+        "timestamp": "2026-11-11T04:05:26.724944"
       }
     ],
     "on_fail": [],
@@ -18263,7 +18377,7 @@
   },
   "stats": {
     "total_issues": 41,
-    "completed": 113,
+    "completed": 114,
     "failed": 0,
     "evolved": 0
   },
@@ -18272,11 +18386,11 @@
     "issues": []
   },
   "issue_budget": {
-    "date": "2026-11-10",
+    "date": "2026-11-11",
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-179:READY": 9,
+    "ISS-179:READY": 10,
     "ISS-190:READY": 3
   }
 }

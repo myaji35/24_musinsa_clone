@@ -3555,7 +3555,30 @@
           }
         ],
         "notes": "공용 개발 DB(development)에는 아직 마이그레이션을 적용하지 않았다(main 병합분이라 적용 가능, 다음 서버 기동 시 db:migrate 필요). 운영 반영은 실행기 출고 순서를 따른다. 유입 쿠키는 1st-party 세션이며 IP·UA·개인정보는 저장하지 않는다.",
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "unverifiable",
+          "at": "2026-11-10T00:09:43Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd musinsa_clone && source ~/.claude/factory-runner/scripts/env0053.sh && LANG=en_US.UTF-8 bin/rails test test/controllers/checkouts_controller_test.rb test/controllers/admin_orders_controller_test.rb",
+              "status": "skipped",
+              "why": "검사 명령 아님: source ~/.claude/factory-runner/scripts/"
+            },
+            {
+              "cmd": "cd musinsa_clone && source ~/.claude/factory-runner/scripts/env0053.sh && LANG=en_US.UTF-8 bin/rails test",
+              "status": "skipped",
+              "why": "검사 명령 아님: source ~/.claude/factory-runner/scripts/"
+            },
+            {
+              "cmd": "cd musinsa_clone && source ~/.claude/factory-runner/scripts/env0053.sh && bin/rubocop",
+              "status": "skipped",
+              "why": "검사 명령 아님: source ~/.claude/factory-runner/scripts/"
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-10T09:06:07.877751"
     },
@@ -5932,13 +5955,13 @@
     },
     {
       "id": "ISS-107",
-      "status": "READY",
+      "status": "AWAITING_USER",
       "priority": "P2",
       "type": "FEATURE",
       "origin": "factory-runner",
       "title": "몰 하단 사업자 정보 고지 + 주문서 청약철회·환불 안내 + 이용약관·개인정보처리방침 화면",
       "created_at": "2026-10-19T03:59:23.677324+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:33:29.127157+00:00",
       "depends_on": [
         "ISS-059"
       ],
@@ -5948,12 +5971,12 @@
         "gate": "deploy",
         "blocked_reason": "선행 ISS-059 미병합 + 사업자 실제 값(사업자등록번호·통신판매업 신고번호 등) 미수령 — 가짜 값으로 고지하면 허위 표시가 더 위험",
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "SeoulLive ISS-179 선행 — 화면 구조 먼저, 사업자 정보 값(상호·대표자·주소·사업자번호·통신판매업 번호)은 ask_kind provide_value 로 대표님께 요청(기억 검색 결과 없음, 값 지어내기 금지)",
+          "verdict": "대표님 결정 필요",
+          "reason": "법정 고지 화면이라 배포 전 대표님 확인 필요(gate=deploy). 사업자 실제 값은 기억에서 못 찾아 '등록 준비 중'으로 표시 — 값은 서버 설정이라 코드 재작업 없이 나중에 채울 수 있음",
           "risk": "낮음",
           "effort": "M",
-          "by": "session",
-          "at": "2026-11-09T23:56:06.276013+00:00"
+          "by": "factory-runner",
+          "at": "2026-11-10T00:33:29.127157+00:00"
         },
         "decisions": [
           {
@@ -5987,8 +6010,94 @@
           }
         ],
         "promoted_by": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
-        "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_at": null,
+        "approved_by": null,
+        "branch": "factory/ISS-107",
+        "acceptance_criteria": [
+          "몰 하단에 상호·대표자·주소·전화·이메일·사업자등록번호·통신판매업 신고번호·호스팅 제공자 칸이 보이고, 값이 없으면 '등록 준비 중'으로 표시(가짜 번호 0)",
+          "푸터 '이용약관'을 누르면 이용약관 화면이 열리고 청약철회 7일·환급 3영업일 조항이 있다",
+          "주문서 결제 버튼 근처에 청약철회·환불·미성년자 취소 안내와 배송·반품/이용약관/개인정보처리방침 링크가 있다",
+          "값을 설정하면 그대로 표시되고 사업자등록번호에 공정위 확인 링크가 붙는다"
+        ],
+        "recall_used": "recall.py 'JIEUM 사업자 정보 상호 대표자 ...' — JIEUM 값 없음(XimTier·누리팜 정보만 검색됨, 다른 사업이라 미사용)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T00:26:32.866064+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — factory/ISS-107 브랜치(작업트리 ../wt107): 사업자 정보 푸터·이용약관 화면·주문서 청약철회 안내, 값은 환경변수로만(가짜 값 0). 기억 검색으로 JIEUM 사업자 값 못 찾음"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-11-10T00:33:29.127157+00:00",
+            "by": "factory-runner",
+            "note": "factory/ISS-107(49c8299) 구현·테스트 완료 — 배포 검토 + 사업자 값 대기"
+          }
+        ],
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "SeoulLive ISS-179 선행 — 화면 구조 먼저, 사업자 정보 값(상호·대표자·주소·사업자번호·통신판매업 번호)은 ask_kind provide_value 로 대표님께 요청(기억 검색 결과 없음, 값 지어내기 금지)",
+            "risk": "낮음",
+            "effort": "M",
+            "by": "session",
+            "at": "2026-11-09T23:56:06.276013+00:00"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "worktree": "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/wt107",
+        "start_approval": {
+          "approved_at": "2026-11-09T23:56:10.942Z",
+          "approved_by": "자동 승인(추천: 승인 권장)",
+          "note": "착수 승인 — 배포 승인 아님"
+        },
+        "ask_kind": "decision",
+        "ask_prompt": "사업자 정보·이용약관 화면을 언제 올릴지 고르고, 사업자 값(상호·대표자·주소·전화·이메일·사업자등록번호·통신판매업 신고번호와 신고기관·호스팅 업체)을 알려 주세요.",
+        "question": "몰 맨 아래 사업자 정보와 이용약관·주문서 환불 안내를 운영 몰에 언제 올릴까요?",
+        "plain_summary": "법에서 정한 사업자 정보 칸, 이용약관 화면, 주문서의 청약철회·환불 안내를 만들었습니다. 사업자 실제 값(상호·사업자등록번호 등)은 아직 받지 못해 '등록 준비 중'으로 나옵니다 — 지어낸 값은 하나도 없습니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "값을 받은 뒤 한 번에 올리기",
+            "pros": "처음부터 완전한 고지",
+            "cons": "값이 올 때까지 이용약관·환불 안내도 손님에게 안 보임"
+          },
+          {
+            "key": "B",
+            "label": "지금 '등록 준비 중'으로 먼저 올리고 값은 나중에 채우기",
+            "pros": "이용약관·청약철회 안내가 바로 생김, 값은 서버 설정만 바꾸면 반영",
+            "cons": "그동안 하단에 '등록 준비 중'이 9칸 보임"
+          },
+          {
+            "key": "C",
+            "label": "보류",
+            "pros": "운영 몰 변화 없음",
+            "cons": "법정 고지 미비 상태 지속, 서울라이브 법무 카드(ISS-179)도 대기"
+          }
+        ],
+        "recommended_option": "B",
+        "recommended_why": "지금 몰에는 이용약관도 환불 안내도 없어서, 먼저 올리는 쪽이 손님·법적 측면 모두 낫습니다. 사업자 값은 받는 즉시 설정으로 채웁니다.",
+        "if_not_decided": "운영 몰은 계속 이용약관 '(준비 중)' 상태이고, 이 카드에 걸린 서울라이브 법무 카드(ISS-179)가 시작되지 못합니다.",
+        "reversible": "되돌릴 수 있음 — 화면·설정만 바뀌고 데이터 변경 없음",
+        "needed_values": [
+          "BUSINESS_NAME 상호",
+          "BUSINESS_REPRESENTATIVE 대표자",
+          "BUSINESS_ADDRESS 사업장 주소",
+          "BUSINESS_PHONE 고객센터 전화",
+          "BUSINESS_EMAIL 고객센터 이메일",
+          "BUSINESS_REGISTRATION_NUMBER 사업자등록번호",
+          "MAIL_ORDER_REGISTRATION_NUMBER 통신판매업 신고번호",
+          "MAIL_ORDER_REGISTRATION_AGENCY 신고기관(예: OO구청)",
+          "HOSTING_PROVIDER 호스팅 업체",
+          "TERMS_EFFECTIVE_DATE 약관 시행일"
+        ],
+        "screenshots": [
+          "/tmp/f107/shots/footer.png",
+          "/tmp/f107/shots/terms.png",
+          "/tmp/f107/shots/checkout.png"
+        ]
       },
       "status_history": [
         {
@@ -5998,7 +6107,51 @@
           "by": "session",
           "note": "SeoulLive ISS-179 선행 — 화면 구조 먼저, 사업자 정보 값(상호·대표자·주소·사업자번호·통신판매업 번호)은 ask_kind provide_value 로 대표님께 요청(기억 검색 결과 없음, 값 지어내기 금지)"
         }
-      ]
+      ],
+      "result": {
+        "commit": "49c8299",
+        "branch": "factory/ISS-107",
+        "criteria_check": [
+          {
+            "criterion": "몰 하단에 사업자 정보 9칸이 보이고 값이 없으면 '등록 준비 중'(가짜 번호 0)",
+            "met": true,
+            "how": "브랜치 서버(3107, 개발 DB 사본) 홈 푸터 캡처 — 9칸 모두 '등록 준비 중', business_disclosures_test 가 가짜 번호 패턴 없음을 단언"
+          },
+          {
+            "criterion": "푸터 '이용약관' → 이용약관 화면, 청약철회 7일·환급 3영업일 조항",
+            "met": true,
+            "how": "/terms 200, 16개 조(제10조 환급·제11조 청약철회), layout_links_test 가 푸터 /terms 링크 1개·200 단언"
+          },
+          {
+            "criterion": "주문서에 청약철회·환불·미성년자 안내와 정책 링크 3개",
+            "met": true,
+            "how": "상품 바로구매 → /checkout/new '주문 전 확인' 블록 캡처(배송·반품 안내·이용약관·개인정보처리방침 링크)"
+          },
+          {
+            "criterion": "값을 설정하면 표시되고 사업자등록번호에 공정위 확인 링크",
+            "met": true,
+            "how": "business_disclosures_test 에서 설정값 주입 후 표시·ftc.go.kr 확인 링크 단언"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS107.sqlite3 bin/rails test test/controllers/business_disclosures_test.rb test/integration/layout_links_test.rb",
+            "exit_code": 0,
+            "output": "12 runs, 204 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS107.sqlite3 bin/rails test",
+            "exit_code": 0,
+            "output": "596 runs, 4758 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop app/models/business_info.rb app/controllers/policies_controller.rb config/application.rb config/routes.rb test/controllers/business_disclosures_test.rb",
+            "exit_code": 0,
+            "output": "5 files inspected, no offenses detected"
+          }
+        ],
+        "notes": "1차 구현에서 기존 테스트 4건 회귀(푸터 구조 변경) → Codex 재위임으로 수정. 약관 문안은 표준약관 구성 기반 초안 — 판매 개시 전 법률 검토 권장."
+      }
     },
     {
       "id": "ISS-108",
@@ -13624,7 +13777,8 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "plan_mode": "code"
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
       "updated_at": "2026-11-09T23:56:10.942Z",
@@ -13643,7 +13797,8 @@
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
         }
-      ]
+      ],
+      "last_dispatched_at": "2026-11-10T09:14:24"
     },
     {
       "id": "ISS-182",
@@ -13765,7 +13920,7 @@
       "type": "TASK",
       "priority": "P1",
       "size": "XS",
-      "status": "READY",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [],
       "payload": {
@@ -13810,10 +13965,19 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T00:10:27.871067+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — 도메인 whois·상표(KIPRIS) 조회 문서화(구매 없음)"
+          }
+        ]
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:10:27.871067+00:00",
       "status_history": [
         {
           "from": null,
@@ -13829,7 +13993,45 @@
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
         }
-      ]
+      ],
+      "result": {
+        "files_created": [
+          "docs/seoullive/domain-trademark.md"
+        ],
+        "commit": "644dbb1",
+        "criteria_check": [
+          {
+            "criterion": "seoullive.kr·seoullive.com·단축 도메인 후보 3개의 등록 가능 여부·연간 가격을 근거와 함께 기록(구매 안 함)",
+            "met": true,
+            "how": "whois/RDAP 로 7개+단축 5개 조회, 가비아 공식 가격 페이지 인용. seoullive.kr·co.kr·sllive.kr·sliv.kr·sllv.kr 등록 가능, seoullive.com 2021년부터 선점. 구매 없음"
+          },
+          {
+            "criterion": "KIPRIS 에서 'SeoulLive'·'서울라이브' 선등록·출원 여부와 지정상품 기록",
+            "met": true,
+            "how": "KIPRIS 상표검색 API 3개 검색어 조회 — 서울라이브 등록·출원 중 상표 없음, 과거 2020(38·42·45류)·2024(41류) 출원 모두 거절. 지정상품까지 표로 기록"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "whois seoullive.kr | grep -m1 'not found'",
+            "exit_code": 0,
+            "output": "The requested domain was not found in the Registry or Registrar’s WHOIS Server."
+          },
+          {
+            "cmd": "whois seoullive.com | grep -m1 'Creation Date'",
+            "exit_code": 0,
+            "output": "Creation Date: 2021-08-20T18:07:13Z\r"
+          },
+          {
+            "cmd": "grep -c '거절' docs/seoullive/domain-trademark.md",
+            "exit_code": 0,
+            "output": "5"
+          }
+        ],
+        "follow_up": "도메인 구매(연 약 7만 원, $10 초과)·상표 출원은 대표님 결정 필요 — 문서 3절",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T09:14:23.900288"
     },
     {
       "id": "ISS-203",
@@ -14679,7 +14881,7 @@
       "type": "GENERATE_CODE",
       "priority": "P1",
       "size": "M",
-      "status": "READY",
+      "status": "AWAITING_USER",
       "origin": "session",
       "depends_on": [
         "ISS-177"
@@ -14700,12 +14902,12 @@
           "shopify/"
         ],
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "verdict": "대표님 결정 필요",
+          "reason": "쇼피파이로 재고·가격을 내보내는 기능이라 켜는 순간 해외 판매가 시작될 수 있음 — 코드는 스위치 꺼진 상태로 배포 가능, 매핑 33개는 이름·색상·가격으로 추정해 대표님 눈 확인 필요",
           "risk": "중간",
           "effort": "M",
-          "by": "session",
-          "at": "2026-11-09T23:56:06.276013+00:00"
+          "by": "factory-runner",
+          "at": "2026-11-10T00:26:14.221913+00:00"
         },
         "decisions": [
           {
@@ -14729,11 +14931,77 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "gate": "deploy",
-        "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_at": null,
+        "approved_by": null,
+        "branch": "factory/ISS-193",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T00:21:06.105835+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — factory/ISS-193 브랜치(작업트리 ../wt193): 룩 33개 매핑표·해외가 계산·재고 동기화(안전 스위치 기본 꺼짐)·주문 웹훅(codex e 위임, 쇼피파이 호출은 모킹)"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-11-10T00:26:14.221913+00:00",
+            "by": "factory-runner",
+            "note": "factory/ISS-193 구현·테스트 완료 — 배포 검토 대기"
+          }
+        ],
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "몰을 재고 정본으로 두고 쇼피파이에 재고·가격만 내보낸다. 몰 상품 ID 는 환경마다 달라 이름+색상으로 매핑. 실제 판매(쇼피파이 재고>0)와 자동 동기화는 설정 스위치 기본 꺼짐 — 배포 후에도 대표님이 켜기 전엔 아무것도 안 팔림",
+            "risk": "중간",
+            "effort": "M",
+            "by": "factory-runner"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "worktree": "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/wt193",
+        "start_approval": {
+          "approved_at": "2026-11-09T23:56:10.942Z",
+          "approved_by": "자동 승인(추천: 승인 권장)",
+          "note": "착수 승인 — 배포 승인 아님"
+        },
+        "ask_kind": "decision",
+        "ask_prompt": "쇼피파이 재고 연동을 어디까지 켤지 골라 주세요(매핑표 33개도 한 번 봐 주세요).",
+        "question": "몰 재고를 쇼피파이에 연결하는 기능을 운영에 올릴까요? 올린다면 어디까지 켤까요?",
+        "plain_summary": "우리 몰 재고를 기준으로 쇼피파이(해외 판매) 33개 상품의 재고·달러 가격을 맞추고, 쇼피파이에서 주문이 오면 몰 재고를 빼는 기능을 만들었습니다. 지금은 모든 스위치가 꺼져 있어 올려도 아무것도 팔리지 않습니다. 33개 룩과 몰 상품 짝은 이름·색상·가격으로 맞췄으니 한 번 확인이 필요합니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "스위치 꺼진 채로 올리기",
+            "pros": "운영 몰 변화 없음, 나중에 설정 하나로 시작 가능",
+            "cons": "쇼피파이 재고는 아직 0이라 해외 판매 없음"
+          },
+          {
+            "key": "B",
+            "label": "올리고 가격·재고 맞추기만 켜기(판매는 0 유지)",
+            "pros": "쇼피파이에 달러 가격이 자동 반영돼 공개 준비 완료",
+            "cons": "쇼피파이 관리자 토큰(시크릿) 등록이 필요"
+          },
+          {
+            "key": "C",
+            "label": "올리고 판매까지 켜기",
+            "pros": "해외 판매 바로 시작",
+            "cons": "결제·배송 요율·사이즈 옵션이 아직 정해지지 않아 손님 주문을 처리하기 어려움"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "쇼피파이 결제·배송 설정과 사이즈 옵션이 아직 없어서, 코드만 먼저 올려 두고 판매 준비가 끝나면 켜는 게 안전합니다.",
+        "if_not_decided": "코드는 브랜치에만 있고 몰·쇼피파이 모두 그대로입니다.",
+        "reversible": "되돌릴 수 있음 — 새 표 1개 추가, 동기화·판매는 설정값으로 켜고 끔",
+        "review_points": [
+          "매핑표 config/shopify/listings.yml 33개 — 추정 근거: 색상·형태 + 가격(국내가×2÷1450이 표의 달러가와 일치). 예: L28 '브라운 후드 롱 패딩' ↔ 몰 '드로스트링 후드 롱패딩 토프'",
+          "쇼피파이 상품은 사이즈 옵션이 없어 룩 단위 재고 합계로 보냄",
+          "웹훅·관리자 토큰(SHOPIFY_ADMIN_TOKEN·SHOPIFY_WEBHOOK_SECRET)은 대표님이 쇼피파이에서 발급해 등록해야 함"
+        ]
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:26:14.221913+00:00",
       "status_history": [
         {
           "from": null,
@@ -14749,7 +15017,56 @@
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
         }
-      ]
+      ],
+      "result": {
+        "commit": "0112504",
+        "branch": "factory/ISS-193",
+        "criteria_check": [
+          {
+            "criterion": "JIEUM 몰 상품↔쇼피파이 상품 매핑 표(33개)가 있다",
+            "met": true,
+            "how": "config/shopify/listings.yml 33/33 매핑, SKU·몰 상품+색상 중복 없음(테스트로 단언). 사진 대조는 안 함 — 배포 검토 항목"
+          },
+          {
+            "criterion": "몰 재고 변경 시 쇼피파이 재고가 같아지고, 쇼피파이 주문 웹훅이 오면 몰 재고가 차감된다(모킹)",
+            "met": true,
+            "how": "StockLog 커밋 후 ShopifyInventorySyncJob → InventorySync(가짜 어댑터로 합계 전송 확인), 웹훅 테스트에서 정상 차감·중복 1회·서명 실패 401·미매핑/재고부족 무차감"
+          },
+          {
+            "criterion": "해외가 = 국내가×2÷환율 후 $□9 반올림 함수와 테스트",
+            "met": true,
+            "how": "Shopify::Pricing.overseas_usd — 매핑된 33개 상품 국내가로 계산한 값이 표의 price_usd 와 전부 일치"
+          },
+          {
+            "criterion": "쇼피파이 재고를 0이 아닌 값으로 올리는 동기화는 대표님 승인 전 비활성(플래그 기본 off)",
+            "met": true,
+            "how": "SHOPIFY_SALES_ENABLED 미설정 시 재고 0 전송 테스트, SHOPIFY_SYNC_ENABLED 미설정 시 잡 미등록 테스트"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS193.sqlite3 bin/rails test test/services/shopify test/controllers/webhooks",
+            "exit_code": 0,
+            "output": "15 runs, 109 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS193.sqlite3 bin/rails test",
+            "exit_code": 0,
+            "output": "603 runs, 4751 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop app/controllers/webhooks app/services/shopify app/jobs/shopify_inventory_sync_job.rb app/models/stock_log.rb app/models/shopify_webhook_receipt.rb test/services/shopify test/controllers/webhooks config/routes.rb",
+            "exit_code": 0,
+            "output": "11 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "bin/brakeman -q --no-pager",
+            "exit_code": 0,
+            "output": "No warnings found"
+          }
+        ],
+        "notes": "실제 쇼피파이 호출 없음(비용 $0). 마이그레이션은 test DB 에만 적용."
+      }
     },
     {
       "id": "ISS-194",
@@ -14757,7 +15074,7 @@
       "type": "GENERATE_CODE",
       "priority": "P1",
       "size": "M",
-      "status": "READY",
+      "status": "AWAITING_USER",
       "origin": "session",
       "depends_on": [],
       "payload": {
@@ -14775,12 +15092,12 @@
           "ISS-060"
         ],
         "recommendation": {
-          "verdict": "승인 권장",
-          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+          "verdict": "대표님 결정 필요",
+          "reason": "방송 재고 홀드·자동 해제는 새 테이블 추가형이라 안전. 다만 '입금 기한 지난 주문 자동 취소'는 실제 손님 주문을 취소하는 기능이라 켤지 대표님 확인 필요(코드는 꺼진 상태로 배포 가능)",
           "risk": "중간",
           "effort": "M",
-          "by": "session",
-          "at": "2026-11-09T23:56:06.276013+00:00"
+          "by": "factory-runner",
+          "at": "2026-11-10T00:20:53.998371+00:00"
         },
         "decisions": [
           {
@@ -14804,11 +15121,72 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "gate": "deploy",
-        "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_at": null,
+        "approved_by": null,
+        "branch": "factory/ISS-194",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T00:14:51.285180+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — factory/ISS-194 브랜치(작업트리 ../wt194): 방송 재고 홀드 모델·만료 잡·입금 기한 자동 취소·동시 500 부하 테스트(codex e 위임)"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-11-10T00:20:53.998371+00:00",
+            "by": "factory-runner",
+            "note": "factory/ISS-194(428aae5) 구현·테스트 완료 — 배포 검토 대기"
+          }
+        ],
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "기존 주문 접수(Orders::Intake)가 이미 조건부 update_all 로 원자 차감 — 동시 부하 테스트로 증명하고, 10분 홀드(stock_holds 새 테이블, 추가형)·만료 해제 잡·무통장 기한 경과 자동 취소 잡을 더한다. 실제 주문을 자동 취소하는 동작이라 기능 플래그 기본 꺼짐 + gate=deploy",
+            "risk": "중간",
+            "effort": "M",
+            "by": "factory-runner"
+          }
+        ],
+        "gate_stage": "deploy-review",
+        "worktree": "/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/wt194",
+        "start_approval": {
+          "approved_at": "2026-11-09T23:56:10.942Z",
+          "approved_by": "자동 승인(추천: 승인 권장)",
+          "note": "착수 승인 — 배포 승인 아님"
+        },
+        "ask_kind": "decision",
+        "ask_prompt": "방송 재고 기능을 운영에 올릴지, 미입금 주문 자동 취소를 켤지 골라 주세요.",
+        "question": "방송 판매용 재고 잡아두기 기능을 운영 몰에 올릴까요? 입금 기한 지난 주문 자동 취소도 켤까요?",
+        "plain_summary": "방송 중 '주문' 버튼을 누르면 10분 동안 재고를 잡아 두고, 결제 안 하면 자동으로 풀어 주는 기능을 만들었습니다. 재고 50개에 동시 500명이 눌러도 정확히 50명만 성공하는 것을 확인했습니다. 무통장 입금 기한(3일)이 지난 주문을 자동 취소하는 기능도 만들었는데, 실제 손님 주문을 취소하므로 기본은 꺼 두었습니다.",
+        "options": [
+          {
+            "key": "A",
+            "label": "올리되 자동 취소는 꺼 둔다",
+            "pros": "재고 잡아두기만 운영 반영, 기존 주문은 전혀 안 바뀜",
+            "cons": "입금 안 한 주문의 재고는 지금처럼 직접 취소해야 풀림"
+          },
+          {
+            "key": "B",
+            "label": "올리고 자동 취소도 켠다",
+            "pros": "입금 기한 지난 주문의 재고가 자동으로 돌아와 다시 팔 수 있음",
+            "cons": "늦게 입금하려던 손님 주문도 취소됨 — 안내 문구·기한 확인 필요"
+          },
+          {
+            "key": "C",
+            "label": "아직 올리지 않는다(방송 시작 때)",
+            "pros": "운영 몰 변화 없음",
+            "cons": "방송 준비(서울라이브 연동) 때 다시 확인해야 함"
+          }
+        ],
+        "recommended_option": "A",
+        "recommended_why": "재고 잡아두기는 기존 주문 흐름을 바꾸지 않아 위험이 낮고, 자동 취소는 손님 안내 문구를 정한 뒤 켜는 게 안전합니다.",
+        "if_not_decided": "코드는 브랜치에만 있고 운영 몰은 그대로입니다. 서울라이브 방송 주문 연결(ISS-188 등) 때 이 기능이 필요합니다.",
+        "reversible": "되돌릴 수 있음 — 새 표만 추가되고, 자동 취소는 설정값 하나로 켜고 끕니다(이미 취소된 주문은 되돌리기 어려움)"
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:20:53.998371+00:00",
       "status_history": [
         {
           "from": null,
@@ -14824,7 +15202,51 @@
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
         }
-      ]
+      ],
+      "result": {
+        "commit": "428aae5",
+        "branch": "factory/ISS-194",
+        "criteria_check": [
+          {
+            "criterion": "재고 50개 상품에 동시 500 주문 부하 테스트에서 정확히 50건 성공",
+            "met": true,
+            "how": "test/integration/broadcast_stock_concurrency_test.rb — 작업자 10스레드로 홀드 500회·주문 500회 각각: 성공 50 / 재고 부족 450, 최종 재고 0, 출고 로그 합 50"
+          },
+          {
+            "criterion": "주문 버튼 시 10분 홀드, 미결제면 자동 해제(잡 테스트)",
+            "met": true,
+            "how": "StockHoldService.reserve(ttl 10분) + StockHoldExpiryJob(매분) — test/jobs/stock_hold_expiry_job_test.rb 에서 travel_to 로 만료 후 재고 복원 확인. 홀드 토큰으로 주문하면 이중 차감 없이 전환(intake_hold_test)"
+          },
+          {
+            "criterion": "무통장 입금 기한 경과 시 자동 취소",
+            "met": true,
+            "how": "UnpaidOrderExpiryJob — 기한(PaymentInstruction.due_on) 지난 pending 만 취소·재고 복원, paid·기한 전은 유지. ORDER_AUTO_CANCEL_ENABLED=1 일 때만 동작(기본 꺼짐) — test/jobs/unpaid_order_expiry_job_test.rb"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS194.sqlite3 bin/rails test test/integration/broadcast_stock_concurrency_test.rb test/models/stock_hold_test.rb test/services/inventory/stock_hold_service_test.rb test/services/orders/intake_hold_test.rb test/jobs/stock_hold_expiry_job_test.rb test/jobs/unpaid_order_expiry_job_test.rb",
+            "exit_code": 0,
+            "output": "동시성 test_동시_홀드_500건_중_정확히_50건만_성공한다: 성공 50, 재고 부족 450 / 16 runs, 1894 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS194.sqlite3 bin/rails test",
+            "exit_code": 0,
+            "output": "608 runs, 6558 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "bin/rubocop app/models/stock_hold.rb app/services/inventory/stock_hold_service.rb app/services/orders/intake.rb app/jobs test/integration/broadcast_stock_concurrency_test.rb test/jobs test/models/stock_hold_test.rb test/services",
+            "exit_code": 0,
+            "output": "48 files inspected, no offenses detected"
+          },
+          {
+            "cmd": "bin/brakeman -q --no-pager",
+            "exit_code": 0,
+            "output": "No warnings found"
+          }
+        ],
+        "notes": "마이그레이션은 test DB 에만 적용(공용 개발 DB 미적용). 동시성은 로컬 SQLite 기준. 방송 화면·서울라이브 쪽 호출 연결은 ISS-188/205 몫."
+      }
     },
     {
       "id": "ISS-195",
@@ -15266,11 +15688,11 @@
       "type": "GENERATE_CODE",
       "priority": "P0",
       "size": "M",
-      "status": "BLOCKED",
+      "status": "READY",
       "origin": "session",
       "depends_on": [],
       "created_at": "2026-11-09T23:56:06.276013+00:00",
-      "updated_at": "2026-11-10T00:08:39.179466+00:00",
+      "updated_at": "2026-11-10T00:17:04.917Z",
       "payload": {
         "origin": "session",
         "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
@@ -15288,12 +15710,12 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "recommendation": {
-          "verdict": "보류 권장",
-          "reason": "결정 A는 받았지만 구현 위치가 다른 저장소(0060_seoullive)이고, 그쪽에 다른 세션의 미커밋 변경과 자체 공장이 있어 0053 공장이 동시에 손대면 충돌·책임 구분이 어려움. 대표님이 '다시 진행'을 누르면 다음 회차에 0060 쪽 카드로 옮겨 착수",
-          "risk": "중간",
-          "effort": "M",
-          "by": "factory-runner",
-          "at": "2026-11-10T00:08:39.179466+00:00"
+          "verdict": "승인 권장",
+          "reason": "대표님 결정(A. 기존 서울라이브 앱에 'AI 방송 채널(JIEUM)'로 넣는다) — 이 결정대로 진행",
+          "risk": "—",
+          "effort": "—",
+          "by": "관제실 결정",
+          "at": "2026-11-10T00:17:04.917Z"
         },
         "decisions": [
           {
@@ -15307,9 +15729,15 @@
             "at": "2026-11-10T00:06:01.918Z",
             "by": "대표님(헤르메스)",
             "note": "관제 자율 결정"
+          },
+          {
+            "action": "decide",
+            "at": "2026-11-10T00:17:04.917Z",
+            "by": "대표님(헤르메스)",
+            "note": "관제 자율 결정"
           }
         ],
-        "approved_at": "2026-11-10T00:06:01.918Z",
+        "approved_at": "2026-11-10T00:17:04.917Z",
         "approved_by": "대표님(헤르메스)",
         "status_history": [
           {
@@ -15387,7 +15815,7 @@
           "text": "관제 자율 결정",
           "question": "AI 방송 판매 기능을 이미 있는 '서울라이브' 앱에 넣을까요, 아니면 따로 새 앱을 만들까요?",
           "by": "대표님(헤르메스)",
-          "at": "2026-11-10T00:06:01.918Z"
+          "at": "2026-11-10T00:17:04.917Z"
         },
         "decision_note": "payload.decision 은 by '대표님(헤르메스)', text '관제 자율 결정' — 관제실이 추천안 A를 자율로 고른 것. 대표님 본인 선택이 아닐 수 있어 회차 보고에 명시함",
         "rescoped_for_decision": "A",
@@ -16213,6 +16641,12 @@
         "issue_type": "TASK",
         "plan_created": 0,
         "timestamp": "2026-11-10T09:07:59.071354"
+      },
+      {
+        "issue_id": "ISS-183",
+        "issue_type": "TASK",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T09:14:23.900288"
       }
     ],
     "on_fail": [],
@@ -16225,7 +16659,7 @@
   },
   "stats": {
     "total_issues": 41,
-    "completed": 96,
+    "completed": 97,
     "failed": 0,
     "evolved": 0
   },
@@ -16238,6 +16672,7 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-179:READY": 1
+    "ISS-179:READY": 1,
+    "ISS-181:READY": 1
   }
 }

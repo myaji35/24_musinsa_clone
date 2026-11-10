@@ -13667,7 +13667,7 @@
           "note": "결정 반영 상세화 → 착수대기"
         }
       ],
-      "last_dispatched_at": "2026-11-10T09:39:41"
+      "last_dispatched_at": "2026-11-10T10:39:32"
     },
     {
       "id": "ISS-180",
@@ -13729,7 +13729,7 @@
       "type": "SPIKE",
       "priority": "P0",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [
         "ISS-204"
@@ -13783,7 +13783,7 @@
         "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T00:47:34.202548+00:00",
+      "updated_at": "2026-11-10T01:04:52.797741+00:00",
       "status_history": [
         {
           "from": null,
@@ -13798,9 +13798,68 @@
           "at": "2026-11-09T23:56:06.276013+00:00",
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
+        },
+        {
+          "from": "READY",
+          "to": "IN_PROGRESS",
+          "at": "2026-11-10T01:04:52.797456+00:00",
+          "by": "factory-runner",
+          "note": "공장 착수(11-10 4회차) — 0060 playout/ 에 FFmpeg 컨트롤러 시제품(다음 클립 미리 열기·cut point 전환·결정 없으면 기본 순서), ffmpeg RTMP 수신기로 30분 송출 후 blackdetect/silencedetect, OBS 비교 문서"
         }
       ],
-      "last_dispatched_at": "2026-11-10T09:14:24"
+      "last_dispatched_at": "2026-11-10T09:14:24",
+      "result": {
+        "summary": "0060 서울라이브 playout/ 에 FFmpeg 단독 플레이아웃 시제품(커밋 71b0bdb, 로컬 main·미push). 지속 인코더 1개 + 클립별 디코더(720p30 정규화) 이어 붙이기, 종료 2초 전 다음 클립 미리 열기, cut point 전환, 결정 공급자 타임아웃·예외·잘못된 ID 시 기본 순서 폴백. 로컬 RTMP 30분 시험 통과.",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
+        "commit": "71b0bdb",
+        "criteria_check": [
+          {
+            "criterion": "seoullive/playout/ 에 클립 목록(JSON)을 받아 다음 클립을 미리 열고 cut point에서 전환하는 컨트롤러 시제품이 있다",
+            "met": true,
+            "how": "0060 playout/controller.ts(--playlist JSON·--rtmp·--duration-sec), playout/schedule.ts(다음 클립·cut point 선택), sample-playlist.json. 종료 2초 전 다음 디코더 spawn(preload 이벤트), -t cut point 로 전환"
+          },
+          {
+            "criterion": "로컬에서 MediaMTX(또는 동등 RTMP 서버)로 30분 연속 송출하는 자동 테스트가 블랙 프레임 0·오디오 끊김 0을 ffmpeg blackdetect/silencedetect 출력으로 증명한다(4시간 장시간 시험은 ISS-206 운영 단계)",
+            "met": true,
+            "how": "MediaMTX 대신 ffmpeg -listen 1 RTMP 수신기로 녹화. playout/soak-test.ts --duration-sec 1800 실행 결과 녹화 1800.067초, black_start 0, silence_start 0, passed true(docs/playout-soak-1800-2026-11-10.json). 45초 버전은 vitest 로 자동 실행"
+          },
+          {
+            "criterion": "OBS+obs-websocket v5 방식과 FFmpeg 단독 방식의 비교표(안정성·CPU·클라우드 무GPU 가능 여부·원가)가 seoullive/docs/playout-spike.md 에 남고, 하나를 추천한다",
+            "met": true,
+            "how": "0060 docs/playout-spike.md 비교표(안정성·CPU·무GPU·원가·오버레이·장애 복구), FFmpeg 단독 추천(헤드리스 서버, 프로세스 단위 재시작). 실제 클라우드 CPU 측정은 미수행으로 명시"
+          },
+          {
+            "criterion": "PRD의 'obs-websocket 5.7 교착 이슈' 출처(이슈 링크)를 찾거나, 못 찾으면 '출처 미확인'으로 기록한다. OBS MCP 구현체를 쓰면 라이선스를 기록한다",
+            "met": true,
+            "how": "웹 검색 결과 obs-websocket 5.7 교착 이슈를 찾지 못해 '출처 미확인'으로 기록, 관련 후보(obs-studio PR #13579 libobs 교착 수정, obs-websocket #1335 크래시)를 링크와 함께 입증 자료 아님으로 기록. OBS MCP 구현체는 사용하지 않음을 명시"
+          },
+          {
+            "criterion": "컨트롤러 프로세스가 클립 결정 입력을 못 받아도(에이전트 정지) 기본 순서로 계속 송출함이 테스트로 증명된다",
+            "met": true,
+            "how": "soak 시험의 결정 공급자는 2회 응답 후 영구 무응답 → 30분 시험에서 decision-fallback(timeout) 149회, 클립 전환 151회, 블랙·무음 0. playout-schedule.test.ts 에 타임아웃·null·잘못된 clipId 폴백 단위 테스트"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/playout-schedule.test.ts tests/unit/playout-soak.test.ts",
+            "exit_code": 0,
+            "output": "Test Files 2 passed (2) / Tests 7 passed (7) (soak 45초 RTMP 포함, 53초)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && grep -E '\"passed\"|\"blackStartCount\"|\"silenceStartCount\"|\"recordedDurationSec\"' docs/playout-soak-1800-2026-11-10.json",
+            "exit_code": 0,
+            "output": "\"recordedDurationSec\": 1800.067, \"blackStartCount\": 0, \"silenceStartCount\": 0, \"passed\": true (30분 실행 원본: node --import tsx playout/soak-test.ts --duration-sec 1800, 2026-11-10 10:12~10:43 exit 0)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit -p .",
+            "exit_code": 0,
+            "output": "(출력 없음)"
+          }
+        ],
+        "notes": "4시간 시험·실제 런웨이 클립·클라우드 무GPU CPU 측정은 ISS-206 운영 단계. 오버레이 합성은 ISS-188 오버레이 페이지를 OBS 브라우저 소스로 쓰거나 FFmpeg overlay 필터 확장 필요.",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T10:46:08.050510"
     },
     {
       "id": "ISS-182",
@@ -14273,7 +14332,7 @@
       "type": "GENERATE_CODE",
       "priority": "P0",
       "size": "L",
-      "status": "READY",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [
         "ISS-204",
@@ -14329,7 +14388,7 @@
         "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T00:47:34.202548+00:00",
+      "updated_at": "2026-11-10T01:13:14.122689+00:00",
       "status_history": [
         {
           "from": null,
@@ -14344,8 +14403,67 @@
           "at": "2026-11-09T23:56:06.276013+00:00",
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
+        },
+        {
+          "from": "READY",
+          "to": "IN_PROGRESS",
+          "at": "2026-11-10T01:13:14.122473+00:00",
+          "by": "factory-runner",
+          "note": "공장 착수(11-10 4회차) — 0060 Prisma 에 AiClip·AiCharacter·AiScheduleSlot(추가형 테이블), ffprobe 규격 검사(clip-spec.md), cut_points 검증, 설경 런웨이 v3 클립 3개를 규격으로 변환해 B-roll 시드, /admin/ai-channel/clips 화면"
         }
-      ]
+      ],
+      "result": {
+        "summary": "0060 서울라이브에 AI 방송 클립 라이브러리 구현(커밋 004957e, 로컬 main·미push). 추가형 테이블 AiCharacter·AiClip·AiScheduleSlot, ffprobe 규격 검사·cut point 검증, 규격 변환·등록 CLI(scripts/ai-clips.ts), 설경 런웨이 L08·L09·L20 B-roll 시드, /admin/ai-channel/clips 표.",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
+        "commit": "004957e",
+        "criteria_check": [
+          {
+            "criterion": "clips·characters·schedule_slots 테이블(PRD §6 필드) 과 클립 등록 화면/명령이 있다",
+            "met": true,
+            "how": "prisma/schema.prisma 에 AiClip(type·productId·characterId·locale·durationMs·cutPointsJson·version·fileUri·specHash)·AiCharacter(role·personaJson·voiceId·disclosureLabel)·AiScheduleSlot(startKst·endKst·track·locale·characterId·productSetJson·market) 추가, db push 로 dev.db 반영(추가 테이블만). 등록은 npm run ai-clips -- register, 목록은 /admin/ai-channel/clips(서명 관리자 쿠키로 200, 클립 3개 표시)"
+          },
+          {
+            "criterion": "등록 시 ffprobe 로 해상도·fps(30)·코덱·GOP·오디오 샘플레이트를 검사해 규격(seoullive/docs/clip-spec.md)과 다르면 거부한다(테스트)",
+            "met": true,
+            "how": "docs/clip-spec.md 규격, lib/ai-channel/clips/spec.ts checkSpec. 테스트에서 25fps 640x360 44.1k 클립 registerClip→ClipSpecError·create 미호출. 실제 런웨이 원본 L21(24fps·44.1k) CLI 등록은 'fps: 30 CFR 필요/오디오 AAC 48000Hz/GOP 60' 위반으로 exit 1"
+          },
+          {
+            "criterion": "cut_points 는 길이 범위 안의 ms 배열이어야 한다(검증 테스트)",
+            "met": true,
+            "how": "validateCutPoints — 범위 밖·음수·0·비정렬·중복·비정수 거부 테스트 통과"
+          },
+          {
+            "criterion": "기존 설경 런웨이 33룩 영상 중 3개를 B-roll 클립으로 등록하는 시드가 동작한다",
+            "met": true,
+            "how": "seed-broll 이 persona/runway-05-snow/v3/clips L08·L09·L20 을 1280x720·30fps·GOP60 으로 변환해 public/ai-clips/broll/(gitignore) 에 두고 type broll 로 등록(fileUri 저장소 상대경로). 재실행 시 '이미 등록됨, 건너뜀' 3건(멱등)"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/ai-clips.test.ts",
+            "exit_code": 0,
+            "output": "Test Files 1 passed (1) / Tests 13 passed (13)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit -p .",
+            "exit_code": 0,
+            "output": "(출력 없음)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && sqlite3 prisma/dev.db \"select title,fileUri,width,height,fps,gop from AiClip\"",
+            "exit_code": 0,
+            "output": "설경 런웨이 L08|public/ai-clips/broll/L08.mp4|1280|720|30.0|60 (L09·L20 동일)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && node --import tsx scripts/ai-clips.ts register --file '/Volumes/GH_APFS/0053_JIEUN(MUSINSA)/persona/runway-05-snow/v3/clips/L21.mp4' --type broll --cut-points 3000",
+            "exit_code": 1,
+            "output": "등록 거부: - fps: 30 CFR 필요 - H.264 프로파일: High 필요 - 오디오: AAC 48000Hz 스테레오 필요 - GOP: 60±1 프레임 필요"
+          }
+        ],
+        "notes": "0060 커밋은 로컬 main 에만(0053 실행기 출고 대상 아님). 실제 상품 5~10개 클립 세트 제작은 ISS-208 범위.",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T10:21:09.790773"
     },
     {
       "id": "ISS-186",
@@ -14403,7 +14521,8 @@
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
-        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋.",
+        "plan_mode": "code"
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
       "updated_at": "2026-11-10T00:47:34.202548+00:00",
@@ -14422,7 +14541,8 @@
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
         }
-      ]
+      ],
+      "last_dispatched_at": "2026-11-10T10:46:08"
     },
     {
       "id": "ISS-187",
@@ -14430,7 +14550,7 @@
       "type": "GENERATE_CODE",
       "priority": "P0",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [
         "ISS-204",
@@ -14452,11 +14572,11 @@
         ],
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
-          "risk": "중간",
+          "reason": "쇼피파이 주문을 Admin API(ISS-193, 배포 검토 대기)로 회수하지 않고 ISS-188 에서 만든 orders/create 웹훅의 landing_site UTM 으로 받으면 선행 카드 없이 진행 가능. JIEUM 몰 주문은 ISS-070 lc(링크 코드)로 저장되고 ISS-210 웹훅으로 넘어온다. QR 은 MIT 라이브러리 qrcode 1개 추가",
+          "risk": "낮음 — 추가 테이블·새 화면만",
           "effort": "M",
-          "by": "session",
-          "at": "2026-11-09T23:56:06.276013+00:00"
+          "by": "factory-runner",
+          "at": "2026-11-10T01:40:00+00:00"
         },
         "decisions": [
           {
@@ -14484,7 +14604,7 @@
         "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T00:47:34.202548+00:00",
+      "updated_at": "2026-11-10T01:31:17.054544+00:00",
       "status_history": [
         {
           "from": null,
@@ -14499,8 +14619,57 @@
           "at": "2026-11-09T23:56:06.276013+00:00",
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
+        },
+        {
+          "from": "READY",
+          "to": "IN_PROGRESS",
+          "at": "2026-11-10T01:31:17.054266+00:00",
+          "by": "factory-runner",
+          "note": "공장 착수(11-10 4회차) — 쇼피파이 주문 회수는 ISS-193(배포 검토 대기) 대신 ISS-188 주문 웹훅의 landing_site UTM 으로 받는 방식으로 선행 의존 해소. 0060 에 AiLink·AiLinkClick, /l/[code] 단축 링크(클릭 기록 후 utm·lc 붙여 이동), QR PNG(qrcode MIT 라이브러리 추가), 링크별 유입·주문·매출 관리자 화면"
         }
-      ]
+      ],
+      "result": {
+        "summary": "0060 서울라이브에 채널별 단축 링크·QR·링크별 유입/주문 집계 구현(커밋 903b160, 로컬 main·미push). 쇼피파이 주문은 Admin API(ISS-193) 대신 ISS-188 orders/create 웹훅의 landing_site utm_content 로 회수 → 선행 의존 해소.",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
+        "commit": "903b160",
+        "criteria_check": [
+          {
+            "criterion": "방송(또는 편성 슬롯)마다 채널별(유튜브·인스타·틱톡)·대상몰별(JIEUM 몰·쇼피파이) 단축 링크와 QR PNG가 자동 생성된다",
+            "met": true,
+            "how": "createCampaignLinks(캠페인 슬러그·slotId 선택) → 3채널×2몰=6링크(멱등), /admin/ai-channel/links 생성 폼. 실서버에서 test-1110-local 캠페인 6개 생성, /l/<code>/qr.png 200 image/png(PNG 시그니처 확인, 512px QR)"
+          },
+          {
+            "criterion": "단축 링크 클릭이 기록되고 대상 URL에 utm_source/utm_campaign/utm_content(링크 코드)가 붙는다",
+            "met": true,
+            "how": "GET /l/4ab3uSBd → 302 Location https://jieum.example/products/1?utm_source=youtube&utm_medium=live&utm_campaign=test-1110-local&utm_content=4ab3uSBd&lc=4ab3uSBd, AiLinkClick 1건(referrerHost www.youtube.com, IP·UA 저장 안 함), 없는 코드 404"
+          },
+          {
+            "criterion": "JIEUM 몰 주문에 유입 링크 코드가 저장된다(ISS-070), 쇼피파이 주문은 UTM으로 회수해 링크별 주문 수·매출이 한 화면에 집계된다",
+            "met": true,
+            "how": "JIEUM 대상 링크에 lc=<코드>(몰 ISS-070 이 orders.source_link_code 로 저장), 몰→서울라이브 웹훅의 order.link_code 를 linkCode 로 저장(몰 발신은 ISS-210). 쇼피파이: landing_site utm_content=EaD5DTzN·total_price 129.00 USD 웹훅 → AiPurchaseAlert linkCode EaD5DTzN·amount 12900·USD, 관리자 링크 화면 instagram/shopify 행 주문 1·매출 US$129.00, 클릭 0 이면 전환율 '-'"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/ai-links.test.ts tests/unit/ai-overlay.test.ts",
+            "exit_code": 0,
+            "output": "Test Files 2 passed (2) / Tests 47 passed (47)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit -p .",
+            "exit_code": 0,
+            "output": "(출력 없음)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && sqlite3 prisma/dev.db \"select orderId,linkCode,amount,currency from AiPurchaseAlert where linkCode is not null\"",
+            "exit_code": 0,
+            "output": "9900000001|EaD5DTzN|12900|USD"
+          }
+        ],
+        "notes": "서버 반영 시 SEOULLIVE_PUBLIC_URL·JIEUM_MALL_PUBLIC_URL·SHOPIFY_STORE_URL 설정 필요(없으면 화면에 빠진 변수 표시). 쇼피파이 관리자 알림에 orders/create 웹훅 등록 필요. 로컬 dev.db 에 시험 캠페인 test-1110-local 6링크·클릭 1·주문 1 이 남아 있음.",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T10:39:31.923937"
     },
     {
       "id": "ISS-188",
@@ -14508,7 +14677,7 @@
       "type": "GENERATE_CODE",
       "priority": "P0",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [
         "ISS-204",
@@ -14558,10 +14727,11 @@
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
-        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋.",
+        "implementation_note": "0060 수신 측만 구현. JIEUM 몰(musinsa_clone)에서 주문 웹훅을 보내는 쪽은 구매자 이름 일부가 외부로 나가는 개인정보 흐름이라 별도 카드(gate deploy)로 분리"
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T00:47:34.202548+00:00",
+      "updated_at": "2026-11-10T01:21:54.900275+00:00",
       "status_history": [
         {
           "from": null,
@@ -14576,8 +14746,62 @@
           "at": "2026-11-09T23:56:06.276013+00:00",
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
+        },
+        {
+          "from": "READY",
+          "to": "IN_PROGRESS",
+          "at": "2026-11-10T01:21:54.900046+00:00",
+          "by": "factory-runner",
+          "note": "공장 착수(11-10 4회차) — 0060 에 주문 웹훅 수신(JIEUM 몰 HMAC·쇼피파이 X-Shopify-Hmac-Sha256), order_id 있을 때만 구매 알림, AiAuditLog, OBS 브라우저 소스용 오버레이 페이지(구매 알림·재고 카운트다운·QR 자리·AI 라벨). 몰 쪽 주문 웹훅 발신은 개인정보(이름 일부) 전송이라 별도 카드로 분리"
         }
-      ]
+      ],
+      "result": {
+        "summary": "0060 서울라이브에 실구매 알림·재고 카운트다운 오버레이 구현(커밋 c993830, 로컬 main·미push). JIEUM 몰·쇼피파이 주문 웹훅 수신(서명 검증), order_id 있을 때만 알림 생성(유일 경로 createPurchaseAlert, 멱등), 구매자 이름 마스킹(원문 비저장), AiAuditLog, OBS 브라우저 소스용 /overlay/ai-channel(AI 라벨 고정·재고·QR, AI_OVERLAY_KEY 보호).",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
+        "commit": "c993830",
+        "criteria_check": [
+          {
+            "criterion": "JIEUM 몰·쇼피파이 주문 웹훅(또는 폴링)을 받아 실제 order_id 가 있을 때만 '김*님 구매' 알림 이벤트가 생긴다 — order_id 없이 알림을 만드는 경로가 없음을 테스트로 증명",
+            "met": true,
+            "how": "POST /api/ai-channel/webhooks/jieum·shopify(서명 검증). 실서버(3161, 임시 시험 시크릿)에서 정상 200·재전송 200(새 알림 없음, duplicate 기록)·서명오류 401·주문번호 없음 422. 테스트: orderId 없음/공백/'null' → MissingOrderIdError·DB 쓰기 0회, 정적 검사로 aiPurchaseAlert.create/upsert 가 alerts.ts 한 곳뿐. 쇼피파이 큰 주문번호 820982911946154508 이 admin_graphql_api_id 로 정확히 저장됨"
+          },
+          {
+            "criterion": "OBS 브라우저 소스/플레이아웃이 쓸 오버레이 페이지(구매 알림·재고 카운트다운·QR·AI 라벨)가 있다",
+            "met": true,
+            "how": "/overlay/ai-channel?key=…&productId=…&qr=… — 키 없으면 403, 브라우저 확인 결과 'AI 쇼호스트 · AI 생성 영상 | 지*님 구매! 린넨 셔츠 외 1건 | 남은 수량 23개' 표시, 5초 후 shownAt 기록. QR 이미지 생성은 ISS-187 범위(주소를 받으면 표시)"
+          },
+          {
+            "criterion": "재고 카운트다운이 JIEUM 몰 재고 API 값과 일치한다(테스트)",
+            "met": true,
+            "how": "테스트: 카탈로그 stockTotal 17·옵션 stock 4 그대로 반환, 카탈로그 실패·stale 이면 숨김. 실서버: 몰 UCP 응답 형식의 로컬 응답(stock_total 23, variant 12 stock 14)에 연결 → 오버레이 API stock 23·14 일치. 실제 몰 키는 로컬 3000 서버에 없어 실몰 대조는 못 함"
+          },
+          {
+            "criterion": "모든 알림이 audit_logs 에 근거 order_id 와 함께 남는다",
+            "met": true,
+            "how": "AiAuditLog: purchase_alert.created/duplicate/shown 모두 orderId 기록(실서버 DB 조회로 T1110-0001·820982911946154508 확인), 거부는 rejected_missing_order_id. payloadJson 에 원문 이름 없음(테스트)"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/ai-overlay.test.ts",
+            "exit_code": 0,
+            "output": "Test Files 1 passed (1) / Tests 37 passed (37)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit -p .",
+            "exit_code": 0,
+            "output": "(출력 없음)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && sqlite3 prisma/dev.db \"select action,orderId from AiAuditLog order by createdAt\"",
+            "exit_code": 0,
+            "output": "purchase_alert.created|T1110-0001 / purchase_alert.duplicate|T1110-0001 / purchase_alert.rejected_missing_order_id| / purchase_alert.created|820982911946154508"
+          }
+        ],
+        "notes": "실방송 연결에 필요한 값: SHOPIFY_WEBHOOK_SECRET(쇼피파이 관리자 알림 설정), JIEUM_ORDER_WEBHOOK_SECRET, AI_OVERLAY_KEY — 서버 배포 때 설정. JIEUM 몰에서 주문 웹훅을 보내는 쪽은 개인정보(이름) 외부 전송이라 후속 카드로 분리. 로컬 dev.db 에 시험 알림 2건(T1110-0001, 820982911946154508)이 남아 있음.",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T10:30:41.141755"
     },
     {
       "id": "ISS-189",
@@ -14778,7 +15002,8 @@
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
-        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋.",
+        "plan_mode": "code"
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
       "updated_at": "2026-11-10T00:47:34.202548+00:00",
@@ -14797,7 +15022,8 @@
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
         }
-      ]
+      ],
+      "last_dispatched_at": "2026-11-10T10:46:08"
     },
     {
       "id": "ISS-191",
@@ -14880,7 +15106,7 @@
       "type": "GENERATE_CODE",
       "priority": "P1",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [
         "ISS-187"
@@ -14901,11 +15127,11 @@
         ],
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
-          "risk": "중간",
+          "reason": "ISS-187 로 링크·클릭·주문(linkCode) 데이터가 생겨 지표 화면 착수 가능. 반품률은 몰 반품 데이터 연동 API 가 아직 없어 이번엔 캠페인별 반품 수 수기 입력 칸으로 두고 자동 연동은 후속. 기준선은 ISS-203 재산정 결과 시간당 0.14벌",
+          "risk": "낮음 — 새 화면·추가 테이블만",
           "effort": "M",
-          "by": "session",
-          "at": "2026-11-09T23:56:06.276013+00:00"
+          "by": "factory-runner",
+          "at": "2026-11-10T01:41:00+00:00"
         },
         "decisions": [
           {
@@ -14934,7 +15160,7 @@
         "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T00:47:34.202548+00:00",
+      "updated_at": "2026-11-10T01:39:45.572128+00:00",
       "status_history": [
         {
           "from": null,
@@ -14949,8 +15175,57 @@
           "at": "2026-11-09T23:56:06.276013+00:00",
           "by": "session",
           "note": "결정 반영 상세화 → 착수대기"
+        },
+        {
+          "from": "READY",
+          "to": "IN_PROGRESS",
+          "at": "2026-11-10T01:39:45.571920+00:00",
+          "by": "factory-runner",
+          "note": "공장 착수(11-10 4회차) — 0060 /admin/ai-channel/metrics: 캠페인·시간대(KST)·링크별 클릭·주문·매출·시간당 판매량(방송 시간 입력 기준), 광고비 수기 입력→장당 광고비, 반품 수 수기 입력 칸(몰 반품 연동 전), 기준선 시간당 0.14벌(ISS-203 재산정 결과 docs/seoullive/unit-economics.md) 환경변수로 변경 가능"
         }
-      ]
+      ],
+      "result": {
+        "summary": "0060 서울라이브 /admin/ai-channel/metrics 검증 지표 화면(커밋 e7c7da9, 로컬 main·미push). 캠페인·KST 시간대·링크별 유입·주문·판매량·매출, 시간당 판매량·장당 광고비·반품률, 기준선 판정.",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
+        "commit": "e7c7da9",
+        "criteria_check": [
+          {
+            "criterion": "방송·시간대·링크별 시청 유입·주문 수·매출·시간당 판매량 지표 화면이 있다",
+            "met": true,
+            "how": "브라우저 확인: 캠페인 표(test-1110-local 클릭 1·주문 1·판매량 3·US$129.00·방송 2시간·시간당 1.50벌), KST 0~23시 표, 링크(채널×몰)별 클릭·주문·판매량 표. 오류 0"
+          },
+          {
+            "criterion": "장당 광고비(광고비 수기 입력 ÷ 판매량)와 반품률(몰 반품 데이터) 칸이 있다",
+            "met": true,
+            "how": "캠페인별 입력 폼으로 방송 120분·광고비 50,000원·반품 1 저장(AiCampaignMetricInput) → 장당 광고비 16,667원·반품률 33.3%. 몰 반품 데이터 자동 연동 API 가 없어 반품 수는 수기 입력이며 화면에 '자동 연동 전 — 수기 입력' 안내. 음수·비정수 거부 테스트"
+          },
+          {
+            "criterion": "판정 기준선(시간당 0.14벌 = 월 원가 600만원 회수, ISS-203 재산정 후 갱신)이 화면에 표시된다",
+            "met": true,
+            "how": "화면 문구 '판정 기준선: 시간당 0.14벌 — 월 원가 600만원 회수(보수 시나리오, ISS-203 재산정, docs/seoullive/unit-economics.md)', 캠페인별 기준 이상/기준 미달/판단 불가 판정, AI_TRACK_BASELINE_PER_HOUR 로 변경 가능(테스트)"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/ai-metrics.test.ts",
+            "exit_code": 0,
+            "output": "Test Files 1 passed (1) / Tests 9 passed (9)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit -p .",
+            "exit_code": 0,
+            "output": "(출력 없음)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && sqlite3 prisma/dev.db \"select campaign,broadcastMinutes,adSpendKrw,returnCount from AiCampaignMetricInput\"",
+            "exit_code": 0,
+            "output": "test-1110-local|120|50000|1"
+          }
+        ],
+        "notes": "몰 반품 자동 연동은 후속(몰 반품 API 필요). 로컬 dev.db 에 시험 입력 1건 남음.",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T10:46:08.553890"
     },
     {
       "id": "ISS-193",
@@ -15979,7 +16254,35 @@
           }
         ],
         "notes": "0060 은 0053 실행기의 출고(push·배포) 대상이 아님 — 커밋은 0060 로컬 main 에만 있음. 0060 데모 서버 반영은 서울라이브 쪽 배포 절차로 별도.",
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "unverifiable",
+          "at": "2026-11-10T01:03:28Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/ai-channel.test.ts tests/unit/middleware.test.ts",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            },
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit && npm run lint",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            },
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            },
+            {
+              "cmd": "curl -s -o /dev/null -w '%{http_code} %{redirect_url}' http://127.0.0.1:3961/admin/ai-channel",
+              "status": "skipped",
+              "why": "검사 명령 아님: curl -s -o /dev/null -w %{http_code} %{r"
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-10T09:39:41.537241"
     },
@@ -16104,7 +16407,39 @@
           "/tmp/f1110c/shots/ai-channel-down.png"
         ],
         "notes": "0060 은 0053 실행기 출고 대상 아님(로컬 커밋만). 운영 연결 시 서울라이브 서버에 JIEUM_UCP_BASE_URL·JIEUM_UCP_API_KEY(몰의 UCP_API_KEY 와 같은 값) 설정 필요. 경고 문구는 아직 일반 글자 스타일 — ISS-191 운영 콘솔에서 강조 예정",
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-11-10T01:03:28Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/jieum-catalog.test.ts tests/unit/ai-channel.test.ts",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/api/v1/ucp_controller_test.rb",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 53813\n\n# Running:\n\n......\n\nFinished in 0.166400s, 36.0577 runs/s, 216.3462 assertions/s.\n6 runs, 36 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "..................................................................................................................................................................................................\n\nFinished in 20.254272s, 29.3271 runs/s, 232.3460 assertions/s.\n594 runs, 4706 assertions, 0 failures, 0 errors, 0 skips\n\u001b[3m\u001b[1m\u001b[34m≈\u001b[39m\u001b[22m\u001b[23m tailwindcss \u001b[34mv4.1.18\u001b[39m\n\nDone in \u001b[33m901ms\u001b[39m"
+            },
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit && npm run lint && npx vitest run",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-10T10:02:19.480658"
     },
@@ -16346,6 +16681,59 @@
           "at": "2026-11-09T23:56:06.276013+00:00",
           "by": "session",
           "note": "SeoulLive 결정 반영 상세 카드"
+        }
+      ]
+    },
+    {
+      "id": "ISS-210",
+      "title": "[SeoulLive AI] JIEUM 몰 결제완료 주문 → 서울라이브 주문 웹훅 발신(이름 마스킹 전 원문 전송 여부 결정 포함)",
+      "type": "GENERATE_CODE",
+      "priority": "P1",
+      "size": "S",
+      "status": "READY",
+      "origin": "factory-runner",
+      "depends_on": [
+        "ISS-188"
+      ],
+      "payload": {
+        "origin": "factory-runner",
+        "epic": "SEOULLIVE",
+        "phase": "1",
+        "parent": "ISS-188",
+        "gate": "deploy",
+        "acceptance_criteria": [
+          "JIEUM 몰에서 결제완료(입금확인) 시 서울라이브 /api/ai-channel/webhooks/jieum 으로 order.paid 웹훅({event, order:{id, number, buyer_name(마스킹), items[{product_id,name,quantity}], total_amount, link_code(ISS-070 source_link_code)}})을 X-Jieum-Signature(sha256 HMAC)와 함께 보낸다 — 형식은 0060 docs/ai-overlay.md·docs/ai-links.md",
+          "구매자 이름은 몰에서 미리 마스킹('김*')해서 보내 원문 이름이 몰 밖으로 나가지 않는다(테스트)",
+          "기능 스위치(기본 꺼짐)와 SEOULLIVE_ORDER_WEBHOOK_URL·SECRET 환경변수가 없으면 아무것도 보내지 않고, 실패해도 주문 처리는 영향 없다(백그라운드 잡·재시도)"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "ISS-188 은 서울라이브 쪽 수신만 구현. 몰이 주문을 알려 줘야 실제 'OO님 구매' 알림이 뜬다. 고객 이름 일부가 외부 서비스로 나가는 개인정보 흐름이라 구현은 브랜치에서 하고 배포만 대표님 확인(gate deploy)",
+          "risk": "낮음 — 기능 스위치 기본 꺼짐, 마스킹된 이름만 전송",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-11-10T01:30:51.689324+00:00"
+        },
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-10T01:31:19.226Z",
+            "by": "auto",
+            "reason": "ISS-188 은 서울라이브 쪽 수신만 구현. 몰이 주문을 알려 줘야 실제 'OO님 구매' 알림이 뜬다. 고객 이름 일부가 외부 서비스로 나가는 개인정보 흐름이라 구현은 브랜치에서 하고 배포만 대표님 확인(gate deploy)"
+          }
+        ],
+        "approved_at": "2026-11-10T01:31:19.226Z",
+        "approved_by": "자동 승인(추천: 승인 권장)"
+      },
+      "created_at": "2026-11-10T01:30:51.689324+00:00",
+      "updated_at": "2026-11-10T01:31:19.226Z",
+      "status_history": [
+        {
+          "from": null,
+          "to": "READY",
+          "at": "2026-11-10T01:30:51.689324+00:00",
+          "by": "factory-runner",
+          "note": "ISS-188 후속 — 몰 쪽 주문 웹훅 발신 분리"
         }
       ]
     }
@@ -16875,6 +17263,36 @@
         "issue_type": "GENERATE_CODE",
         "plan_created": 0,
         "timestamp": "2026-11-10T10:02:19.480658"
+      },
+      {
+        "issue_id": "ISS-185",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T10:21:09.790773"
+      },
+      {
+        "issue_id": "ISS-188",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T10:30:41.141755"
+      },
+      {
+        "issue_id": "ISS-187",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T10:39:31.923937"
+      },
+      {
+        "issue_id": "ISS-181",
+        "issue_type": "SPIKE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T10:46:08.050510"
+      },
+      {
+        "issue_id": "ISS-192",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T10:46:08.553890"
       }
     ],
     "on_fail": [],
@@ -16887,7 +17305,7 @@
   },
   "stats": {
     "total_issues": 41,
-    "completed": 99,
+    "completed": 104,
     "failed": 0,
     "evolved": 0
   },
@@ -16900,7 +17318,8 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-179:READY": 2,
-    "ISS-181:READY": 1
+    "ISS-179:READY": 4,
+    "ISS-186:READY": 2,
+    "ISS-190:READY": 1
   }
 }

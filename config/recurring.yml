@@ -10,6 +10,16 @@
 #     schedule: at 5am every day
 
 development:
+  stock_hold_expiry:
+    class: StockHoldExpiryJob
+    queue: default
+    schedule: every minute
+
+  unpaid_order_expiry:
+    class: UnpaidOrderExpiryJob
+    queue: default
+    schedule: every hour at minute 20
+
   feedback_contact_purge:
     class: Feedbacks::PurgeContactsJob
     queue: default
@@ -44,6 +54,16 @@ development:
   #   schedule: every hour
 
 production:
+  stock_hold_expiry:
+    class: StockHoldExpiryJob
+    queue: default
+    schedule: every minute
+
+  unpaid_order_expiry:
+    class: UnpaidOrderExpiryJob
+    queue: default
+    schedule: every hour at minute 20
+
   feedback_contact_purge:
     class: Feedbacks::PurgeContactsJob
     queue: default

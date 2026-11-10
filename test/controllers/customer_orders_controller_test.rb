@@ -59,7 +59,7 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
       verify_order
       %w[테스트은행 000-00-000000 테스트예금주].each { |value| assert_includes response.body, value }
       assert_includes response.body, "2026년 10월 4일까지"
-      assert_select "#payment-instruction", text: /입금 금액: #{ActiveSupport::NumberHelper.number_to_delimited(@order.total_price.to_i)}원/
+      assert_select "#payment-instruction", text: /입금 금액: ₩ #{ActiveSupport::NumberHelper.number_to_delimited(@order.total_price.to_i)}/
       assert_includes response.body, "문의: 테스트 문의처"
       assert_select '[data-testid="payment-contact-link"]', count: 0
       assert_not_includes response.body, "결제 기능은 준비 중입니다"

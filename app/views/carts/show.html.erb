@@ -1,23 +1,24 @@
-<div class="max-w-3xl mx-auto px-4 py-8 space-y-6">
-  <h1 class="text-2xl font-bold">장바구니</h1>
+<div class="max-w-[720px] mx-auto px-gutter py-8 md:py-12 space-y-6">
+  <p class="font-display text-eyebrow tracking-eyebrow uppercase">CART</p>
+  <h1 class="text-title font-semibold">장바구니</h1>
   <% if @cart.count.zero? %>
-    <p>장바구니가 비어 있습니다.</p>
-    <%= link_to "상품 둘러보기", products_path, class: "underline" %>
+    <p class="text-body text-ink-2">장바구니가 비어 있습니다.</p>
+    <%= link_to "상품 둘러보기", products_path, class: "btn btn-secondary" %>
   <% else %>
     <% @cart.items.each do |item| %>
-      <div class="border-b border-gray-300 py-4 space-y-3">
-        <%= link_to item.product.name, product_path(item.product), class: "font-bold" %>
-        <p class="text-sm"><%= item.variant.color %> / <%= item.variant.size %></p>
-        <p><%= number_to_currency(item.line_total, unit: "", precision: 0) %>원</p>
+      <div class="border-b border-hairline py-5 space-y-3">
+        <%= link_to item.product.name, product_path(item.product), class: "text-ui font-medium" %>
+        <p class="text-caption text-ink-3"><%= item.variant.color %> / <%= item.variant.size %></p>
+        <p><%= price_won(item.line_total) %></p>
         <%= form_with url: cart_item_path(item.variant), method: :patch, class: "flex flex-wrap items-center gap-3" do |f| %>
-          <%= f.label :quantity, "수량", for: "quantity_#{item.variant.id}" %>
-          <%= f.number_field :quantity, value: item.quantity, min: 1, max: 99, id: "quantity_#{item.variant.id}", class: "w-20 border border-gray-400 p-2" %>
-          <%= f.submit "변경", class: "border border-black px-4 py-2" %>
+          <%= f.label :quantity, "수량", for: "quantity_#{item.variant.id}", class: "text-ui font-medium" %>
+          <%= f.number_field :quantity, value: item.quantity, min: 1, max: 99, id: "quantity_#{item.variant.id}", class: "field w-24 h-11" %>
+          <%= f.submit "변경", class: "btn btn-secondary h-11 px-4" %>
         <% end %>
-        <%= button_to "삭제", cart_item_path(item.variant), method: :delete, class: "text-sm underline" %>
+        <%= button_to "삭제", cart_item_path(item.variant), method: :delete, class: "btn-text text-caption" %>
       </div>
     <% end %>
-    <p class="text-xl font-bold">합계 <%= number_to_currency(@cart.total, unit: "", precision: 0) %>원</p>
-    <%= link_to "비회원 주문하기", new_checkout_path, class: "block bg-black text-white text-center p-4" %>
+    <p class="flex justify-between border-t border-line pt-4 text-ui font-medium">합계 <%= price_won(@cart.total, variant: :lg) %></p>
+    <%= link_to "비회원 주문하기", new_checkout_path, class: "btn btn-primary w-full" %>
   <% end %>
 </div>

@@ -1,6 +1,48 @@
 require "test_helper"
 
 class ProductsControllerTest < ActionDispatch::IntegrationTest
+  test "상세 구매 폼은 품절 옵션과 구매 필드 계약을 유지한다" do
+    @variant.update!(stock: 3)
+    sold_out = @product.variants.create!(color: "Black", size: "XL", stock: 0)
+
+    get product_path(@product)
+
+    assert_response :success
+    assert_select "form#buy[action=?][method=post]", cart_items_path do
+      assert_select "input[name=variant_id][value=?][checked]:not([disabled])", @variant.id.to_s
+      assert_select "input[name=variant_id][value=?][disabled]", sold_out.id.to_s
+      assert_select "input[name=quantity][value='1'][min='1'][max='99']"
+      assert_select "button[name=buy_now][value='1']", text: "바로구매"
+      assert_select "button", text: "장바구니"
+    end
+    assert_select "[data-testid=publication-bar]", count: 0
+    assert_select "form[action=?]", product_reviews_path(@product), count: 0
+    assert_select "span.price.price-lg", text: "₩ #{@product.price.to_i.to_fs(:delimited)}"
+
+    sign_in
+    get product_path(@product)
+    assert_select "form[action=?]", product_reviews_path(@product) do
+      assert_select "select[name='review[rating]'][required]"
+      assert_select "textarea[name='review[content]'][required]"
+    end
+  end
+
+  test "연관 상품 여러 개는 찜 기능이 있는 공통 카드를 렌더링한다" do
+    related = 2.times.map do |index|
+      product = Product.create!(name: "연관 상품 #{index}", brand: "JIEUM", category: @product.category, price: 239000, status: "published")
+      product.variants.create!(color: "Black", size: "M", stock: 2)
+      product
+    end
+
+    get product_path(@product)
+
+    assert_response :success
+    related.each do |product|
+      assert_select "h3 a[href=?]", product_path(product), text: product.name
+      assert_select "[data-controller=wishlist][data-wishlist-product-id-value=?]", product.id.to_s
+    end
+  end
+
   test "손님 상품 목록은 원화 가격을 span으로 표시한다" do
     get products_path
 

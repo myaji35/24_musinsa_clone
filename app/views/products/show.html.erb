@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+<div class="px-gutter py-6 lg:py-8">
 
   <% if mall_admin? %>
     <div data-testid="publication-bar" class="flex flex-wrap items-center justify-between gap-3 p-4 mb-6 text-sm border <%= @product.published? ? 'border-gray-300 bg-white' : 'border-amber-400 bg-amber-50' %>">
@@ -30,26 +30,26 @@
   <% end %>
 
   <% if (character = @product.worn_character) %>
-    <p class="mb-3 text-[11px] text-gray-500">착용 모델은 AI 가상 인물(<%= character.name %>)이며, 의류는 실제 판매 상품입니다.</p>
+    <p class="mb-3 text-caption text-ink-3">착용 모델은 AI 가상 인물(<%= character.name %>)이며, 의류는 실제 판매 상품입니다.</p>
   <% end %>
 
   <!-- 상품 메인 섹션 -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mb-20">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-6 mb-20">
 
     <!-- 좌측: 이미지 갤러리 -->
     <% gallery = @product.runway_video.attached? ? [] : @product.gallery_image_urls %>
     <% if gallery.any? %>
-    <%# 유니클로식 2열 사진 나열 — 사진마다 착용 정보, 실물은 '실물 사진' %>
-    <div class="grid grid-cols-2 gap-1.5 self-start" data-testid="product-gallery">
+    <%# 1열 세로 사진 스택 — 사진마다 착용 정보, 실물은 '실물 사진' %>
+    <div class="grid grid-cols-1 gap-0 self-start" data-testid="product-gallery">
       <% gallery.each_with_index do |url, i| %>
         <% real = url.end_with?("/real.jpg") %>
         <%# 돋보기 확대는 맨 위 큰 사진에만 %>
-        <figure class="relative bg-gray-100 overflow-hidden <%= 'col-span-2 cursor-zoom-in' if i.zero? %>" data-real="<%= real %>"
+        <figure class="relative col-span-full! bg-placeholder overflow-hidden <%= 'col-span-2 cursor-zoom-in' if i.zero? %>" data-real="<%= real %>"
                 <%= tag.attributes(data: { controller: "zoom", action: "mouseenter->zoom#enter mousemove->zoom#move mouseleave->zoom#leave" }) if i.zero? %>>
           <%= catalog_image_tag url, sizes: "(min-width: 1024px) 50vw, 100vw", # 돋보기 확대용으로 작은 칸도 1440px 사진을 받는다
                 alt: "#{@product.name} #{real ? '실물 사진' : '착용 사진'}", loading: (i.zero? ? "eager" : "lazy"),
                 class: "w-full aspect-[2/3] #{real ? 'object-contain' : 'object-cover'}", data: { zoom_target: "image", zoom_src: catalog_srcset(url) && url.sub(/\.jpg\z/, "-1440.webp") } %>
-          <figcaption class="absolute bottom-2 right-2 text-[11px] <%= real ? 'text-gray-700' : 'text-white [text-shadow:0_1px_3px_rgba(0,0,0,.85)]' %>">
+          <figcaption class="absolute bottom-2 right-2 text-caption <%= real ? 'text-ink-2' : 'text-inverse [text-shadow:0_1px_3px_rgba(0,0,0,.85)]' %>">
             <%= real ? "실물 사진" : [ @product.worn_label, "AI 가상 인물" ].compact.join(" · ") %>
           </figcaption>
         </figure>
@@ -58,29 +58,29 @@
     <% else %>
     <div class="space-y-4">
       <!-- 메인 이미지 -->
-      <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden<%= ' relative' if character || @product.runway_video.attached? %>">
+      <div class="w-full aspect-[2/3] bg-placeholder overflow-hidden<%= ' relative' if character || @product.runway_video.attached? %>">
         <% if @product.runway_video.attached? %>
           <%= video_tag url_for(@product.runway_video), muted: true, autoplay: true, loop: true, playsinline: true, controls: true, poster: (url_for(product_image_source(@product)) if product_image_source(@product)), class: "w-full h-full object-cover" %>
         <% elsif (image_source = product_image_source(@product)) %>
           <%= image_tag image_source, alt: @product.name, class: "w-full h-full object-cover" %>
         <% else %>
-          <div class="w-full h-full flex items-center justify-center text-gray-300">
-            <span class="text-sm font-medium">이미지 없음</span>
+          <div class="w-full h-full flex items-center justify-center text-ink-3">
+            <span class="text-ui font-medium">이미지 없음</span>
           </div>
         <% end %>
         <% if character || @product.runway_video.attached? %>
-          <span class="absolute top-3 left-3 z-10 text-white [text-shadow:0_1px_3px_rgba(0,0,0,.85),0_0_10px_rgba(0,0,0,.45)] text-[11px] font-semibold opacity-90">가상 인물</span>
+          <span class="absolute top-3 left-3 z-10 text-inverse [text-shadow:0_1px_3px_rgba(0,0,0,.85),0_0_10px_rgba(0,0,0,.45)] text-caption font-semibold opacity-90">가상 인물</span>
         <% end %>
       </div>
 
       <!-- 썸네일 그리드 -->
       <div class="grid grid-cols-4 gap-2">
         <% 4.times do |i| %>
-          <div class="aspect-[3/4] bg-gray-100 border-2 <%= i == 0 ? 'border-black' : 'border-transparent' %> cursor-pointer hover:border-black transition-colors overflow-hidden">
+          <div class="aspect-[2/3] bg-placeholder border <%= i == 0 ? 'border-ink' : 'border-transparent' %> cursor-pointer hover:border-ink transition-colors overflow-hidden">
             <% if i == 0 && (image_source = product_image_source(@product)) %>
               <%= image_tag image_source, alt: @product.name, class: "w-full h-full object-cover" %>
             <% else %>
-              <div class="w-full h-full bg-gray-50"></div>
+              <div class="w-full h-full bg-paper-2"></div>
             <% end %>
           </div>
         <% end %>
@@ -89,92 +89,92 @@
     <% end %>
 
     <!-- 우측: 상품 정보(스크롤해도 따라온다) -->
-    <div class="space-y-6 lg:sticky lg:top-24 self-start">
+    <div class="lg:max-w-info lg:sticky lg:top-[84px] space-y-5 self-start">
 
       <!-- 브랜드 & 상품명 -->
       <div class="space-y-2">
-        <p class="text-sm font-medium text-gray-500 uppercase"><%= @product.brand %></p>
-        <h1 class="text-2xl md:text-3xl font-bold text-black leading-tight"><%= @product.name %></h1>
+        <p class="text-caption text-ink-3 <%= "font-display tracking-eyebrow uppercase" if @product.brand == "JIEUM" %>"><%= @product.brand %></p>
+        <h1 class="text-title font-semibold"><%= @product.name %></h1>
         <% if (hero = @product.detail_page&.dig("hero")) %>
-          <p data-testid="detail-headline" class="pt-2 text-lg font-bold text-gray-900 leading-snug"><%= hero["headline"] %></p>
-          <p class="text-sm text-gray-600 leading-relaxed"><%= hero["sub"] %></p>
+          <p data-testid="detail-headline" class="pt-2 text-body text-ink"><%= hero["headline"] %></p>
+          <p class="text-body text-ink-2"><%= hero["sub"] %></p>
         <% end %>
       </div>
 
       <% if character %>
-        <p class="text-sm text-gray-700" data-worn-character>
-          <%= link_to character.name, character_path(character.handle), class: "font-bold underline" %><%= " #{character.height_cm}cm" if character.height_cm.present? %><%= " · 상의 #{character.top_size}" if character.top_size.present? %><%= " / #{@product.worn_size} 착용" if @product.worn_size.present? %>
+        <p class="text-caption text-ink-2" data-worn-character>
+          <%= link_to character.name, character_path(character.handle), class: "underline underline-offset-3" %><%= " #{character.height_cm}cm" if character.height_cm.present? %><%= " · 상의 #{character.top_size}" if character.top_size.present? %><%= " / #{@product.worn_size} 착용" if @product.worn_size.present? %>
         </p>
       <% end %>
 
       <!-- 가격 -->
       <div class="space-y-1">
-        <p class="text-3xl font-bold text-black"><%= number_to_currency(@product.price, unit: "", precision: 0) %>원</p>
+        <%= price_won(@product.price, variant: :lg) %>
       </div>
 
-      <div class="h-px bg-gray-200"></div>
 
       <%= form_with url: cart_items_path, id: "buy", class: "space-y-4 scroll-mt-24" do |f| %>
         <%# 색상별 사이즈 버튼(품절은 비활성) — 한 번에 색상·사이즈 선택 %>
-        <fieldset data-testid="variant-picker" class="space-y-3" <%= "disabled" if @variants.empty? %>>
-          <legend class="text-sm font-bold mb-2">색상 / 사이즈</legend>
+        <fieldset data-testid="variant-picker" class="border-y border-line py-4 space-y-4" <%= "disabled" if @variants.empty? %>>
+          <legend class="sr-only">색상 / 사이즈</legend>
+          <p aria-hidden="true" class="block w-full mb-3 text-ui font-medium">색상 / 사이즈</p>
           <% first_available = @variants.find { |variant| variant.stock.to_i.positive? } %>
           <% @variants.group_by(&:color).each do |color, variants| %>
-            <div class="flex items-center gap-3">
-              <span class="flex items-center gap-1.5 w-28 shrink-0 text-sm text-gray-800">
+            <div class="flex items-start gap-3 w-full">
+              <span class="flex items-center gap-1.5 w-20 sm:w-28 shrink-0 text-ui text-ink-2">
                 <span class="w-4 h-4 rounded-full ring-1 ring-black/15" style="background: <%= color_swatch(color) %>"></span><%= color %>
               </span>
-              <div class="flex flex-wrap gap-2">
+              <div class="flex flex-wrap gap-2 min-w-0 flex-1">
                 <% variants.sort_by { |variant| Product::SIZE_ORDER.index(variant.size.to_s.upcase) || 99 }.each do |variant| %>
                   <% sold_out = !variant.stock.to_i.positive? %>
                   <label class="relative">
                     <input type="radio" name="variant_id" value="<%= variant.id %>" class="peer sr-only" <%= "checked" if variant == first_available %> <%= "disabled" if sold_out %> aria-label="<%= color %> <%= variant.size %><%= ' 품절' if sold_out %>">
-                    <span class="grid place-items-center min-w-12 h-11 px-3 border text-sm font-medium cursor-pointer peer-checked:border-black peer-checked:ring-1 peer-checked:ring-black peer-focus-visible:outline peer-focus-visible:outline-2 peer-disabled:cursor-not-allowed peer-disabled:text-gray-300 peer-disabled:line-through border-gray-300"><%= variant.size %></span>
+                    <span class="grid place-items-center min-w-12 h-11 px-3 border text-ui font-medium cursor-pointer peer-checked:border-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-disabled:cursor-not-allowed peer-disabled:text-ink-3 peer-disabled:line-through border-hairline"><%= variant.size %></span>
                   </label>
                 <% end %>
               </div>
             </div>
           <% end %>
-          <%= link_to "사이즈 안내", (@product.detail_page&.dig("size") ? "#detail-size" : "#product-spec"), class: "inline-block text-sm text-gray-700 underline" %>
+          <%= link_to "사이즈 안내", (@product.detail_page&.dig("size") ? "#detail-size" : "#product-spec"), class: "btn-text text-ui" %>
         </fieldset>
-        <p class="text-sm text-gray-700"><span class="font-bold">무료배송</span> · <%= delivery_eta %> 도착 예정</p>
-        <%= f.label :quantity, "수량", class: "block text-sm font-bold" %>
-        <%= f.number_field :quantity, value: 1, min: 1, max: 99, class: "w-24 border border-gray-400 p-3" %>
-        <% if @variants.empty? %><p class="text-sm font-medium text-gray-700">옵션 준비 중</p><% end %>
-        <div class="grid grid-cols-2 gap-3">
-          <%= f.button "바로구매", name: "buy_now", value: "1", disabled: @variants.empty?, class: "p-4 border border-black font-bold disabled:opacity-40" %>
-          <%= f.button "장바구니", disabled: @variants.empty?, class: "p-4 bg-black text-white font-bold disabled:opacity-40" %>
+        <p class="text-caption text-ink-2"><span class="font-medium">무료배송</span> · <%= delivery_eta %> 도착 예정</p>
+        <%= f.label :quantity, "수량", class: "block text-ui font-medium" %>
+        <%= f.number_field :quantity, value: 1, min: 1, max: 99, class: "field w-24" %>
+        <% if @variants.empty? %><p class="text-ui font-medium text-ink-2">옵션 준비 중</p><% end %>
+        <div class="space-y-2">
+          <%= f.button "장바구니", disabled: @variants.empty?, class: "btn btn-primary w-full" %>
+          <%= f.button "바로구매", name: "buy_now", value: "1", disabled: @variants.empty?, class: "btn btn-secondary w-full disabled:text-ink-3 disabled:border-hairline" %>
         </div>
       <% end %>
 
       <%# 펼침 메뉴: 상세 설명 · 상품정보 · 배송/교환/반품 %>
-      <div class="border-t border-gray-200 divide-y divide-gray-200 text-sm" data-testid="product-accordions">
-        <details class="py-4" <%= "open" unless @product.detail_page %>>
-          <summary class="font-bold cursor-pointer">상품 상세 설명</summary>
-          <p class="pt-3 text-gray-700 leading-relaxed"><%= @product.description %></p>
+      <div class="border-t border-hairline divide-y divide-hairline text-body" data-testid="product-accordions">
+        <details class="group py-4" <%= "open" unless @product.detail_page %>>
+          <summary class="text-title font-semibold py-1 list-none flex justify-between cursor-pointer">상품 상세 설명<span aria-hidden="true" class="text-ui group-open:hidden">+</span><span aria-hidden="true" class="text-ui hidden group-open:inline">−</span></summary>
+          <p class="pt-3 text-ink-2 leading-relaxed"><%= @product.description %></p>
           <% if @product.selling_points.present? %>
             <section aria-label="셀링포인트" class="pt-3 space-y-2">
-              <h2 class="font-bold text-black">셀링포인트</h2>
-              <div class="text-gray-700 leading-relaxed"><%= simple_format(h(@product.selling_points)) %></div>
+              <h2 class="font-semibold text-ink">셀링포인트</h2>
+              <div class="text-ink-2 leading-relaxed"><%= simple_format(h(@product.selling_points)) %></div>
             </section>
           <% end %>
         </details>
-        <details class="py-4">
-          <summary class="font-bold cursor-pointer">소재 · 세탁 · 상품정보</summary>
+        <details class="group py-4">
+          <summary class="text-title font-semibold py-1 list-none flex justify-between cursor-pointer">소재 · 세탁 · 상품정보<span aria-hidden="true" class="text-ui group-open:hidden">+</span><span aria-hidden="true" class="text-ui hidden group-open:inline">−</span></summary>
           <dl class="pt-3 grid grid-cols-3 gap-y-2">
             <% Product::INFO_NOTICE_FIELDS.each do |field| %>
-              <dt class="text-gray-600"><%= field %></dt>
-              <dd class="col-span-2 text-gray-900"><%= detail_value(@product.info_notice_value(field).presence || "TODO: 미입력") %></dd>
+              <dt class="text-ink-3"><%= field %></dt>
+              <dd class="col-span-2 text-ink"><%= detail_value(@product.info_notice_value(field).presence || "TODO: 미입력") %></dd>
             <% end %>
           </dl>
         </details>
-        <details class="py-4">
-          <summary class="font-bold cursor-pointer">배송 · 교환 · 반품</summary>
-          <ul class="pt-3 space-y-1.5 text-gray-700">
+        <details class="group py-4">
+          <summary class="text-title font-semibold py-1 list-none flex justify-between cursor-pointer">배송 · 교환 · 반품<span aria-hidden="true" class="text-ui group-open:hidden">+</span><span aria-hidden="true" class="text-ui hidden group-open:inline">−</span></summary>
+          <ul class="pt-3 space-y-1.5 text-ink-2">
             <li><%= return_policy["shipping"] %></li>
             <% return_policy["summary"].first(2).each do |item| %><li><%= item["title"] %>: <%= item["body"] %></li><% end %>
           </ul>
-          <%= link_to "배송·반품 안내 전체 보기", returns_policy_path, class: "inline-block mt-2 underline text-gray-800" %>
+          <%= link_to "배송·반품 안내 전체 보기", returns_policy_path, class: "inline-block mt-2 underline text-ink-2" %>
         </details>
       </div>
 
@@ -185,27 +185,28 @@
   <%= render "detail_page", product: @product, page: @product.detail_page, pairings: @pairings, return_policy: return_policy if @product.detail_page %>
 
   <!-- 리뷰 섹션 -->
-  <div class="border-t-2 border-gray-200 pt-12 mb-20">
+  <div class="border-t border-line pt-10 mb-20">
 
     <!-- 리뷰 헤더 -->
     <div class="flex items-center justify-between mb-8">
-      <h2 class="text-xl md:text-2xl font-bold text-black">
+      <div><p class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3">REVIEWS</p>
+      <h2 class="text-title font-semibold">
         리뷰
-        <span class="text-gray-400">(<%= @reviews.count %>)</span>
-      </h2>
+        <span class="text-ink-3">(<%= @reviews.count %>)</span>
+      </h2></div>
       <% if @reviews.any? %>
       <div class="flex items-center gap-2">
-        <div class="flex text-yellow-400" aria-hidden="true">
+        <div class="flex text-ink" aria-hidden="true">
           <% 5.times do %>
             <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
             </svg>
           <% end %>
         </div>
-        <span class="text-lg font-bold text-black tabular-nums"><%= sprintf("%.1f", @average_rating) %></span>
+        <span class="text-title font-semibold text-ink tabular-nums"><%= sprintf("%.1f", @average_rating) %></span>
       </div>
       <% else %>
-        <p class="text-sm text-gray-600">아직 리뷰가 없습니다</p>
+        <p class="text-ui text-ink-3">아직 리뷰가 없습니다</p>
       <% end %>
     </div>
 
@@ -214,25 +215,25 @@
       <%= form_with model: [@product, Review.new], class: "border border-black p-6 mb-8 space-y-4" do |form| %>
         <div>
           <%= form.label :rating, "별점", class: "block text-sm font-bold text-black mb-2" %>
-          <%= form.select :rating, (1..5).map { |rating| ["#{rating}점", rating] }, {}, class: "border border-black px-3 py-2 text-sm", required: true %>
+          <%= form.select :rating, (1..5).map { |rating| ["#{rating}점", rating] }, {}, class: "field", required: true %>
         </div>
         <div class="grid grid-cols-3 gap-3">
           <div>
             <%= form.label :height, "키(cm)", class: "block text-sm font-bold text-black mb-2" %>
-            <%= form.number_field :height, min: 120, max: 200, class: "w-full border border-black px-3 py-2 text-sm" %>
+            <%= form.number_field :height, min: 120, max: 200, class: "field" %>
           </div>
           <div>
             <%= form.label :size_purchased, "구매 사이즈", class: "block text-sm font-bold text-black mb-2" %>
-            <%= form.select :size_purchased, @variants.map(&:size).uniq, { include_blank: "선택" }, class: "w-full border border-black px-3 py-2 text-sm" %>
+            <%= form.select :size_purchased, @variants.map(&:size).uniq, { include_blank: "선택" }, class: "field" %>
           </div>
           <div>
             <%= form.label :fit, "착용감", class: "block text-sm font-bold text-black mb-2" %>
-            <%= form.select :fit, Review::FITS.invert.to_a, { include_blank: "선택" }, class: "w-full border border-black px-3 py-2 text-sm" %>
+            <%= form.select :fit, Review::FITS.invert.to_a, { include_blank: "선택" }, class: "field" %>
           </div>
         </div>
         <div>
           <%= form.label :content, "리뷰 내용", class: "block text-sm font-bold text-black mb-2" %>
-          <%= form.text_area :content, rows: 4, maxlength: 1000, required: true, class: "w-full border border-black px-3 py-2 text-sm" %>
+          <%= form.text_area :content, rows: 4, maxlength: 1000, required: true, class: "field" %>
         </div>
         <%= form.submit "리뷰 등록", class: "px-5 py-3 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors cursor-pointer" %>
       <% end %>
@@ -242,13 +243,13 @@
     <% fits = @product.reviews.where.not(fit: [ nil, "" ]).group(:fit).count %>
     <% if fits.any? %>
       <div data-testid="fit-scale" class="mb-8 max-w-md">
-        <p class="text-sm font-bold text-black mb-2">착용감 (<%= fits.values.sum %>명 응답)</p>
+        <p class="text-ui font-semibold text-ink mb-2">착용감 (<%= fits.values.sum %>명 응답)</p>
         <% Review::FITS.each do |key, label| %>
           <% share = (fits[key].to_i * 100.0 / fits.values.sum).round %>
-          <div class="flex items-center gap-3 text-sm mb-1.5">
-            <span class="w-14 text-gray-700"><%= label %></span>
-            <span class="flex-1 h-2 bg-gray-100"><span class="block h-2 bg-black" style="width: <%= share %>%"></span></span>
-            <span class="w-10 text-right tabular-nums text-gray-700"><%= share %>%</span>
+          <div class="flex items-center gap-3 text-ui mb-1.5">
+            <span class="w-14 text-ink-2"><%= label %></span>
+            <span class="flex-1 h-2 bg-placeholder"><span class="block h-2 bg-ink" style="width: <%= share %>%"></span></span>
+            <span class="w-10 text-right tabular-nums text-ink-2"><%= share %>%</span>
           </div>
         <% end %>
       </div>
@@ -258,51 +259,51 @@
     <div class="space-y-6">
       <% if @reviews.any? %>
         <% @reviews.each do |review| %>
-          <div class="border-b border-gray-100 pb-6 last:border-b-0">
+          <div class="border-b border-hairline pb-6 last:border-b-0">
 
             <!-- 리뷰 헤더 -->
             <div class="flex items-start justify-between mb-3">
               <div class="space-y-1">
-                <p class="text-sm font-bold text-black"><%= review.user.name %></p>
-                <div class="flex items-center gap-1 text-yellow-400">
+                <p class="text-ui font-semibold text-ink"><%= review.user.name %></p>
+                <div class="flex items-center gap-1 text-ink">
                   <% review.rating.times do %>
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                     </svg>
                   <% end %>
                   <% (5 - review.rating).times do %>
-                    <svg class="w-4 h-4 fill-current text-gray-200" viewBox="0 0 20 20">
+                    <svg class="w-4 h-4 fill-current text-hairline" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                     </svg>
                   <% end %>
                 </div>
               </div>
-              <p class="text-xs text-gray-400"><%= review.created_at.strftime("%Y.%m.%d") %></p>
+              <p class="text-caption text-ink-3"><%= review.created_at.strftime("%Y.%m.%d") %></p>
             </div>
 
             <!-- 리뷰 내용 -->
-            <p class="text-sm text-gray-700 leading-relaxed mb-3"><%= review.content %></p>
+            <p class="text-body text-ink-2 leading-relaxed mb-3"><%= review.content %></p>
 
             <!-- 리뷰 추가 정보 -->
-            <div class="flex flex-wrap gap-2 text-xs text-gray-500">
+            <div class="flex flex-wrap gap-2 text-caption text-ink-3">
               <% if review.height.present? %>
-                <span class="px-2 py-1 bg-gray-50 border border-gray-200">키 <%= review.height %>cm</span>
+                <span class="px-2 py-1 border border-hairline">키 <%= review.height %>cm</span>
               <% end %>
               <% if review.weight.present? %>
-                <span class="px-2 py-1 bg-gray-50 border border-gray-200">몸무게 <%= review.weight %>kg</span>
+                <span class="px-2 py-1 border border-hairline">몸무게 <%= review.weight %>kg</span>
               <% end %>
               <% if review.size_purchased.present? %>
-                <span class="px-2 py-1 bg-gray-50 border border-gray-200">구매 사이즈 <%= review.size_purchased %></span>
+                <span class="px-2 py-1 border border-hairline">구매 사이즈 <%= review.size_purchased %></span>
               <% end %>
               <% if review.fit_label %>
-                <span class="px-2 py-1 bg-gray-50 border border-gray-200">착용감 <%= review.fit_label %></span>
+                <span class="px-2 py-1 border border-hairline">착용감 <%= review.fit_label %></span>
               <% end %>
             </div>
 
             <!-- 리뷰 사진 -->
             <% if review.photo_url.present? %>
               <div class="mt-3">
-                <img src="<%= review.photo_url %>" alt="리뷰 사진" class="w-32 h-32 object-cover border border-gray-200">
+                <img src="<%= review.photo_url %>" alt="리뷰 사진" class="w-32 h-32 object-cover border border-hairline">
               </div>
             <% end %>
 
@@ -310,7 +311,7 @@
         <% end %>
       <% else %>
         <div class="py-12 text-center">
-          <p class="text-sm text-gray-400">아직 작성된 리뷰가 없습니다.</p>
+          <p class="text-ui text-ink-3">아직 작성된 리뷰가 없습니다.</p>
         </div>
       <% end %>
     </div>
@@ -318,38 +319,17 @@
   </div>
 
   <!-- 연관 상품 섹션 -->
-  <div class="border-t-2 border-gray-200 pt-12">
+  <div class="border-t-2 border-hairline pt-12">
 
-    <h2 class="text-xl md:text-2xl font-bold text-black mb-8">연관 상품</h2>
+    <p class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3">RELATED PRODUCTS</p>
+    <h2 class="text-title font-semibold mb-6">연관 상품</h2>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-3 gap-y-7 md:gap-y-10">
       <% if @related_products.present? %>
-        <% @related_products.take(4).each do |product| %>
-          <a href="<%= product_path(product) %>" class="group space-y-3">
-
-            <!-- 상품 이미지 -->
-            <div class="w-full aspect-[3/4] bg-gray-100 overflow-hidden">
-              <% if (image_source = product_image_source(product)) %>
-                <%= image_tag image_source, alt: product.name, class: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" %>
-              <% else %>
-                <div class="w-full h-full flex items-center justify-center text-gray-300">
-                  <span class="text-xs">이미지 없음</span>
-                </div>
-              <% end %>
-            </div>
-
-            <!-- 상품 정보 -->
-            <div class="space-y-1">
-              <p class="text-xs text-gray-500 uppercase"><%= product.brand %></p>
-              <p class="text-sm font-medium text-black line-clamp-2 group-hover:underline"><%= product.name %></p>
-              <p class="text-sm font-bold text-black"><%= number_to_currency(product.price, unit: "", precision: 0) %>원</p>
-            </div>
-
-          </a>
-        <% end %>
+        <%= render partial: "products/card", collection: @related_products.take(4), as: :product %>
       <% else %>
-        <div class="col-span-2 md:col-span-4 py-12 text-center">
-          <p class="text-sm text-gray-400">연관 상품이 없습니다.</p>
+        <div class="col-span-full py-12 text-center">
+          <p class="text-ui text-ink-3">연관 상품이 없습니다.</p>
         </div>
       <% end %>
     </div>
@@ -358,6 +338,6 @@
 
 </div>
 
-<div class="max-w-7xl mx-auto px-4 py-4 text-sm text-gray-500">
-  <%= link_to "이 상품에 대한 의견 보내기", new_feedback_path(product_id: @product.id), class: "underline hover:text-black" %>
+<div class="px-gutter py-4 text-caption text-ink-3">
+  <%= link_to "이 상품에 대한 의견 보내기", new_feedback_path(product_id: @product.id), class: "underline hover:text-ink" %>
 </div>

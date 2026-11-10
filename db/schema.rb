@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_10_000070) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_10_000080) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -552,6 +552,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_000070) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["purge_after"], name: "index_shipping_addresses_on_purge_after"
+  end
+
+  create_table "shopify_webhook_receipts", force: :cascade do |t|
+    t.string "webhook_id", null: false
+    t.string "topic"
+    t.string "shopify_order_id"
+    t.datetime "processed_at"
+    t.json "issues", default: [], null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["webhook_id"], name: "index_shopify_webhook_receipts_on_webhook_id", unique: true
   end
 
   create_table "snap_products", force: :cascade do |t|

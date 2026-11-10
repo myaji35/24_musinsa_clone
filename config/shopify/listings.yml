@@ -1,0 +1,266 @@
+[
+  {
+    "look": "L01",
+    "sku": "JIEUM-L01",
+    "title_en": "Camel Belted Wrap Coat",
+    "product_name": "숄칼라 벨티드 울 랩코트",
+    "color": "카멜",
+    "price_usd": 259
+  },
+  {
+    "look": "L02",
+    "sku": "JIEUM-L02",
+    "title_en": "Black & White Houndstooth Coat",
+    "product_name": "하운드투스 코쿤 코트",
+    "color": "블랙화이트",
+    "price_usd": 279
+  },
+  {
+    "look": "L03",
+    "sku": "JIEUM-L03",
+    "title_en": "Beige Long Puffer Coat",
+    "product_name": "퍼넬넥 오버핏 롱패딩",
+    "color": "베이지",
+    "price_usd": 329
+  },
+  {
+    "look": "L04",
+    "sku": "JIEUM-L04",
+    "title_en": "Brown Stand-Collar Cocoon Coat",
+    "product_name": "스탠드칼라 A라인 울코트",
+    "color": "다크브라운",
+    "price_usd": 259
+  },
+  {
+    "look": "L05",
+    "sku": "JIEUM-L05",
+    "title_en": "Brown Gold-Button Half Coat",
+    "product_name": "금장버튼 노카라 하프코트",
+    "color": "카멜브라운",
+    "price_usd": 229
+  },
+  {
+    "look": "L06",
+    "sku": "JIEUM-L06",
+    "title_en": "Ivory Gold-Button Half Coat",
+    "product_name": "금장버튼 노카라 하프코트",
+    "color": "아이보리",
+    "price_usd": 229
+  },
+  {
+    "look": "L07",
+    "sku": "JIEUM-L07",
+    "title_en": "Khaki Wrap Long Coat with Ivory Shawl Collar",
+    "product_name": "배색 숄칼라 랩 롱코트",
+    "color": "카키",
+    "price_usd": 289
+  },
+  {
+    "look": "L08",
+    "sku": "JIEUM-L08",
+    "title_en": "Tweed Double-Breasted Long Coat",
+    "product_name": "부클 트위드 더블 롱코트",
+    "color": "브라운베이지",
+    "price_usd": 299
+  },
+  {
+    "look": "L09",
+    "sku": "JIEUM-L09",
+    "title_en": "Camel Collarless Long Coat with Leather Buckles",
+    "product_name": "노카라 코쿤 롱코트",
+    "color": "카멜",
+    "price_usd": 249
+  },
+  {
+    "look": "L10",
+    "sku": "JIEUM-L10",
+    "title_en": "Camel Shirt-Collar Long Coat",
+    "product_name": "셔츠칼라 울 롱코트",
+    "color": "카멜",
+    "price_usd": 259
+  },
+  {
+    "look": "L11",
+    "sku": "JIEUM-L11",
+    "title_en": "Black U-Neck Jumper Dress",
+    "product_name": "U넥 울 점퍼 원피스",
+    "color": "블랙",
+    "price_usd": 149
+  },
+  {
+    "look": "L12",
+    "sku": "JIEUM-L12",
+    "title_en": "Camel Cape Coat with Leather Straps",
+    "product_name": "레더 스트랩 울 케이프 코트",
+    "color": "카멜",
+    "price_usd": 279
+  },
+  {
+    "look": "L13",
+    "sku": "JIEUM-L13",
+    "title_en": "Navy Collarless Long Coat",
+    "product_name": "노카라 코쿤 롱코트",
+    "color": "네이비",
+    "price_usd": 249
+  },
+  {
+    "look": "L14",
+    "sku": "JIEUM-L14",
+    "title_en": "Gray-Beige Hooded Puffer Coat",
+    "product_name": "오버핏 후드 패딩",
+    "color": "그레이지",
+    "price_usd": 259
+  },
+  {
+    "look": "L15",
+    "sku": "JIEUM-L15",
+    "title_en": "Yellow Houndstooth Shawl-Collar Coat",
+    "product_name": "하운드투스 코쿤 코트",
+    "color": "옐로",
+    "price_usd": 279
+  },
+  {
+    "look": "L16",
+    "sku": "JIEUM-L16",
+    "title_en": "Burgundy Shawl-Collar Short Puffer",
+    "product_name": "숄칼라 숏패딩",
+    "color": "버건디",
+    "price_usd": 219
+  },
+  {
+    "look": "L17",
+    "sku": "JIEUM-L17",
+    "title_en": "Black Hooded Long Puffer Coat",
+    "product_name": "후드 롱패딩",
+    "color": "블랙",
+    "price_usd": 319
+  },
+  {
+    "look": "L18",
+    "sku": "JIEUM-L18",
+    "title_en": "Charcoal Sleeveless Long Vest Dress",
+    "product_name": "버튼 민소매 롱 원피스",
+    "color": "차콜",
+    "price_usd": 169
+  },
+  {
+    "look": "L19",
+    "sku": "JIEUM-L19",
+    "title_en": "Navy U-Neck Sleeveless Dress",
+    "product_name": "U넥 울 점퍼 원피스",
+    "color": "네이비",
+    "price_usd": 149
+  },
+  {
+    "look": "L20",
+    "sku": "JIEUM-L20",
+    "title_en": "Navy Hooded Gold-Button Coat",
+    "product_name": "금장버튼 후드 울코트",
+    "color": "네이비",
+    "price_usd": 249
+  },
+  {
+    "look": "L21",
+    "sku": "JIEUM-L21",
+    "title_en": "Dark Khaki Long Puffer Coat",
+    "product_name": "셰브론 퀼팅 롱패딩",
+    "color": "다크카키",
+    "price_usd": 339
+  },
+  {
+    "look": "L22",
+    "sku": "JIEUM-L22",
+    "title_en": "Brown Long Wool Coat",
+    "product_name": "노치드 라펠 울 롱코트",
+    "color": "초콜릿브라운",
+    "price_usd": 279
+  },
+  {
+    "look": "L23",
+    "sku": "JIEUM-L23",
+    "title_en": "Black Hooded Short Puffer",
+    "product_name": "스트랩 후드 숏패딩",
+    "color": "블랙",
+    "price_usd": 249
+  },
+  {
+    "look": "L24",
+    "sku": "JIEUM-L24",
+    "title_en": "Black Hooded Long Puffer Coat (Padded)",
+    "product_name": "후드 롱 패딩코트",
+    "color": "블랙",
+    "price_usd": 299
+  },
+  {
+    "look": "L25",
+    "sku": "JIEUM-L25",
+    "title_en": "Burgundy Hooded Long Puffer Coat",
+    "product_name": "가로 퀼팅 후드 롱패딩",
+    "color": "버건디",
+    "price_usd": 299
+  },
+  {
+    "look": "L26",
+    "sku": "JIEUM-L26",
+    "title_en": "Ivory Hooded Short Puffer",
+    "product_name": "후드 숏패딩",
+    "color": "아이보리",
+    "price_usd": 229
+  },
+  {
+    "look": "L27",
+    "sku": "JIEUM-L27",
+    "title_en": "Brown Belted Hooded Short Puffer",
+    "product_name": "벨티드 후드 숏패딩",
+    "color": "다크브라운",
+    "price_usd": 249
+  },
+  {
+    "look": "L28",
+    "sku": "JIEUM-L28",
+    "title_en": "Brown Hooded Long Puffer Coat",
+    "product_name": "드로스트링 후드 롱패딩",
+    "color": "토프",
+    "price_usd": 319
+  },
+  {
+    "look": "L29",
+    "sku": "JIEUM-L29",
+    "title_en": "Taupe Hooded Padded Coat",
+    "product_name": "드로스트링 후드 패딩",
+    "color": "토프",
+    "price_usd": 279
+  },
+  {
+    "look": "L30",
+    "sku": "JIEUM-L30",
+    "title_en": "Gray Shawl-Collar Chevron Long Puffer",
+    "product_name": "숄칼라 셰브론 롱패딩",
+    "color": "라이트그레이",
+    "price_usd": 339
+  },
+  {
+    "look": "L31",
+    "sku": "JIEUM-L31",
+    "title_en": "Camel Belted Hooded Long Puffer",
+    "product_name": "벨티드 후드 롱패딩",
+    "color": "카멜",
+    "price_usd": 329
+  },
+  {
+    "look": "L32",
+    "sku": "JIEUM-L32",
+    "title_en": "Black Belted Long Puffer Coat",
+    "product_name": "벨티드 스탠드칼라 롱패딩",
+    "color": "블랙",
+    "price_usd": 339
+  },
+  {
+    "look": "L33",
+    "sku": "JIEUM-L33",
+    "title_en": "Ivory Belted Long Puffer Coat",
+    "product_name": "레더 스트랩 롱패딩",
+    "color": "아이보리",
+    "price_usd": 329
+  }
+]

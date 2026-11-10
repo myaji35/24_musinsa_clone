@@ -16,7 +16,8 @@ module Orders
 
     class InvalidInput < StandardError; end
 
-    def initialize(items:, address:, save_consent: false, birth_year: nil, traffic_source: nil)
+    def initialize(items:, address:, save_consent: false, birth_year: nil, traffic_source: nil, hold_tokens: {})
+      @hold_tokens = hold_tokens.to_h.stringify_keys
       @items = items
       @address = address.to_h.symbolize_keys.slice(:recipient_name, :phone, :postal_code, :address1, :address2, :country_code)
       @save_consent = ActiveModel::Type::Boolean.new.cast(save_consent) || false
@@ -43,7 +44,8 @@ module Orders
           raise InvalidInput, "선택한 상품 옵션을 찾을 수 없습니다" unless variant
           raise InvalidInput, "상품 가격이 없습니다" unless variant.product.price&.positive?
 
-          deducted = Variant.where(id: variant.id).where("stock >= ?", quantity.to_i)
+          hold = convert_hold(variant.id, quantity.to_i)
+          deducted = hold ? 1 : Variant.where(id: variant.id).where("stock >= ?", quantity.to_i)
                             .update_all([ "stock = stock - ?", quantity.to_i ])
           if deducted.zero?
             remaining = variant.reload.stock.to_i
@@ -54,9 +56,19 @@ module Orders
                                   quantity: quantity.to_i, total_price: variant.product.price * quantity.to_i,
                                   status: "pending", shipping_address: address, checkout_number: checkout_number, **traffic_attributes)
           OrderShippingRecord.snapshot_for!(orders.last)
-          StockLog.create!(variant: variant, log_type: "out", quantity: quantity.to_i,
-                           order_id: orders.last.id, note: "판매 출고 #{orders.last.order_number}",
-                           skip_variant_stock_update: true)
+          if hold
+            hold.update!(order: orders.last)
+            surplus = hold.quantity - quantity.to_i
+            if surplus.positive?
+              Variant.where(id: variant.id).update_all([ "stock = COALESCE(stock, 0) + ?", surplus ])
+              StockLog.create!(variant: variant, log_type: "in", quantity: surplus,
+                               note: "방송 홀드 잔량 복원 #{hold.token}", skip_variant_stock_update: true)
+            end
+          else
+            StockLog.create!(variant: variant, log_type: "out", quantity: quantity.to_i,
+                             order_id: orders.last.id, note: "판매 출고 #{orders.last.order_number}",
+                             skip_variant_stock_update: true)
+          end
           low_stock ||= variant.reload.low_stock?
         end
         transaction.after_commit { LowStockAlertJob.perform_later } if low_stock
@@ -69,6 +81,17 @@ module Orders
     end
 
     private
+
+    def convert_hold(variant_id, quantity)
+      token = @hold_tokens[variant_id.to_s]
+      return if token.blank?
+
+      eligible = StockHold.where(token: token, variant_id: variant_id, status: "held")
+                          .where("expires_at > ?", Time.current).where("quantity >= ?", quantity)
+      return if eligible.update_all(status: "converted", updated_at: Time.current).zero?
+
+      StockHold.find_by!(token: token)
+    end
 
     def traffic_attributes
       return {} unless @traffic_source

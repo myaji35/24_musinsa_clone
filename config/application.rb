@@ -13,6 +13,18 @@ module MusinsaClone
     config.x.order_record_retention_years = Integer(ENV.fetch("ORDER_RECORD_RETENTION_YEARS", "5"))
     config.x.shipping_address_retention_days = Integer(ENV.fetch("SHIPPING_ADDRESS_RETENTION_DAYS", "90"))
 
+    config.x.business = {
+      name: ENV["BUSINESS_NAME"],
+      representative: ENV["BUSINESS_REPRESENTATIVE"],
+      address: ENV["BUSINESS_ADDRESS"],
+      phone: ENV["BUSINESS_PHONE"],
+      email: ENV["BUSINESS_EMAIL"],
+      registration_number: ENV["BUSINESS_REGISTRATION_NUMBER"],
+      mail_order_number: ENV["MAIL_ORDER_REGISTRATION_NUMBER"],
+      mail_order_agency: ENV["MAIL_ORDER_REGISTRATION_AGENCY"],
+      hosting_provider: ENV["HOSTING_PROVIDER"]
+    }
+
     config.x.privacy = {
       business_name: ENV["PRIVACY_BUSINESS_NAME"],
       officer_name: ENV["PRIVACY_OFFICER_NAME"],

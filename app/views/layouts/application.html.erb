@@ -176,10 +176,11 @@
                    <h2 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">POLICY</h2>
                    <ul class="space-y-3">
                        <li><%= link_to "개인정보처리방침", privacy_policy_path, class: "inline-block py-1 font-medium text-ink-2 hover:text-ink" %></li>
-                       <li><span class="inline-block py-1 font-normal text-ink-2" aria-disabled="true">이용약관 <span class="text-caption text-ink-3">(준비 중)</span></span></li>
+                       <li><%= link_to "이용약관", terms_policy_path, class: "inline-block py-1 font-normal text-ink-2 hover:text-ink" %></li>
                    </ul>
                 </div>
             </div>
+            <div class="mb-8"><%= render "shared/business_info" %></div>
             <div class="border-t border-hairline pt-6 text-center md:text-left text-caption text-ink-3">
                 <p>🤖 Generated with <a href="https://claude.com/claude-code" class="underline hover:text-ink">Claude Code</a> · COPYRIGHT (C) 2026 JIEUM ALL RIGHTS RESERVED.</p>
             </div>

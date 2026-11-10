@@ -72,14 +72,16 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
       assert_select "footer div:has(> h2)", text: /POLICY/ do
         assert_select "li", count: 2
         assert_select "a[href=?].font-medium", privacy_policy_path, text: "개인정보처리방침", count: 1
-        assert_select 'span[aria-disabled="true"].font-normal.text-ink-2', count: 1
+        assert_select "a[href=?]", terms_policy_path, text: "이용약관", count: 1
       end
       assert_not_includes response.body, "Solid Queue"
       assert_select "a", text: "회원가입", count: 0
       assert_select "footer a[href=?]", returns_policy_path, text: "배송·반품 안내", count: 1
       assert_select "footer a[href=?]", privacy_policy_path, text: "개인정보처리방침", count: 1
-      assert_select 'footer span[aria-disabled="true"]', text: "이용약관 (준비 중)", count: 1
-      assert_select "footer a", text: "이용약관", count: 0
+      assert_select 'footer a[href="/terms"]', text: "이용약관", count: 1
+
+      get terms_policy_path
+      assert_response :success
     end
   end
 

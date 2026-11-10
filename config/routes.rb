@@ -88,6 +88,7 @@ Rails.application.routes.draw do
   get "magazine/:issue/:slug", to: "magazine#show", as: :magazine_article
 
   # 배송·반품 안내
+  get "terms", to: "policies#terms", as: :terms_policy
   get "privacy", to: "policies#privacy", as: :privacy_policy
   get "returns", to: "policies#returns", as: :returns_policy
 

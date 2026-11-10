@@ -6169,7 +6169,43 @@
             "output": "0c45ac5 merge(ISS-107): 사업자 정보 고지·이용약관·주문서 청약철회 안내 main 병합"
           }
         ],
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-11-10T19:12:59Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/business_disclosures_test.rb test/integration/layout_links_test.rb",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 11763\n\n# Running:\n\n............\n\nFinished in 0.439821s, 27.2838 runs/s, 477.4670 assertions/s.\n12 runs, 210 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "..................................................................................................................................................................................................\n\nFinished in 15.345514s, 41.9667 runs/s, 451.2068 assertions/s.\n644 runs, 6924 assertions, 0 failures, 0 errors, 0 skips\n\u001b[3m\u001b[1m\u001b[34m≈\u001b[39m\u001b[22m\u001b[23m tailwindcss \u001b[34mv4.1.18\u001b[39m\n\nDone in \u001b[33m454ms\u001b[39m"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop app test config",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Inspecting 301 files\n.............................................................................................................................................................................................................................................................................................................\n\n301 files inspected, no offenses detected"
+            },
+            {
+              "cmd": "cd musinsa_clone && git log --oneline -1 0c45ac5",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "0c45ac5 merge(ISS-107): 사업자 정보 고지·이용약관·주문서 청약철회 안내 main 병합 (대표님 결정 B)"
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-11T04:05:26.724944"
     },

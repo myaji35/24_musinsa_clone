@@ -8,6 +8,27 @@ class Orders::IntakeTest < ActiveSupport::TestCase
     @items = [ { variant_id: variants(:one).id, quantity: 2 }, { variant_id: variants(:two).id, quantity: 1 } ]
   end
 
+  test "유입 정보와 캐릭터를 모든 품목에 저장한다" do
+    character = Character.create!(name: "하린", handle: "SeoHARIN")
+    source = { platform: "youtube", campaign: "spring", video_id: "video-1",
+               link_code: "link-1", character_handle: character.handle, landed_at: Time.current.iso8601 }
+    result = Orders::Intake.call(items: @items, address: @address, traffic_source: source)
+    assert result.success?, result.errors.inspect
+    result.orders.each do |order|
+      assert_equal [ "youtube", "spring", "video-1", "link-1", character.id ],
+                   order.attributes.values_at("source_platform", "source_campaign", "source_video_id", "source_link_code", "source_character_id")
+      assert_equal Time.iso8601(source[:landed_at]), order.source_landed_at
+    end
+  end
+
+  test "없는 캐릭터 handle은 버린다" do
+    result = Orders::Intake.call(items: @items, address: @address,
+                                traffic_source: { platform: "youtube", character_handle: "missing" })
+    assert result.success?
+    assert_nil result.orders.first.source_character_id
+    assert_equal "youtube", result.orders.first.source_platform
+  end
+
   test "한국 오전 9시 전 주문서와 주문번호는 한국 날짜를 사용한다" do
     travel_to Time.utc(2026, 11, 1, 20, 30) do
       result = Orders::Intake.call(items: @items, address: @address)

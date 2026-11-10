@@ -4,6 +4,17 @@ require "minitest/mock"
 class OrderTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
+  test "유입 집계는 취소를 제외하고 주문 수와 매출을 합산한다" do
+    order = orders(:one)
+    order.update!(status: "pending", source_platform: "youtube", source_video_id: "video-1")
+    assert_equal [ [ "youtube", 1, order.total_price ] ], Order.where(id: order.id).traffic_summary(by: :platform)
+    assert_equal [ [ "video-1", 1, order.total_price ] ], Order.where(id: order.id).traffic_summary(by: :video)
+    assert_equal [ [ nil, 1, order.total_price ] ], Order.where(id: order.id).traffic_summary(by: :character)
+    order.cancel!
+    assert_empty Order.where(id: order.id).traffic_summary(by: :platform)
+    assert_raises(KeyError) { Order.traffic_summary(by: :invalid) }
+  end
+
   test "한국 오전 9시 전에도 주문번호는 한국 날짜를 사용한다" do
     travel_to Time.utc(2026, 11, 1, 20, 30) do
       order = Order.create!(anony_customer: anony_customers(:one), product: products(:one),

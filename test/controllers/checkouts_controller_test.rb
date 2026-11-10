@@ -6,6 +6,49 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
                  address1: "서울시 테스트로 1", address2: "비밀상세 201호" }
   end
 
+  test "유입 링크부터 주문까지 마지막 유입을 정제하여 유지한다" do
+    character = Character.create!(name: "하린", handle: "SeoHARIN")
+    get product_path(products(:one)), params: { utm_source: "instagram" }
+    get product_path(products(:one)), params: {
+      utm_source: " YouTube! ", utm_campaign: "캠페인 /봄", utm_content: "vid:123",
+      ch: character.handle, lc: "x" * 110
+    }
+    landed_at = Time.current
+    get product_path(products(:one))
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
+    order = Order.order(:id).last
+    assert_equal "youtube", order.source_platform
+    assert_equal "캠페인봄", order.source_campaign
+    assert_equal "vid:123", order.source_video_id
+    assert_equal "x" * 100, order.source_link_code
+    assert_equal character.id, order.source_character_id
+    assert_in_delta landed_at, order.source_landed_at, 2
+  end
+
+  test "링크 없는 주문에는 유입 정보가 없다" do
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
+    assert_empty Order.order(:id).last.attributes.select { |key, value| key.start_with?("source_") && value }
+  end
+
+  test "31일 지난 유입은 삭제되고 주문에 저장되지 않는다" do
+    get product_path(products(:one)), params: { utm_source: "youtube" }
+    travel_to 31.days.from_now do
+      post cart_items_path, params: { variant_id: variants(:one).id }
+      post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
+      assert_empty Order.order(:id).last.attributes.select { |key, value| key.start_with?("source_") && value }
+      assert_nil session[:traffic_source]
+    end
+  end
+
+  test "POST와 JSON 방문은 유입을 덮어쓰지 않는다" do
+    get product_path(products(:one)), params: { utm_source: "youtube" }
+    get product_path(products(:one), format: :json), params: { utm_source: "instagram" }
+    post cart_items_path, params: { variant_id: variants(:one).id, utm_source: "other" }
+    assert_equal "youtube", session[:traffic_source]["platform"]
+  end
+
   test "빈 장바구니는 주문서를 열 수 없다" do
     get new_checkout_path
     assert_redirected_to cart_path

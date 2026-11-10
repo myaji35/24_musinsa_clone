@@ -3,6 +3,7 @@ class Order < ApplicationRecord
   FINISHED_STATUSES = %w[delivered cancelled].freeze
 
   # Relations
+  belongs_to :source_character, class_name: "Character", optional: true
   belongs_to :anony_customer
   belongs_to :product
   belongs_to :variant
@@ -31,6 +32,11 @@ class Order < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
 
   # Methods
+
+  def self.traffic_summary(by:)
+    column = { platform: :source_platform, character: :source_character_id, video: :source_video_id }.fetch(by)
+    where.not(status: "cancelled").group(column).pluck(column, Arel.sql("COUNT(*)"), Arel.sql("SUM(total_price)"))
+  end
 
   def cancel!
     with_lock do

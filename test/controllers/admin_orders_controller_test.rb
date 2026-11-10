@@ -1,6 +1,18 @@
 require "test_helper"
 
 class AdminOrdersControllerTest < ActionDispatch::IntegrationTest
+  test "관리자는 플랫폼 캐릭터 영상별 집계와 유입을 본다" do
+    sign_in
+    character = Character.create!(name: "하린", handle: "SeoHARIN")
+    orders(:one).update!(source_platform: "youtube", source_character_id: character.id, source_video_id: "video-1")
+    get admin_orders_path
+    assert_response :success
+    %w[유입원별집계 플랫폼별 캐릭터별 영상별 주문수 매출합계].each do |label|
+      assert_includes response.body.gsub(/\s/, ""), label
+    end
+    assert_includes response.body, "youtube · 하린 · video-1"
+  end
+
   test "admin confirms only pending orders" do
     sign_in
     order = orders(:one)

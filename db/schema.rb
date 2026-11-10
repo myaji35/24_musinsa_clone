@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_000181) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_10_000070) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -378,12 +378,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_000181) do
     t.integer "shipping_address_id"
     t.datetime "delivered_at"
     t.string "checkout_number"
+    t.string "source_platform"
+    t.string "source_campaign"
+    t.string "source_video_id"
+    t.string "source_link_code"
+    t.integer "source_character_id"
+    t.datetime "source_landed_at"
     t.index ["anony_customer_id"], name: "index_orders_on_anony_customer_id"
     t.index ["checkout_number"], name: "index_orders_on_checkout_number"
     t.index ["created_at"], name: "index_orders_on_created_at"
     t.index ["order_number"], name: "index_orders_on_order_number", unique: true
     t.index ["product_id"], name: "index_orders_on_product_id"
     t.index ["shipping_address_id"], name: "index_orders_on_shipping_address_id"
+    t.index ["source_character_id"], name: "index_orders_on_source_character_id"
+    t.index ["source_link_code"], name: "index_orders_on_source_link_code"
+    t.index ["source_platform"], name: "index_orders_on_source_platform"
     t.index ["status"], name: "index_orders_on_status"
     t.index ["variant_id"], name: "index_orders_on_variant_id"
   end

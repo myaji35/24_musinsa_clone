@@ -16,7 +16,7 @@ class CheckoutsController < ApplicationController
     result = Orders::Intake.call(
       items: @cart.items.map { |item| { variant_id: item.variant.id, quantity: item.quantity } },
       address: @checkout.slice("recipient_name", "phone", "postal_code", "address1", "address2"),
-      birth_year: @checkout["birth_year"].presence, save_consent: false
+      birth_year: @checkout["birth_year"].presence, save_consent: false, traffic_source: current_traffic_source
     )
     if result.success?
       session[:cart] = {}

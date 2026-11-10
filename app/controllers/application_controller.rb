@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include AccountRequired
+  include TrafficSourceTracking
 
   before_action :set_current_context
   before_action :require_admin

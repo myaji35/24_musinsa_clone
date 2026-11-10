@@ -16,11 +16,12 @@ module Orders
 
     class InvalidInput < StandardError; end
 
-    def initialize(items:, address:, save_consent: false, birth_year: nil)
+    def initialize(items:, address:, save_consent: false, birth_year: nil, traffic_source: nil)
       @items = items
       @address = address.to_h.symbolize_keys.slice(:recipient_name, :phone, :postal_code, :address1, :address2, :country_code)
       @save_consent = ActiveModel::Type::Boolean.new.cast(save_consent) || false
       @birth_year = birth_year
+      @traffic_source = traffic_source&.to_h&.symbolize_keys
     end
 
     def call
@@ -51,7 +52,7 @@ module Orders
 
           orders << Order.create!(anony_customer: customer, product: variant.product, variant: variant,
                                   quantity: quantity.to_i, total_price: variant.product.price * quantity.to_i,
-                                  status: "pending", shipping_address: address, checkout_number: checkout_number)
+                                  status: "pending", shipping_address: address, checkout_number: checkout_number, **traffic_attributes)
           OrderShippingRecord.snapshot_for!(orders.last)
           StockLog.create!(variant: variant, log_type: "out", quantity: quantity.to_i,
                            order_id: orders.last.id, note: "판매 출고 #{orders.last.order_number}",
@@ -65,6 +66,21 @@ module Orders
       Result.new(success: false, data: {}, error: [ e.message ])
     rescue ActiveRecord::RecordInvalid
       Result.new(success: false, data: {}, error: [ "배송지 또는 주문 정보가 올바르지 않습니다" ])
+    end
+
+    private
+
+    def traffic_attributes
+      return {} unless @traffic_source
+
+      {
+        source_platform: @traffic_source[:platform],
+        source_campaign: @traffic_source[:campaign],
+        source_video_id: @traffic_source[:video_id],
+        source_link_code: @traffic_source[:link_code],
+        source_character_id: Character.find_by(handle: @traffic_source[:character_handle])&.id,
+        source_landed_at: @traffic_source[:landed_at]
+      }
     end
   end
 end

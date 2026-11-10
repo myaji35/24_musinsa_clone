@@ -15666,16 +15666,7 @@
           "at": "2026-11-10T06:35:42.439Z"
         },
         "merged_to_main": "f659853",
-        "recheck_reopens": 1,
-        "recheck_fail": {
-          "at": "2026-11-10T06:39:18Z",
-          "sha": null,
-          "problems": [
-            "다시 돌린 결과가 다름: `bin/rails test test/controllers/webhooks/shopify_controller_` 기록 0 → 실제 127",
-            "다시 돌린 결과가 다름: `bin/rails test` 기록 0 → 실제 127",
-            "다시 돌린 결과가 다름: `bin/rubocop` 기록 0 → 실제 127"
-          ]
-        }
+        "recheck_reopens": 1
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
       "updated_at": "2026-11-10T06:39:18Z",
@@ -15742,35 +15733,31 @@
         "cost_usd": 0,
         "factory_inline_verification": true,
         "recheck": {
-          "status": "failed",
-          "at": "2026-11-10T06:39:18Z",
+          "status": "verified",
+          "at": "2026-11-10T06:41:52Z",
           "sha": null,
-          "problems": [
-            "다시 돌린 결과가 다름: `bin/rails test test/controllers/webhooks/shopify_controller_` 기록 0 → 실제 127",
-            "다시 돌린 결과가 다름: `bin/rails test` 기록 0 → 실제 127",
-            "다시 돌린 결과가 다름: `bin/rubocop` 기록 0 → 실제 127"
-          ],
+          "problems": [],
           "commands": [
             {
-              "cmd": "bin/rails test test/controllers/webhooks/shopify_controller_test.rb test/services/shopify/inventory_sync_test.rb",
-              "status": "different",
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/webhooks/shopify_controller_test.rb test/services/shopify/inventory_syn",
+              "status": "same",
               "expected": 0,
-              "actual": 127,
-              "output": "bash: bin/rails: No such file or directory"
+              "actual": 0,
+              "output": "Run options: --seed 26484\n\n# Running:\n\n...........\n\nFinished in 0.684715s, 16.0651 runs/s, 118.2974 assertions/s.\n11 runs, 81 assertions, 0 failures, 0 errors, 0 skips"
             },
             {
-              "cmd": "bin/rails test",
-              "status": "different",
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "status": "same",
               "expected": 0,
-              "actual": 127,
-              "output": "bash: bin/rails: No such file or directory"
+              "actual": 0,
+              "output": "재고 부족 450\n.동시성 test_동시_홀드_500건_중_정확히_50건만_성공한다: 성공 50, 재고 부족 450\n.................................................................................................................................\n\nFinished in 26.612242s, 23.7485 runs/s, 254.8451 assertions/s.\n632 runs, 6782 assertions, 0 failures, 0 errors, 0 skips\n\u001b[3m\u001b[1m\u001b[34m≈\u001b[39m\u001b[22m\u001b[23m tailwindcss \u001b[34mv4.1.18\u001b[39m\n\nDone in \u001b[33m457ms\u001b[39m"
             },
             {
-              "cmd": "bin/rubocop",
-              "status": "different",
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
+              "status": "same",
               "expected": 0,
-              "actual": 127,
-              "output": "bash: bin/rubocop: No such file or directory"
+              "actual": 0,
+              "output": ".....................................................................................................................................................................................................................................................................................................................................................................\n\n368 files inspected, no offenses detected"
             }
           ]
         },
@@ -15931,16 +15918,7 @@
           "at": "2026-11-10T06:35:46.113Z"
         },
         "merged_to_main": "3b12301",
-        "recheck_reopens": 1,
-        "recheck_fail": {
-          "at": "2026-11-10T06:39:18Z",
-          "sha": null,
-          "problems": [
-            "다시 돌린 결과가 다름: `bin/rails test test/integration/broadcast_stock_concurrency_` 기록 0 → 실제 127",
-            "다시 돌린 결과가 다름: `bin/rails test` 기록 0 → 실제 127",
-            "다시 돌린 결과가 다름: `bin/rubocop` 기록 0 → 실제 127"
-          ]
-        }
+        "recheck_reopens": 1
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
       "updated_at": "2026-11-10T06:39:18Z",
@@ -16002,35 +15980,31 @@
         "cost_usd": 0,
         "factory_inline_verification": true,
         "recheck": {
-          "status": "failed",
-          "at": "2026-11-10T06:39:18Z",
+          "status": "verified",
+          "at": "2026-11-10T06:41:52Z",
           "sha": null,
-          "problems": [
-            "다시 돌린 결과가 다름: `bin/rails test test/integration/broadcast_stock_concurrency_` 기록 0 → 실제 127",
-            "다시 돌린 결과가 다름: `bin/rails test` 기록 0 → 실제 127",
-            "다시 돌린 결과가 다름: `bin/rubocop` 기록 0 → 실제 127"
-          ],
+          "problems": [],
           "commands": [
             {
-              "cmd": "bin/rails test test/integration/broadcast_stock_concurrency_test.rb test/jobs/stock_hold_expiry_job_test.rb test/jobs/unpaid_order_expiry_job_test.rb test/models/stock_hold_test.rb test/services/inven",
-              "status": "different",
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/integration/broadcast_stock_concurrency_test.rb test/jobs/stock_hold_expiry_job_tes",
+              "status": "same",
               "expected": 0,
-              "actual": 127,
-              "output": "bash: bin/rails: No such file or directory"
+              "actual": 0,
+              "output": "Run options: --seed 63297\n\n# Running:\n\n..........동시성 test_동시_주문_500건_중_정확히_50건만_성공한다: 성공 50, 재고 부족 450\n.동시성 test_동시_홀드_500건_중_정확히_50건만_성공한다: 성공 50, 재고 부족 450\n.....\n\nFinished in 2.442589s, 6.5504 runs/s, 775.4068 assertions/s.\n16 runs, 1894 assertions, 0 failures, 0 errors, 0 skips"
             },
             {
-              "cmd": "bin/rails test",
-              "status": "different",
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "status": "same",
               "expected": 0,
-              "actual": 127,
-              "output": "bash: bin/rails: No such file or directory"
+              "actual": 0,
+              "output": "..................................................................................................................................................................................................\n\nFinished in 25.235825s, 25.0438 runs/s, 268.6657 assertions/s.\n632 runs, 6780 assertions, 0 failures, 0 errors, 0 skips\n\u001b[3m\u001b[1m\u001b[34m≈\u001b[39m\u001b[22m\u001b[23m tailwindcss \u001b[34mv4.1.18\u001b[39m\n\nDone in \u001b[34m282ms\u001b[39m"
             },
             {
-              "cmd": "bin/rubocop",
-              "status": "different",
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
+              "status": "same",
               "expected": 0,
-              "actual": 127,
-              "output": "bash: bin/rubocop: No such file or directory"
+              "actual": 0,
+              "output": ".....................................................................................................................................................................................................................................................................................................................................................................\n\n368 files inspected, no offenses detected"
             }
           ]
         },

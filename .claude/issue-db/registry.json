@@ -15533,11 +15533,11 @@
         ],
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "대표님 결정(A. 스위치 꺼진 채로 올리기) — 이 결정대로 진행",
-          "risk": "—",
-          "effort": "—",
-          "by": "관제실 결정",
-          "at": "2026-11-10T06:35:42.439Z"
+          "reason": "코드·병합은 이미 main 완료(193 f659853·194 3b12301). 되돌림 원인은 proof 명령을 상위 폴더 기준 'bin/rails test …'로 적어 실행기에서 127(명령 없음)이 난 것 — proof 를 'cd musinsa_clone && PATH=ruby@3.3 …' 형태로 고쳐 실행기 조건(env -i, 상위 폴더)에서 exit 0 확인 후 재마감",
+          "risk": "낮음",
+          "effort": "작음",
+          "by": "factory-runner",
+          "at": "2026-11-10T06:41:19.374404+00:00"
         },
         "decisions": [
           {
@@ -15591,6 +15591,13 @@
             "at": "2026-11-10T06:38:15.902060+00:00",
             "by": "factory-runner",
             "note": "대표님 결정 A(스위치 꺼진 채로 올리기) 반영 — factory/ISS-193 main 병합(f659853)·검증"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T06:41:19.374404+00:00",
+            "by": "factory-runner",
+            "note": "재검증 127 되돌림 정리 — proof 명령 경로 수정 후 재검증"
           }
         ],
         "recommendation_history": [
@@ -15600,6 +15607,14 @@
             "risk": "중간",
             "effort": "M",
             "by": "factory-runner"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "실행기 재검증 실패로 되돌림 — 다시 돌린 결과가 다름: `bin/rails test test/controllers/webhooks/shopify_controller_` 기록 0 → 실제 127",
+            "risk": "낮음",
+            "effort": "작음",
+            "by": "factory-recheck",
+            "at": "2026-11-10T06:39:18Z"
           }
         ],
         "gate_stage": "deploy-review",
@@ -15650,10 +15665,20 @@
           "by": "대표님(헤르메스)",
           "at": "2026-11-10T06:35:42.439Z"
         },
-        "merged_to_main": "f659853"
+        "merged_to_main": "f659853",
+        "recheck_reopens": 1,
+        "recheck_fail": {
+          "at": "2026-11-10T06:39:18Z",
+          "sha": null,
+          "problems": [
+            "다시 돌린 결과가 다름: `bin/rails test test/controllers/webhooks/shopify_controller_` 기록 0 → 실제 127",
+            "다시 돌린 결과가 다름: `bin/rails test` 기록 0 → 실제 127",
+            "다시 돌린 결과가 다름: `bin/rubocop` 기록 0 → 실제 127"
+          ]
+        }
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T06:38:15.902060+00:00",
+      "updated_at": "2026-11-10T06:39:18Z",
       "status_history": [
         {
           "from": null,
@@ -15699,25 +15724,59 @@
         ],
         "proof": [
           {
-            "cmd": "bin/rails test test/controllers/webhooks/shopify_controller_test.rb test/services/shopify/inventory_sync_test.rb",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/webhooks/shopify_controller_test.rb test/services/shopify/inventory_sync_test.rb",
             "exit_code": 0,
             "output": "11 runs, 81 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "bin/rails test",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
             "exit_code": 0,
             "output": "632 runs, 6782 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "bin/rubocop",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
             "exit_code": 0,
             "output": "368 files inspected, no offenses detected"
           }
         ],
         "cost_usd": 0,
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "failed",
+          "at": "2026-11-10T06:39:18Z",
+          "sha": null,
+          "problems": [
+            "다시 돌린 결과가 다름: `bin/rails test test/controllers/webhooks/shopify_controller_` 기록 0 → 실제 127",
+            "다시 돌린 결과가 다름: `bin/rails test` 기록 0 → 실제 127",
+            "다시 돌린 결과가 다름: `bin/rubocop` 기록 0 → 실제 127"
+          ],
+          "commands": [
+            {
+              "cmd": "bin/rails test test/controllers/webhooks/shopify_controller_test.rb test/services/shopify/inventory_sync_test.rb",
+              "status": "different",
+              "expected": 0,
+              "actual": 127,
+              "output": "bash: bin/rails: No such file or directory"
+            },
+            {
+              "cmd": "bin/rails test",
+              "status": "different",
+              "expected": 0,
+              "actual": 127,
+              "output": "bash: bin/rails: No such file or directory"
+            },
+            {
+              "cmd": "bin/rubocop",
+              "status": "different",
+              "expected": 0,
+              "actual": 127,
+              "output": "bash: bin/rubocop: No such file or directory"
+            }
+          ]
+        },
+        "recheck_fix": "proof 명령을 상위 폴더 기준 실행 가능 형태(cd musinsa_clone + ruby@3.3 PATH)로 수정 — env -i 상위 폴더 재현에서 exit 0"
       },
-      "completed_at": "2026-11-10T15:38:27.417917"
+      "completed_at": "2026-11-10T15:41:29.332660"
     },
     {
       "id": "ISS-194",
@@ -15744,11 +15803,11 @@
         ],
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "대표님 결정(A. 올리되 자동 취소는 꺼 둔다) — 이 결정대로 진행",
-          "risk": "—",
-          "effort": "—",
-          "by": "관제실 결정",
-          "at": "2026-11-10T06:35:46.113Z"
+          "reason": "코드·병합은 이미 main 완료(193 f659853·194 3b12301). 되돌림 원인은 proof 명령을 상위 폴더 기준 'bin/rails test …'로 적어 실행기에서 127(명령 없음)이 난 것 — proof 를 'cd musinsa_clone && PATH=ruby@3.3 …' 형태로 고쳐 실행기 조건(env -i, 상위 폴더)에서 exit 0 확인 후 재마감",
+          "risk": "낮음",
+          "effort": "작음",
+          "by": "factory-runner",
+          "at": "2026-11-10T06:41:19.374404+00:00"
         },
         "decisions": [
           {
@@ -15802,6 +15861,13 @@
             "at": "2026-11-10T06:38:15.902060+00:00",
             "by": "factory-runner",
             "note": "대표님 결정 A(자동 취소 꺼 둔 채 올리기) 반영 — factory/ISS-194 main 병합(3b12301, schema 버전 줄 충돌 해소)·검증"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T06:41:19.374404+00:00",
+            "by": "factory-runner",
+            "note": "재검증 127 되돌림 정리 — proof 명령 경로 수정 후 재검증"
           }
         ],
         "recommendation_history": [
@@ -15811,6 +15877,14 @@
             "risk": "중간",
             "effort": "M",
             "by": "factory-runner"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "실행기 재검증 실패로 되돌림 — 다시 돌린 결과가 다름: `bin/rails test test/integration/broadcast_stock_concurrency_` 기록 0 → 실제 127",
+            "risk": "낮음",
+            "effort": "작음",
+            "by": "factory-recheck",
+            "at": "2026-11-10T06:39:18Z"
           }
         ],
         "gate_stage": "deploy-review",
@@ -15856,10 +15930,20 @@
           "by": "대표님(헤르메스)",
           "at": "2026-11-10T06:35:46.113Z"
         },
-        "merged_to_main": "3b12301"
+        "merged_to_main": "3b12301",
+        "recheck_reopens": 1,
+        "recheck_fail": {
+          "at": "2026-11-10T06:39:18Z",
+          "sha": null,
+          "problems": [
+            "다시 돌린 결과가 다름: `bin/rails test test/integration/broadcast_stock_concurrency_` 기록 0 → 실제 127",
+            "다시 돌린 결과가 다름: `bin/rails test` 기록 0 → 실제 127",
+            "다시 돌린 결과가 다름: `bin/rubocop` 기록 0 → 실제 127"
+          ]
+        }
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T06:38:15.902060+00:00",
+      "updated_at": "2026-11-10T06:39:18Z",
       "status_history": [
         {
           "from": null,
@@ -15900,25 +15984,59 @@
         ],
         "proof": [
           {
-            "cmd": "bin/rails test test/integration/broadcast_stock_concurrency_test.rb test/jobs/stock_hold_expiry_job_test.rb test/jobs/unpaid_order_expiry_job_test.rb test/models/stock_hold_test.rb test/services/inventory/stock_hold_service_test.rb test/services/orders/intake_hold_test.rb",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/integration/broadcast_stock_concurrency_test.rb test/jobs/stock_hold_expiry_job_test.rb test/jobs/unpaid_order_expiry_job_test.rb test/models/stock_hold_test.rb test/services/inventory/stock_hold_service_test.rb test/services/orders/intake_hold_test.rb",
             "exit_code": 0,
-            "output": "동시성 test_동시_주문_500건_중_정확히_50건만_성공한다: 성공 50, 재고 부족 450 / 16 runs, 1894 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "동시 주문 500건: 성공 50, 재고 부족 450 / 동시 홀드 500건: 성공 50, 재고 부족 450 / 16 runs, 1894 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "bin/rails test",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
             "exit_code": 0,
             "output": "632 runs, 6782 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "bin/rubocop",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
             "exit_code": 0,
             "output": "368 files inspected, no offenses detected"
           }
         ],
         "cost_usd": 0,
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "failed",
+          "at": "2026-11-10T06:39:18Z",
+          "sha": null,
+          "problems": [
+            "다시 돌린 결과가 다름: `bin/rails test test/integration/broadcast_stock_concurrency_` 기록 0 → 실제 127",
+            "다시 돌린 결과가 다름: `bin/rails test` 기록 0 → 실제 127",
+            "다시 돌린 결과가 다름: `bin/rubocop` 기록 0 → 실제 127"
+          ],
+          "commands": [
+            {
+              "cmd": "bin/rails test test/integration/broadcast_stock_concurrency_test.rb test/jobs/stock_hold_expiry_job_test.rb test/jobs/unpaid_order_expiry_job_test.rb test/models/stock_hold_test.rb test/services/inven",
+              "status": "different",
+              "expected": 0,
+              "actual": 127,
+              "output": "bash: bin/rails: No such file or directory"
+            },
+            {
+              "cmd": "bin/rails test",
+              "status": "different",
+              "expected": 0,
+              "actual": 127,
+              "output": "bash: bin/rails: No such file or directory"
+            },
+            {
+              "cmd": "bin/rubocop",
+              "status": "different",
+              "expected": 0,
+              "actual": 127,
+              "output": "bash: bin/rubocop: No such file or directory"
+            }
+          ]
+        },
+        "recheck_fix": "proof 명령을 상위 폴더 기준 실행 가능 형태(cd musinsa_clone + ruby@3.3 PATH)로 수정 — env -i 상위 폴더 재현에서 exit 0"
       },
-      "completed_at": "2026-11-10T15:38:40.730108"
+      "completed_at": "2026-11-10T15:41:29.870660"
     },
     {
       "id": "ISS-195",
@@ -18147,6 +18265,18 @@
         "issue_type": "GENERATE_CODE",
         "plan_created": 0,
         "timestamp": "2026-11-10T15:38:40.730108"
+      },
+      {
+        "issue_id": "ISS-193",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T15:41:29.332660"
+      },
+      {
+        "issue_id": "ISS-194",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T15:41:29.870660"
       }
     ],
     "on_fail": [],
@@ -18159,7 +18289,7 @@
   },
   "stats": {
     "total_issues": 41,
-    "completed": 111,
+    "completed": 113,
     "failed": 0,
     "evolved": 0
   },

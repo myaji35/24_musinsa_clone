@@ -6,8 +6,8 @@
   <% if params[:q].present? && @ranked_products.empty? %>
     <div class="text-center py-20" role="status">
       <h2 class="text-title font-semibold">검색 결과가 없습니다</h2>
-      <p class="mt-2 text-body text-ink-3">“<%= params[:q] %>”에 해당하는 상품이 없습니다.</p>
-      <p class="mt-1 text-body text-ink-3">다른 검색어를 입력하거나 검색을 초기화해보세요.</p>
+      <p class="mt-2 text-body text-ink-2">“<%= params[:q] %>”에 해당하는 상품이 없습니다.</p>
+      <p class="mt-1 text-body text-ink-2">다른 검색어를 입력하거나 검색을 초기화해보세요.</p>
       <%= link_to "검색 초기화", root_path(request.query_parameters.except("q")), class: "mt-6 btn btn-secondary" %>
     </div>
   <% else %>
@@ -19,7 +19,7 @@
     <% end %>
 
     <%# 랭킹 섹션 %>
-    <div class="mt-16" id="ranking">
+    <div class="mt-14 md:mt-20" id="ranking">
       <div class="flex items-center justify-between mb-4 border-b border-line pb-3">
           <div><p class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3">RANKING</p><h2 class="text-title font-semibold">JIEUM 랭킹</h2></div>
           <div class="text-caption text-ink-3 tabular-nums">
@@ -37,7 +37,9 @@
       </div>
 
       <%# 필터 & 검색 섹션 %>
-      <%= render 'home/filter_section' %>
+      <div class="[&>div]:mb-6">
+        <%= render 'home/filter_section' %>
+      </div>
 
       <%# 상품 그리드 (ProductCard partial 사용) - Russian Doll Caching %>
       <% cache(["ranked-products-grid-v3", @ranked_products.maximum(:updated_at), params[:category], params[:sort], params[:q]], expires_in: 10.minutes) do %>

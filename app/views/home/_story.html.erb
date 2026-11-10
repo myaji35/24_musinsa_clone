@@ -1,7 +1,7 @@
 <%# 룩북 사진(같은 상품의 햇살·밤·동작 3컷) → 그 묶음 상품 4개 %>
 <% banner = story[:banner] %>
 <% shots = banner.gallery_image_urls.reject { |url| url.end_with?("/real.jpg", "/front.jpg") }.first(3) %>
-<section aria-labelledby="story-<%= story[:key] %>" class="mb-20" data-testid="home-story">
+<section aria-labelledby="story-<%= story[:key] %>" class="mb-16 md:mb-20" data-testid="home-story">
   <% if shots.any? %>
     <%= link_to(story[:category] ? root_path(category: story[:category], anchor: "ranking") : product_path(banner), class: "relative block -mx-gutter mb-8 overflow-hidden bg-placeholder") do %>
       <div class="grid grid-cols-1 md:grid-cols-3">
@@ -11,16 +11,16 @@
         <% end %>
       </div>
       <div class="absolute inset-x-0 bottom-0 px-6 md:px-10 pt-24 pb-8 bg-gradient-to-t from-ink/60 to-transparent text-inverse">
-        <p class="font-display text-eyebrow tracking-eyebrow uppercase text-inverse/85"><%= story[:en] %></p>
-        <h2 id="story-<%= story[:key] %>" class="text-title font-semibold text-[18px]"><%= story[:title] %></h2>
-        <p class="mt-2 text-body text-inverse/90"><%= story[:copy] %></p>
+        <p class="font-display text-eyebrow tracking-eyebrow uppercase text-white/80"><%= story[:en] %></p>
+        <h2 id="story-<%= story[:key] %>" class="text-[18px] font-semibold tracking-[-0.01em]"><%= story[:title] %></h2>
+        <p class="mt-2 text-body text-white/90"><%= story[:copy] %></p>
       </div>
       <% if banner.worn_character %>
         <span class="absolute top-3 left-4 md:left-8 text-caption text-inverse/90"><%= banner.worn_character.name %> · AI 가상 인물</span>
       <% end %>
     <% end %>
   <% else %>
-    <h2 id="story-<%= story[:key] %>" class="text-title font-semibold text-[18px] mb-6"><%= story[:title] %></h2>
+    <h2 id="story-<%= story[:key] %>" class="text-[18px] font-semibold tracking-[-0.01em] mb-6"><%= story[:title] %></h2>
   <% end %>
 
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-3 gap-y-7 md:gap-y-10">

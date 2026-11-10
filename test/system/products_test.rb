@@ -31,7 +31,7 @@ class ProductsTest < ApplicationSystemTestCase
     browser = page.driver.browser
 
     [ [ 375, 812 ], [ 1440, 900 ] ].each do |width, height|
-      browser.execute_cdp('Emulation.setDeviceMetricsOverride', width: width, height: height, deviceScaleFactor: 1, mobile: width < 768)
+      browser.execute_cdp("Emulation.setDeviceMetricsOverride", width: width, height: height, deviceScaleFactor: 1, mobile: width < 768)
       visit product_path(product)
       assert_selector '[data-testid="variant-picker"] label > span', count: 3
 
@@ -59,7 +59,7 @@ class ProductsTest < ApplicationSystemTestCase
       assert_equal layout["sizes"][0]["top"], layout["sizes"][1]["top"], "#{width}px에서 사이즈가 세로로 쌓임"
     end
   ensure
-    browser.execute_cdp('Emulation.clearDeviceMetricsOverride') if browser
+    browser.execute_cdp("Emulation.clearDeviceMetricsOverride") if browser
   end
 
   # 시나리오 8: 상품 카드 클릭

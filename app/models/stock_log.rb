@@ -15,6 +15,7 @@ class StockLog < ApplicationRecord
 
   # Callbacks
   after_create :update_variant_stock
+  after_create_commit :enqueue_shopify_sync
 
   # 입고인지 확인
   def stock_in?
@@ -27,6 +28,13 @@ class StockLog < ApplicationRecord
   end
 
   private
+
+  def enqueue_shopify_sync
+    return unless ENV["SHOPIFY_SYNC_ENABLED"] == "1"
+    return if Shopify::Listings.for_variant(variant).empty?
+
+    ShopifyInventorySyncJob.perform_later(variant_id)
+  end
 
   def update_variant_stock
     return if skip_variant_stock_update

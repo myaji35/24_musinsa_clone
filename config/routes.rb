@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "home#index"
+  post "/webhooks/shopify/orders_create", to: "webhooks/shopify#orders_create"
 
   resources :admin_orders, only: :index do
     member { patch :confirm_payment }

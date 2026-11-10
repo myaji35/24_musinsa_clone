@@ -13646,10 +13646,11 @@
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
-        "plan_mode": "code"
+        "plan_mode": "code",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "status_history": [
         {
           "from": null,
@@ -13666,7 +13667,7 @@
           "note": "결정 반영 상세화 → 착수대기"
         }
       ],
-      "last_dispatched_at": "2026-11-10T09:06:08"
+      "last_dispatched_at": "2026-11-10T09:39:41"
     },
     {
       "id": "ISS-180",
@@ -13778,10 +13779,11 @@
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
         "approved_by": "자동 승인(추천: 승인 권장)",
-        "plan_mode": "code"
+        "plan_mode": "code",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "status_history": [
         {
           "from": null,
@@ -14323,10 +14325,11 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "status_history": [
         {
           "from": null,
@@ -14399,10 +14402,11 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "status_history": [
         {
           "from": null,
@@ -14476,10 +14480,11 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "status_history": [
         {
           "from": null,
@@ -14552,10 +14557,11 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "status_history": [
         {
           "from": null,
@@ -14579,7 +14585,7 @@
       "type": "GENERATE_CODE",
       "priority": "P0",
       "size": "M",
-      "status": "READY",
+      "status": "AWAITING_USER",
       "origin": "session",
       "depends_on": [
         "ISS-204"
@@ -14598,11 +14604,11 @@
         "related": [],
         "recommendation": {
           "verdict": "승인 권장",
-          "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
-          "risk": "중간",
-          "effort": "M",
-          "by": "session",
-          "at": "2026-11-09T23:56:06.276013+00:00"
+          "reason": "댓글 수집·6분류·숨김·운영자 큐는 녹화 댓글로 동작 확인. 실방송 연결에는 유튜브 API 키(읽기)와 JIEUM 채널 관리자 연결(숨김용)이 필요 — 기억(recall)에 없음",
+          "risk": "낮음 — 키 없으면 수집하지 않고 화면에 '키가 설정되지 않았습니다'만 표시",
+          "effort": "대표님 콘솔 작업 10분",
+          "by": "factory-runner",
+          "at": "2026-11-10T00:57:42.798748+00:00"
         },
         "decisions": [
           {
@@ -14619,17 +14625,85 @@
           }
         ],
         "deferred_at": "2026-11-09T23:54:38.094Z",
-        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에)",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
         "work_rules": [
           "코드 작성은 codex e 위임, 검수·테스트는 직접",
           "PRD: seoullive/PRD_v0.1.md(결정 반영 v0.2 절 포함), 검토: seoullive/REVIEW.md",
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋.",
+        "recall_used": "recall.py \"YouTube Data API 키 OAuth 라이브 채팅 JIEUM 채널\" — 해당 값 없음",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T00:48:18.144677+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — 0060 서울라이브에 YouTube 라이브 댓글 수집기(pollingIntervalMillis 준수)·규칙 기반 6분류(LLM 분류기는 끼울 자리만)·자동 숨김(OAuth 있을 때만)·불만/환불 운영자 큐, 녹화 댓글 픽스처 테스트. 실제 키·OAuth 는 기억에 없음 → 구현 후 대표님께 요청"
+          },
+          {
+            "from": "IN_PROGRESS",
+            "to": "AWAITING_USER",
+            "at": "2026-11-10T00:57:42.798748+00:00",
+            "by": "factory-runner",
+            "note": "구현·검증 완료(0060 커밋 4279330, 녹화 댓글 픽스처). 실제 유튜브 댓글 수집 키·채널 관리자 연결이 없어 대표님 작업 대기"
+          }
+        ],
+        "recommendation_history": [
+          {
+            "verdict": "승인 권장",
+            "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화",
+            "risk": "중간",
+            "effort": "M",
+            "by": "session",
+            "at": "2026-11-09T23:56:06.276013+00:00"
+          }
+        ],
+        "ask_kind": "human_task",
+        "ask_prompt": "구글 클라우드 콘솔에서 YouTube Data API v3 키를 만들어 서울라이브 서버 환경변수 YOUTUBE_API_KEY 에 넣어 주세요(댓글 읽기용). 욕설·스팸 자동 숨김까지 쓰려면 JIEUM 유튜브 채널 관리자 계정 연결(OAuth)도 허락해 주세요 — 끝나면 [했음]을 눌러 주세요. 키 값은 카드에 적지 마세요.",
+        "plain_summary": "유튜브 라이브 댓글을 자동으로 읽고 분류하는 기능은 만들어 두었습니다. 실제 방송 댓글을 읽으려면 대표님 구글 계정에서 열쇠(API 키)를 하나 만들어 서버에 넣어야 합니다.",
+        "if_not_decided": "댓글 기능은 꺼진 상태로 남고, 다음 단계인 AI 댓글 응답(ISS-190)·비공개 시험 송출(ISS-206)은 녹화 댓글로만 시험합니다.",
+        "reversible": "되돌릴 수 있음 — 키를 지우면 수집이 멈춥니다",
+        "branch": "main (0060 로컬, 미push)",
+        "result_proof": {
+          "commit": "4279330",
+          "criteria_check": [
+            {
+              "criterion": "YouTube Live Chat API(liveChatMessages.list, 폴링 간격은 응답의 pollingIntervalMillis 준수)로 댓글을 수집한다 — 키·OAuth 가 없으면 ask_kind provide_value/human_task 로 대표님께 요청(키 값은 출력·커밋 금지)",
+              "met": true,
+              "how": "lib/ai-channel/live-chat/youtube.ts fetchLiveChatPage·nextPollDelay(응답 3500ms 그대로, 최소 1000ms). 픽스처를 실제 DB 경로로 수집: 저장 15·재수집 15건 건너뜀·delayMs 3500. 키는 recall 에 없어 이 카드에서 human_task 로 요청, 요청 URL 로그는 key=*** 마스킹"
+            },
+            {
+              "criterion": "댓글을 상품 질문/구매 의사/인사·반응/불만·환불/장난·도발/스팸 6분류(저가 LLM + 규칙)하고 분류 결과를 저장한다",
+              "met": true,
+              "how": "classify.ts 규칙 6분류 + createClassifier(llm) 끼울 자리(스팸·도발·불만은 규칙 우선), AiChatComment.category·reason 저장, 관리자 화면 '최근 댓글 100개'에 분류 표시. 검수에서 웃음 반복·주문번호·사기 걱정 질문 오분류를 찾아 수정·회귀 테스트"
+            },
+            {
+              "criterion": "욕설·도발은 자동 숨김(유튜브 API 숨김은 권한 있을 때만), 불만·환불은 운영자 큐로 간다(테스트는 녹화된 댓글 픽스처로)",
+              "met": true,
+              "how": "관리자 토큰 없을 때 숨김 호출 안 하고 hideError no_moderator_token 기록, 토큰 있으면 DELETE liveChat/messages(테스트 204→hidden). 불만·환불 3건 운영자 큐, [처리 완료] 클릭 후 3→2 확인"
+            }
+          ],
+          "proof": [
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/live-chat.test.ts",
+              "exit_code": 0,
+              "output": "Test Files  1 passed (1)"
+            },
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit && npm run lint && npx vitest run",
+              "exit_code": 0,
+              "output": "Test Files  32 passed (32) / Tests  340 passed (340)"
+            }
+          ],
+          "screenshot": "/tmp/f1110c/shots/comments-1440.png",
+          "db_note": "0060 개발 DB에 AiChatComment 테이블 추가(prisma db push, 추가형, 백업 /tmp/f1110c/dev.db.bak-before-189). 시험 댓글 15건은 확인 후 정리"
+        }
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:57:42.798748+00:00",
       "status_history": [
         {
           "from": null,
@@ -14703,10 +14777,11 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "status_history": [
         {
           "from": null,
@@ -14777,10 +14852,11 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "status_history": [
         {
           "from": null,
@@ -14854,10 +14930,11 @@
         ],
         "note_rescope": "5:5 정산서는 ISS-209 로 분리",
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "status_history": [
         {
           "from": null,
@@ -15688,11 +15765,11 @@
       "type": "GENERATE_CODE",
       "priority": "P0",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [],
       "created_at": "2026-11-09T23:56:06.276013+00:00",
-      "updated_at": "2026-11-10T00:17:04.917Z",
+      "updated_at": "2026-11-10T00:36:15.910383+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
@@ -15760,6 +15837,13 @@
             "at": "2026-11-10T00:08:39.179466+00:00",
             "by": "factory-runner",
             "note": "결정 A(기존 서울라이브 앱에 AI 채널로 넣기)로 작업 저장소가 0060_seoullive 로 바뀜. 그 저장소는 자체 이슈 저장소·공장이 있고 다른 세션의 미커밋 변경(registry.json·docs/plan/voice/*.wav)이 있어 0053 공장이 동시에 손대지 않음"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T00:36:15.910383+00:00",
+            "by": "factory-runner",
+            "note": "공장 재착수(blocked_review '다시 진행') — 0060 미커밋 변경은 11-05~07 것으로 활성 세션 없음 확인, 남의 변경은 건드리지 않고 0060 저장소에서 AI 방송 채널 골격 구현(codex e 위임)"
           }
         ],
         "recommendation_history": [
@@ -15780,8 +15864,8 @@
             "at": "2026-11-10T00:06:01.918Z"
           }
         ],
-        "ask_kind": "blocked_review",
-        "ask_prompt": "AI 방송 채널 작업을 서울라이브(0060) 쪽 공장으로 넘겨 진행할지 눌러 주세요 — '다시 진행'이면 다음 회차에 서울라이브 저장소에 카드를 옮겨 만들고 착수합니다.",
+        "ask_kind": null,
+        "ask_prompt": null,
         "question": "AI 방송 판매 기능을 이미 있는 '서울라이브' 앱에 넣을까요, 아니면 따로 새 앱을 만들까요?",
         "plain_summary": "11-10 결정(새 앱 seoullive)을 만들 때 대표님의 기존 서울라이브 앱(라이브커머스 서비스, 11-05부터 개발·데모 서버 운영 중)이 고려되지 않았습니다. 그대로 진행하면 같은 이름의 앱이 두 개 생겨 방송·주문·관리자 화면을 이중으로 만들게 됩니다.",
         "options": [
@@ -15827,7 +15911,8 @@
         ],
         "follow_up": "하위 카드 181·185~191·205·206·208 은 'seoullive Rails 앱'을 전제로 쓰여 있음 → 서울라이브(Next.js) 기준으로 문구를 고쳐 0060 이슈 저장소로 옮겨야 함(ISS-204 재개 시 함께 처리)",
         "rollback_ref": "중단된 Rails 뼈대 생성분은 /tmp/f1110/seoullive_skeleton_aborted 로 이동(0053/seoullive 에는 PRD_v0.1.md·REVIEW.md 만 남음)",
-        "blocked_reason": "결정 A(기존 서울라이브 앱에 AI 채널로 넣기)로 작업 저장소가 0060_seoullive 로 바뀜. 그 저장소는 자체 이슈 저장소·공장이 있고 다른 세션의 미커밋 변경(registry.json·docs/plan/voice/*.wav)이 있어 0053 공장이 동시에 손대지 않음"
+        "blocked_reason": "결정 A(기존 서울라이브 앱에 AI 채널로 넣기)로 작업 저장소가 0060_seoullive 로 바뀜. 그 저장소는 자체 이슈 저장소·공장이 있고 다른 세션의 미커밋 변경(registry.json·docs/plan/voice/*.wav)이 있어 0053 공장이 동시에 손대지 않음",
+        "scope_note_1110c": "하위 카드는 0060 이슈 저장소로 옮기지 않고 0053 레지스트리에 남겨 payload.repo 를 0060 으로 고친다 — 0060 registry.json 에 다른 세션 미커밋 변경이 있어 덮어쓸 위험, 관제실 결정 기록도 0053 쪽에 있음"
       },
       "status_history": [
         {
@@ -15837,7 +15922,66 @@
           "by": "session",
           "note": "SeoulLive 결정 반영 상세 카드"
         }
-      ]
+      ],
+      "result": {
+        "summary": "서울라이브(0060) 관리자에 'AI 방송 채널(JIEUM)' 메뉴·골격 화면 추가(0060 커밋 3b8ffe1, 로컬·미push). JIEUM 몰 연결 설정은 환경변수 JIEUM_UCP_BASE_URL·JIEUM_UCP_API_KEY(미설정 시 '연결 안 됨' + 필요한 변수 이름 안내, 키 값은 화면·반환값에 노출 안 함). 편성표·클립·댓글·판매 집계는 '준비 중' 표시만. DB·의존성 변경 없음. 0060의 다른 세션 미커밋 변경(registry·voice wav·public/demo/raw)은 건드리지 않음.",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
+        "commit": "3b8ffe1",
+        "files_changed": [
+          ".env.example",
+          "app/admin/(main)/layout.tsx",
+          "app/admin/(main)/ai-channel/page.tsx",
+          "lib/ai-channel/config.ts",
+          "tests/unit/ai-channel.test.ts"
+        ],
+        "criteria_check": [
+          {
+            "criterion": "서울라이브(0060) 관리자 화면에 'AI 방송 채널(JIEUM)' 메뉴가 생기고, 기존 셀러 화면·주문 흐름은 그대로 동작한다(기존 테스트 통과)",
+            "met": true,
+            "how": "데모 관리자로 로그인해 메뉴 링크 1개·/admin/ai-channel 화면 확인(스크린샷 /tmp/f1110c/shots/ai-channel-1440.png), /admin/sellers 정상. 전체 vitest 30파일 231건 통과"
+          },
+          {
+            "criterion": "AI 채널 화면은 관리자 로그인 없이는 열리지 않는다(비로그인 접근 차단 테스트)",
+            "met": true,
+            "how": "curl 비로그인 /admin/ai-channel → 307 /admin/login?next=%2Fadmin%2Fai-channel, 단위 테스트 '비로그인 요청을 로그인 화면으로 보내고 원래 경로를 유지해요' 통과"
+          },
+          {
+            "criterion": "JIEUM 몰 상품·재고를 읽어 올 연결 설정 자리(UCP API 주소·키는 환경변수, 값 미설정 시 '연결 안 됨' 안내)가 있다 — 실제 연동은 ISS-205",
+            "met": true,
+            "how": "lib/ai-channel/config.ts jieumConnection·jieumProductsUrl(/api/v1/ucp/products), 화면 상태 '연결 안 됨' + 'JIEUM_UCP_BASE_URL, JIEUM_UCP_API_KEY 를 설정하면…' 확인, .env.example 에 빈 값 추가"
+          },
+          {
+            "criterion": "서울라이브 저장소의 검사(npx tsc --noEmit, npm run lint, npx vitest run)가 통과한다",
+            "met": true,
+            "how": "tsc exit 0, eslint exit 0, lint:copy '문구 검수 통과', vitest 231/231 통과"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/ai-channel.test.ts tests/unit/middleware.test.ts",
+            "exit_code": 0,
+            "output": "Test Files  2 passed (2)\n      Tests  32 passed (32)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit && npm run lint",
+            "exit_code": 0,
+            "output": "tsc=0 lint=0"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run",
+            "exit_code": 0,
+            "output": "Test Files  30 passed (30)\n      Tests  231 passed (231)"
+          },
+          {
+            "cmd": "curl -s -o /dev/null -w '%{http_code} %{redirect_url}' http://127.0.0.1:3961/admin/ai-channel",
+            "exit_code": 0,
+            "output": "307 http://127.0.0.1:3961/admin/login?next=%2Fadmin%2Fai-channel"
+          }
+        ],
+        "notes": "0060 은 0053 실행기의 출고(push·배포) 대상이 아님 — 커밋은 0060 로컬 main 에만 있음. 0060 데모 서버 반영은 서울라이브 쪽 배포 절차로 별도.",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T09:39:41.537241"
     },
     {
       "id": "ISS-205",
@@ -15845,18 +15989,18 @@
       "type": "GENERATE_CODE",
       "priority": "P0",
       "size": "M",
-      "status": "READY",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [
         "ISS-204"
       ],
       "created_at": "2026-11-09T23:56:06.276013+00:00",
-      "updated_at": "2026-11-09T23:56:10.942Z",
+      "updated_at": "2026-11-10T00:40:31.894565+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
         "epic": "SEOULLIVE",
-        "repo": "seoullive/ (새 git 저장소, 기본 브랜치 main — musinsa_clone 과 별개. 커밋은 이 저장소에) (+ 필요 시 musinsa_clone/ (JIEUM 몰) API 보강)",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (클라이언트) + musinsa_clone (UCP API 보강) — ISS-204 결정 A로 0053/seoullive Rails 앱 대신 0060",
         "acceptance_criteria": [
           "seoullive 가 JIEUM 몰 UCP API 로 상품·옵션·재고·가격을 읽어 캐시하고 5분마다 갱신한다(API 키는 credentials/ENV, 값 출력 금지)",
           "몰 API 에 실측·소재·주의점 필드가 없으면 musinsa_clone 쪽 API 에 추가(ISS-174 상세스펙 재사용)하고 몰 테스트 통과",
@@ -15884,7 +16028,16 @@
           }
         ],
         "approved_at": "2026-11-09T23:56:10.942Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T00:40:31.894565+00:00",
+            "by": "factory-runner",
+            "note": "공장 착수 — ① 몰 UCP API 에 옵션·실측·소재·핏·세탁방법 추가(musinsa_clone main, 추가형 응답 필드) ② 0060 서울라이브에 JIEUM 상품 캐시 클라이언트(5분 TTL·실패 시 마지막 캐시+관리자 경고)"
+          }
+        ]
       },
       "status_history": [
         {
@@ -15894,7 +16047,66 @@
           "by": "session",
           "note": "SeoulLive 결정 반영 상세 카드"
         }
-      ]
+      ],
+      "result": {
+        "summary": "JIEUM 몰 ↔ 서울라이브 상품 연동. 몰(musinsa_clone 197bbdf): UCP 상품 API에 옵션별 재고·재고 합계·실측·소재·핏·세탁방법 추가(추가형 응답 필드, 기존 키 유지, DB 변경 없음, 캐시 키 v4). 서울라이브(0060 3161da7, 로컬·미push): lib/ai-channel/jieum-catalog.ts — X-API-Key 로 상품 100개 조회, 5분 TTL 캐시 + 서버 시작 시 instrumentation 으로 5분 주기 갱신, 동시 요청 1회로 합침, 몰 장애 시 마지막 캐시 + 관리자 화면 경고, 로그에 키·본문 미기록. 관리자 AI 방송 채널 화면에 상품 표(가격·옵션 수·재고 합계·실측·소재). 참고: 몰 상품 29개 중 실측 입력 1개·소재 입력 0개(ISS-174 때부터 원천 데이터 없음) — AI 쇼호스트 대본에 쓰려면 실측·소재 입력이 필요.",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive + musinsa_clone",
+        "commit": "musinsa_clone 197bbdf / 0060 3161da7",
+        "files_changed": [
+          "musinsa_clone/app/controllers/api/v1/ucp_controller.rb",
+          "musinsa_clone/test/controllers/api/v1/ucp_controller_test.rb",
+          "0060/lib/ai-channel/jieum-catalog.ts",
+          "0060/instrumentation.ts",
+          "0060/app/admin/(main)/ai-channel/page.tsx",
+          "0060/tests/unit/jieum-catalog.test.ts"
+        ],
+        "criteria_check": [
+          {
+            "criterion": "seoullive 가 JIEUM 몰 UCP API 로 상품·옵션·재고·가격을 읽어 캐시하고 5분마다 갱신한다(API 키는 credentials/ENV, 값 출력 금지)",
+            "met": true,
+            "how": "로컬 몰(3962, 임시 키)에 연결해 관리자 화면에 29개 상품·옵션 수·재고 합계·가격 표시, '마지막 갱신 09:56 · 5분마다 갱신'. 키는 JIEUM_UCP_API_KEY 환경변수, 화면·로그·반환값에 미노출(단위 테스트로 확인). 5분 주기는 instrumentation.ts + 가짜 타이머 테스트(즉시 1회·5분 2회·10분 3회)"
+          },
+          {
+            "criterion": "몰 API 에 실측·소재·주의점 필드가 없으면 musinsa_clone 쪽 API 에 추가(ISS-174 상세스펙 재사용)하고 몰 테스트 통과",
+            "met": true,
+            "how": "ProductSpec(ISS-174) 재사용해 measurements·materials·fit·care_instructions(세탁방법, TODO 제외)·variants·stock_total 추가. ucp_controller_test 6건 통과, 몰 전체 594건 0 실패, rubocop 0"
+          },
+          {
+            "criterion": "몰 API 가 죽으면 마지막 캐시로 동작하고 콘솔에 경고가 뜬다(테스트)",
+            "met": true,
+            "how": "실측: 몰 중단 5분 뒤 화면에 '연결에 실패해 마지막으로 받은 상품 정보를 보여 줍니다' 경고 + 09:56 캐시 29개 유지, 서버 로그 '[jieum-catalog] 상품 갱신 실패 TypeError'. 단위 테스트: 네트워크 오류·500 → stale, 캐시 없으면 unavailable"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/jieum-catalog.test.ts tests/unit/ai-channel.test.ts",
+            "exit_code": 0,
+            "output": "Test Files  2 passed (2)"
+          },
+          {
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/api/v1/ucp_controller_test.rb",
+            "exit_code": 0,
+            "output": "6 runs, 36 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+            "exit_code": 0,
+            "output": "594 runs, 4691 assertions, 0 failures, 0 errors, 0 skips"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit && npm run lint && npx vitest run",
+            "exit_code": 0,
+            "output": "Test Files  31 passed (31) / Tests  249 passed (249) (ISS-205 커밋 시점)"
+          }
+        ],
+        "screenshots": [
+          "/tmp/f1110c/shots/ai-channel-live2.png",
+          "/tmp/f1110c/shots/ai-channel-down.png"
+        ],
+        "notes": "0060 은 0053 실행기 출고 대상 아님(로컬 커밋만). 운영 연결 시 서울라이브 서버에 JIEUM_UCP_BASE_URL·JIEUM_UCP_API_KEY(몰의 UCP_API_KEY 와 같은 값) 설정 필요. 경고 문구는 아직 일반 글자 스타일 — ISS-191 운영 콘솔에서 강조 예정",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T10:02:19.480658"
     },
     {
       "id": "ISS-206",
@@ -15910,7 +16122,7 @@
         "ISS-188"
       ],
       "created_at": "2026-11-09T23:56:06.276013+00:00",
-      "updated_at": "2026-11-09T23:56:11.018Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
@@ -15945,7 +16157,8 @@
           }
         ],
         "approved_at": "2026-11-09T23:56:11.018Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "status_history": [
         {
@@ -15971,7 +16184,7 @@
         "ISS-203"
       ],
       "created_at": "2026-11-09T23:56:06.276013+00:00",
-      "updated_at": "2026-11-09T23:56:11.018Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
@@ -16003,7 +16216,8 @@
             "reason": "선행 결과 후 착수"
           }
         ],
-        "deferred_at": "2026-11-09T23:56:11.018Z"
+        "deferred_at": "2026-11-09T23:56:11.018Z",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "status_history": [
         {
@@ -16028,7 +16242,7 @@
         "ISS-185"
       ],
       "created_at": "2026-11-09T23:56:06.276013+00:00",
-      "updated_at": "2026-11-09T23:56:11.018Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
@@ -16063,7 +16277,8 @@
           }
         ],
         "approved_at": "2026-11-09T23:56:11.018Z",
-        "approved_by": "자동 승인(추천: 승인 권장)"
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "status_history": [
         {
@@ -16088,7 +16303,7 @@
         "ISS-131"
       ],
       "created_at": "2026-11-09T23:56:06.276013+00:00",
-      "updated_at": "2026-11-09T23:56:11.018Z",
+      "updated_at": "2026-11-10T00:47:34.202548+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
@@ -16121,7 +16336,8 @@
             "reason": "파트너 5:5 계약 체결 전 — 계약 후 READY"
           }
         ],
-        "deferred_at": "2026-11-09T23:56:11.018Z"
+        "deferred_at": "2026-11-09T23:56:11.018Z",
+        "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋."
       },
       "status_history": [
         {
@@ -16647,6 +16863,18 @@
         "issue_type": "TASK",
         "plan_created": 0,
         "timestamp": "2026-11-10T09:14:23.900288"
+      },
+      {
+        "issue_id": "ISS-204",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T09:39:41.537241"
+      },
+      {
+        "issue_id": "ISS-205",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T10:02:19.480658"
       }
     ],
     "on_fail": [],
@@ -16659,7 +16887,7 @@
   },
   "stats": {
     "total_issues": 41,
-    "completed": 97,
+    "completed": 99,
     "failed": 0,
     "evolved": 0
   },
@@ -16672,7 +16900,7 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-179:READY": 1,
+    "ISS-179:READY": 2,
     "ISS-181:READY": 1
   }
 }

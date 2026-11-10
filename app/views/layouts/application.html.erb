@@ -25,7 +25,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <%# 한글 기본 글꼴 Pretendard(필요한 글자만 내려받는 동적 서브셋) %>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" crossorigin>
@@ -158,14 +158,14 @@
         <div class="">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div class="col-span-1 md:col-span-2">
-                    <h3 class="font-display font-medium text-display tracking-wordmark uppercase mb-4">JIEUM</h3>
+                    <p class="font-display font-medium text-display tracking-wordmark uppercase mb-4">JIEUM</p>
                     <p class="text-caption text-ink-3 mb-4">
                         "2027 겨울, 가장 먼저 입어보세요"
                     </p>
                     <p class="text-caption text-ink-3 mb-4">사이트의 모델 이미지는 AI로 생성되었으며, 의류는 실제 판매 상품입니다.</p>
                 </div>
                 <div>
-                   <h4 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">HELP</h4>
+                   <h2 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">HELP</h2>
                    <ul class="space-y-3">
                        <li><%= link_to "비회원 주문조회", orders_lookup_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
                        <li><%= link_to "배송·반품 안내", returns_policy_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
@@ -173,7 +173,7 @@
                    </ul>
                 </div>
                 <div>
-                   <h4 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">POLICY</h4>
+                   <h2 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">POLICY</h2>
                    <ul class="space-y-3">
                        <li><%= link_to "개인정보처리방침", privacy_policy_path, class: "inline-block py-1 font-medium text-ink-2 hover:text-ink" %></li>
                        <li><span class="inline-block py-1 font-normal text-ink-2" aria-disabled="true">이용약관 <span class="text-caption text-ink-3">(준비 중)</span></span></li>

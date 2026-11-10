@@ -11,6 +11,10 @@
           alt="<%= product.name %>"
           class="w-full h-full object-cover"
           loading="lazy" decoding="async">
+        <% if (hover_image = product.gallery_image_urls.second) %>
+          <img src="<%= hover_image %>" alt="" aria-hidden="true" loading="lazy" decoding="async"
+               class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-out">
+        <% end %>
       <% else %>
         <div class="w-full h-full flex flex-col items-center justify-center text-caption text-ink-3">
           <span>이미지 준비 중</span>

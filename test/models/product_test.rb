@@ -15,6 +15,17 @@ class ProductTest < ActiveSupport::TestCase
     )
   end
 
+  test "카드 갤러리는 상품별 추가 쿼리 없이 사진을 반환한다" do
+    products = Product.limit(3).to_a
+    products.each { |product| product.supplier_product_code = "JIEUM-G01" }
+
+    assert_no_queries do
+      products.each do |product|
+        assert_equal "/catalog/G01/look1.jpg", product.gallery_image_urls.second
+      end
+    end
+  end
+
   test "공급가와 셀링포인트 및 납품처 유효성" do
     @product.selling_points = "가" * 2500
     [ nil, 0, 12345 ].each do |value|

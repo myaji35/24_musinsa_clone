@@ -5,7 +5,6 @@
   /* 폰트 */
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   --font-display: "Oswald", sans-serif;
-  --font-oswald: "Oswald", sans-serif;            /* intro.css·기존 뷰 호환용 별칭. Phase 5 에서 제거 */
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* 색 — Tailwind 기본 팔레트는 남겨 둔다(관리자 화면이 쓴다). 손님 화면은 아래 토큰만 쓴다 */
@@ -14,7 +13,7 @@
   --color-placeholder: #EAEAE6;
   --color-ink: #000000;
   --color-ink-2: #404040;
-  --color-ink-3: #767676;
+  --color-ink-3: #707070;
   --color-inverse: #FFFFFF;
   --color-line: #000000;
   --color-hairline: #E5E5E5;
@@ -71,7 +70,7 @@
 }
 
 @layer components {
-  /* 가격 — 헬퍼 won() 이 찍는 span 에 붙는다 */
+  /* 가격 — 헬퍼 price_won() 이 찍는 span 에 붙는다 */
   .price { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-ink-2); font-size: var(--text-ui); line-height: var(--text-ui--line-height); }
   .price-lg { font-size: 14px; line-height: 20px; }
   .price-sale { color: var(--color-sale); }

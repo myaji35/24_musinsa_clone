@@ -1,6 +1,24 @@
 require "test_helper"
 
 class ProductsControllerTest < ActionDispatch::IntegrationTest
+  test "상품 카드는 두 번째 갤러리 사진만 장식용 호버 이미지로 표시한다" do
+    @product.update!(supplier_product_code: "JIEUM-G01")
+
+    get products_path
+
+    assert_response :success
+    assert_select "a[href=?] img[aria-hidden=true]", product_path(@product), count: 1 do
+      assert_select "[src=?][alt=''][loading=lazy][decoding=async].opacity-0.transition-opacity.duration-200.ease-out", @product.gallery_image_urls.second
+    end
+
+    @product.update!(supplier_product_code: nil)
+    get products_path
+
+    assert_response :success
+    assert_select "a[href=?] img[aria-hidden=true]", product_path(@product), count: 0
+    assert_select "a[href=?] img[alt=?]", product_path(@product), @product.name, count: 1
+  end
+
   test "상세 구매 폼은 품절 옵션과 구매 필드 계약을 유지한다" do
     @variant.update!(stock: 3)
     sold_out = @product.variants.create!(color: "Black", size: "XL", stock: 0)

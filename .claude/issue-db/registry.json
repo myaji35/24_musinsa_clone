@@ -13667,7 +13667,7 @@
           "note": "결정 반영 상세화 → 착수대기"
         }
       ],
-      "last_dispatched_at": "2026-11-10T14:17:18"
+      "last_dispatched_at": "2026-11-10T15:38:27"
     },
     {
       "id": "ISS-180",
@@ -15195,7 +15195,7 @@
           "note": "결정 반영 상세화 → 착수대기"
         }
       ],
-      "last_dispatched_at": "2026-11-10T11:50:17"
+      "last_dispatched_at": "2026-11-10T15:38:40"
     },
     {
       "id": "ISS-191",
@@ -15511,7 +15511,7 @@
       "type": "GENERATE_CODE",
       "priority": "P1",
       "size": "M",
-      "status": "AWAITING_USER",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [
         "ISS-177"
@@ -15532,12 +15532,12 @@
           "shopify/"
         ],
         "recommendation": {
-          "verdict": "대표님 결정 필요",
-          "reason": "쇼피파이로 재고·가격을 내보내는 기능이라 켜는 순간 해외 판매가 시작될 수 있음 — 코드는 스위치 꺼진 상태로 배포 가능, 매핑 33개는 이름·색상·가격으로 추정해 대표님 눈 확인 필요",
-          "risk": "중간",
-          "effort": "M",
+          "verdict": "승인 권장",
+          "reason": "코드·병합은 이미 main 완료(193 f659853·194 3b12301). 되돌림 원인은 proof 명령을 상위 폴더 기준 'bin/rails test …'로 적어 실행기에서 127(명령 없음)이 난 것 — proof 를 'cd musinsa_clone && PATH=ruby@3.3 …' 형태로 고쳐 실행기 조건(env -i, 상위 폴더)에서 exit 0 확인 후 재마감",
+          "risk": "낮음",
+          "effort": "작음",
           "by": "factory-runner",
-          "at": "2026-11-10T00:26:14.221913+00:00"
+          "at": "2026-11-10T06:41:19.374404+00:00"
         },
         "decisions": [
           {
@@ -15551,6 +15551,12 @@
             "at": "2026-11-09T23:56:10.942Z",
             "by": "auto",
             "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          },
+          {
+            "action": "decide",
+            "at": "2026-11-10T06:35:42.439Z",
+            "by": "대표님(헤르메스)",
+            "note": "관제 자율 결정"
           }
         ],
         "deferred_at": "2026-11-09T23:54:38.094Z",
@@ -15561,8 +15567,8 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "gate": "deploy",
-        "approved_at": null,
-        "approved_by": null,
+        "approved_at": "2026-11-10T06:35:42.439Z",
+        "approved_by": "대표님(헤르메스)",
         "branch": "factory/ISS-193",
         "status_history": [
           {
@@ -15578,6 +15584,20 @@
             "at": "2026-11-10T00:26:14.221913+00:00",
             "by": "factory-runner",
             "note": "factory/ISS-193 구현·테스트 완료 — 배포 검토 대기"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T06:38:15.902060+00:00",
+            "by": "factory-runner",
+            "note": "대표님 결정 A(스위치 꺼진 채로 올리기) 반영 — factory/ISS-193 main 병합(f659853)·검증"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T06:41:19.374404+00:00",
+            "by": "factory-runner",
+            "note": "재검증 127 되돌림 정리 — proof 명령 경로 수정 후 재검증"
           }
         ],
         "recommendation_history": [
@@ -15587,6 +15607,14 @@
             "risk": "중간",
             "effort": "M",
             "by": "factory-runner"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "실행기 재검증 실패로 되돌림 — 다시 돌린 결과가 다름: `bin/rails test test/controllers/webhooks/shopify_controller_` 기록 0 → 실제 127",
+            "risk": "낮음",
+            "effort": "작음",
+            "by": "factory-recheck",
+            "at": "2026-11-10T06:39:18Z"
           }
         ],
         "gate_stage": "deploy-review",
@@ -15628,10 +15656,20 @@
           "매핑표 config/shopify/listings.yml 33개 — 추정 근거: 색상·형태 + 가격(국내가×2÷1450이 표의 달러가와 일치). 예: L28 '브라운 후드 롱 패딩' ↔ 몰 '드로스트링 후드 롱패딩 토프'",
           "쇼피파이 상품은 사이즈 옵션이 없어 룩 단위 재고 합계로 보냄",
           "웹훅·관리자 토큰(SHOPIFY_ADMIN_TOKEN·SHOPIFY_WEBHOOK_SECRET)은 대표님이 쇼피파이에서 발급해 등록해야 함"
-        ]
+        ],
+        "decision": {
+          "choice": "A",
+          "label": "스위치 꺼진 채로 올리기",
+          "text": "관제 자율 결정",
+          "question": "몰 재고를 쇼피파이에 연결하는 기능을 운영에 올릴까요? 올린다면 어디까지 켤까요?",
+          "by": "대표님(헤르메스)",
+          "at": "2026-11-10T06:35:42.439Z"
+        },
+        "merged_to_main": "f659853",
+        "recheck_reopens": 1
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T00:26:14.221913+00:00",
+      "updated_at": "2026-11-10T06:39:18Z",
       "status_history": [
         {
           "from": null,
@@ -15649,54 +15687,83 @@
         }
       ],
       "result": {
-        "commit": "0112504",
-        "branch": "factory/ISS-193",
+        "commit": "f659853",
+        "branch": "main",
+        "merged_from": "factory/ISS-193",
+        "summary": "대표님 결정 A(스위치 꺼진 채로 올리기)대로 factory/ISS-193 을 main 에 병합·검증. 판매 개시 스위치(SHOPIFY_SYNC_ENABLED·SHOPIFY_SALES_ENABLED)와 웹훅 시크릿은 미설정 상태라 운영에 올라가도 쇼피파이 쪽 변화 없음. 개발 DB 에 shopify_webhook_receipts 추가형 테이블 적용.",
         "criteria_check": [
           {
-            "criterion": "JIEUM 몰 상품↔쇼피파이 상품 매핑 표(33개)가 있다",
+            "criterion": "JIEUM 몰 상품↔쇼피파이 상품 매핑 표(33개, shopify/products_draft.csv 기준)가 있다",
             "met": true,
-            "how": "config/shopify/listings.yml 33/33 매핑, SKU·몰 상품+색상 중복 없음(테스트로 단언). 사진 대조는 안 함 — 배포 검토 항목"
+            "how": "config/shopify/listings.yml 33/33 매핑을 main 에 병합(f659853), inventory_sync_test 가 SKU·상품+색상 중복 없음을 단언"
           },
           {
-            "criterion": "몰 재고 변경 시 쇼피파이 재고가 같아지고, 쇼피파이 주문 웹훅이 오면 몰 재고가 차감된다(모킹)",
+            "criterion": "몰 재고 변경 시 쇼피파이 재고가 같아지고, 쇼피파이 주문 웹훅이 오면 몰 재고가 차감된다(테스트는 Shopify API 모킹)",
             "met": true,
-            "how": "StockLog 커밋 후 ShopifyInventorySyncJob → InventorySync(가짜 어댑터로 합계 전송 확인), 웹훅 테스트에서 정상 차감·중복 1회·서명 실패 401·미매핑/재고부족 무차감"
+            "how": "main 에서 shopify_controller_test·inventory_sync_test 11건 통과 — 재고 변경 후 동기화 잡이 합계 전송(가짜 어댑터), 웹훅 정상 차감·중복 1회·서명 실패 401"
           },
           {
-            "criterion": "해외가 = 국내가×2÷환율 후 $□9 반올림 함수와 테스트",
+            "criterion": "해외가 = 국내가×2÷환율 후 $□9 반올림(ISS-177 A) 계산 함수와 테스트",
             "met": true,
-            "how": "Shopify::Pricing.overseas_usd — 매핑된 33개 상품 국내가로 계산한 값이 표의 price_usd 와 전부 일치"
+            "how": "Shopify::Pricing.overseas_usd 테스트가 33개 상품 국내가 계산값과 표의 price_usd 일치를 단언(main 통과)"
           },
           {
-            "criterion": "쇼피파이 재고를 0이 아닌 값으로 올리는 동기화는 대표님 승인 전 비활성(플래그 기본 off)",
+            "criterion": "실제 쇼피파이 재고를 0이 아닌 값으로 올리는 동기화(=판매 개시)는 대표님 승인 전 비활성(설정 플래그 기본 off)",
             "met": true,
-            "how": "SHOPIFY_SALES_ENABLED 미설정 시 재고 0 전송 테스트, SHOPIFY_SYNC_ENABLED 미설정 시 잡 미등록 테스트"
+            "how": "SHOPIFY_SALES_ENABLED 미설정 시 재고 0 전송, SHOPIFY_SYNC_ENABLED 미설정 시 잡 미등록 테스트 통과 — 대표님 결정 A대로 스위치 꺼진 채 병합"
           }
         ],
         "proof": [
           {
-            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS193.sqlite3 bin/rails test test/services/shopify test/controllers/webhooks",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/webhooks/shopify_controller_test.rb test/services/shopify/inventory_sync_test.rb",
             "exit_code": 0,
-            "output": "15 runs, 109 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "11 runs, 81 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS193.sqlite3 bin/rails test",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
             "exit_code": 0,
-            "output": "603 runs, 4751 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "632 runs, 6782 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "bin/rubocop app/controllers/webhooks app/services/shopify app/jobs/shopify_inventory_sync_job.rb app/models/stock_log.rb app/models/shopify_webhook_receipt.rb test/services/shopify test/controllers/webhooks config/routes.rb",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
             "exit_code": 0,
-            "output": "11 files inspected, no offenses detected"
-          },
-          {
-            "cmd": "bin/brakeman -q --no-pager",
-            "exit_code": 0,
-            "output": "No warnings found"
+            "output": "368 files inspected, no offenses detected"
           }
         ],
-        "notes": "실제 쇼피파이 호출 없음(비용 $0). 마이그레이션은 test DB 에만 적용."
-      }
+        "cost_usd": 0,
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-11-10T06:41:52Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/controllers/webhooks/shopify_controller_test.rb test/services/shopify/inventory_syn",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 26484\n\n# Running:\n\n...........\n\nFinished in 0.684715s, 16.0651 runs/s, 118.2974 assertions/s.\n11 runs, 81 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "재고 부족 450\n.동시성 test_동시_홀드_500건_중_정확히_50건만_성공한다: 성공 50, 재고 부족 450\n.................................................................................................................................\n\nFinished in 26.612242s, 23.7485 runs/s, 254.8451 assertions/s.\n632 runs, 6782 assertions, 0 failures, 0 errors, 0 skips\n\u001b[3m\u001b[1m\u001b[34m≈\u001b[39m\u001b[22m\u001b[23m tailwindcss \u001b[34mv4.1.18\u001b[39m\n\nDone in \u001b[33m457ms\u001b[39m"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": ".....................................................................................................................................................................................................................................................................................................................................................................\n\n368 files inspected, no offenses detected"
+            }
+          ]
+        },
+        "recheck_fix": "proof 명령을 상위 폴더 기준 실행 가능 형태(cd musinsa_clone + ruby@3.3 PATH)로 수정 — env -i 상위 폴더 재현에서 exit 0"
+      },
+      "completed_at": "2026-11-10T15:41:29.332660"
     },
     {
       "id": "ISS-194",
@@ -15704,7 +15771,7 @@
       "type": "GENERATE_CODE",
       "priority": "P1",
       "size": "M",
-      "status": "AWAITING_USER",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [],
       "payload": {
@@ -15722,12 +15789,12 @@
           "ISS-060"
         ],
         "recommendation": {
-          "verdict": "대표님 결정 필요",
-          "reason": "방송 재고 홀드·자동 해제는 새 테이블 추가형이라 안전. 다만 '입금 기한 지난 주문 자동 취소'는 실제 손님 주문을 취소하는 기능이라 켤지 대표님 확인 필요(코드는 꺼진 상태로 배포 가능)",
-          "risk": "중간",
-          "effort": "M",
+          "verdict": "승인 권장",
+          "reason": "코드·병합은 이미 main 완료(193 f659853·194 3b12301). 되돌림 원인은 proof 명령을 상위 폴더 기준 'bin/rails test …'로 적어 실행기에서 127(명령 없음)이 난 것 — proof 를 'cd musinsa_clone && PATH=ruby@3.3 …' 형태로 고쳐 실행기 조건(env -i, 상위 폴더)에서 exit 0 확인 후 재마감",
+          "risk": "낮음",
+          "effort": "작음",
           "by": "factory-runner",
-          "at": "2026-11-10T00:20:53.998371+00:00"
+          "at": "2026-11-10T06:41:19.374404+00:00"
         },
         "decisions": [
           {
@@ -15741,6 +15808,12 @@
             "at": "2026-11-09T23:56:10.942Z",
             "by": "auto",
             "reason": "ISS-175·176 결정(A) 반영, 검증 단계 범위로 상세화"
+          },
+          {
+            "action": "decide",
+            "at": "2026-11-10T06:35:46.113Z",
+            "by": "대표님(헤르메스)",
+            "note": "관제 자율 결정"
           }
         ],
         "deferred_at": "2026-11-09T23:54:38.094Z",
@@ -15751,8 +15824,8 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "gate": "deploy",
-        "approved_at": null,
-        "approved_by": null,
+        "approved_at": "2026-11-10T06:35:46.113Z",
+        "approved_by": "대표님(헤르메스)",
         "branch": "factory/ISS-194",
         "status_history": [
           {
@@ -15768,6 +15841,20 @@
             "at": "2026-11-10T00:20:53.998371+00:00",
             "by": "factory-runner",
             "note": "factory/ISS-194(428aae5) 구현·테스트 완료 — 배포 검토 대기"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T06:38:15.902060+00:00",
+            "by": "factory-runner",
+            "note": "대표님 결정 A(자동 취소 꺼 둔 채 올리기) 반영 — factory/ISS-194 main 병합(3b12301, schema 버전 줄 충돌 해소)·검증"
+          },
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T06:41:19.374404+00:00",
+            "by": "factory-runner",
+            "note": "재검증 127 되돌림 정리 — proof 명령 경로 수정 후 재검증"
           }
         ],
         "recommendation_history": [
@@ -15777,6 +15864,14 @@
             "risk": "중간",
             "effort": "M",
             "by": "factory-runner"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "실행기 재검증 실패로 되돌림 — 다시 돌린 결과가 다름: `bin/rails test test/integration/broadcast_stock_concurrency_` 기록 0 → 실제 127",
+            "risk": "낮음",
+            "effort": "작음",
+            "by": "factory-recheck",
+            "at": "2026-11-10T06:39:18Z"
           }
         ],
         "gate_stage": "deploy-review",
@@ -15813,10 +15908,20 @@
         "recommended_option": "A",
         "recommended_why": "재고 잡아두기는 기존 주문 흐름을 바꾸지 않아 위험이 낮고, 자동 취소는 손님 안내 문구를 정한 뒤 켜는 게 안전합니다.",
         "if_not_decided": "코드는 브랜치에만 있고 운영 몰은 그대로입니다. 서울라이브 방송 주문 연결(ISS-188 등) 때 이 기능이 필요합니다.",
-        "reversible": "되돌릴 수 있음 — 새 표만 추가되고, 자동 취소는 설정값 하나로 켜고 끕니다(이미 취소된 주문은 되돌리기 어려움)"
+        "reversible": "되돌릴 수 있음 — 새 표만 추가되고, 자동 취소는 설정값 하나로 켜고 끕니다(이미 취소된 주문은 되돌리기 어려움)",
+        "decision": {
+          "choice": "A",
+          "label": "올리되 자동 취소는 꺼 둔다",
+          "text": "관제 자율 결정",
+          "question": "방송 판매용 재고 잡아두기 기능을 운영 몰에 올릴까요? 입금 기한 지난 주문 자동 취소도 켤까요?",
+          "by": "대표님(헤르메스)",
+          "at": "2026-11-10T06:35:46.113Z"
+        },
+        "merged_to_main": "3b12301",
+        "recheck_reopens": 1
       },
       "created_at": "2026-11-09T23:50:33.902774+00:00",
-      "updated_at": "2026-11-10T00:20:53.998371+00:00",
+      "updated_at": "2026-11-10T06:39:18Z",
       "status_history": [
         {
           "from": null,
@@ -15834,49 +15939,78 @@
         }
       ],
       "result": {
-        "commit": "428aae5",
-        "branch": "factory/ISS-194",
+        "commit": "3b12301",
+        "branch": "main",
+        "merged_from": "factory/ISS-194",
+        "summary": "대표님 결정 A(올리되 자동 취소는 꺼 둔다)대로 factory/ISS-194 를 main 에 병합(db/schema.rb 버전 줄 충돌만 해소)·검증. 홀드 기능은 hold_tokens 를 넘길 때만 쓰이므로 기존 주문 흐름은 그대로. 개발 DB 에 stock_holds 추가형 테이블 적용.",
         "criteria_check": [
           {
-            "criterion": "재고 50개 상품에 동시 500 주문 부하 테스트에서 정확히 50건 성공",
+            "criterion": "재고 50개 상품에 동시 500 주문 부하 테스트에서 정확히 50건 성공(행 잠금 또는 원자 갱신)",
             "met": true,
-            "how": "test/integration/broadcast_stock_concurrency_test.rb — 작업자 10스레드로 홀드 500회·주문 500회 각각: 성공 50 / 재고 부족 450, 최종 재고 0, 출고 로그 합 50"
+            "how": "main 에서 broadcast_stock_concurrency_test 통과 — '동시 주문 500건: 성공 50, 재고 부족 450', '동시 홀드 500건: 성공 50, 재고 부족 450' (조건부 UPDATE 원자 차감)"
           },
           {
             "criterion": "주문 버튼 시 10분 홀드, 미결제면 자동 해제(잡 테스트)",
             "met": true,
-            "how": "StockHoldService.reserve(ttl 10분) + StockHoldExpiryJob(매분) — test/jobs/stock_hold_expiry_job_test.rb 에서 travel_to 로 만료 후 재고 복원 확인. 홀드 토큰으로 주문하면 이중 차감 없이 전환(intake_hold_test)"
+            "how": "Inventory::StockHoldService.reserve 기본 ttl 10분, StockHoldExpiryJob(매분, recurring.yml)이 만료 홀드를 해제·재고 복원 — stock_hold_expiry_job_test·stock_hold_service_test 통과"
           },
           {
             "criterion": "무통장 입금 기한 경과 시 자동 취소",
             "met": true,
-            "how": "UnpaidOrderExpiryJob — 기한(PaymentInstruction.due_on) 지난 pending 만 취소·재고 복원, paid·기한 전은 유지. ORDER_AUTO_CANCEL_ENABLED=1 일 때만 동작(기본 꺼짐) — test/jobs/unpaid_order_expiry_job_test.rb"
+            "how": "UnpaidOrderExpiryJob 이 입금 기한 지난 pending 주문을 cancel! — unpaid_order_expiry_job_test 통과. 대표님 결정 A대로 ORDER_AUTO_CANCEL_ENABLED 미설정 시 아무것도 취소하지 않음(기본 꺼짐, 테스트로 단언)"
           }
         ],
         "proof": [
           {
-            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS194.sqlite3 bin/rails test test/integration/broadcast_stock_concurrency_test.rb test/models/stock_hold_test.rb test/services/inventory/stock_hold_service_test.rb test/services/orders/intake_hold_test.rb test/jobs/stock_hold_expiry_job_test.rb test/jobs/unpaid_order_expiry_job_test.rb",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/integration/broadcast_stock_concurrency_test.rb test/jobs/stock_hold_expiry_job_test.rb test/jobs/unpaid_order_expiry_job_test.rb test/models/stock_hold_test.rb test/services/inventory/stock_hold_service_test.rb test/services/orders/intake_hold_test.rb",
             "exit_code": 0,
-            "output": "동시성 test_동시_홀드_500건_중_정확히_50건만_성공한다: 성공 50, 재고 부족 450 / 16 runs, 1894 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "동시 주문 500건: 성공 50, 재고 부족 450 / 동시 홀드 500건: 성공 50, 재고 부족 450 / 16 runs, 1894 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "DATABASE_URL=sqlite3:storage/test_ISS194.sqlite3 bin/rails test",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
             "exit_code": 0,
-            "output": "608 runs, 6558 assertions, 0 failures, 0 errors, 0 skips"
+            "output": "632 runs, 6782 assertions, 0 failures, 0 errors, 0 skips"
           },
           {
-            "cmd": "bin/rubocop app/models/stock_hold.rb app/services/inventory/stock_hold_service.rb app/services/orders/intake.rb app/jobs test/integration/broadcast_stock_concurrency_test.rb test/jobs test/models/stock_hold_test.rb test/services",
+            "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
             "exit_code": 0,
-            "output": "48 files inspected, no offenses detected"
-          },
-          {
-            "cmd": "bin/brakeman -q --no-pager",
-            "exit_code": 0,
-            "output": "No warnings found"
+            "output": "368 files inspected, no offenses detected"
           }
         ],
-        "notes": "마이그레이션은 test DB 에만 적용(공용 개발 DB 미적용). 동시성은 로컬 SQLite 기준. 방송 화면·서울라이브 쪽 호출 연결은 ISS-188/205 몫."
-      }
+        "cost_usd": 0,
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-11-10T06:41:52Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/integration/broadcast_stock_concurrency_test.rb test/jobs/stock_hold_expiry_job_tes",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 63297\n\n# Running:\n\n..........동시성 test_동시_주문_500건_중_정확히_50건만_성공한다: 성공 50, 재고 부족 450\n.동시성 test_동시_홀드_500건_중_정확히_50건만_성공한다: 성공 50, 재고 부족 450\n.....\n\nFinished in 2.442589s, 6.5504 runs/s, 775.4068 assertions/s.\n16 runs, 1894 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "..................................................................................................................................................................................................\n\nFinished in 25.235825s, 25.0438 runs/s, 268.6657 assertions/s.\n632 runs, 6780 assertions, 0 failures, 0 errors, 0 skips\n\u001b[3m\u001b[1m\u001b[34m≈\u001b[39m\u001b[22m\u001b[23m tailwindcss \u001b[34mv4.1.18\u001b[39m\n\nDone in \u001b[34m282ms\u001b[39m"
+            },
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rubocop",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": ".....................................................................................................................................................................................................................................................................................................................................................................\n\n368 files inspected, no offenses detected"
+            }
+          ]
+        },
+        "recheck_fix": "proof 명령을 상위 폴더 기준 실행 가능 형태(cd musinsa_clone + ruby@3.3 PATH)로 수정 — env -i 상위 폴더 재현에서 exit 0"
+      },
+      "completed_at": "2026-11-10T15:41:29.870660"
     },
     {
       "id": "ISS-195",
@@ -18093,6 +18227,30 @@
         "issue_type": "FIX_BUG",
         "plan_created": 0,
         "timestamp": "2026-11-10T14:17:18.218279"
+      },
+      {
+        "issue_id": "ISS-193",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T15:38:27.417917"
+      },
+      {
+        "issue_id": "ISS-194",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T15:38:40.730108"
+      },
+      {
+        "issue_id": "ISS-193",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T15:41:29.332660"
+      },
+      {
+        "issue_id": "ISS-194",
+        "issue_type": "GENERATE_CODE",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T15:41:29.870660"
       }
     ],
     "on_fail": [],
@@ -18105,7 +18263,7 @@
   },
   "stats": {
     "total_issues": 41,
-    "completed": 109,
+    "completed": 113,
     "failed": 0,
     "evolved": 0
   },
@@ -18118,7 +18276,7 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-179:READY": 8,
-    "ISS-190:READY": 2
+    "ISS-179:READY": 9,
+    "ISS-190:READY": 3
   }
 }

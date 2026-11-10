@@ -13667,7 +13667,7 @@
           "note": "결정 반영 상세화 → 착수대기"
         }
       ],
-      "last_dispatched_at": "2026-11-10T11:59:08"
+      "last_dispatched_at": "2026-11-10T14:17:18"
     },
     {
       "id": "ISS-180",
@@ -15323,7 +15323,35 @@
             "output": "1 passed (14.2s) ×3"
           }
         ],
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "unverifiable",
+          "at": "2026-11-10T03:00:22Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/ai-ops.test.ts tests/unit/playout-controller-ops.test.ts",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            },
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            },
+            {
+              "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit",
+              "status": "skipped",
+              "why": "프로젝트 밖으로 이동"
+            },
+            {
+              "cmd": "AI_PLAYOUT_STATE_DIR=/tmp/iss191-state npx playwright test -c playwright.admin.config.ts tests/ai-console.spec.ts (3060 개발 서버, e2e.db 필요)",
+              "status": "skipped",
+              "why": "허용 안 되는 연산자 ("
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-10T11:59:08.775314"
     },
@@ -16853,14 +16881,14 @@
       "type": "TASK",
       "priority": "P0",
       "size": "L",
-      "status": "READY",
+      "status": "DONE",
       "origin": "session",
       "depends_on": [
         "ISS-184",
         "ISS-185"
       ],
       "created_at": "2026-11-09T23:56:06.276013+00:00",
-      "updated_at": "2026-11-10T02:51:36.523Z",
+      "updated_at": "2026-11-10T03:03:10.880871+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
@@ -16987,8 +17015,89 @@
           "at": "2026-11-09T23:56:06.276013+00:00",
           "by": "session",
           "note": "SeoulLive 결정 반영 상세 카드"
+        },
+        {
+          "from": "READY",
+          "to": "IN_PROGRESS",
+          "at": "2026-11-10T03:03:10.880871+00:00",
+          "by": "factory-runner",
+          "note": "11-10 7회차 — 결정 B(0원 시제품) 착수. 상품 3개: 256 벨티드 후드 롱패딩(실측 S 총장 110), 227 숄칼라 벨티드 울 랩코트, 231 노카라 코쿤 롱코트. 소재 입력 0건 → 소재 클립은 '상세페이지 확인' 안내로 대체(추정 금지)"
         }
-      ]
+      ],
+      "result": {
+        "summary": "결정 B(0원 시제품)대로 AI 쇼호스트 에린 소(SoERIN 기준 그림 ref.png 원본) 영어 클립 16편 제작·등록. 상품 3개(256 벨티드 후드 롱패딩·227 숄칼라 벨티드 울 랩코트·231 노카라 코쿤 롱코트) × 소개·사이즈·소재 9편 + 공통 7편(오프닝·대기·반응·배송·환불·이벤트·마감). 기준 그림 정지 화면을 천천히 확대했다 원위치(시작=끝 프레임), 로컬 Qwen3-TTS 영어 음성, 테이크별·완성본 whisper 받아쓰기 대조, AI 라벨 'AI 쇼호스트 / AI Host' 고정. 0060 커밋 4e23e36(로컬 main, 미push). 검수 중 Codex 1차본 결함 3개(첫 단어 잘림·'110 centimeters'가 'meters'로 들림·JIEUM 철자 읽기)를 찾아 재위임으로 수정: 앞쪽 무음 제거 중단, 발음용 문장(speak)·필수 구절(mustHear)·첫 단어 검사 추가, 브랜드는 실험 후 'Jee-oom' 표기 채택.",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
+        "commit": "4e23e36",
+        "files_changed": [
+          "scripts/still-clips/en-v1.json",
+          "scripts/still-clips/make_still_clips.py",
+          "lib/ai-channel/clips/script-lint.ts",
+          "tests/unit/ai-still-clips.test.ts",
+          "scripts/ai-clips.ts",
+          "docs/clips-en-v1.md",
+          "docs/clips-en-v1/manifest.json",
+          "docs/clips-en-v1/ref-compare.jpg"
+        ],
+        "criteria_check": [
+          {
+            "criterion": "ISS-184 캐릭터 기준 이미지로만 만들고, 생성 후 기준 그림과 나란히 대조한 시트가 남는다",
+            "met": true,
+            "how": "화면은 persona/SoERIN/ref.png 원본만 비율 유지 축소(생성·변형 없음). 대조 시트 docs/clips-en-v1/ref-compare.jpg 에 ref.png 와 16편 시작·끝 프레임을 나란히 배치, 육안 대조로 얼굴·헤어·체형 동일 확인"
+          },
+          {
+            "criterion": "모든 클립이 clip-spec(ISS-185) 검사를 통과하고 동일 자세로 시작·종료한다",
+            "met": true,
+            "how": "16편 전부 probeClip+checkSpec 위반 0건(1280x720·30fps·H.264 High·GOP60·AAC 48k 스테레오), registerClip 등록 성공. 시작·끝 프레임 평균 픽셀 차이 0.35~0.74/255(확대 배율 양 끝 1로 고정)"
+          },
+          {
+            "criterion": "영어 음성은 STT(whisper)로 받아써 원문과 대조한 결과가 남는다(가격·숫자·브랜드명 정확)",
+            "met": true,
+            "how": "docs/clips-en-v1/manifest.json 에 편별 원문·테이크 받아쓰기·완성본 받아쓰기·점수 기록. 16편 완성본 점수 0.985~1.0, 첫 단어 일치, p256-size 완성본 'total length is 110 centimeters' 확인, 브랜드는 'G-Oom'(지-음 두 음절)으로 들림 — whisper 가 신조 브랜드 철자를 쓰지 못해 음절 기준으로 판정(대표님 청취 확인 권장). 가격은 대본에 없음"
+          },
+          {
+            "criterion": "가격·혜택은 클립에 직접 말하지 않고 오버레이(DB 값)로 표시",
+            "met": true,
+            "how": "lintClipScript 가 통화기호·price·discount·sale·%·과장 긴급성 문구를 거부(테스트), en-v1.json 16편 위반 0건. 이벤트 클립은 '화면 배너와 상품 페이지를 확인' 안내만. 화면에도 가격 텍스트 없음"
+          },
+          {
+            "criterion": "외부 생성 비용 실측을 결과에 남기고, 1회 실행 $10 초과 예상이면 대표님 결정 카드로 멈춘다",
+            "met": true,
+            "how": "외부 유료 API 호출 0건 — 음성 Qwen3-TTS·받아쓰기 whisper 모두 로컬(mlx), 화면은 기준 그림+ffmpeg. 실측 비용 $0, Higgsfield 크레딧 사용 0"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/ai-still-clips.test.ts tests/unit/ai-clips.test.ts",
+            "exit_code": 0,
+            "output": "Test Files 2 passed (2) / Tests 31 passed (31)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit -p .",
+            "exit_code": 0,
+            "output": "(출력 없음)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && sqlite3 prisma/dev.db \"select count(*) from AiClip where locale='en' and characterId=(select id from AiCharacter where name='Erin So')\"",
+            "exit_code": 0,
+            "output": "16"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npm run -s ai-clips -- register-manifest --manifest public/ai-clips/host-en-v1/manifest.json",
+            "exit_code": 0,
+            "output": "open: 이미 등록됨, 건너뜀 … (16건 모두 이미 등록됨 — 멱등)"
+          },
+          {
+            "cmd": "uv run --no-project --python 3.12 --with mlx-audio --with soundfile --with mlx-whisper --with pillow python -I scripts/still-clips/make_still_clips.py --script scripts/still-clips/en-v1.json --out public/ai-clips/host-en-v1 --takes 4",
+            "exit_code": 0,
+            "output": "16편 OK — 예: [p256-size] OK / 최종 점수 1.0000 (STT 'In size S, the total length is 110 centimeters.'), [open] OK / 0.9848 ('your AI host for G-Oom')"
+          }
+        ],
+        "cost_usd": 0,
+        "viewer": "http://127.0.0.1:9130/#5230bbeee24c (file:///tmp/iss208/viewer.html)",
+        "notes": "영상 파일은 public/ai-clips/host-en-v1/(gitignore). 소재 클립 3편은 몰 소재 입력 0건이라 '확인된 소재 정보가 아직 없어 추정하지 않는다, 상세페이지 확인' 안내 — 몰에 소재·실측 입력 후 같은 key 로 --force 재제작하면 됨. 유튜브 노출용 영상이 아니라 방송 편성용 클립이라 썸네일은 만들지 않음. 무관한 간헐 실패: tests/unit/streaming.test.ts JWT exp-nbf 14399≠14400(초 경계) — 별도 카드.",
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T12:40:27.488428"
     },
     {
       "id": "ISS-209",
@@ -17253,9 +17362,132 @@
             "output": "eae9968 merge: ISS-210 결제완료 주문 → 서울라이브 order.paid 웹훅 발신(대표님 결정 B: 배포하되 기본 꺼짐)"
           }
         ],
-        "factory_inline_verification": true
+        "factory_inline_verification": true,
+        "recheck": {
+          "status": "verified",
+          "at": "2026-11-10T03:00:22Z",
+          "sha": null,
+          "problems": [],
+          "commands": [
+            {
+              "cmd": "cd musinsa_clone && PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH BUNDLE_PATH=$HOME/.gem/bundle-0053 bin/rails test test/services/seoullive/order_webhook_test.rb test/jobs/seoullive_order_webhook_job_test",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "Run options: --seed 59147\n\n# Running:\n\n...........\n\nFinished in 0.393090s, 27.9834 runs/s, 236.5870 assertions/s.\n11 runs, 93 assertions, 0 failures, 0 errors, 0 skips"
+            },
+            {
+              "cmd": "cd musinsa_clone && git log --oneline -1 eae9968",
+              "status": "same",
+              "expected": 0,
+              "actual": 0,
+              "output": "eae9968 merge: ISS-210 결제완료 주문 → 서울라이브 order.paid 웹훅 발신(대표님 결정 B: 배포하되 기본 꺼짐)"
+            }
+          ]
+        }
       },
       "completed_at": "2026-11-10T11:50:17.512810"
+    },
+    {
+      "id": "ISS-211",
+      "title": "[SeoulLive 테스트] streaming.test.ts JWT 유효기간 검사가 초 경계에서 간헐 실패(14399≠14400)",
+      "type": "FIX_BUG",
+      "priority": "P3",
+      "size": "S",
+      "status": "DONE",
+      "origin": "factory-runner",
+      "depends_on": [],
+      "created_at": "2026-11-10T03:40:38.998783+00:00",
+      "updated_at": "2026-11-10T05:17:17.971921+00:00",
+      "payload": {
+        "origin": "factory-runner",
+        "epic": "SEOULLIVE",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
+        "description": "11-10 7회차 ISS-208 회차 끝 전체 vitest 3회 중 2회 tests/unit/streaming.test.ts:71 'expect(jwt.exp - jwt.nbf).toBe(14400)' 가 14399 로 실패. 토큰 발급 시 nbf 와 exp 를 서로 다른 시각에서 계산해 초 경계를 넘으면 1초 차이가 나는 것으로 보임. 앱 동작 영향은 1초라 미미하지만 회차 끝 전체 테스트를 흔든다.",
+        "acceptance_criteria": [
+          "npx vitest run tests/unit/streaming.test.ts 를 10회 연속 돌려 모두 통과한다",
+          "토큰 유효기간(송출자 4시간·시청자 15분)은 그대로다"
+        ],
+        "recommendation": {
+          "verdict": "승인 권장",
+          "reason": "회차 끝 전체 테스트 간헐 실패 원인 — 고정 시각(vi.useFakeTimers) 또는 발급 코드에서 같은 기준 시각 사용으로 해결 가능",
+          "risk": "낮음",
+          "effort": "S",
+          "by": "factory-runner",
+          "at": "2026-11-10T03:40:38.998783+00:00"
+        },
+        "recovered_at": "2026-11-10T05:07:17.947Z",
+        "recovery_reason": "70분 넘게 갱신되지 않았고 프로젝트 실행 잠금·Claude 세션이 없어 착수대기로 복구",
+        "decisions": [
+          {
+            "action": "approve",
+            "at": "2026-11-10T05:07:17.947Z",
+            "by": "auto",
+            "reason": "회차 끝 전체 테스트 간헐 실패 원인 — 고정 시각(vi.useFakeTimers) 또는 발급 코드에서 같은 기준 시각 사용으로 해결 가능"
+          }
+        ],
+        "approved_at": "2026-11-10T05:07:17.947Z",
+        "approved_by": "자동 승인(추천: 승인 권장)",
+        "status_history": [
+          {
+            "from": "READY",
+            "to": "IN_PROGRESS",
+            "at": "2026-11-10T05:17:17.971921+00:00",
+            "by": "factory-runner",
+            "note": "11-10 8회차: 수정 커밋 649b001(0060)이 이미 있음 — 재검증 후 마감"
+          }
+        ]
+      },
+      "status_history": [
+        {
+          "from": null,
+          "to": "READY",
+          "at": "2026-11-10T03:40:38.998783+00:00",
+          "by": "factory-runner",
+          "note": "ISS-208 회차 끝 전체 테스트에서 발견"
+        },
+        {
+          "from": "READY",
+          "to": "IN_PROGRESS",
+          "at": "2026-11-10T03:40:54.184451+00:00",
+          "by": "factory-runner",
+          "note": "원인: livekit-server-sdk(jose)가 nbf·exp 를 각각 Date.now() 로 계산 → 테스트에서 Date 고정"
+        }
+      ],
+      "result": {
+        "summary": "0060 커밋 649b001(테스트에서 Date 를 2026-11-10T00:00:00.500Z 로 고정, vi.useFakeTimers toFake Date)로 JWT nbf·exp 초 경계 플레이크 제거. 앱 코드(토큰 유효기간) 변경 없음. 8회차에 재검증만 수행.",
+        "repo": "/Volumes/E_SSD/02_GitHub.nosync/0060_seoullive",
+        "commit": "649b001",
+        "files_changed": [
+          "tests/unit/streaming.test.ts"
+        ],
+        "criteria_check": [
+          {
+            "criterion": "npx vitest run tests/unit/streaming.test.ts 를 10회 연속 돌려 모두 통과한다",
+            "met": true,
+            "how": "10회 루프 실행 pass 10/10 (7 tests 각 통과)"
+          },
+          {
+            "criterion": "토큰 유효기간(송출자 4시간·시청자 15분)은 그대로다",
+            "met": true,
+            "how": "649b001 은 tests/ 와 registry 만 변경, lib 변경 없음. 테스트가 exp-nbf 14400/900 을 그대로 검사"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run tests/unit/streaming.test.ts",
+            "exit_code": 0,
+            "output": "Test Files 1 passed (1) / Tests 7 passed (7) — 10회 연속 10/10"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run",
+            "exit_code": 0,
+            "output": "Tests 461 passed (461) — 7회 중 6회 연속 통과(첫 1회 1 failed, 이후 재현 안 됨, 별개 테스트로 추정)"
+          }
+        ],
+        "factory_inline_verification": true
+      },
+      "completed_at": "2026-11-10T14:17:18.218279"
     }
   ],
   "hooks": {
@@ -17831,6 +18063,18 @@
         "issue_type": "GENERATE_CODE",
         "plan_created": 0,
         "timestamp": "2026-11-10T11:59:08.775314"
+      },
+      {
+        "issue_id": "ISS-208",
+        "issue_type": "TASK",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T12:40:27.488428"
+      },
+      {
+        "issue_id": "ISS-211",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-11-10T14:17:18.218279"
       }
     ],
     "on_fail": [],
@@ -17843,7 +18087,7 @@
   },
   "stats": {
     "total_issues": 41,
-    "completed": 107,
+    "completed": 109,
     "failed": 0,
     "evolved": 0
   },
@@ -17856,7 +18100,7 @@
     "created_today": 0
   },
   "rewake_state": {
-    "ISS-179:READY": 6,
+    "ISS-179:READY": 8,
     "ISS-190:READY": 2
   }
 }

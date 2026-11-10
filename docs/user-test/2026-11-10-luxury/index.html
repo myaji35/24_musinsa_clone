@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JIEUM 리디자인 비교</title>
+<style>
+  :root { --paper:#fcfcfc; --ink:#000; --ink2:#404040; --ink3:#767676; --line:#000; --hair:#e5e5e5; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:500 13px/16px -apple-system, "Apple SD Gothic Neo", sans-serif; }
+  header { position:sticky; top:0; z-index:5; background:var(--paper); border-bottom:1px solid var(--line); padding:14px 16px; display:flex; gap:16px; align-items:baseline; flex-wrap:wrap; }
+  header h1 { margin:0; font-size:15px; letter-spacing:.2em; }
+  nav a { color:var(--ink); margin-right:14px; text-underline-offset:3px; }
+  section { padding:28px 16px; border-bottom:1px solid var(--hair); }
+  h2 { font-size:14px; margin:0 0 4px; }
+  p.note { color:var(--ink2); margin:0 0 16px; font-weight:400; max-width:820px; line-height:20px; }
+  .row { display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items:start; }
+  .row.m { grid-template-columns: repeat(auto-fit, minmax(200px, 260px)); }
+  figure { margin:0; }
+  figcaption { color:var(--ink3); padding:6px 0 0; font-weight:400; }
+  figcaption b { color:var(--ink); font-weight:600; }
+  img { width:100%; display:block; border:1px solid var(--hair); background:#eaeae6; cursor:zoom-in; }
+  .m img { border-radius:18px; border:6px solid #111; }
+  dialog { padding:0; border:0; max-width:96vw; max-height:96vh; background:transparent; }
+  dialog img { max-width:96vw; max-height:96vh; width:auto; cursor:zoom-out; }
+  dialog::backdrop { background:rgba(252,252,252,.92); }
+</style>
+</head>
+<body>
+<header>
+  <h1>JIEUM</h1>
+  <nav><a href="#ref">레퍼런스</a><a href="#plp">상품 목록</a><a href="#home">홈 상품 영역</a><a href="#pdp">상품 상세</a><a href="#mobile">모바일</a></nav>
+</header>
+
+<section id="ref">
+  <h2>레퍼런스 (실제 브라우저 1440px 캡처, 분석용)</h2>
+  <p class="note">뼈대는 발렌시아가(띠·헤더 3분할·아래 1px 검정선·4열 12px 그리드·상세 좌우 분할), 글자 결과 색은 마르지엘라(오프화이트·13px 단일 크기·2:3 사진·기호)에서 가져왔습니다. 로고·사진·문구·노이즈 질감은 가져오지 않았습니다.</p>
+  <div class="row">
+    <figure><img src="ref/bal-plp.png" alt="발렌시아가 목록"><figcaption><b>발렌시아가</b> 목록 — 4열·간격 12px·4:5</figcaption></figure>
+    <figure><img src="ref/mm-plp.png" alt="마르지엘라 목록"><figcaption><b>마르지엘라</b> 목록 — 4열·간격 0·2:3·왼쪽 정렬</figcaption></figure>
+    <figure><img src="ref/bal-pdp.png" alt="발렌시아가 상세"><figcaption><b>발렌시아가</b> 상세 — 좌우 분할·검정 사각 버튼</figcaption></figure>
+    <figure><img src="ref/mm-pdp.png" alt="마르지엘라 상세"><figcaption><b>마르지엘라</b> 상세 — 좁은 정보 열·1px 선 사이 선택 행</figcaption></figure>
+  </div>
+</section>
+
+<section id="plp">
+  <h2>상품 목록 /products — 1440px</h2>
+  <p class="note">헤더가 검정 띠 → 메뉴·검색 / JIEUM / 주문조회·장바구니(n) → 1px 검정선 → 카테고리 칩 줄로 바뀌었습니다. 카드는 2:3 사진, 상품명 13px, 가격 ₩ 모노, 배지·별점·색상 점 제거(품절은 글자로 유지).</p>
+  <div class="row">
+    <figure><img src="before-plp-1440.png" alt="변경 전 목록"><figcaption><b>변경 전</b></figcaption></figure>
+    <figure><img src="p1-plp-1440.png" alt="변경 후 목록"><figcaption><b>변경 후</b> (1단계)</figcaption></figure>
+  </div>
+</section>
+
+<section id="home">
+  <h2>홈 상품 영역 — 1440px</h2>
+  <p class="note">검정 인트로 연출은 대표님 결정대로 유지했습니다(3단계에서 글자만 맞춤 예정). 카테고리 원형 아이콘 판은 ▸ 기호 글자 목록으로 바뀌었습니다.</p>
+  <div class="row">
+    <figure><img src="before-shop-1440.png" alt="변경 전 홈"><figcaption><b>변경 전</b></figcaption></figure>
+    <figure><img src="p1-shop-1440.png" alt="변경 후 홈"><figcaption><b>변경 후</b> (1단계)</figcaption></figure>
+  </div>
+</section>
+
+<section id="pdp">
+  <h2>상품 상세 — 1440px</h2>
+  <p class="note">사진은 왼쪽 절반에 2:3으로 세로로 쌓이고, 오른쪽 정보 열은 450px. 가격 ₩ 모노, 색상/사이즈는 위아래 1px 검정선 사이, 장바구니(검정)·바로구매(테두리) 48px 세로 버튼, 아코디언 +/−. ※ '2단계 전'은 1단계 헤더가 이미 적용된 상태입니다.</p>
+  <div class="row">
+    <figure><img src="before-pdp-buy-1440.png" alt="2단계 전 상세"><figcaption><b>2단계 전</b></figcaption></figure>
+    <figure><img src="p2-pdp-buy-1440.png" alt="2단계 후 상세"><figcaption><b>변경 후</b> (2단계)</figcaption></figure>
+  </div>
+</section>
+
+<section id="mobile">
+  <h2>모바일 375px</h2>
+  <p class="note">모든 화면에서 가로 넘침 없음(문서 폭 375px 실측). 목록은 2열·간격 8px.</p>
+  <div class="row m">
+    <figure><img src="before-home-375.png" alt="변경 전 홈 모바일"><figcaption><b>변경 전</b> 홈</figcaption></figure>
+    <figure><img src="p1-home-375.png" alt="변경 후 홈 모바일"><figcaption><b>변경 후</b> 홈</figcaption></figure>
+    <figure><img src="before-plp-375.png" alt="변경 전 목록 모바일"><figcaption><b>변경 전</b> 목록</figcaption></figure>
+    <figure><img src="p1-plp-375.png" alt="변경 후 목록 모바일"><figcaption><b>변경 후</b> 목록</figcaption></figure>
+    <figure><img src="before-pdp-buy-375.png" alt="2단계 전 상세 모바일"><figcaption><b>2단계 전</b> 상세</figcaption></figure>
+    <figure><img src="p2-pdp-buy-375.png" alt="변경 후 상세 모바일"><figcaption><b>변경 후</b> 상세</figcaption></figure>
+  </div>
+</section>
+
+<dialog id="zoom"><img alt=""></dialog>
+<script>
+  const d = document.getElementById("zoom"), z = d.querySelector("img");
+  document.querySelectorAll("figure img").forEach(i => i.addEventListener("click", () => { z.src = i.src; z.alt = i.alt; d.showModal(); }));
+  d.addEventListener("click", () => d.close());
+</script>
+</body>
+</html>

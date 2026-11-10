@@ -41,6 +41,7 @@ module Api
 
           # Build response data
           products_data = @products.map do |product|
+            spec = product.product_spec
             image_url = product.image_url
             if product.image.attached?
               begin
@@ -59,7 +60,22 @@ module Api
               ai_attributes: parse_ai_attributes(product.ai_attributes),
               image_url: image_url,
               url: product_url(product, host: request.base_url),
-              in_stock: product.variants.any? { |v| v.stock.to_i > 0 }
+              in_stock: product.variants.any? { |v| v.stock.to_i > 0 },
+              stock_total: product.variants.sum { |variant| variant.stock.to_i },
+              variants: product.variants.map do |variant|
+                {
+                  variant_id: variant.id,
+                  sku_code: variant.sku_code,
+                  color: variant.color,
+                  size: variant.size,
+                  stock: variant.stock.to_i,
+                  in_stock: variant.stock.to_i > 0
+                }
+              end,
+              measurements: product_measurements(spec),
+              materials: ProductSpec::MATERIAL_FIELDS.index_with { |field| spec.material(field) }.compact_blank,
+              fit: ProductSpec::FIT_OPTIONS.keys.index_with { |field| spec.fit(field) }.compact_blank,
+              care_instructions: care_instructions(product)
             }
           end
 
@@ -75,6 +91,19 @@ module Api
       end
 
       private
+
+      def product_measurements(spec)
+        items = spec.visible_measurement_items
+        spec.sizes.each_with_object({}) do |size, measurements|
+          values = items.index_with { |item| spec.measurement(size, item) }.compact_blank
+          measurements[size] = values if values.present?
+        end
+      end
+
+      def care_instructions(product)
+        value = product.info_notice_value("세탁방법")
+        value if value.present? && !value.start_with?("TODO:")
+      end
 
       def authenticate_api_key
         expected = ENV["UCP_API_KEY"]
@@ -98,7 +127,7 @@ module Api
           limit: [ params[:limit].to_i, 100 ].min
         }.compact
 
-        "ucp/products/v3/#{Digest::MD5.hexdigest(normalized_params.to_json)}"
+        "ucp/products/v4/#{Digest::MD5.hexdigest(normalized_params.to_json)}"
       end
 
       def parse_ai_attributes(attributes)

@@ -17013,7 +17013,7 @@
         "ISS-188"
       ],
       "created_at": "2026-11-09T23:56:06.276013+00:00",
-      "updated_at": "2026-11-10T02:41:35.131296+00:00",
+      "updated_at": "2026-11-12T17:23:17.613764+00:00",
       "payload": {
         "origin": "session",
         "source": "대표님 2026-11-10 '추천대로 4개 다 결정할게, 상세 이슈로 만들어서 공장에서 진행해.'",
@@ -17031,12 +17031,12 @@
           "범위는 ISS-176 A(AI 트랙 검증 먼저) — 셀러 플랫폼(서브도메인·미터링·스튜디오) 기능은 만들지 말 것"
         ],
         "recommendation": {
-          "verdict": "보류 권장",
-          "reason": "스트림 키(대표님 채널 시크릿) 저장 전까지 보류 — 저장되면 [했음]으로 착수대기 복귀. 송출 코드(ISS-181·186)는 준비 완료, 30분 실송출 통과.",
-          "risk": "낮음",
+          "verdict": "승인 권장",
+          "reason": "관제 자율 결정으로 풀렸지만 스트림 키(.env YOUTUBE_STREAM_KEY)는 아직 없음. 키 없이 가능한 준비(유튜브 시험 송출 실행기·로컬 녹화 동시 저장·블랙/무음 판정·키 가림·고지 문안)를 factory/ISS-206 브랜치에 만들어, 키가 들어오면 명령 한 줄로 4시간 시험을 시작하게 한다.",
+          "risk": "낮음 — 실송출 없음, 키 미노출 테스트 포함",
           "effort": "M",
           "by": "factory-runner",
-          "at": "2026-11-10T02:41:35.131296+00:00"
+          "at": "2026-11-12T17:13:31.530287+00:00"
         },
         "gate": "deploy",
         "decisions": [
@@ -17045,10 +17045,16 @@
             "at": "2026-11-09T23:56:11.018Z",
             "by": "auto",
             "reason": "ISS-175·176 결정(A)에 따른 검증 단계 카드"
+          },
+          {
+            "action": "decide",
+            "at": "2026-11-12T17:12:24.692Z",
+            "by": "대표님(헤르메스)",
+            "note": "관제 자율 결정"
           }
         ],
-        "approved_at": "2026-11-09T23:56:11.018Z",
-        "approved_by": "자동 승인(추천: 승인 권장)",
+        "approved_at": "2026-11-12T17:12:24.692Z",
+        "approved_by": "대표님(헤르메스)",
         "repo_rebased_1110": "ISS-204 결정 A(11-10)로 작업 저장소 변경: '0053/seoullive Rails 앱' → 서울라이브 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive (Next.js 15·TypeScript·Prisma SQLite·vitest). 문구의 'seoullive/…' 경로는 이 저장소 기준으로 읽는다(예: seoullive/docs/… → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/docs/…, seoullive/playout/ → /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/playout/). 관리자 화면은 /admin/ai-channel 아래, JIEUM 몰 데이터는 lib/ai-channel/jieum-catalog.ts(ISS-205)로 읽는다. 0060 의 다른 세션 미커밋 변경(registry·docs/plan/voice·public/demo/raw)은 건드리지 말고 제 파일만 커밋.",
         "recommendation_history": [
           {
@@ -17066,12 +17072,20 @@
             "effort": "M",
             "by": "factory-runner",
             "at": "2026-11-10T02:41:30.031575+00:00"
+          },
+          {
+            "verdict": "승인 권장",
+            "reason": "대표님 결정(관제 자율 결정) — 이 결정대로 진행",
+            "risk": "—",
+            "effort": "—",
+            "by": "관제실 결정",
+            "at": "2026-11-12T17:12:24.692Z"
           }
         ],
         "ask_kind": "human_task",
-        "ask_prompt": "유튜브 스튜디오 → 라이브 스트리밍에서 스트림 키를 복사해 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/.env 에 YOUTUBE_STREAM_KEY=<키> 한 줄로 저장한 뒤 [했음]을 눌러 주세요(키는 카드·채팅에 붙이지 마세요).",
-        "plain_summary": "AI 방송을 유튜브에 비공개로 4시간 시험 송출하려면 대표님 채널의 '스트림 키'가 필요합니다. 비밀번호 같은 값이라 공장이 대신 만들 수 없습니다.",
-        "if_not_decided": "AI 방송 유튜브 시험 송출과 판매 검증(ISS-207)이 시작되지 않습니다.",
+        "ask_prompt": "유튜브 스튜디오 → 라이브 스트리밍에서 스트림 키를 복사해 /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive/.env 에 YOUTUBE_STREAM_KEY=<키> 한 줄로 저장하고 [했음]을 눌러 주세요(키는 카드·채팅에 붙이지 마세요). 시험 송출 실행기는 준비돼 있어 저장 즉시 비공개 4시간 시험을 시작합니다.",
+        "plain_summary": "유튜브 시험 방송 프로그램은 다 만들어 두었습니다(로컬 시험 통과). 대표님 채널의 '스트림 키'만 넣어 주시면 비공개로 4시간 시험 방송을 돌리고 끊김·검은 화면을 자동 판정합니다.",
+        "if_not_decided": "유튜브 시험 송출과 판매 검증(ISS-207)이 시작되지 않습니다.",
         "also_waiting": "ISS-189(유튜브 댓글 수집)도 같은 채널의 API 키·관리자 연결을 기다리는 중 — 한 번에 처리하면 좋음",
         "prereq": "ISS-208(영어 클립 1차) 결정·제작 후 시험하면 실제 방송에 가까운 결과를 얻음",
         "status_history": [
@@ -17082,7 +17096,17 @@
             "by": "factory-runner",
             "note": "11-10 5회차 — 선행(182·186·188) 충족, 착수 전 점검: 유튜브 라이브 스트림 키 없음(기억 저장소·0060 .env 모두 없음). 시크릿이라 카드 입력 대신 대표님이 .env 에 직접 저장 요청"
           }
-        ]
+        ],
+        "decision": {
+          "choice": "custom",
+          "label": null,
+          "text": "관제 자율 결정",
+          "question": null,
+          "by": "대표님(헤르메스)",
+          "at": "2026-11-12T17:12:24.692Z"
+        },
+        "branch": "factory/ISS-206 (0060_seoullive, 3727cc1)",
+        "note_1113": "11-12 '관제 자율 결정'으로 READY가 됐지만 .env 에 YOUTUBE_STREAM_KEY 가 없어(11-13 확인) 실송출 불가. 키 없이 가능한 준비만 브랜치에 커밋. 키가 들어오면: main 병합 → npm run youtube-trial -- --playlist <편성 재생목록> (기본 14400초) → 리포트 판정 → 유튜브 스튜디오 표시 설정은 docs/youtube-trial.md 체크리스트."
       },
       "status_history": [
         {
@@ -17091,8 +17115,79 @@
           "at": "2026-11-09T23:56:06.276013+00:00",
           "by": "session",
           "note": "SeoulLive 결정 반영 상세 카드"
+        },
+        {
+          "from": "READY",
+          "to": "IN_PROGRESS",
+          "at": "2026-11-12T17:13:31.530287+00:00",
+          "by": "factory-runner",
+          "note": "11-13 회차 — 키 없이 할 수 있는 준비 작업 착수(브랜치 factory/ISS-206)"
+        },
+        {
+          "from": "IN_PROGRESS",
+          "to": "AWAITING_USER",
+          "at": "2026-11-12T17:23:17.613764+00:00",
+          "by": "factory-runner",
+          "note": "준비 작업 브랜치 커밋(3727cc1), 스트림 키 대기(human_task)"
         }
-      ]
+      ],
+      "result": {
+        "summary": "유튜브 비공개 시험 송출 실행기(playout/youtube-trial.ts·youtube-target.ts) — 컨트롤러 출력을 로컬 릴레이에서 녹화 파일+유튜브로 동시 송출, 끝나면 블랙·무음·끊김·길이 판정 리포트. 키는 .env 에서만 읽고 모든 출력에서 가림. 설명란 AI 고지 문안·스튜디오 설정 체크리스트 docs/youtube-trial.md. 실송출은 키 대기.",
+        "commit": "3727cc1 (branch factory/ISS-206)",
+        "files_changed": [
+          "playout/youtube-target.ts",
+          "playout/youtube-trial.ts",
+          "tests/unit/playout-youtube-trial.test.ts",
+          "docs/youtube-trial.md",
+          "package.json"
+        ],
+        "criteria_check": [
+          {
+            "criterion": "플레이아웃 출력을 유튜브 RTMP 로 보낸다 — 키는 ENV 에만",
+            "met": false,
+            "how": "실행기 구현·로컬 RTMP 실송출 6초 테스트 통과, 가짜 키가 리포트·출력에 없음 확인. 실제 유튜브 송출은 키 미입력으로 미실행"
+          },
+          {
+            "criterion": "'변경되거나 합성된 콘텐츠' 표시·설명란 AI 고지",
+            "met": false,
+            "how": "docs/youtube-trial.md 에 설정 체크리스트·한/영 고지 문안 작성. 실제 스튜디오 설정은 송출 시"
+          },
+          {
+            "criterion": "비공개 4시간 시험 블랙 0·끊김 0",
+            "met": false,
+            "how": "판정 로직(blackdetect·silencedetect·tee 대상 실패 집계) 구현·테스트 완료, 4시간 실행은 키 대기"
+          },
+          {
+            "criterion": "공개 전환은 gate=deploy 대표님 승인 후",
+            "met": true,
+            "how": "payload.gate=deploy 유지, 문서에 명시"
+          }
+        ],
+        "proof": [
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && git checkout factory/ISS-206 && npx vitest run tests/unit/playout-youtube-trial.test.ts",
+            "exit_code": 0,
+            "output": "Test Files 1 passed (1) / Tests 34 passed (34)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx vitest run (factory/ISS-206)",
+            "exit_code": 0,
+            "output": "Tests 511 passed (511) — 재실행 2회. 첫 실행 1건 간헐 실패(ffmpeg 테스트 동시 부하 추정)"
+          },
+          {
+            "cmd": "cd /Volumes/E_SSD/02_GitHub.nosync/0060_seoullive && npx tsc --noEmit -p . && npx eslint playout/youtube-target.ts playout/youtube-trial.ts tests/unit/playout-youtube-trial.test.ts",
+            "exit_code": 0,
+            "output": "(출력 없음)"
+          },
+          {
+            "cmd": "npm run -s youtube-trial -- --playlist playout/sample-playlist.json --duration-sec 5  (키 없음)",
+            "exit_code": 1,
+            "output": "Error: YOUTUBE_STREAM_KEY missing or invalid"
+          }
+        ],
+        "external_cost_usd": 0,
+        "review_fix": "Codex 1차본의 끊김 판정이 ffmpeg 출력 설정 줄의 'onfail' 글자에 걸려 정상 송출도 끊김 1회로 판정 → 실제 실행으로 발견, isRelayInterruption 으로 재위임 수정"
+      }
     },
     {
       "id": "ISS-207",

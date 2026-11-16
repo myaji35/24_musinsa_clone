@@ -11,7 +11,13 @@ class SessionsController < ApplicationController
       return_to = session[:return_to]
       reset_session
       session[:user_id] = user.id
-      destination = mall_admin? ? (safe_return_path(return_to) || inventory_scan_path) : workspace_path
+      destination = if mall_staff?
+        safe_return_path(return_to) || inventory_scan_path
+      elsif current_account && current_account != Account.primary_or_nil
+        workspace_path
+      else
+        safe_return_path(return_to) || root_path
+      end
       redirect_to destination, notice: "로그인되었습니다."
     else
       flash.now[:alert] = "이메일 또는 비밀번호가 올바르지 않습니다."

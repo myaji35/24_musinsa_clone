@@ -1,4 +1,7 @@
 class ProductInfoNoticesController < ApplicationController
+  skip_before_action :require_admin
+  before_action :require_staff
+
   def index
     products = Product.order(status: :desc, name: :asc, id: :asc).to_a
     @total_count = products.size

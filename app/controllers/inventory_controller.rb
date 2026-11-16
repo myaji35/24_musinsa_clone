@@ -1,4 +1,6 @@
 class InventoryController < ApplicationController
+  skip_before_action :require_admin
+  before_action :require_staff
   before_action :set_variant_by_barcode, only: [ :create_stock_in, :create_stock_out ]
 
   # GET /inventory/scan - 바코드 스캔 페이지

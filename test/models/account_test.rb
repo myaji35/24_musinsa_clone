@@ -15,7 +15,7 @@ class AccountTest < ActiveSupport::TestCase
 
   test "account scoped users require membership and filter explicitly" do
     model = ScopedUser
-    assert_equal [ users(:one).id, users(:two).id ].sort, model.for_account(accounts(:jieum)).pluck(:id).sort
+    assert_equal [ users(:one).id, users(:two).id, users(:operator).id ].sort, model.for_account(accounts(:jieum)).pluck(:id).sort
     assert_equal [ users(:other).id ], model.for_account(accounts(:other)).pluck(:id)
     assert_equal User.count, model.count
     assert_not model.new.valid?

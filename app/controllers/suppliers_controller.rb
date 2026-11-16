@@ -1,5 +1,7 @@
 # Epic 8.1: 거래처 관리 컨트롤러
 class SuppliersController < ApplicationController
+  skip_before_action :require_admin, except: [ :new, :create, :edit, :update, :destroy ]
+  before_action :require_staff, except: [ :new, :create, :edit, :update, :destroy ]
   before_action :set_supplier, only: [ :show, :edit, :update, :destroy ]
 
   def index

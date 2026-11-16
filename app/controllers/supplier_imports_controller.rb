@@ -1,4 +1,7 @@
 class SupplierImportsController < ApplicationController
+  skip_before_action :require_admin
+  before_action :require_staff
+
   def index
     @supplier_imports = SupplierImport.order(created_at: :desc).limit(50)
   end

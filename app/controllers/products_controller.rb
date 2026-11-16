@@ -1,14 +1,15 @@
 class ProductsController < ApplicationController
-  skip_before_action :require_admin, only: [ :index, :show ]
+  skip_before_action :require_admin, except: [ :destroy ]
+  before_action :require_staff, except: [ :index, :show, :destroy ]
   before_action :normalize_search_query, only: :index
   before_action :set_product, only: [ :show, :edit, :update, :destroy, :publish, :unpublish ]
 
   def index
-    # 관리자(상품 관리)는 초안까지, 손님은 공개 상품만 본다
-    @products = mall_admin? ? Product.with_attached_image : Product.published.with_attached_image
+    # 관리자·운영자는 초안까지, 손님은 공개 상품만 본다
+    @products = mall_staff? ? Product.with_attached_image : Product.published.with_attached_image
 
     @products = @products.includes(:variants)
-    @products = @products.includes(:worn_character) unless mall_admin?
+    @products = @products.includes(:worn_character) unless mall_staff?
 
     # 카테고리 필터
     @products = @products.where(category: params[:category]) if params[:category].present?
@@ -35,7 +36,7 @@ class ProductsController < ApplicationController
   end
 
   def show
-    raise ActiveRecord::RecordNotFound unless @product.published? || mall_admin?
+    raise ActiveRecord::RecordNotFound unless @product.published? || mall_staff?
 
     @variants = @product.variants
     @selected_variant = @variants.first

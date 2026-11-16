@@ -1,4 +1,6 @@
 class ModelPicksController < ApplicationController
+  skip_before_action :require_admin
+  before_action :require_staff
   before_action :load_candidates
 
   def show

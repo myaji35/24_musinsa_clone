@@ -1,6 +1,8 @@
 # Epic 4.3: 지역 트렌드 대시보드
 # 익명 CRM 데이터를 활용한 지역별, 취향별 인사이트 제공
 class DashboardController < ApplicationController
+  skip_before_action :require_admin
+  before_action :require_staff
   # 대시보드 메인 페이지
   def index
     @period = %w[7 30 90].include?(params[:period]) ? params[:period].to_i : 30

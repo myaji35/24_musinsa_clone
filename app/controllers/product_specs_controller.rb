@@ -1,4 +1,7 @@
 class ProductSpecsController < ApplicationController
+  skip_before_action :require_admin
+  before_action :require_staff
+
   def index
     @products = Product.includes(:variants).order(:id).sort_by { |product| product.product_spec.completion_rate }
     @complete_count = @products.count { |product| product.product_spec.complete? }

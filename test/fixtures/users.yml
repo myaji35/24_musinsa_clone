@@ -20,3 +20,16 @@ other:
   password_digest: <%= BCrypt::Password.create("TestPassword!2026", cost: BCrypt::Engine::MIN_COST) %>
   email: other@example.com
   name: 다른 계정 사용자
+
+operator:
+  role: operator
+  account: jieum
+  password_digest: <%= BCrypt::Password.create("TestPassword!2026", cost: BCrypt::Engine::MIN_COST) %>
+  email: operator@example.com
+  name: 박운영
+
+member:
+  role: member
+  password_digest: <%= BCrypt::Password.create("TestPassword!2026", cost: BCrypt::Engine::MIN_COST) %>
+  email: member@example.com
+  name: 최회원

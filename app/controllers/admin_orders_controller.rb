@@ -1,4 +1,7 @@
 class AdminOrdersController < ApplicationController
+  skip_before_action :require_admin
+  before_action :require_staff
+
   def index
     @orders = Order.recent.includes(:source_character)
     @traffic_summaries = %i[platform character video].index_with { |by| Order.traffic_summary(by: by) }

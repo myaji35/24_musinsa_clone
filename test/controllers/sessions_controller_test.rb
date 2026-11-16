@@ -115,11 +115,21 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "삭제된 사용자의 세션은 접근을 허용하지 않는다" do
-    user = User.create!(email: "removed@example.com", password: "TestPassword!2026")
+    user = User.create!(email: "removed@example.com", password: "TestPassword!2026", role: :admin)
     sign_in(user)
     user.destroy!
     get inventory_scan_path
     assert_redirected_to login_path
+  end
+
+  test "계정 없는 일반 회원은 관리 화면에 접근할 수 없다" do
+    user = User.create!(email: "member-noacct@example.com", password: "TestPassword!2026")
+    post login_path, params: { email: user.email, password: "TestPassword!2026" }
+
+    get inventory_scan_path
+    assert_response :redirect
+    assert_not_equal login_url, response.location
+    assert_not_equal inventory_scan_url, response.location
   end
 end
 

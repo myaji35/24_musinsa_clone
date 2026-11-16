@@ -57,7 +57,7 @@ class ApplicationController < ActionController::Base
   end
 
   def mall_admin?
-    logged_in? && (current_user.account_id.nil? || current_account == Account.primary_or_nil)
+    logged_in? && current_user.admin?
   end
 
   def require_admin

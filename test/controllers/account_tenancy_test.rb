@@ -25,7 +25,7 @@ class AccountTenancyTest < ActionDispatch::IntegrationTest
       assert_response :success
       delete logout_path
     end
-    users(:one).update!(account: nil)
+    users(:one).update!(account: nil, role: :admin)
     sign_in
     get inventory_scan_path
     assert_response :success

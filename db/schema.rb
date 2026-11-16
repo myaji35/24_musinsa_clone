@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_10_000194) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_000001) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -592,10 +592,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_000194) do
     t.string "source"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "expires_at" ], name: "index_stock_holds_on_expires_at"
-    t.index [ "order_id" ], name: "index_stock_holds_on_order_id"
-    t.index [ "token" ], name: "index_stock_holds_on_token", unique: true
-    t.index [ "variant_id" ], name: "index_stock_holds_on_variant_id"
+    t.index ["expires_at"], name: "index_stock_holds_on_expires_at"
+    t.index ["order_id"], name: "index_stock_holds_on_order_id"
+    t.index ["token"], name: "index_stock_holds_on_token", unique: true
+    t.index ["variant_id"], name: "index_stock_holds_on_variant_id"
   end
 
   create_table "stock_logs", force: :cascade do |t|
@@ -701,8 +701,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_000194) do
     t.datetime "updated_at", null: false
     t.string "password_digest"
     t.integer "account_id"
+    t.integer "role", default: 0, null: false
     t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["role"], name: "index_users_on_role"
   end
 
   create_table "variants", force: :cascade do |t|

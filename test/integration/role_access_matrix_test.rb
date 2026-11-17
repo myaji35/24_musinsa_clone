@@ -30,6 +30,7 @@ class RoleAccessMatrixTest < ActionDispatch::IntegrationTest
     [ :get, -> { product_model_pick_path(products(:one)) }, STAFF ],
     [ :get, -> { admin_users_path }, ADMIN ],
     [ :patch, -> { admin_user_path(users(:member)) }, ADMIN ],
+    [ :patch, -> { suspend_admin_user_path(users(:member)) }, ADMIN ],
     [ :get, -> { kpi_path }, ADMIN ],
     [ :get, -> { sales_path }, ADMIN ],
     [ :get, -> { trends_path }, ADMIN ],

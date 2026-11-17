@@ -117,6 +117,39 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_nil session[:user_id]
   end
 
+  test "정지 계정은 비밀번호가 맞아도 로그인할 수 없다" do
+    users(:member).update!(suspended_at: Time.current)
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    assert_response :unprocessable_entity
+    assert_select "[role=alert]", text: "이용이 정지된 계정입니다. 고객센터로 문의해 주세요."
+    assert_nil session[:user_id]
+  end
+
+  test "정지 계정도 비밀번호가 틀리면 일반 로그인 오류만 표시한다" do
+    users(:member).update!(suspended_at: Time.current)
+    post login_path, params: { email: users(:member).email, password: "wrong" }
+    assert_response :unprocessable_entity
+    assert_select "[role=alert]", text: "이메일 또는 비밀번호가 올바르지 않습니다."
+    assert_nil session[:user_id]
+  end
+
+  test "로그인 중 정지된 관리자는 다음 관리 화면 요청에서 로그아웃된다" do
+    sign_in
+    users(:one).update!(suspended_at: Time.current)
+    get admin_users_path
+    assert_redirected_to login_path
+    assert_nil session[:user_id]
+  end
+
+  test "로그인 중 정지된 회원은 다음 공개 화면 요청에서도 로그아웃된다" do
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    assert_redirected_to root_path
+    users(:member).update!(suspended_at: Time.current)
+    get root_path
+    assert_response :success
+    assert_nil session[:user_id]
+  end
+
   test "로그아웃 후 보호된 페이지에 접근할 수 없다" do
     sign_in
     delete logout_path

@@ -69,14 +69,116 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal original, user.attributes.slice("email", "account_id")
   end
 
+  test "이름과 이메일로 사용자를 검색한다" do
+    sign_in
+    [ " 최회원 ", "member@example.com" ].each do |q|
+      get admin_users_path, params: { q: q }
+      assert_response :success
+      assert_select "tbody tr", count: 1
+      assert_select "td", text: users(:member).email
+      assert_select "p", text: "총 1명"
+    end
+  end
+
+  test "역할과 상태 필터를 함께 적용한다" do
+    users(:member).update!(suspended_at: Time.current)
+    sign_in
+    get admin_users_path, params: { role: "member", status: "suspended" }
+    assert_select "tbody tr", count: 1
+    assert_select "td", text: users(:member).email
+    get admin_users_path, params: { role: "member", status: "active" }
+    assert_select "td", text: users(:other).email
+    assert_select "td", text: users(:member).email, count: 0
+    get admin_users_path, params: { role: "admin" }
+    assert_select "tbody tr", count: User.where(role: :admin).count
+    get admin_users_path, params: { role: "owner", status: "invalid" }
+    assert_select "tbody tr", count: User.count
+  end
+
+  test "퍼센트 검색어는 와일드카드가 아니라 문자로 검색한다" do
+    users(:member).update!(name: "100%회원")
+    sign_in
+    get admin_users_path, params: { q: "%" }
+    assert_select "tbody tr", count: 1
+    assert_select "td", text: users(:member).email
+    get admin_users_path, params: { q: "없는 검색어" }
+    assert_select "tbody tr", count: 0
+    assert_select "p", text: "조건에 맞는 사용자가 없습니다."
+  end
+
+  test "검색 결과는 최신 가입 순으로 스무 명씩 나눠 본다" do
+    21.times do |i|
+      User.create!(name: "페이지회원#{i}", email: "page#{i}@example.com",
+        password: "TestPassword!2026", created_at: i.minutes.ago)
+    end
+    sign_in
+    filters = { q: "페이지회원", role: "member", status: "active" }
+    get admin_users_path, params: filters.merge(page: 0)
+    assert_select "tbody tr", count: 20
+    assert_select "tbody tr:first-child td:first-child", text: "페이지회원0"
+    assert_select "p", text: "총 21명"
+    assert_select "a[href=?]", admin_users_path(filters.merge(page: 2)), text: "다음"
+    get admin_users_path, params: filters.merge(page: 2)
+    assert_select "tbody tr", count: 1
+    assert_select "td", text: "page20@example.com"
+    assert_select "a[href=?]", admin_users_path(filters.merge(page: 1)), text: "이전"
+    assert_select "a", text: "다음", count: 0
+  end
+
+  test "회원 정지와 해제 후 검색 조건과 페이지를 유지한다" do
+    sign_in
+    user = users(:member)
+    filters = { q: "회원", role: "member", status: "active", page: "2" }
+    patch suspend_admin_user_path(user), params: filters
+    assert_redirected_to admin_users_path(filters)
+    assert_equal "계정을 정지했습니다.", flash[:notice]
+    assert user.reload.suspended?
+    patch unsuspend_admin_user_path(user), params: filters
+    assert_redirected_to admin_users_path(filters)
+    assert_equal "계정 정지를 해제했습니다.", flash[:notice]
+    assert_nil user.reload.suspended_at
+  end
+
+  test "본인과 다른 관리자 계정은 정지할 수 없다" do
+    sign_in
+    { one: "본인 계정은 정지할 수 없습니다.",
+      two: "관리자 계정은 먼저 역할을 바꾼 뒤 정지해 주세요." }.each do |fixture, message|
+      patch suspend_admin_user_path(users(fixture))
+      assert_redirected_to admin_users_path
+      assert_equal message, flash[:alert]
+      assert_not users(fixture).reload.suspended?
+    end
+    get admin_users_path
+    [ :one, :two ].each do |fixture|
+      assert_select "form[action=?]", suspend_admin_user_path(users(fixture)), count: 0
+    end
+  end
+
+  test "표와 모바일 카드에 정지 상태와 해제 버튼을 표시한다" do
+    users(:member).update!(suspended_at: Time.current)
+    sign_in
+    get admin_users_path
+    [ "table", "ul" ].each do |container|
+      assert_select "#{container} form[action=?]", unsuspend_admin_user_path(users(:member))
+      assert_select container, text: /정지일 #{users(:member).suspended_at.strftime("%Y-%m-%d")}/
+    end
+  end
+
   { operator: :inventory_scan_path, member: :root_path, guest: :login_path }.each do |role, destination|
-    test "#{ { operator: "운영자", member: "회원", guest: "손님" }.fetch(role) }은 사용자 목록과 역할 변경에 접근할 수 없다" do
+    test "#{ { operator: "운영자", member: "회원", guest: "손님" }.fetch(role) }은 사용자 목록과 역할 변경 및 정지와 해제에 접근할 수 없다" do
       post login_path, params: { email: users(role).email, password: "TestPassword!2026" } unless role == :guest
       get admin_users_path
       assert_redirected_to public_send(destination)
       patch admin_user_path(users(:member)), params: { user: { role: "admin" } }
       assert_redirected_to public_send(destination)
       assert users(:member).reload.member?
+      patch suspend_admin_user_path(users(:member))
+      assert_redirected_to public_send(destination)
+      assert_not users(:member).reload.suspended?
+      users(:other).update!(suspended_at: Time.current)
+      patch unsuspend_admin_user_path(users(:other))
+      assert_redirected_to public_send(destination)
+      assert users(:other).reload.suspended?
     end
   end
 end

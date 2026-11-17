@@ -4,7 +4,12 @@ Rails.application.routes.draw do
   post "/webhooks/shopify/orders_create", to: "webhooks/shopify#orders_create"
 
   namespace :admin do
-    resources :users, only: [ :index, :update ]
+    resources :users, only: [ :index, :update ] do
+      member do
+        patch :suspend
+        patch :unsuspend
+      end
+    end
   end
 
   resources :admin_orders, only: :index do

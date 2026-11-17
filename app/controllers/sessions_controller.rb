@@ -10,6 +10,12 @@ class SessionsController < ApplicationController
     user = User.find_by(email: params[:email].to_s.strip.downcase)
 
     if user&.password_digest.present? && user.authenticate(params[:password].to_s)
+      if user.suspended?
+        flash.now[:alert] = "이용이 정지된 계정입니다. 고객센터로 문의해 주세요."
+        render :new, status: :unprocessable_entity
+        return
+      end
+
       return_to = session[:return_to]
       reset_session
       session[:user_id] = user.id

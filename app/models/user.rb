@@ -8,6 +8,10 @@ class User < ApplicationRecord
 
   enum :role, { member: 0, operator: 1, admin: 2 }, default: :member, validate: true
 
+  scope :search, ->(q) { q.present? ? where("users.name LIKE :q ESCAPE '\\' OR users.email LIKE :q ESCAPE '\\'", q: "%#{User.sanitize_sql_like(q.strip)}%") : all }
+
+  def suspended? = suspended_at.present?
+
   validates :password, length: { minimum: 8 }, allow_nil: true
 
   normalizes :email, with: ->(email) { email.strip.downcase }

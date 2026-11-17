@@ -1,7 +1,7 @@
 class MyController < ApplicationController
   skip_before_action :require_admin
   before_action :require_login
-  rate_limit to: 10, within: 3.minutes, only: :update_password
+  rate_limit to: 10, within: 3.minutes, only: [ :update_password, :destroy ]
 
   def show
   end
@@ -46,6 +46,38 @@ class MyController < ApplicationController
     end
 
     render :edit_password, status: :unprocessable_entity
+  end
+
+  def withdraw
+    if current_user.staff?
+      redirect_to my_path, alert: "직원 계정은 관리자에게 삭제를 요청해 주세요."
+      return
+    end
+
+    @user = current_user
+  end
+
+  def destroy
+    if current_user.staff?
+      redirect_to my_path, alert: "직원 계정은 관리자에게 삭제를 요청해 주세요."
+      return
+    end
+
+    withdrawal = params.require(:withdrawal).permit(:password, :reason, :acknowledge)
+    @user = current_user
+    if !@user.authenticate(withdrawal[:password].to_s)
+      @user.errors.add(:base, "비밀번호가 올바르지 않습니다.")
+    elsif withdrawal[:acknowledge] != "1"
+      @user.errors.add(:base, "안내 내용을 확인하고 동의해 주세요.")
+    else
+      reason = withdrawal[:reason].presence_in(MemberWithdrawal::REASONS.keys)
+      @user.withdraw!(reason: reason)
+      reset_session
+      redirect_to root_path, notice: "회원 탈퇴가 완료되었습니다. 그동안 이용해 주셔서 감사합니다."
+      return
+    end
+
+    render :withdraw, status: :unprocessable_entity
   end
 
   def orders

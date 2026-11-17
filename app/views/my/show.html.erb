@@ -15,4 +15,7 @@
     <%= link_to "비밀번호 변경", edit_my_password_path %>
   </p>
   <%= button_to "로그아웃", logout_path, method: :delete, class: "btn btn-primary w-full" %>
+  <% unless current_user.staff? %>
+    <p class="text-xs mt-6"><%= link_to "회원 탈퇴", withdraw_my_path %></p>
+  <% end %>
 </div>

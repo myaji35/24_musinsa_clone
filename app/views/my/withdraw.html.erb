@@ -1,0 +1,34 @@
+<div class="max-w-[400px] mx-auto px-gutter py-8 md:py-12">
+  <nav aria-label="내 계정" class="flex gap-4 text-ui mb-6">
+    <%= link_to "내 정보", my_path %>
+    <%= link_to "내 주문", my_orders_path %>
+  </nav>
+  <h1 class="text-title font-semibold mb-6">회원 탈퇴</h1>
+  <ul class="list-disc pl-5 space-y-2 text-ui mb-6">
+    <li>탈퇴하면 이메일·이름·비밀번호가 즉시 삭제되며 되돌릴 수 없습니다.</li>
+    <li>주문 기록은 전자상거래법에 따라 5년간 보관되며, 회원 계정과의 연결만 끊깁니다. 이후 주문 조회는 비회원 주문조회로 할 수 있습니다.</li>
+    <li>같은 이메일로 다시 가입할 수 있습니다.</li>
+  </ul>
+  <% if @user&.errors&.any? %>
+    <ul role="alert" class="text-ui mb-6">
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+  <%= form_with scope: :withdrawal, url: my_path, method: :delete, class: "space-y-4", data: { turbo_confirm: "정말 탈퇴하시겠습니까?" } do |form| %>
+    <div>
+      <%= form.label :reason, "탈퇴 사유 (선택)", class: "block text-ui font-medium mb-2" %>
+      <%= form.select :reason, MemberWithdrawal::REASONS.map { |value, label| [label, value] }, { include_blank: "선택" }, class: "field" %>
+    </div>
+    <div>
+      <%= form.label :password, "비밀번호", class: "block text-ui font-medium mb-2" %>
+      <%= form.password_field :password, required: true, autocomplete: "current-password", class: "field" %>
+    </div>
+    <%= form.label :acknowledge, class: "flex items-center gap-2 py-2 min-h-11 text-ui" do %>
+      <%= form.check_box :acknowledge, required: true %>
+      위 내용을 확인했으며 탈퇴에 동의합니다
+    <% end %>
+    <%= form.submit "회원 탈퇴", class: "btn btn-secondary w-full" %>
+  <% end %>
+</div>

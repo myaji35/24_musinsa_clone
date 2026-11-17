@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_000003) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_000004) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -334,6 +334,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000003) do
     t.index ["source_type", "source_id", "entry_type"], name: "index_ledger_purchase_source", unique: true, where: "source_id IS NOT NULL AND entry_type = 'purchase'"
     t.index ["source_type", "source_id"], name: "index_ledger_entries_on_source"
     t.index ["supplier_id"], name: "index_ledger_entries_on_supplier_id"
+  end
+
+  create_table "member_withdrawals", force: :cascade do |t|
+    t.datetime "withdrawn_at", null: false
+    t.integer "orders_count", default: 0, null: false
+    t.string "reason", limit: 30
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "notifications", force: :cascade do |t|

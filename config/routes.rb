@@ -63,6 +63,8 @@ Rails.application.routes.draw do
   get "my", to: "my#show", as: :my
   get "my/edit", to: "my#edit", as: :edit_my
   patch "my", to: "my#update"
+  get "my/withdraw", to: "my#withdraw", as: :withdraw_my
+  delete "my", to: "my#destroy"
   get "my/password", to: "my#edit_password", as: :edit_my_password
   patch "my/password", to: "my#update_password", as: :my_password
   get "my/orders", to: "my#orders", as: :my_orders

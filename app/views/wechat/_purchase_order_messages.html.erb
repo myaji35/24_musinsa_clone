@@ -1,11 +1,11 @@
 <section class="container mx-auto px-4 py-8">
   <h2 class="text-xl font-bold">위챗 발송 내역</h2>
   <% if @purchase_order.status == "submitted" %>
-    <%= button_to "위챗 재발송", resend_wechat_purchase_order_path(@purchase_order), method: :post, class: "border rounded p-2" %>
+    <%= button_to "위챗 재발송", resend_wechat_purchase_order_path(@purchase_order), method: :post, class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
   <% end %>
-  <ul>
+  <ul class="space-y-4 mt-4">
     <% @purchase_order.wechat_messages.for_account(current_account || Account.primary).includes(:processed_by, wechat_contact: :supplier).order(:created_at).each do |message| %>
-      <li><%= link_to message.wechat_contact.display_name, wechat_path(message.wechat_contact) %> · <%= message.status %> · <%= l message.created_at, format: :short %> · <%= message.error %><%= render "wechat/message_actions", message: message %></li>
+      <li class="border rounded-lg p-4 min-w-0 break-all"><%= link_to message.wechat_contact.display_name, wechat_path(message.wechat_contact) %> · <%= message.status %> · <%= l message.created_at, format: :short %> · <%= message.error %><%= render "wechat/message_actions", message: message %></li>
     <% end %>
   </ul>
 </section>

@@ -1,10 +1,10 @@
 <% account = current_account || Account.primary %>
-<section class="border rounded-lg p-4 mb-6" aria-label="채널 방식">
-  <h2 class="text-xl font-bold">채널 방식</h2>
-  <%= form_with url: channel_wechat_index_path, method: :patch do |form| %>
-    <%= form.label :wechat_channel_mode, "방식" %>
-    <%= form.select :wechat_channel_mode, [["복사해서 보내기", "manual"], ["맥 위챗 앱", "mac_app"], ["공식계정", "official"]], selected: account.wechat_channel_mode %>
-    <%= form.submit "방식 저장" %>
+<section class="border rounded-lg bg-white p-4 mb-6 break-all" aria-label="채널 방식">
+  <h2 class="text-xl font-bold mb-4">채널 방식</h2>
+  <%= form_with url: channel_wechat_index_path, method: :patch, class: "flex flex-col gap-3 sm:flex-row sm:items-center mb-4" do |form| %>
+    <%= form.label :wechat_channel_mode, "방식", class: "block text-gray-700 text-sm font-bold mb-2 sm:mb-0 shrink-0" %>
+    <%= form.select :wechat_channel_mode, [["복사해서 보내기", "manual"], ["맥 위챗 앱", "mac_app"], ["공식계정", "official"]], { selected: account.wechat_channel_mode }, { class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-auto min-w-0" } %>
+    <%= form.submit "방식 저장", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
   <% end %>
   <% if account.wechat_channel_mode == "manual" %>
     <p>통보문을 복사해 개인 위챗에 보내고 보냈음 표시를 누르세요. 답장은 대화에 붙여넣으세요.</p>
@@ -13,16 +13,16 @@
     <% seen = account.wechat_agent_tokens.active.maximum(:last_seen_at) %>
     <p role="status">에이전트 마지막 접속: <%= seen ? l(seen, format: :short) : "없음" %> <%= "연결 끊김" unless seen && seen >= 5.minutes.ago %></p>
     <% if @raw_token %><p>토큰은 지금 한 번만 표시됩니다. 키체인에 저장하세요.</p><code><%= @raw_token %></code><% end %>
-    <%= form_with url: issue_token_wechat_index_path do |form| %>
-      <%= form.label :name, "에이전트 이름" %><%= form.text_field :name, required: true, maxlength: 100 %><%= form.submit "토큰 발급" %>
+    <%= form_with url: issue_token_wechat_index_path, class: "flex flex-col gap-3 sm:flex-row sm:items-center my-4" do |form| %>
+      <%= form.label :name, "에이전트 이름", class: "block text-gray-700 text-sm font-bold mb-2" %><%= form.text_field :name, required: true, maxlength: 100, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %><%= form.submit "토큰 발급", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
     <% end %>
     <% account.wechat_agent_tokens.active.each do |token| %>
-      <p><%= token.name %><%= button_to "폐기", revoke_token_wechat_index_path(token_id: token.id), method: :delete %></p>
+      <div class="flex flex-wrap items-center gap-3 mt-3"><p><%= token.name %></p><%= button_to "폐기", revoke_token_wechat_index_path(token_id: token.id), method: :delete, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg" %></div>
     <% end %>
   <% end %>
 </section>
 <% if account.wechat_channel_mode == "official" %>
-<section class="border rounded-lg p-4 mb-6" aria-label="위챗 설정 상태">
+<section class="border rounded-lg bg-white p-4 mb-6 break-all" aria-label="위챗 설정 상태">
   <h2 class="text-xl font-bold">위챗 설정</h2>
   <p><% Wechat::Config.status.each do |name, configured| %><%= name %>: <%= configured ? "있음" : "없음" %> · <% end %>발송: <%= Wechat::Config.send_enabled? ? "켜짐" : "꺼짐" %></p>
   <p>서버 URL: <%= Wechat::Config.server_url %></p>

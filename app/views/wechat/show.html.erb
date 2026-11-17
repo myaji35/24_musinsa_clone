@@ -1,21 +1,23 @@
-<main class="container mx-auto px-4 py-8">
+<main class="container mx-auto min-w-0 px-4 py-8">
   <%= link_to "대화 목록", wechat_index_path, class: "underline" %>
-  <h1 class="text-3xl font-bold mb-6"><%= @contact.display_name %></h1>
+  <h1 class="text-3xl font-bold mb-6 break-all"><%= @contact.display_name %></h1>
   <%= render "settings" %>
   <section class="border rounded-lg p-4 mb-6">
     <h2 class="text-xl font-bold">거래처 연결</h2>
-    <%= form_with url: wechat_path(@contact), method: :patch do |form| %>
-      <%= form.label :supplier_id, "거래처" %>
-      <%= form.select :supplier_id, options_from_collection_for_select(@suppliers, :id, :name, @contact.supplier_id), include_blank: "미연결" %>
+    <%= form_with url: wechat_path(@contact), method: :patch, class: "grid grid-cols-1 gap-4 items-end md:grid-cols-3 mt-4" do |form| %>
+      <div class="min-w-0"><%= form.label :supplier_id, "거래처", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.select :supplier_id, options_from_collection_for_select(@suppliers, :id, :name, @contact.supplier_id), { include_blank: "미연결" }, { class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" } %>
+      </div>
       <% unless (current_account || Account.primary).wechat_channel_mode == "official" %>
-        <%= form.label :wechat_display_name, "위챗 표시 이름 (대화방 이름)" %><%= form.text_field :wechat_display_name, value: @contact.wechat_display_name, required: true %>
+        <div class="min-w-0"><%= form.label :wechat_display_name, "위챗 표시 이름 (대화방 이름)", class: "block text-gray-700 text-sm font-bold mb-2" %><%= form.text_field :wechat_display_name, value: @contact.wechat_display_name, required: true, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
       <% end %>
-      <%= form.submit "연결 저장", class: "border rounded p-2" %>
+      <%= form.submit "연결 저장", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
     <% end %>
   </section>
   <ol class="space-y-4 mb-6" aria-label="대화 내역">
     <% @messages.each do |message| %>
-      <li class="border rounded-lg p-4">
+      <li class="border rounded-lg p-4 min-w-0 break-words">
         <p><%= message.direction == "in" ? "담당자" : "관리자" %> · <%= l message.created_at, format: :short %> · <%= message.msg_type %> · <%= message.status %></p>
         <%= render "wechat/message_actions", message: message %>
         <% if message.media_id.present? %><p>미디어 ID: <%= message.media_id %></p><% end %>
@@ -24,14 +26,14 @@
     <% end %>
   </ol>
   <% if (current_account || Account.primary).wechat_channel_mode == "manual" %>
-    <%= form_with url: receive_message_wechat_path(@contact) do |form| %>
-      <%= form.label :content, "받은 메시지 붙여넣기" %><%= form.text_area :content, required: true, maxlength: 2000 %><%= form.submit "답장 기록" %>
+    <%= form_with url: receive_message_wechat_path(@contact), class: "bg-white shadow-md rounded p-4 mb-6 space-y-3" do |form| %>
+      <%= form.label :content, "받은 메시지 붙여넣기", class: "block text-gray-700 text-sm font-bold mb-2" %><%= form.text_area :content, required: true, maxlength: 2000, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %><%= form.submit "답장 기록", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
     <% end %>
   <% end %>
   <% if (current_account || Account.primary).wechat_channel_mode == "official" && !@contact.window_open? %><p role="status"><%= Wechat::Client::WINDOW_CLOSED %></p><% end %>
-  <%= form_with url: send_message_wechat_path(@contact) do |form| %>
-    <%= form.label :content, "메시지 (최대 2000자)" %>
-    <%= form.text_area :content, maxlength: 2000, required: true, rows: 4, class: "block border rounded w-full p-2" %>
-    <%= form.submit "위챗 보내기", class: "border rounded p-2 mt-2" %>
+  <%= form_with url: send_message_wechat_path(@contact), class: "bg-white shadow-md rounded p-4 space-y-3" do |form| %>
+    <%= form.label :content, "메시지 (최대 2000자)", class: "block text-gray-700 text-sm font-bold mb-2" %>
+    <%= form.text_area :content, maxlength: 2000, required: true, rows: 4, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    <%= form.submit "위챗 보내기", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
   <% end %>
 </main>

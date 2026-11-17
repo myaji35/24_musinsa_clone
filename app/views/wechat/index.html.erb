@@ -1,22 +1,34 @@
-<main class="container mx-auto px-4 py-8">
+<main class="container mx-auto min-w-0 px-4 py-8">
   <h1 class="text-3xl font-bold mb-6">위챗 대화</h1>
   <%= render "settings" %>
   <% unless (current_account || Account.primary).wechat_channel_mode == "official" %>
-    <%= form_with url: wechat_index_path do |form| %>
-      <%= form.label :supplier_id, "거래처" %><%= form.collection_select :supplier_id, supplier_scope.order(:name), :id, :name, include_blank: "미연결" %>
-      <%= form.label :wechat_display_name, "위챗 표시 이름 (대화방 이름)" %><%= form.text_field :wechat_display_name, required: true %>
-      <%= form.submit "대화 상대 추가" %>
+    <%= form_with url: wechat_index_path, class: "grid grid-cols-1 gap-4 items-end md:grid-cols-3 bg-white shadow-md rounded p-4 mb-6" do |form| %>
+      <div class="min-w-0"><%= form.label :supplier_id, "거래처", class: "block text-gray-700 text-sm font-bold mb-2" %><%= form.collection_select :supplier_id, supplier_scope.order(:name), :id, :name, { include_blank: "미연결" }, { class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" } %></div>
+      <div class="min-w-0"><%= form.label :wechat_display_name, "위챗 표시 이름 (대화방 이름)", class: "block text-gray-700 text-sm font-bold mb-2" %><%= form.text_field :wechat_display_name, required: true, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %></div>
+      <%= form.submit "대화 상대 추가", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
     <% end %>
   <% end %>
-  <ul class="space-y-4">
-    <% @contacts.each do |contact| %>
-      <li class="border rounded-lg p-4">
-        <h2><%= link_to contact.display_name, wechat_path(contact), class: "font-bold underline" %></h2>
-        <p><%= contact.nickname %> <%= "미연결 담당자" unless contact.supplier %> · <%= contact.subscribed? ? "구독 중" : "구독 해제" %></p>
-        <p><%= truncate(contact.latest_message&.content, length: 100) %></p>
-        <p>안 읽음 <%= contact.unread_count %> <% if (current_account || Account.primary).wechat_channel_mode == "official" %>· <%= contact.window_open? ? "48시간 창 남은 시간: #{distance_of_time_in_words(Time.current, contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %><% end %></p>
-      </li>
-    <% end %>
-  </ul>
+  <div class="max-w-full overflow-x-auto rounded-lg border mb-6">
+    <table class="w-full table-fixed text-left text-sm">
+      <thead class="bg-gray-50 text-gray-700">
+        <tr>
+          <% ["거래처", "대화방 이름", "마지막 메시지", "안 읽은 수", "48시간 창/방식"].each do |heading| %>
+            <th scope="col" class="p-2 sm:p-4 break-words"><%= heading %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="divide-y">
+        <% @contacts.each do |contact| %>
+          <tr class="align-top">
+            <td class="p-2 sm:p-4 break-all"><%= link_to contact.display_name, wechat_path(contact), class: "font-bold text-blue-600 hover:text-blue-800 underline" %></td>
+            <td class="p-2 sm:p-4 break-all"><%= contact.wechat_display_name.presence || contact.nickname %><p><%= "미연결 담당자" unless contact.supplier %> · <%= contact.subscribed? ? "구독 중" : "구독 해제" %></p></td>
+            <td class="p-2 sm:p-4 break-all"><%= truncate(contact.latest_message&.content, length: 100) %></td>
+            <td class="p-2 sm:p-4 break-words">안 읽음 <%= contact.unread_count %></td>
+            <td class="p-2 sm:p-4 break-all"><% if (current_account || Account.primary).wechat_channel_mode == "official" %><%= contact.window_open? ? "48시간 창 남은 시간: #{distance_of_time_in_words(Time.current, contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %><% else %><%= (current_account || Account.primary).wechat_channel_mode == "manual" ? "복사해서 보내기" : "맥 위챗 앱" %><% end %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
   <% if @contacts.empty? %><p>대화 상대를 추가하거나 채널 안내에 따라 첫 메시지를 받아 주세요.</p><% end %>
 </main>

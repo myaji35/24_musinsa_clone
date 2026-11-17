@@ -8,9 +8,12 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     User.find_each do |user|
       assert_select "td", text: user.email
-      assert_select "form[action=?]", admin_user_path(user) do
+      assert_select "table form[action=?]", admin_user_path(user) do
         assert_select "select[name='user[role]'] option", count: 3
         assert_select "input[value='변경']"
+      end
+      assert_select "ul form[action=?]", admin_user_path(user) do
+        assert_select "select[name='user[role]'] option", count: 3
       end
     end
     assert_select "td", text: "몰"

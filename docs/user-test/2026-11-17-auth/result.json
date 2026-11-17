@@ -1,0 +1,292 @@
+{
+  "base": "http://127.0.0.1:3073",
+  "startedAt": "2026-11-17T00:23:29.727Z",
+  "roles": {
+    "guest": {
+      "success": true,
+      "steps": [
+        {
+          "name": "home",
+          "success": true,
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "home-1440",
+          "success": true,
+          "width": 1440,
+          "height": 900,
+          "screenshot": "guest-home-1440.png",
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "home-375",
+          "success": true,
+          "width": 375,
+          "height": 812,
+          "screenshot": "guest-home-375.png",
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 375
+        },
+        {
+          "name": "login",
+          "success": true,
+          "url": "http://127.0.0.1:3073/login",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "login-1440",
+          "success": true,
+          "width": 1440,
+          "height": 900,
+          "screenshot": "guest-login-1440.png",
+          "url": "http://127.0.0.1:3073/login",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "login-375",
+          "success": true,
+          "width": 375,
+          "height": 812,
+          "screenshot": "guest-login-375.png",
+          "url": "http://127.0.0.1:3073/login",
+          "httpStatus": 200,
+          "scrollWidth": 375
+        },
+        {
+          "name": "join",
+          "success": true,
+          "url": "http://127.0.0.1:3073/join",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "join-1440",
+          "success": true,
+          "width": 1440,
+          "height": 900,
+          "screenshot": "guest-join-1440.png",
+          "url": "http://127.0.0.1:3073/join",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "join-375",
+          "success": true,
+          "width": 375,
+          "height": 812,
+          "screenshot": "guest-join-375.png",
+          "url": "http://127.0.0.1:3073/join",
+          "httpStatus": 200,
+          "scrollWidth": 375
+        }
+      ]
+    },
+    "member": {
+      "success": true,
+      "steps": [
+        {
+          "name": "join",
+          "success": true,
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "product",
+          "success": true,
+          "url": "http://127.0.0.1:3073/products/234",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "cart",
+          "success": true,
+          "url": "http://127.0.0.1:3073/cart",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "checkout",
+          "success": true,
+          "url": "http://127.0.0.1:3073/orders/CHK-20261117-33DFA57A",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "order-complete-1440",
+          "success": true,
+          "width": 1440,
+          "height": 900,
+          "screenshot": "member-order-complete-1440.png",
+          "url": "http://127.0.0.1:3073/orders/CHK-20261117-33DFA57A",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "order-complete-375",
+          "success": true,
+          "width": 375,
+          "height": 812,
+          "screenshot": "member-order-complete-375.png",
+          "url": "http://127.0.0.1:3073/orders/CHK-20261117-33DFA57A",
+          "httpStatus": 200,
+          "scrollWidth": 375
+        },
+        {
+          "name": "my-orders",
+          "success": true,
+          "url": "http://127.0.0.1:3073/my/orders",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "my-orders-1440",
+          "success": true,
+          "width": 1440,
+          "height": 900,
+          "screenshot": "member-my-orders-1440.png",
+          "url": "http://127.0.0.1:3073/my/orders",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "my-orders-375",
+          "success": true,
+          "width": 375,
+          "height": 812,
+          "screenshot": "member-my-orders-375.png",
+          "url": "http://127.0.0.1:3073/my/orders",
+          "httpStatus": 200,
+          "scrollWidth": 375
+        },
+        {
+          "name": "inventory-denied",
+          "success": true,
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        }
+      ]
+    },
+    "operator": {
+      "success": true,
+      "steps": [
+        {
+          "name": "login",
+          "success": true,
+          "url": "http://127.0.0.1:3073/inventory/scan",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "home",
+          "success": true,
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "menu-1440",
+          "success": true,
+          "width": 1440,
+          "height": 900,
+          "screenshot": "operator-menu-1440.png",
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "menu-375",
+          "success": true,
+          "width": 375,
+          "height": 812,
+          "screenshot": "operator-menu-375.png",
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 375
+        },
+        {
+          "name": "kpi-denied",
+          "success": true,
+          "url": "http://127.0.0.1:3073/inventory/scan",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        }
+      ]
+    },
+    "admin": {
+      "success": true,
+      "steps": [
+        {
+          "name": "login",
+          "success": true,
+          "url": "http://127.0.0.1:3073/inventory/scan",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "users",
+          "success": true,
+          "url": "http://127.0.0.1:3073/admin/users",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "users-1440",
+          "success": true,
+          "width": 1440,
+          "height": 900,
+          "screenshot": "admin-users-1440.png",
+          "url": "http://127.0.0.1:3073/admin/users",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "users-375",
+          "success": true,
+          "width": 375,
+          "height": 812,
+          "screenshot": "admin-users-375.png",
+          "url": "http://127.0.0.1:3073/admin/users",
+          "httpStatus": 200,
+          "scrollWidth": 375
+        },
+        {
+          "name": "home",
+          "success": true,
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "menu-1440",
+          "success": true,
+          "width": 1440,
+          "height": 900,
+          "screenshot": "admin-menu-1440.png",
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 1440
+        },
+        {
+          "name": "menu-375",
+          "success": true,
+          "width": 375,
+          "height": 812,
+          "screenshot": "admin-menu-375.png",
+          "url": "http://127.0.0.1:3073/",
+          "httpStatus": 200,
+          "scrollWidth": 375
+        }
+      ]
+    }
+  },
+  "finishedAt": "2026-11-17T00:23:39.645Z"
+}

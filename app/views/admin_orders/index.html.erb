@@ -6,6 +6,7 @@
       <% { platform: "플랫폼별", character: "캐릭터별", video: "영상별" }.each do |by, title| %>
         <div class="rounded border p-3">
           <h3 class="font-semibold mb-2"><%= title %></h3>
+          <div class="overflow-x-auto">
           <table class="w-full text-left text-sm">
             <thead><tr><th>유입원</th><th>주문 수</th><th>매출 합계</th></tr></thead>
             <tbody>
@@ -17,10 +18,12 @@
               <% end %>
             </tbody>
           </table>
+          </div>
         </div>
       <% end %>
     </div>
   </section>
+  <div class="hidden lg:block">
   <table class="w-full text-left"><thead><tr><th>주문번호</th><th>상태</th><th>유입</th><th>처리</th></tr></thead><tbody>
     <% @orders.each do |order| %>
       <tr><td><%= order.order_number %></td><td><%= order.status %></td><td>
@@ -32,4 +35,24 @@
       </td></tr>
     <% end %>
   </tbody></table>
+  </div>
+  <ul class="lg:hidden space-y-4">
+    <% @orders.each do |order| %>
+      <li class="rounded border p-4 space-y-3">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0 break-words font-semibold"><%= order.order_number %></div>
+          <div class="shrink-0"><%= order.status %></div>
+        </div>
+        <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+          <dt>유입</dt>
+          <dd class="min-w-0 break-words"><%= [order.source_platform, order.source_character&.name, order.source_video_id].compact_blank.join(" · ").presence || "직접" %></dd>
+        </dl>
+        <div class="flex flex-wrap gap-2">
+          <% if order.status == "pending" %>
+            <%= button_to "입금 확인", confirm_payment_admin_order_path(order), method: :patch, data: { turbo_confirm: "입금을 확인하여 결제 완료 처리하시겠습니까?" }, class: "min-h-11 inline-flex items-center px-3" %>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
 </div>

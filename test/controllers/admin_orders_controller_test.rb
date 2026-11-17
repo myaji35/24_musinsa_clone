@@ -19,7 +19,7 @@ class AdminOrdersControllerTest < ActionDispatch::IntegrationTest
     order.update!(status: "pending")
     get admin_orders_path
     assert_response :success
-    assert_select "button", text: "입금 확인"
+    assert_select "table button", text: "입금 확인"
     patch confirm_payment_admin_order_path(order)
     assert_redirected_to admin_orders_path
     assert_equal "paid", order.reload.status

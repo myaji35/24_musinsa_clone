@@ -77,6 +77,26 @@ class RoleMenuTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "운영자 거래처 목록에는 거래처 등록과 비활성화 링크가 없다" do
+    login_as(:operator)
+    get suppliers_path
+    assert_response :success
+    assert_select "a", text: "거래처 등록", count: 0
+    assert_select "a", text: "비활성화", count: 0
+  end
+
+  test "관리자 거래처 목록에는 거래처 등록과 비활성화 링크가 있다" do
+    login_as(:one)
+    get suppliers_path
+    assert_response :success
+    assert_select "a[href=?]", new_supplier_path, text: "거래처 등록", count: 1
+    [ "table", "ul.lg\\:hidden" ].each do |selector|
+      assert_select selector do
+        assert_select "a[href=?]", supplier_path(suppliers(:one)), text: "비활성화", count: 1
+      end
+    end
+  end
+
   private
 
   def login_as(fixture)

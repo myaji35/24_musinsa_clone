@@ -40,6 +40,12 @@ class WechatWebhookTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "HEAD with an invalid signature does not create messages" do
+    assert_no_difference "WechatMessage.count" do
+      head wechat_webhook_path, params: callback_params.merge(signature: "bad")
+    end
+  end
+
   test "plaintext CDATA persists in primary tenant and repeated MsgId is ignored" do
     assert_difference "WechatMessage.count", 1 do
       2.times { deliver(xml); assert_response :success; assert_equal "success", response.body }

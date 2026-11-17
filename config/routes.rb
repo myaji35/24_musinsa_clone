@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "home#index"
-  match "/webhooks/wechat", to: "webhooks/wechat#receive", via: [ :get, :post ], as: :wechat_webhook
+  get "/webhooks/wechat", to: "webhooks/wechat#verify", as: :wechat_webhook
+  post "/webhooks/wechat", to: "webhooks/wechat#receive"
   resources :wechat, only: [ :index, :show, :update, :create ], controller: :wechat do
     member do
       post :send_message

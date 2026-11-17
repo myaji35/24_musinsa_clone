@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
   test "거래처 목록과 생성 수정은 현재 계정으로 제한된다" do
@@ -124,6 +125,8 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
 
   # POST /purchase_orders/:id/submit
   test "should submit purchase_order" do
+    original_address = ENV["SMTP_ADDRESS"]
+    ENV["SMTP_ADDRESS"] = "smtp.example.test"
     assert_enqueued_jobs 1, only: ActionMailer::MailDeliveryJob do
       post submit_purchase_order_url(@purchase_order)
     end
@@ -131,6 +134,42 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     @purchase_order.reload
     assert_equal "submitted", @purchase_order.status
     assert_redirected_to purchase_order_path(@purchase_order)
+  ensure
+    original_address.nil? ? ENV.delete("SMTP_ADDRESS") : ENV["SMTP_ADDRESS"] = original_address
+  end
+
+  test "submit skips confirmation mail without SMTP configuration" do
+    original_address = ENV.delete("SMTP_ADDRESS")
+    assert_no_enqueued_jobs only: ActionMailer::MailDeliveryJob do
+      post submit_purchase_order_url(@purchase_order)
+    end
+    assert_redirected_to purchase_order_path(@purchase_order)
+    assert_equal "submitted", @purchase_order.reload.status
+  ensure
+    original_address.nil? ? ENV.delete("SMTP_ADDRESS") : ENV["SMTP_ADDRESS"] = original_address
+  end
+
+  test "mail enqueue failure preserves submission" do
+    original_address = ENV["SMTP_ADDRESS"]
+    ENV["SMTP_ADDRESS"] = "smtp.example.test"
+    NotificationMailer.stub(:purchase_order_confirmation, ->(**) { raise "queue unavailable" }) do
+      post submit_purchase_order_url(@purchase_order)
+    end
+    assert_redirected_to purchase_order_path(@purchase_order)
+    assert_equal "submitted", @purchase_order.reload.status
+  ensure
+    original_address.nil? ? ENV.delete("SMTP_ADDRESS") : ENV["SMTP_ADDRESS"] = original_address
+  end
+
+  test "purchase order statuses use Korean labels on index and detail" do
+    { "draft" => "작성 중", "submitted" => "제출됨", "confirmed" => "확정됨",
+      "received" => "입고됨", "cancelled" => "취소됨" }.each do |status, label|
+      @purchase_order.update!(status: status)
+      [ purchase_orders_path, purchase_order_path(@purchase_order) ].each do |path|
+        get path
+        assert_select "span", text: label
+      end
+    end
   end
 
   # POST /purchase_orders/:id/submit - Fail (not draft)

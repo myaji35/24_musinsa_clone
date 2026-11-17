@@ -56,12 +56,7 @@ class PurchaseOrdersController < ApplicationController
   # 발주서 제출 (거래처에게 발송)
   def submit
     if @purchase_order.submit!
-      # 거래처에게 확인 이메일 발송
-      NotificationMailer.purchase_order_confirmation(
-        purchase_order: @purchase_order,
-        supplier: @purchase_order.supplier
-      ).deliver_later
-
+      send_confirmation_email
       Wechat::PurchaseOrderNotifier.enqueue(@purchase_order, sent_by: current_user)
 
       # Slack 알림 (내부 모니터링)
@@ -118,6 +113,20 @@ class PurchaseOrdersController < ApplicationController
   end
 
   private
+
+  def send_confirmation_email
+    if ENV["SMTP_ADDRESS"].blank?
+      Rails.logger.info "PO 확인 메일 생략: SMTP_ADDRESS 미설정"
+      return
+    end
+
+    NotificationMailer.purchase_order_confirmation(
+      purchase_order: @purchase_order,
+      supplier: @purchase_order.supplier
+    ).deliver_later
+  rescue StandardError
+    Rails.logger.warn "PO 확인 메일 작업 등록 실패"
+  end
 
   def set_purchase_order
     @purchase_order = PurchaseOrder.where(supplier_id: supplier_scope.select(:id)).find(params[:id])

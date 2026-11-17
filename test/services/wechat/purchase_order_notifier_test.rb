@@ -26,6 +26,36 @@ class WechatPurchaseOrderNotifierTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "manual and mac app messages appear immediately after submission" do
+    sign_in
+    %w[manual mac_app].each do |mode|
+      @po.supplier.account.update!(wechat_channel_mode: mode)
+      @po.reload.update!(status: "draft")
+      assert_difference "WechatMessage.count", 1 do
+        assert_no_enqueued_jobs only: WechatPurchaseOrderJob do
+          post submit_purchase_order_path(@po)
+        end
+      end
+      message = @po.wechat_messages.order(:id).last
+      assert_includes %w[pending_manual awaiting_approval], message.status
+      follow_redirect!
+      assert_response :success
+      assert_select "h2", text: "위챗 발송 내역"
+      assert_select "a[href=?]", wechat_path(@contact)
+      assert_includes response.body, @po.order_number
+    end
+  end
+
+  test "synchronous notification failure preserves submission" do
+    sign_in
+    @po.supplier.account.update!(wechat_channel_mode: "manual")
+    Wechat::PurchaseOrderNotifier.stub(:call, ->(*) { raise "creation failed" }) do
+      post submit_purchase_order_path(@po)
+    end
+    assert_redirected_to purchase_order_path(@po)
+    assert_equal "submitted", @po.reload.status
+  end
+
   test "notifier includes bilingual order details and full confirmation URL" do
     client = Object.new
     sent = []

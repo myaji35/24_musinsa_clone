@@ -32,7 +32,7 @@
               when "cancelled" then "bg-red-100 text-red-800"
               end %>
             <span class="px-3 py-1 inline-flex text-sm font-semibold rounded-full <%= status_class %>">
-              <%= @purchase_order.status %>
+              <%= purchase_order_status_label(@purchase_order.status) %>
             </span>
           </div>
           <div>

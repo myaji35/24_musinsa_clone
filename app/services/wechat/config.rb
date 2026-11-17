@@ -18,7 +18,7 @@ module Wechat
     end
 
     def self.server_url
-      Rails.application.routes.url_helpers.wechat_webhook_url(**(ENV["APP_HOST"].present? ? { host: ENV["APP_HOST"] } : Rails.application.config.action_mailer.default_url_options.symbolize_keys))
+      Rails.application.routes.url_helpers.wechat_webhook_url(**(ENV["APP_HOST"].present? ? { host: ENV["APP_HOST"], protocol: Rails.application.config.action_mailer.default_url_options[:protocol] } : Rails.application.config.action_mailer.default_url_options.symbolize_keys))
     end
   end
 end

@@ -133,6 +133,10 @@ class PurchaseOrderTest < ActiveSupport::TestCase
     assert_equal "http://localhost:3053/po/confirm/#{po.confirmation_token}", po.confirmation_url
     ENV["APP_HOST"] = "orders.example.test"
     assert_equal "http://orders.example.test/po/confirm/#{po.confirmation_token}", po.confirmation_url
+    Rails.application.config.action_mailer.default_url_options = { host: "jieum.158.247.235.31.nip.io", protocol: "https" }
+    assert_equal "https://orders.example.test/po/confirm/#{po.confirmation_token}", po.confirmation_url
+    ENV.delete("APP_HOST")
+    assert_equal "https://jieum.158.247.235.31.nip.io/po/confirm/#{po.confirmation_token}", po.confirmation_url
   ensure
     Rails.application.config.action_mailer.default_url_options = original_options
     original_host.nil? ? ENV.delete("APP_HOST") : ENV["APP_HOST"] = original_host

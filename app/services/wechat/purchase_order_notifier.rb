@@ -17,9 +17,13 @@ module Wechat
 
     def self.enqueue(purchase_order, sent_by:)
       return unless purchase_order.supplier.wechat_contacts.exists?
-      WechatPurchaseOrderJob.perform_later(purchase_order.id, sent_by&.id)
+      if purchase_order.supplier.account.wechat_channel_mode == "official"
+        WechatPurchaseOrderJob.perform_later(purchase_order.id, sent_by&.id)
+      else
+        call(purchase_order, sent_by: sent_by)
+      end
     rescue StandardError
-      Rails.logger.warn("위챗 발주 알림 작업 등록 실패")
+      Rails.logger.warn("위챗 발주 알림 생성 또는 작업 등록 실패")
     end
   end
 end

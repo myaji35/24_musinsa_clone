@@ -98,7 +98,7 @@ class PurchaseOrder < ApplicationRecord
   def confirmation_url
     Rails.application.routes.url_helpers.confirm_purchase_order_url(
       token: confirmation_token,
-      **(ENV["APP_HOST"].present? ? { host: ENV["APP_HOST"] } : Rails.application.config.action_mailer.default_url_options.symbolize_keys)
+      **(ENV["APP_HOST"].present? ? { host: ENV["APP_HOST"], protocol: Rails.application.config.action_mailer.default_url_options[:protocol] } : Rails.application.config.action_mailer.default_url_options.symbolize_keys)
     )
   end
 

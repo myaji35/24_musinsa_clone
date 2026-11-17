@@ -7,6 +7,9 @@ class RoleFlowsTest < ApplicationSystemTestCase
     fill_in "이메일", with: "role-flow-#{SecureRandom.hex(6)}@example.com"
     fill_in "비밀번호", with: "TestPassword!2026", exact: true
     fill_in "비밀번호 확인", with: "TestPassword!2026"
+    check "[필수] 이용약관에 동의합니다"
+    check "[필수] 개인정보 수집·이용에 동의합니다"
+    check "[필수] 만 14세 이상입니다"
     click_button "회원가입"
     assert_current_path root_path
     within('nav[aria-label="계정 메뉴"]') { assert_text "가입 테스트" }

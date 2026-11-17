@@ -42,6 +42,39 @@ class MemberSignupsControllerTest < ActionDispatch::IntegrationTest
     assert_signup_rejected(name: "   ")
   end
 
+  {
+    terms_agreement: "이용약관에 동의해 주세요.",
+    privacy_agreement: "개인정보 수집·이용에 동의해 주세요.",
+    age_confirmation: "만 14세 이상만 가입할 수 있습니다."
+  }.each do |consent, message|
+    test "#{message} 동의가 누락되면 가입할 수 없다" do
+      assert_signup_rejected(**{ consent => nil })
+      assert_select "[role=alert] li", text: message
+      ([ :terms_agreement, :privacy_agreement, :age_confirmation ] - [ consent ]).each do |retained|
+        assert_select "input[name='member[#{retained}]'][checked]"
+      end
+    end
+  end
+
+  test "이름과 필수 동의를 누락하면 모든 오류를 함께 표시한다" do
+    assert_signup_rejected(name: nil, terms_agreement: nil, privacy_agreement: nil, age_confirmation: nil)
+    assert_select "[role=alert] li", text: /을 입력해 주세요\./
+    assert_select "[role=alert] li", text: "이용약관에 동의해 주세요."
+    assert_select "[role=alert] li", text: "개인정보 수집·이용에 동의해 주세요."
+    assert_select "[role=alert] li", text: "만 14세 이상만 가입할 수 있습니다."
+  end
+
+  test "회원가입에 성공하면 필수 동의 시각을 저장한다" do
+    freeze_time do
+      post_signup
+      assert_redirected_to root_path
+      user = User.find_by!(email: "new-member@example.com")
+      assert_equal Time.current, user.terms_agreed_at
+      assert_equal Time.current, user.privacy_agreed_at
+      assert_equal Time.current, user.age_confirmed_at
+    end
+  end
+
   test "로그인한 사용자가 가입 화면에 접근하면 홈으로 이동한다" do
     sign_in
     get join_path
@@ -69,7 +102,8 @@ class MemberSignupsControllerTest < ActionDispatch::IntegrationTest
   def post_signup(**overrides)
     post join_path, params: { member: {
       name: "새 회원", email: "new-member@example.com",
-      password: "TestPassword!2026", password_confirmation: "TestPassword!2026"
+      password: "TestPassword!2026", password_confirmation: "TestPassword!2026",
+      terms_agreement: "1", privacy_agreement: "1", age_confirmation: "1"
     }.merge(overrides) }
   end
 

@@ -52,7 +52,7 @@ node docs/manual/build/capture.mjs http://localhost:3053
 
 `BASE_URL`은 첫 번째 위치 인자이며 생략하면 `http://localhost:3053`이다. 1366×900 CSS px, 배율 2로 캡처한다. 인증 정보를 출력하거나 파일로 저장하지 않는다. 대화 상세에 들어가면 앱 규칙대로 읽음 처리가 된다. 다시 안 읽음 예시가 필요하면 운영 DB가 아닌 개발 예시에서 준비한다.
 
-`screens.json`은 장·주소·캡처 영역·번호별 locator를 정의한다. `{submitted_po_id}` 같은 치환은 URL과 선택자 모두 지원한다. `clip: "main"`은 바깥 레이아웃의 `body > main`, 다른 문자열은 CSS/Playwright 선택자다. `menu-row`는 판매현황부터 `menuEnd`(현재 클레임)까지 캡처한다. 6장은 거래처 연결·대화 내역과 두 메시지 폼을 각각 캡처한다. `clipMaxWidth`는 왼쪽 기준 최대 폭이며 8장은 900px 안에 입금 확인 버튼이 들어오는지 검증한다. callout은 `selector` 또는 정확히 일치하는 `text`를 지정한다.
+`screens.json`은 장·주소·캡처 영역·번호별 locator를 정의한다. `{submitted_po_id}` 같은 치환은 URL과 선택자 모두 지원한다. `clip: "main"`은 바깥 레이아웃의 `body > main`, 다른 문자열은 CSS/Playwright 선택자다. `menu-row`는 판매현황부터 `menuEnd`(현재 클레임)까지 캡처한다. 6장은 거래처 연결·대화 내역과 두 메시지 폼을 각각 캡처한다. `clipMaxWidth`는 왼쪽 기준 최대 폭이며 8장은 900px 안에 입금 확인 버튼이 들어오는지 검증한다. `actions: [{"click": "선택자"}]`로 캡처 전에 버튼을 눌러 패널을 열 수 있다. 0장의 `ch0-feedback`은 의견 패널을 연 상태를 캡처한다. callout은 `selector` 또는 정확히 일치하는 `text`를 지정한다.
 
 선택자는 `app/views/layouts/application.html.erb`, `suppliers/new`, `purchase_orders/{new,show}`, `wechat/{index,show,_settings,_message_actions,_purchase_order_messages}`, `admin_orders/index`, `sales/index`를 기준으로 정했다. 누락된 callout만 경고하고 계속하며, 인증 실패·화면 이동 실패·캡처 영역 누락은 중단한다. 앱의 버튼을 눌러 상태를 변경하지 않는다.
 

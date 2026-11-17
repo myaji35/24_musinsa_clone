@@ -17,7 +17,8 @@ OUT = MANUAL / 'out'
 WORK = HERE / 'out' / 'pdf'
 SHOTS = HERE / 'out' / 'shots'
 ANNOTATED = HERE / 'out' / 'annotated'
-NAME = 'JIEUM_운영자매뉴얼_v1.0'
+VERSION = '1.1'
+NAME = f'JIEUM_운영자매뉴얼_v{VERSION}'
 FONT = Path('/Volumes/E_SSD/02_GitHub.nosync/0058_insuPro/videos/shorts/engine/fonts')
 CIRCLES = '①②③④⑤⑥⑦⑧⑨⑩'
 
@@ -34,7 +35,7 @@ def inline(text):
                    for p in parts)
 
 
-def blocks(lines, questions=False):
+def blocks(lines):
     result = []
     i = 0
     while i < len(lines):
@@ -63,10 +64,7 @@ def blocks(lines, questions=False):
             result.append('</ol>')
             continue
         if line.startswith('- '):
-            if questions:
-                result.append('<div class="question"><p>' + inline(line[2:]) + '</p>' + writing_lines(4) + '</div>')
-            else:
-                result.append('<p class="bullet">• ' + inline(line[2:]) + '</p>')
+            result.append('<p class="bullet">• ' + inline(line[2:]) + '</p>')
         elif line.startswith('확인할 것:'):
             result.append('<aside class="caution"><b>주의</b><p>' + inline(line) + '</p></aside>')
         elif line == '따라 하기':
@@ -77,26 +75,14 @@ def blocks(lines, questions=False):
     return ''.join(result)
 
 
-def writing_lines(n):
-    return '<div class="writing">' + '<div></div>' * n + '</div>'
-
-
-def feedback():
-    return ('<aside class="feedback"><h2>의견란</h2>'
-            '<p>□ 이 장만 보고 끝까지 할 수 있었다　□ 일부 막혔다　□ 못 했다</p>'
-            '<p>막힌 단계 번호: ____</p><p>헷갈린 말·버튼:</p>' + writing_lines(2) +
-            '<p>더 나은 방법:</p>' + writing_lines(2) +
-            '<p class="signature">작성자: __________________　 날짜: __________________</p></aside>')
-
-
 def parse():
     text = (MANUAL / 'operator-manual.md').read_text(encoding='utf-8')
     pieces = re.split(r'^## (\d+)\. (.+)\n', text, flags=re.M)
     chapters = []
     for i in range(1, len(pieces), 3):
         chapters.append({'n': int(pieces[i]), 'title': pieces[i + 1], 'lines': pieces[i + 2].splitlines()})
-    if [c['n'] for c in chapters] != list(range(13)):
-        raise RuntimeError('원고에는 0~12장이 순서대로 있어야 합니다')
+    if [c['n'] for c in chapters] != list(range(12)):
+        raise RuntimeError('원고에는 0~11장이 순서대로 있어야 합니다')
     return pieces[0], chapters
 
 
@@ -233,40 +219,40 @@ def chapter_html(chapter, screens):
     if summary:
         result += '<div class="summary">' + ''.join('<p>' + inline(s) + '</p>' for s in summary) + '</div>'
     chunks = '\n'.join(body).split('@@FIGURES@@')
-    result += blocks(chunks[0].splitlines(), questions=n == 12)
+    result += blocks(chunks[0].splitlines())
     if len(chunks) > 1:
         result += '<h2>화면과 포인트</h2>' + figures(n, points, screens)
-        result += blocks(chunks[1].splitlines(), questions=n == 12)
+        result += blocks(chunks[1].splitlines())
     elif any(s['chapter'] == n for s in screens):
         result += '<h2>화면과 포인트</h2>' + figures(n, points, screens)
-    return result + feedback() + '</section>'
+    return result + '</section>'
 
 
 def stylesheet():
     fonts = '\n'.join(f'@font-face{{font-family:Pretendard;src:url("{(FONT / ("Pretendard-" + face + ".otf")).as_uri()}");font-weight:{weight};}}' for face, weight in [('SemiBold', 600), ('Bold', 700), ('ExtraBold', 800)])
     return fonts + '''
-@page{size:A4;margin:20mm 18mm}*{box-sizing:border-box}html{color:#181818;background:white;font-family:'Apple SD Gothic Neo',sans-serif;font-size:10.5pt;line-height:1.65;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{margin:0}h1,h2,h3,.chapter-number,.wordmark{font-family:Pretendard,'Apple SD Gothic Neo',sans-serif}h1{font-size:26pt;font-weight:800;line-height:1.3;margin:0}h2{font-size:13pt;font-weight:700;margin:7mm 0 3mm;break-after:avoid}p{margin:2.5mm 0}strong{font-weight:700}code{font-family:Menlo,monospace;font-size:.92em;background:#f1f1f1;padding:0 1mm;overflow-wrap:anywhere}.cover,.front,.toc,.chapter{break-before:page}.cover{height:250mm;position:relative;padding-top:24mm;color:#1F2A44}.wordmark{font-size:30pt;letter-spacing:.3em;font-weight:600}.cover-rule{width:22mm;border-top:3px solid #C8102E;margin:30mm 0 12mm}.cover h1{font-size:40pt}.subtitle{font-size:17pt;margin-top:7mm}.edition{margin-top:24mm}.ribbon{margin-top:15mm;border-top:1px solid #222;border-bottom:1px solid #222;padding:5mm 0;font-weight:700}.cover-bottom{position:absolute;bottom:8mm;letter-spacing:.15em;font-size:9pt}.marker{font:1pt Menlo;line-height:1pt;height:1pt;color:#777}.final .marker{color:transparent}.chapter-head{display:flex;align-items:baseline;gap:6mm;border-bottom:2px solid #1F2A44;padding-bottom:7mm;margin-bottom:7mm}.chapter-number{font-size:52pt;line-height:1;color:#1F2A44;font-weight:800}.summary{border:1px solid #777;padding:4mm 5mm;margin-bottom:7mm;background:#f6f6f6}.steps{list-style:none;margin:0;padding:0}.steps li{display:flex;gap:3mm;margin:3mm 0;break-inside:avoid}.step{font-size:15pt;line-height:1.5;color:#1F2A44}.caution{border:1px solid #888;border-left:5px solid #1F2A44;padding:4mm 5mm;margin:6mm 0;break-inside:avoid;page-break-inside:avoid}.caution>b{font-family:Pretendard;font-size:11pt}table{width:100%;border-collapse:collapse;font-size:9.5pt;margin:4mm 0 7mm}th,td{border-bottom:1px solid #aaa;text-align:left;vertical-align:top;padding:3mm}thead{display:table-header-group}thead th{border-top:2px solid #1F2A44;border-bottom:1px solid #1F2A44;font-weight:700}tr{break-inside:avoid}.points{margin:2mm 0 0;font-size:10pt;line-height:1.4}.points th,.points td{padding:3.5px 6px}.points th{width:10mm;font-size:11pt}.points small{display:block;color:#555;font-size:8pt}figure{margin:5mm 0 8mm;break-inside:avoid;page-break-inside:avoid}figure img{display:block;width:auto;height:auto;max-width:100%;max-height:118mm;margin:0 auto;border:1px solid #ccc}figcaption{font-size:9pt;color:#333;margin:2mm 0;font-weight:600}.feedback{break-before:auto;border:1px solid #555;padding:5mm;margin-top:6mm;break-inside:avoid;page-break-inside:avoid;font-size:9.5pt}.feedback h2{margin:0 0 3mm}.writing>div{break-inside:avoid;height:9mm;border-bottom:1px solid #aaa}.signature{margin-top:5mm}.question{break-inside:avoid;margin:8mm 0}.toc-row{display:flex;align-items:baseline;gap:2mm;margin:4mm 0;color:inherit;text-decoration:none}.leader{flex:1;border-bottom:1px dotted #888}.toc-number{width:9mm;font-family:Menlo}.toc-page{min-width:10mm;text-align:right;font-family:Menlo}.front h1,.toc h1{margin:5mm 0 10mm}.bullet{padding-left:3mm;text-indent:-3mm}@media screen{body{max-width:210mm;margin:10mm auto;padding:20mm 18mm;box-shadow:0 0 12px #ccc}.cover,.front,.toc,.chapter{margin-bottom:20mm}.chapter{border-top:1px solid #ccc;padding-top:10mm}}
+@page{size:A4;margin:20mm 18mm}*{box-sizing:border-box}html{color:#181818;background:white;font-family:'Apple SD Gothic Neo',sans-serif;font-size:10.5pt;line-height:1.65;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{margin:0}h1,h2,h3,.chapter-number,.wordmark{font-family:Pretendard,'Apple SD Gothic Neo',sans-serif}h1{font-size:26pt;font-weight:800;line-height:1.3;margin:0}h2{font-size:13pt;font-weight:700;margin:7mm 0 3mm;break-after:avoid}p{margin:2.5mm 0}strong{font-weight:700}code{font-family:Menlo,monospace;font-size:.92em;background:#f1f1f1;padding:0 1mm;overflow-wrap:anywhere}.cover,.front,.toc,.chapter{break-before:page}.cover{height:250mm;position:relative;padding-top:24mm;color:#1F2A44}.wordmark{font-size:30pt;letter-spacing:.3em;font-weight:600}.cover-rule{width:22mm;border-top:3px solid #C8102E;margin:30mm 0 12mm}.cover h1{font-size:40pt}.subtitle{font-size:17pt;margin-top:7mm}.edition{margin-top:24mm}.ribbon{margin-top:15mm;border-top:1px solid #222;border-bottom:1px solid #222;padding:5mm 0;font-weight:700}.cover-bottom{position:absolute;bottom:8mm;letter-spacing:.15em;font-size:9pt}.marker{font:1pt Menlo;line-height:1pt;height:1pt;color:#777}.final .marker{color:transparent}.chapter-head{display:flex;align-items:baseline;gap:6mm;border-bottom:2px solid #1F2A44;padding-bottom:7mm;margin-bottom:7mm}.chapter-number{font-size:52pt;line-height:1;color:#1F2A44;font-weight:800}.summary{border:1px solid #777;padding:4mm 5mm;margin-bottom:7mm;background:#f6f6f6}.steps{list-style:none;margin:0;padding:0}.steps li{display:flex;gap:3mm;margin:3mm 0;break-inside:avoid}.step{font-size:15pt;line-height:1.5;color:#1F2A44}.caution{border:1px solid #888;border-left:5px solid #1F2A44;padding:4mm 5mm;margin:6mm 0;break-inside:avoid;page-break-inside:avoid}.caution>b{font-family:Pretendard;font-size:11pt}table{width:100%;border-collapse:collapse;font-size:9.5pt;margin:4mm 0 7mm}th,td{border-bottom:1px solid #aaa;text-align:left;vertical-align:top;padding:3mm}thead{display:table-header-group}thead th{border-top:2px solid #1F2A44;border-bottom:1px solid #1F2A44;font-weight:700}tr{break-inside:avoid}.points{margin:2mm 0 0;font-size:10pt;line-height:1.4}.points th,.points td{padding:3.5px 6px}.points th{width:10mm;font-size:11pt}.points small{display:block;color:#555;font-size:8pt}figure{margin:5mm 0 8mm;break-inside:avoid;page-break-inside:avoid}figure img{display:block;width:auto;height:auto;max-width:100%;max-height:118mm;margin:0 auto;border:1px solid #ccc}figcaption{font-size:9pt;color:#333;margin:2mm 0;font-weight:600}.toc-row{display:flex;align-items:baseline;gap:2mm;margin:4mm 0;color:inherit;text-decoration:none}.leader{flex:1;border-bottom:1px dotted #888}.toc-number{width:9mm;font-family:Menlo}.toc-page{min-width:10mm;text-align:right;font-family:Menlo}.front h1,.toc h1{margin:5mm 0 10mm}.bullet{padding-left:3mm;text-indent:-3mm}@media screen{body{max-width:210mm;margin:10mm auto;padding:20mm 18mm;box-shadow:0 0 12px #ccc}.cover,.front,.toc,.chapter{margin-bottom:20mm}.chapter{border-top:1px solid #ccc;padding-top:10mm}}
 '''
 
 
 def render_html(preface, chapters, screens, pages=None):
-    cover = '''<section class="cover"><div class="wordmark">JIEUM</div><div class="cover-rule"></div><h1>운영자 매뉴얼</h1><p class="subtitle">발주 · 위챗 · 주문 운영</p><p class="edition">판 1.0<br>2026-11-17</p><div class="ribbon">시범 운영판 — 의견을 적어 주세요</div><div class="cover-bottom">JIEUM · OPERATIONS MANUAL</div></section>'''
+    cover = f'''<section class="cover"><div class="wordmark">JIEUM</div><div class="cover-rule"></div><h1>운영자 매뉴얼</h1><p class="subtitle">발주 · 위챗 · 주문 운영</p><p class="edition">판 {VERSION}<br>2026-11-17</p><div class="ribbon">막히면 화면 오른쪽 아래 [의견 보내기]</div><div class="cover-bottom">JIEUM · OPERATIONS MANUAL</div></section>'''
     info = '<section class="front"><div class="marker">MANUAL_INFO_START</div><h1>문서 정보</h1>'
     info += blocks([line for line in preface.splitlines() if not line.startswith('# ')])
-    info += '<h2>판 이력</h2><table><thead><tr><th>판</th><th>날짜</th><th>내용</th></tr></thead><tbody><tr><td>1.0</td><td>2026-11-17</td><td>시범 운영판</td></tr></tbody></table></section>'
+    info += f'<h2>판 이력</h2><table><thead><tr><th>판</th><th>날짜</th><th>내용</th></tr></thead><tbody><tr><td>{VERSION}</td><td>2026-11-17</td><td>장별 의견란 삭제 — 의견은 화면의 [의견 보내기]로 받음, 0장에 의견 보내기 안내 추가, 12장 삭제</td></tr><tr><td>1.0</td><td>2026-11-17</td><td>시범 운영판</td></tr></tbody></table></section>'
     toc = '<section class="toc"><div class="marker">MANUAL_TOC_START</div><h1>목차</h1>'
     for chapter in chapters:
         n = chapter['n']
         page = str(pages[f'MANUAL_CH_{n:02d}_START']) if pages else '000'
         toc += f'<a class="toc-row" href="#chapter-{n}"><span class="toc-number">{n:02d}</span><span>{inline(chapter["title"])}</span><span class="leader"></span><span class="toc-page">{page}</span></a>'
     toc += '</section>'
-    return '<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>JIEUM 운영자 매뉴얼 v1.0</title><style>' + stylesheet() + '</style></head><body' + (' class="final"' if pages else '') + '>' + cover + info + toc + ''.join(chapter_html(c, screens) for c in chapters) + '</body></html>'
+    return f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>JIEUM 운영자 매뉴얼 v{VERSION}</title><style>' + stylesheet() + '</style></head><body' + (' class="final"' if pages else '') + '>' + cover + info + toc + ''.join(chapter_html(c, screens) for c in chapters) + '</body></html>'
 
 
 def node_render(html_path, jobs, config_name):
     config = WORK / config_name
     config.write_text(json.dumps({'html': str(html_path), 'jobs': jobs}, ensure_ascii=False), encoding='utf-8')
-    subprocess.run(['node', str(HERE / 'pdf.mjs'), str(config)], check=True)
+    subprocess.run(['node', str(HERE / 'pdf.mjs'), str(config), VERSION], check=True)
 
 
 def page_texts(pdf):
@@ -319,7 +305,7 @@ def merge(parts, output):
     writer = PdfWriter()
     for part in parts:
         writer.append(str(part), import_outline=False)
-    writer.add_metadata({'/Title': 'JIEUM 운영자 매뉴얼 v1.0', '/Author': 'JIEUM', '/Subject': '발주 · 위챗 · 주문 운영'})
+    writer.add_metadata({'/Title': f'JIEUM 운영자 매뉴얼 v{VERSION}', '/Author': 'JIEUM', '/Subject': '발주 · 위챗 · 주문 운영'})
     with output.open('wb') as stream:
         writer.write(stream)
     writer.close()

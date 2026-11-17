@@ -44,6 +44,10 @@ try {
         window.scrollTo(0, 0);
       });
       await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important} body>header{position:static!important}' });
+      for (const action of screen.actions || []) {
+        if (typeof action.click !== 'string') throw new Error('지원하지 않는 캡처 동작');
+        await page.locator(expand(action.click)).click();
+      }
       const dimensions = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, height: document.documentElement.scrollHeight }));
       let clip = { x: 0, y: 0, ...dimensions };
       let scope = page;

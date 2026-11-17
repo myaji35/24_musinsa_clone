@@ -1,5 +1,44 @@
 [
   {
+    "id": "ch0-feedback",
+    "chapter": 0,
+    "url": "/dashboard",
+    "clip": "#operator-feedback",
+    "caption": "화면에서 의견 보내기",
+    "actions": [
+      {
+        "click": "#operator-feedback-toggle"
+      }
+    ],
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "#operator-feedback-toggle",
+        "label": "의견 보내기 버튼"
+      },
+      {
+        "n": 2,
+        "selector": "#operator-feedback-kind",
+        "label": "종류"
+      },
+      {
+        "n": 3,
+        "selector": "#operator-feedback-body",
+        "label": "내용"
+      },
+      {
+        "n": 4,
+        "selector": "#operator-feedback-chapter",
+        "label": "매뉴얼 장"
+      },
+      {
+        "n": 5,
+        "selector": "#operator-feedback-submit",
+        "label": "보내기"
+      }
+    ]
+  },
+  {
     "id": "ch1-menu",
     "chapter": 1,
     "url": "/dashboard",

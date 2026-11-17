@@ -1,0 +1,289 @@
+[
+  {
+    "id": "ch1-menu",
+    "chapter": 1,
+    "url": "/dashboard",
+    "clip": "menu-row",
+    "caption": "운영자 메뉴",
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "nav[aria-label='관리 메뉴']",
+        "label": "운영자 메뉴 줄"
+      },
+      {
+        "n": 2,
+        "selector": "nav[aria-label='관리 메뉴'] a[href='/wechat']",
+        "label": "위챗"
+      },
+      {
+        "n": 3,
+        "selector": "nav[aria-label='관리 메뉴'] a[href='/suppliers']",
+        "label": "거래처"
+      },
+      {
+        "n": 4,
+        "selector": "nav[aria-label='관리 메뉴'] a[href='/purchase_orders']",
+        "label": "발주"
+      },
+      {
+        "n": 5,
+        "selector": "nav[aria-label='관리 메뉴'] a[href='/admin_orders']",
+        "label": "주문 관리"
+      }
+    ],
+    "calloutPlacement": "top",
+    "menuEnd": "클레임"
+  },
+  {
+    "id": "ch2-supplier",
+    "chapter": 2,
+    "url": "/suppliers/new",
+    "clip": "main",
+    "caption": "거래처 등록",
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "#supplier_name",
+        "label": "거래처명"
+      },
+      {
+        "n": 2,
+        "selector": "form#new_supplier input[type='submit'], form[action='/suppliers'] input[type='submit']",
+        "label": "저장 버튼"
+      }
+    ]
+  },
+  {
+    "id": "ch3-wechat",
+    "chapter": 3,
+    "url": "/wechat",
+    "clip": "main",
+    "caption": "위챗 담당자 연결",
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "section[aria-label='채널 방식']",
+        "label": "채널 방식"
+      },
+      {
+        "n": 2,
+        "selector": "form[action='/wechat'] select[name='supplier_id']",
+        "label": "거래처 선택"
+      },
+      {
+        "n": 3,
+        "selector": "form[action='/wechat'] input[name='wechat_display_name']",
+        "label": "위챗 대화방 이름"
+      },
+      {
+        "n": 4,
+        "selector": "form[action='/wechat'] input[type='submit']",
+        "label": "대화 상대 추가 버튼"
+      },
+      {
+        "n": 5,
+        "selector": "main table",
+        "label": "대화 목록"
+      }
+    ]
+  },
+  {
+    "id": "ch4-new-po",
+    "chapter": 4,
+    "url": "/purchase_orders/new?supplier_id={supplier_id}",
+    "clip": "main",
+    "caption": "발주서 생성",
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "#purchase_order_supplier_id",
+        "label": "거래처"
+      },
+      {
+        "n": 2,
+        "selector": "#purchase-order-items",
+        "label": "품목·수량"
+      }
+    ]
+  },
+  {
+    "id": "ch4-draft-po",
+    "chapter": 4,
+    "url": "/purchase_orders/{draft_po_id}",
+    "clip": "main",
+    "caption": "작성 중 발주서",
+    "callouts": [
+      {
+        "n": 3,
+        "selector": "form[action='/purchase_orders/{draft_po_id}/submit'] button",
+        "label": "제출 버튼"
+      },
+      {
+        "n": 4,
+        "selector": "main span.rounded-full",
+        "label": "상태 표시"
+      }
+    ]
+  },
+  {
+    "id": "ch5-notice",
+    "chapter": 5,
+    "url": "/purchase_orders/{submitted_po_id}",
+    "clip": "main > section li",
+    "caption": "보내기 대기 통보문",
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "[data-clipboard-target='source']",
+        "label": "통보문"
+      },
+      {
+        "n": 2,
+        "selector": "[data-action='clipboard#copy']",
+        "label": "복사 버튼"
+      },
+      {
+        "n": 3,
+        "selector": "button:text-is('보냈음 표시')",
+        "label": "보냈음 표시"
+      }
+    ],
+    "clipBadge": "보내기 대기"
+  },
+  {
+    "id": "ch5-sent",
+    "chapter": 5,
+    "url": "/purchase_orders/{submitted_po_id}",
+    "clip": "main > section li",
+    "caption": "직접 보낸 메시지의 처리 기록",
+    "callouts": [
+      {
+        "n": 4,
+        "selector": "p:text-matches('^처리:')",
+        "label": "처리 기록(누가·언제)"
+      }
+    ],
+    "clipBadge": "보냄(직접)"
+  },
+  {
+    "id": "ch6-conversation",
+    "chapter": 6,
+    "url": "/wechat/{contact_id}",
+    "clip": "conversation-top",
+    "caption": "거래처 연결과 대화 내역",
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "ol[aria-label='대화 내역']",
+        "label": "대화 내역"
+      },
+      {
+        "n": 4,
+        "selector": "section:has(h2:text-is('거래처 연결'))",
+        "label": "거래처 연결 상태"
+      }
+    ]
+  },
+  {
+    "id": "ch6-forms",
+    "chapter": 6,
+    "url": "/wechat/{contact_id}",
+    "clip": "conversation-forms",
+    "caption": "받은 메시지 붙여넣기와 보낼 내용",
+    "callouts": [
+      {
+        "n": 2,
+        "selector": "#received-message-form",
+        "label": "받은 메시지 붙여넣기"
+      },
+      {
+        "n": 3,
+        "selector": "form[action='/wechat/{contact_id}/send_message'] textarea",
+        "label": "보낼 내용 입력"
+      }
+    ]
+  },
+  {
+    "id": "ch7-receive",
+    "chapter": 7,
+    "url": "/purchase_orders/{confirmed_po_id}",
+    "clip": "main > div",
+    "caption": "발주서 상태와 품목",
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "main span.rounded-full",
+        "label": "상태(제출됨 → 확정됨 → 입고됨)"
+      },
+      {
+        "n": 2,
+        "selector": "form[action='/purchase_orders/{confirmed_po_id}/receive'] button",
+        "label": "입고 버튼"
+      },
+      {
+        "n": 3,
+        "selector": "main table th:text-is('수량')",
+        "label": "품목별 발주 수량(입고 처리 시 전량 반영)"
+      }
+    ]
+  },
+  {
+    "id": "ch8-orders",
+    "chapter": 8,
+    "url": "/admin_orders",
+    "clip": "main > div > table:has(th:text-is('주문번호')), main > table:has(th:text-is('주문번호'))",
+    "caption": "입금 대기 주문",
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "tr:has(form[action='/admin_orders/{pending_order_id}/confirm_payment']) td:nth-child(2)",
+        "label": "주문 상태"
+      },
+      {
+        "n": 2,
+        "selector": "form[action='/admin_orders/{pending_order_id}/confirm_payment'] button",
+        "label": "입금 확인 버튼"
+      }
+    ],
+    "clipRows": 6,
+    "clipMaxWidth": 900
+  },
+  {
+    "id": "ch9-sales",
+    "chapter": 9,
+    "url": "/sales",
+    "clip": "main",
+    "caption": "판매현황과 남은 재고",
+    "callouts": [
+      {
+        "n": 1,
+        "selector": "h2:text-is('재고 부족 옵션')",
+        "label": "부족 알림"
+      },
+      {
+        "n": 2,
+        "selector": "main ul:has-text('현재 재고'), main table th:text-is('현재 재고')",
+        "label": "옵션별 남은 재고"
+      }
+    ]
+  },
+  {
+    "id": "ch9-scan",
+    "chapter": 9,
+    "url": "/inventory/scan",
+    "clip": "[data-controller='barcode-scanner']",
+    "caption": "재고 관리 — 바코드 스캔",
+    "callouts": []
+  },
+  {
+    "id": "ch10-claims",
+    "chapter": 10,
+    "url": "/supplier_claims",
+    "clip": "main > div",
+    "caption": "공장 클레임 목록",
+    "callouts": [],
+    "clipItems": ".divide-y > *",
+    "clipRows": 6
+  }
+]

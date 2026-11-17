@@ -38,6 +38,7 @@
             <% if logged_in? %>
               <span><%= current_user.name.presence || current_user.email %></span>
               <%= link_to "내 워크스페이스", workspace_path, class: "hover:underline" unless mall_admin? %>
+              <%= link_to "비밀번호 변경", account_password_path, class: "hover:underline" %>
               <%= button_to "로그아웃", logout_path, method: :delete, class: "hover:underline" %>
             <% else %>
               <%= link_to "로그인", login_path, class: "hover:underline" %>
@@ -154,6 +155,9 @@
             </div>
           <% end %>
         </div>
+      <% end %>
+      <% if current_user&.must_change_password? %>
+        <p role="status" class="px-gutter py-3 text-ui">처음 로그인 — 임시 비밀번호를 바꿔 주세요</p>
       <% end %>
       <%= yield %>
     </main>

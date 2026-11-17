@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   include TrafficSourceTracking
 
   before_action :set_current_context
+  before_action :require_password_change
   before_action :require_admin
   helper_method :current_user, :logged_in?, :cart_count, :magazine_available?, :current_account, :mall_admin?, :supplier_scope
 
@@ -58,6 +59,13 @@ class ApplicationController < ActionController::Base
 
   def mall_admin?
     logged_in? && (current_user.account_id.nil? || current_account == Account.primary_or_nil)
+  end
+
+  def require_password_change
+    return unless current_user&.must_change_password?
+    return if controller_path == "account_passwords" || (controller_path == "sessions" && action_name == "destroy")
+
+    redirect_to account_password_path
   end
 
   def require_admin

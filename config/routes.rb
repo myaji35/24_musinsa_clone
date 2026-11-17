@@ -71,6 +71,9 @@ Rails.application.routes.draw do
   get "signup", to: "account_signups#new"
   post "signup", to: "account_signups#create"
 
+  get "account/password", to: "account_passwords#edit", as: :account_password
+  patch "account/password", to: "account_passwords#update"
+
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"

@@ -708,6 +708,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_100000) do
     t.datetime "updated_at", null: false
     t.string "password_digest"
     t.integer "account_id"
+    t.boolean "must_change_password", default: false, null: false
+    t.datetime "password_changed_at"
     t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end

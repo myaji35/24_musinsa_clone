@@ -135,7 +135,7 @@
               </div>
             </div>
           <% end %>
-          <%= link_to "사이즈 안내", (@product.detail_page&.dig("size") ? "#detail-size" : "#product-spec"), class: "btn-text text-ui" %>
+          <%= link_to "사이즈 안내", (@product.detail_page&.dig("size") ? "#detail-size" : "#product-spec"), class: "btn-text text-ui tap" %>
         </fieldset>
         <p class="text-caption text-ink-2"><span class="font-medium">무료배송</span> · <%= delivery_eta %> 도착 예정</p>
         <%= f.label :quantity, "수량", class: "block text-ui font-medium" %>

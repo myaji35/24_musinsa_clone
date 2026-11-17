@@ -2,7 +2,7 @@
   <h2 id="category-grid" class="text-title font-semibold mb-4">카테고리로 찾기</h2>
   <ul class="flex flex-wrap gap-x-6 gap-y-2">
     <% shop_categories.map(&:first).each do |name| %>
-      <li><%= link_to "▸ #{name}", root_path(category: name, anchor: "ranking"), class: "sym text-ui" %></li>
+      <li><%= link_to "▸ #{name}", root_path(category: name, anchor: "ranking"), class: "sym text-ui tap" %></li>
     <% end %>
   </ul>
 </section>

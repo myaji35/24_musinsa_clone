@@ -1,0 +1,110 @@
+{
+  "base": "http://127.0.0.1:3073",
+  "email": "e2e-213-1794881923621@example.com",
+  "startedAt": "2026-11-17T02:18:43.621Z",
+  "orders": [
+    {
+      "number": "ORD-20261117-CB576C7C",
+      "checkoutUrl": "http://127.0.0.1:3073/orders/CHK-20261117-ED0C6A6E",
+      "claimPath": "/my/orders/314/claims/new"
+    },
+    {
+      "number": "ORD-20261117-77B538FA",
+      "checkoutUrl": "http://127.0.0.1:3073/orders/CHK-20261117-447094A8",
+      "claimPath": "/my/orders/315/claims/new"
+    }
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "name": "join-consent-errors",
+      "url": "http://127.0.0.1:3073/join",
+      "success": true,
+      "message": "동의 안내 3개 확인",
+      "screenshot": "01-join-consent-errors.png"
+    },
+    {
+      "number": 2,
+      "name": "join-success",
+      "url": "http://127.0.0.1:3073/",
+      "success": true,
+      "message": "확인 완료",
+      "screenshot": "02-join-success.png"
+    },
+    {
+      "number": 3,
+      "name": "first-order",
+      "url": "http://127.0.0.1:3073/my/orders",
+      "success": true,
+      "message": "주문 완료: ORD-20261117-CB576C7C",
+      "screenshot": "03-first-order.png"
+    },
+    {
+      "number": 4,
+      "name": "immediate-cancel",
+      "url": "http://127.0.0.1:3073/my/orders",
+      "success": true,
+      "message": "확인 완료",
+      "screenshot": "04-immediate-cancel.png"
+    },
+    {
+      "number": 5,
+      "name": "second-pending-order",
+      "url": "http://127.0.0.1:3073/my/orders",
+      "success": true,
+      "message": "결제 대기: ORD-20261117-77B538FA",
+      "screenshot": "05-second-pending-order.png"
+    },
+    {
+      "number": 6,
+      "name": "confirm-payment",
+      "url": "http://127.0.0.1:3073/admin_orders",
+      "success": true,
+      "message": "확인 완료",
+      "screenshot": "06-confirm-payment.png"
+    },
+    {
+      "number": 7,
+      "name": "paid-cancel-request",
+      "url": "http://127.0.0.1:3073/my/orders",
+      "success": true,
+      "message": "확인 완료",
+      "screenshot": "07-paid-cancel-request.png"
+    },
+    {
+      "number": 8,
+      "name": "refund-completed",
+      "url": "http://127.0.0.1:3073/admin/order_claims/4",
+      "success": true,
+      "message": "확인 완료",
+      "screenshot": "08-refund-completed.png"
+    },
+    {
+      "number": 9,
+      "name": "access-logs",
+      "url": "http://127.0.0.1:3073/admin/access_logs",
+      "success": true,
+      "message": "방금 처리한 클레임 #4 상세 화면 접속기록 확인",
+      "screenshot": "09-access-logs.png"
+    },
+    {
+      "number": 10,
+      "name": "profile-password",
+      "url": "http://127.0.0.1:3073/my",
+      "success": true,
+      "message": "확인 완료",
+      "screenshot": "10-profile-password.png"
+    },
+    {
+      "number": 11,
+      "name": "withdraw-login-rejected",
+      "url": "http://127.0.0.1:3073/login",
+      "success": true,
+      "message": "탈퇴 후 홈·완료 문구 및 같은 이메일 로그인 실패 확인",
+      "screenshot": "11-withdraw-login-rejected.png"
+    }
+  ],
+  "claimId": "4",
+  "success": true,
+  "finishedAt": "2026-11-17T02:18:52.455Z"
+}

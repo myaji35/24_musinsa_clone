@@ -61,6 +61,10 @@ Rails.application.routes.draw do
   get "join", to: "member_signups#new"
   post "join", to: "member_signups#create"
   get "my", to: "my#show", as: :my
+  get "my/edit", to: "my#edit", as: :edit_my
+  patch "my", to: "my#update"
+  get "my/password", to: "my#edit_password", as: :edit_my_password
+  patch "my/password", to: "my#update_password", as: :my_password
   get "my/orders", to: "my#orders", as: :my_orders
 
   resource :cart, only: [ :show ]

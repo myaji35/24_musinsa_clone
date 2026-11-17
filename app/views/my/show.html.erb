@@ -10,5 +10,9 @@
     <div><dt class="font-medium">역할</dt><dd><%= current_user.role_label %></dd></div>
     <div><dt class="font-medium">가입일</dt><dd><%= current_user.created_at.strftime("%Y-%m-%d") %></dd></div>
   </dl>
+  <p class="flex gap-4 text-ui mb-6">
+    <%= link_to "이름 수정", edit_my_path %>
+    <%= link_to "비밀번호 변경", edit_my_password_path %>
+  </p>
   <%= button_to "로그아웃", logout_path, method: :delete, class: "btn btn-primary w-full" %>
 </div>

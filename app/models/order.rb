@@ -11,6 +11,7 @@ class Order < ApplicationRecord
   belongs_to :product
   belongs_to :variant
   belongs_to :shipping_address, optional: true
+  has_many :order_claims, dependent: :restrict_with_error
   has_one :shipping_record, class_name: "OrderShippingRecord"
 
   # Validations
@@ -37,6 +38,19 @@ class Order < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
 
   # Methods
+
+  def claimable_kinds(today = Date.current)
+    return [ "cancel" ] if status.in?(%w[pending paid])
+    if status == "delivered" && delivered_at && delivered_at.to_date.between?(today - 7, today)
+      return [ "return", "exchange" ]
+    end
+
+    []
+  end
+
+  def active_claim
+    order_claims.where(status: %w[requested approved]).order(:id).first
+  end
 
   def status_label
     STATUS_LABELS.fetch(status, status)

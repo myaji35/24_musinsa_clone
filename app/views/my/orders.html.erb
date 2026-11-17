@@ -15,6 +15,16 @@
             <span><%= order.status_label %></span>
           </p>
           <p class="text-caption text-ink-2"><%= order.order_number %> · <%= order.created_at.strftime("%Y.%m.%d") %></p>
+          <% active_claim = order.active_claim %>
+          <% latest_claim = order.order_claims.where(status: %w[completed rejected]).order(created_at: :desc, id: :desc).first %>
+          <% if active_claim %>
+            <p class="text-ui"><%= active_claim.kind_label %> <%= active_claim.status_label %></p>
+          <% elsif order.claimable_kinds.any? %>
+            <%= link_to(order.claimable_kinds.include?("cancel") ? "취소 요청" : "반품·교환 요청", new_my_order_claim_path(order), class: "inline-flex items-center min-h-11 text-ui") %>
+          <% end %>
+          <% if latest_claim %>
+            <p class="text-caption text-ink-2"><%= latest_claim.kind_label %> <%= latest_claim.status_label %></p>
+          <% end %>
         </li>
       <% end %>
     </ul>
@@ -29,6 +39,7 @@
             <th scope="col">금액</th>
             <th scope="col">상태</th>
             <th scope="col">주문일</th>
+            <th scope="col">요청</th>
           </tr>
         </thead>
         <tbody>
@@ -41,6 +52,18 @@
               <td><%= price_won(order.total_price) %></td>
               <td><%= order.status_label %></td>
               <td><%= order.created_at.strftime("%Y.%m.%d") %></td>
+              <td>
+                <% active_claim = order.active_claim %>
+                <% latest_claim = order.order_claims.where(status: %w[completed rejected]).order(created_at: :desc, id: :desc).first %>
+                <% if active_claim %>
+                  <p class="text-ui"><%= active_claim.kind_label %> <%= active_claim.status_label %></p>
+                <% elsif order.claimable_kinds.any? %>
+                  <%= link_to(order.claimable_kinds.include?("cancel") ? "취소 요청" : "반품·교환 요청", new_my_order_claim_path(order), class: "inline-flex items-center min-h-11 text-ui") %>
+                <% end %>
+                <% if latest_claim %>
+                  <p class="text-caption text-ink-2"><%= latest_claim.kind_label %> <%= latest_claim.status_label %></p>
+                <% end %>
+              </td>
             </tr>
           <% end %>
         </tbody>

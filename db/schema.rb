@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_000005) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_000006) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -356,6 +356,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000005) do
     t.index ["sent_at"], name: "index_notifications_on_sent_at"
     t.index ["status"], name: "index_notifications_on_status"
     t.index ["variant_id"], name: "index_notifications_on_variant_id"
+  end
+
+  create_table "order_claims", force: :cascade do |t|
+    t.integer "order_id", null: false
+    t.integer "user_id"
+    t.string "kind", null: false
+    t.string "status", default: "requested", null: false
+    t.string "reason_code", null: false
+    t.text "detail"
+    t.string "requester", null: false
+    t.integer "processed_by_user_id"
+    t.datetime "processed_at"
+    t.text "admin_note"
+    t.datetime "refunded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id", "status"], name: "index_order_claims_on_order_id_and_status"
+    t.index ["order_id"], name: "index_order_claims_on_order_id"
+    t.index ["user_id"], name: "index_order_claims_on_user_id"
   end
 
   create_table "order_shipping_records", force: :cascade do |t|
@@ -763,6 +782,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000005) do
   add_foreign_key "ledger_entries", "suppliers"
   add_foreign_key "ledger_entries", "users", column: "created_by_user_id"
   add_foreign_key "notifications", "variants"
+  add_foreign_key "order_claims", "orders"
+  add_foreign_key "order_claims", "users", column: "processed_by_user_id", on_delete: :nullify
+  add_foreign_key "order_claims", "users", on_delete: :nullify
   add_foreign_key "order_shipping_records", "orders"
   add_foreign_key "orders", "anony_customers"
   add_foreign_key "orders", "products"

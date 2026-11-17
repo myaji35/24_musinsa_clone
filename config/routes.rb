@@ -72,6 +72,8 @@ Rails.application.routes.draw do
   delete "my", to: "my#destroy"
   get "my/password", to: "my#edit_password", as: :edit_my_password
   patch "my/password", to: "my#update_password", as: :my_password
+  get "my/orders/:id/claims/new", to: "my_claims#new", as: :new_my_order_claim
+  post "my/orders/:id/claims", to: "my_claims#create", as: :my_order_claims
   get "my/orders", to: "my#orders", as: :my_orders
 
   resource :cart, only: [ :show ]
@@ -79,6 +81,8 @@ Rails.application.routes.draw do
   resource :checkout, only: [ :new, :create ]
   get "orders/lookup", to: "customer_orders#lookup", as: :orders_lookup
   post "orders/lookup", to: "customer_orders#verify"
+  get "orders/:checkout_number/claims/new", to: "customer_claims#new", as: :new_customer_order_claim
+  post "orders/:checkout_number/claims", to: "customer_claims#create", as: :customer_order_claims
   get "orders/:checkout_number", to: "customer_orders#show", as: :customer_order
 
   resources :characters, only: [ :show ], param: :handle

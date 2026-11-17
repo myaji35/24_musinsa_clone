@@ -28,6 +28,8 @@ class RoleAccessMatrixTest < ActionDispatch::IntegrationTest
     [ :get, -> { product_info_notices_path }, STAFF ],
     [ :get, -> { product_cutout_path(products(:one)) }, STAFF ],
     [ :get, -> { product_model_pick_path(products(:one)) }, STAFF ],
+    [ :get, -> { admin_users_path }, ADMIN ],
+    [ :patch, -> { admin_user_path(users(:member)) }, ADMIN ],
     [ :get, -> { kpi_path }, ADMIN ],
     [ :get, -> { sales_path }, ADMIN ],
     [ :get, -> { trends_path }, ADMIN ],
@@ -113,6 +115,7 @@ class RoleAccessMatrixTest < ActionDispatch::IntegrationTest
   end
 
   def request_params(http_method, path)
+    return { user: { role: "operator" } } if http_method == :patch && path == admin_user_path(users(:member))
     return {} unless http_method == :post
 
     case path

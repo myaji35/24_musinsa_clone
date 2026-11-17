@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
 
   before_action :set_current_context
   before_action :require_admin
-  helper_method :current_user, :logged_in?, :cart_count, :magazine_available?, :current_account, :mall_admin?, :mall_staff?, :supplier_scope
+  helper_method :current_user, :logged_in?, :cart_count, :magazine_available?, :current_account, :mall_admin?, :mall_staff?, :supplier_scope, :tenant_member?
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
@@ -49,6 +49,10 @@ class ApplicationController < ActionController::Base
 
   def current_account
     current_user&.account
+  end
+
+  def tenant_member?
+    current_account && current_account != Account.primary_or_nil
   end
 
   def set_current_context

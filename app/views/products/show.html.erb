@@ -1,6 +1,6 @@
 <div class="px-gutter py-6 lg:py-8">
 
-  <% if mall_admin? %>
+  <% if mall_staff? %>
     <div data-testid="publication-bar" class="flex flex-wrap items-center justify-between gap-3 p-4 mb-6 text-sm border <%= @product.published? ? 'border-gray-300 bg-white' : 'border-amber-400 bg-amber-50' %>">
       <p class="font-medium text-gray-900">
         <% if @product.published? %>
@@ -210,7 +210,7 @@
       <% end %>
     </div>
 
-    <% if mall_admin? %>
+    <% if mall_staff? %>
       <%= link_to "모델 선택", product_model_pick_path(@product), class: "inline-block border border-black px-4 py-2 mb-4 font-bold" %>
       <%= form_with model: [@product, Review.new], class: "border border-black p-6 mb-8 space-y-4" do |form| %>
         <div>

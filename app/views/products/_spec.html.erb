@@ -1,6 +1,6 @@
 <% spec = product.product_spec %>
 <div class="max-w-2xl min-w-0 mx-auto px-4 my-8">
-  <% if mall_admin? %><%= link_to "스펙 완성도 #{spec.completion_rate}% · 입력하기", edit_product_spec_path(product), class: "text-ui underline" %><% end %>
+  <% if mall_staff? %><%= link_to "스펙 완성도 #{spec.completion_rate}% · 입력하기", edit_product_spec_path(product), class: "text-ui underline" %><% end %>
   <section id="product-spec" class="space-y-4 mt-3">
     <h2 class="text-xl font-semibold">상세 스펙</h2>
     <p>색상: <%= spec.colors.join(" / ") %></p>

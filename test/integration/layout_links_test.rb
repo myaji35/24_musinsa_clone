@@ -75,7 +75,8 @@ class LayoutLinksTest < ActionDispatch::IntegrationTest
         assert_select "a[href=?]", terms_policy_path, text: "이용약관", count: 1
       end
       assert_not_includes response.body, "Solid Queue"
-      assert_select "a", text: "회원가입", count: 0
+      assert_select "a[href=?]", join_path, text: "회원가입", minimum: 1
+      assert_select 'a[href="/signup"]', count: 0
       assert_select "footer a[href=?]", returns_policy_path, text: "배송·반품 안내", count: 1
       assert_select "footer a[href=?]", privacy_policy_path, text: "개인정보처리방침", count: 1
       assert_select 'footer a[href="/terms"]', text: "이용약관", count: 1

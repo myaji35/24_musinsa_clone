@@ -1,0 +1,25 @@
+<div class="max-w-5xl mx-auto p-6">
+  <h1 class="text-2xl font-bold mb-6">사용자 관리</h1>
+  <table class="w-full text-left">
+    <thead>
+      <tr><th>이름</th><th>이메일</th><th>소속 계정</th><th>역할</th><th>가입일</th><th>역할 변경</th></tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td><%= user.account&.name || "몰" %></td>
+          <td><%= user.role_label %></td>
+          <td><%= user.created_at.strftime("%Y-%m-%d") %></td>
+          <td>
+            <%= form_with model: user, url: admin_user_path(user), method: :patch, class: "flex items-center gap-2" do |form| %>
+              <%= form.select :role, User.roles.keys.map { |role| [ User.new(role: role).role_label, role ] }, {}, aria: { label: "#{user.name} 역할" } %>
+              <%= form.submit "변경", class: "hover:underline" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

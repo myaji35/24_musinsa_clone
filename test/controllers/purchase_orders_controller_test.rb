@@ -63,6 +63,26 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "발주 목록의 표와 카드에 한국어 상태와 정수 금액을 표시한다" do
+    assert_equal "draft", purchase_orders(:one).status
+    assert_equal "confirmed", purchase_orders(:two).status
+    @purchase_order.update!(status: "received")
+
+    get purchase_orders_url
+    assert_response :success
+
+    [ "table tbody", "ul[class~='lg:hidden']" ].each do |selector|
+      assert_select selector do
+        [ "작성 중", "거래처 확인", "입고 완료" ].each do |label|
+          assert_select "span", text: label, minimum: 1
+        end
+        assert_select "td, li", text: /\b(draft|submitted|confirmed|received|cancelled)\b/, count: 0
+        assert_select "td, dd", text: "₩300,000", count: 1
+        assert_select "td, dd", text: /₩[\d,]+\.\d+/, count: 0
+      end
+    end
+  end
+
   # GET /purchase_orders/new
   test "should get new" do
     get new_purchase_order_url

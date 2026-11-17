@@ -29,7 +29,7 @@
 
     <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
       <div class="text-sm text-gray-600 mb-1">총 매출</div>
-      <div id="total-revenue" class="text-3xl font-bold text-purple-600">₩<%= number_with_delimiter(@total_revenue.to_i) %></div>
+      <div id="total-revenue" class="text-3xl font-bold text-purple-600"><%= admin_krw(@total_revenue) %></div>
     </div>
   </div>
 
@@ -42,17 +42,18 @@
     <% else %>
       <p class="text-sm text-gray-700 mb-2" data-daily-sales-target="detail" aria-live="polite" aria-atomic="true">막대를 선택하면 <%= @period > 30 ? "기간" : "날짜" %>와 매출이 표시됩니다.</p>
       <p class="text-xs text-gray-600 mb-4">매출이 적은 <%= @period > 30 ? "주도" : "날도" %> 보이도록 막대에 최소 높이를 둡니다.</p>
-      <div class="overflow-x-auto">
+      <p class="lg:hidden text-xs text-gray-600 mb-2">옆으로 밀어 다른 날짜를 볼 수 있습니다.</p>
+      <div class="overflow-x-auto overscroll-x-contain" tabindex="0" role="region" aria-label="매출 막대 차트(가로 스크롤)">
         <div class="flex items-end gap-1 h-48 min-w-max border-b border-gray-300" aria-label="<%= sales_unit %> 매출 막대 차트">
           <% @daily_sales.each do |day| %>
             <% date_label = "#{day[:date].month}/#{day[:date].day}" %>
             <% date_label += "~#{day[:end_date].month}/#{day[:end_date].day}" if day[:end_date] %>
             <% title_date = day[:date].iso8601 %>
             <% title_date += "~#{day[:end_date].iso8601}" if day[:end_date] %>
-            <% label = "#{date_label} ₩#{number_with_delimiter(day[:revenue].to_i)}" %>
+            <% label = "#{date_label} #{admin_krw(day[:revenue])}" %>
             <button type="button"
                     class="flex flex-col items-center justify-end h-full min-w-6 flex-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-700 focus-visible:outline-offset-2"
-                    title="<%= title_date %> · ₩<%= number_with_delimiter(day[:revenue].to_i) %>"
+                    title="<%= title_date %> · <%= admin_krw(day[:revenue]) %>"
                     aria-label="<%= label %>"
                     data-action="focus->daily-sales#select click->daily-sales#select">
               <span class="w-full bg-blue-600 rounded-t" style="<%= daily_sales_bar_style(day[:revenue], @max_daily_revenue) %>" aria-hidden="true"></span>
@@ -90,7 +91,7 @@
                 </div>
               </div>
               <div class="text-right">
-                <div class="font-bold text-gray-900">₩<%= number_with_delimiter(region[:total_sales].to_i) %></div>
+                <div class="font-bold text-gray-900"><%= admin_krw(region[:total_sales]) %></div>
               </div>
             </div>
           <% end %>
@@ -154,7 +155,7 @@
                   <div class="text-gray-600"><%= order.variant.color %> / <%= order.variant.size %></div>
                 </td>
                 <td class="px-6 py-4 text-sm"><%= order.quantity %></td>
-                <td class="px-6 py-4 text-sm font-medium">₩<%= number_with_delimiter(order.total_price.to_i) %></td>
+                <td class="px-6 py-4 text-sm font-medium"><%= admin_krw(order.total_price) %></td>
                 <td class="px-6 py-4 text-sm">
                   <% if order.anony_customer.zip_prefix.present? %>
                     <%= order.anony_customer.zip_prefix %>xxx

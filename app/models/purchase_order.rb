@@ -1,6 +1,14 @@
 # Epic 8.2: 발주서 관리
 # 거래처에게 발주하는 주문서
 class PurchaseOrder < ApplicationRecord
+  STATUS_LABELS = {
+    "draft" => "작성 중",
+    "submitted" => "발주 요청",
+    "confirmed" => "거래처 확인",
+    "received" => "입고 완료",
+    "cancelled" => "취소"
+  }.freeze
+
   belongs_to :supplier
   has_many :purchase_order_items, dependent: :destroy
   has_many :variants, through: :purchase_order_items
@@ -26,6 +34,9 @@ class PurchaseOrder < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
 
   # Methods
+  def status_label
+    STATUS_LABELS.fetch(status, status)
+  end
 
   # 발주서 제출 (거래처에게 발송)
   # 이메일 발송은 PurchaseOrdersController#submit에서 처리

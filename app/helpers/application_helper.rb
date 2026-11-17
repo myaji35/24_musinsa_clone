@@ -1,4 +1,6 @@
 module ApplicationHelper
+  def admin_krw(amount) = "₩#{number_with_delimiter(amount.to_d.round)}"
+
   def staff_menu_links
     return [] unless mall_staff?
 

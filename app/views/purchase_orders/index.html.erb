@@ -34,10 +34,10 @@
                   when "cancelled" then "bg-red-100 text-red-800"
                   end %>
                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= status_class %>">
-                  <%= po.status %>
+                  <%= po.status_label %>
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">₩<%= number_with_delimiter(po.total_amount) %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= admin_krw(po.total_amount) %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= po.expected_delivery_date&.strftime("%Y-%m-%d") || "-" %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= po.created_at.strftime("%Y-%m-%d") %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center gap-2">
@@ -70,7 +70,7 @@
                 when "cancelled" then "bg-red-100 text-red-800"
                 end %>
               <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= status_class %>">
-                <%= po.status %>
+                <%= po.status_label %>
               </span>
             </div>
           </div>
@@ -78,7 +78,7 @@
             <dt class="text-gray-500">거래처</dt>
             <dd class="min-w-0 break-words"><%= po.supplier.name %></dd>
             <dt class="text-gray-500">총액</dt>
-            <dd class="min-w-0 break-words">₩<%= number_with_delimiter(po.total_amount) %></dd>
+            <dd class="min-w-0 break-words"><%= admin_krw(po.total_amount) %></dd>
             <dt class="text-gray-500">납품 예정일</dt>
             <dd class="min-w-0 break-words"><%= po.expected_delivery_date&.strftime("%Y-%m-%d") || "-" %></dd>
             <dt class="text-gray-500">등록일</dt>

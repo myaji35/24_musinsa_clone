@@ -47,12 +47,12 @@
             when "cancelled" then "bg-red-100 text-red-800"
             end %>
           <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= status_class %>">
-            <%= @purchase_order.status %>
+            <%= @purchase_order.status_label %>
           </span>
         </div>
         <div>
           <p class="text-sm text-gray-600">총액</p>
-          <p class="font-medium text-xl text-blue-600">₩<%= number_with_delimiter(@purchase_order.total_amount) %></p>
+          <p class="font-medium text-xl text-blue-600"><%= admin_krw(@purchase_order.total_amount) %></p>
         </div>
         <div>
           <p class="text-sm text-gray-600">납품 예정일</p>
@@ -128,15 +128,15 @@
               <td class="px-6 py-4 whitespace-nowrap"><%= item.product_name %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= item.variant_name %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= item.quantity %></td>
-              <td class="px-6 py-4 whitespace-nowrap">₩<%= number_with_delimiter(item.unit_price) %></td>
-              <td class="px-6 py-4 whitespace-nowrap font-medium">₩<%= number_with_delimiter(item.subtotal) %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= admin_krw(item.unit_price) %></td>
+              <td class="px-6 py-4 whitespace-nowrap font-medium"><%= admin_krw(item.subtotal) %></td>
             </tr>
           <% end %>
         </tbody>
         <tfoot class="bg-gray-50">
           <tr>
             <td colspan="4" class="px-6 py-4 text-right font-bold">총액</td>
-            <td class="px-6 py-4 font-bold text-lg text-blue-600">₩<%= number_with_delimiter(@purchase_order.total_amount) %></td>
+            <td class="px-6 py-4 font-bold text-lg text-blue-600"><%= admin_krw(@purchase_order.total_amount) %></td>
           </tr>
         </tfoot>
       </table>

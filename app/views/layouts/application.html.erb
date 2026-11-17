@@ -70,9 +70,10 @@
                 </nav>
               <% end %>
               <% if mall_staff? %>
-                <div aria-label="모바일 관리자 메뉴" class="md:hidden border-b border-hairline px-gutter py-2 text-caption flex flex-wrap gap-x-4 gap-y-1">
+                <div aria-label="모바일 관리자 메뉴" class="md:hidden border-y border-hairline py-2 my-2 grid grid-cols-2 gap-x-4">
+                  <p class="col-span-2 text-caption text-ink-2 py-1">관리</p>
                   <% staff_menu_links.each do |name, path| %>
-                    <%= link_to name, path, class: "hover:underline" %>
+                    <%= link_to name, path, class: "text-ui py-2 min-h-11 flex items-center hover:underline" %>
                   <% end %>
                 </div>
               <% end %>

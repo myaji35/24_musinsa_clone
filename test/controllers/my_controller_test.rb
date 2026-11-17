@@ -54,7 +54,7 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     assert_select "td", text: "#{order.variant.color} / #{order.variant.size}"
     assert_select "td", text: order.quantity.to_s
     assert_select "td", text: "₩ 39,800"
-    assert_select "td", text: order.status
+    assert_select "td", text: "결제 완료"
     assert_select "td", text: order.created_at.strftime("%Y.%m.%d")
 
     delete logout_path

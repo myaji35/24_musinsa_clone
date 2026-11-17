@@ -21,7 +21,8 @@ module ApplicationHelper
         [ "상품분석", product_analyses_path ],
         [ "트렌드", trends_path ],
         [ "KPI", kpi_path ],
-        [ "사용자 관리", admin_users_path ]
+        [ "사용자 관리", admin_users_path ],
+        [ "접속기록", admin_access_logs_path ]
       ])
     end
     links

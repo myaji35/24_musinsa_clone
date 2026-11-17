@@ -1,5 +1,6 @@
 module Admin
   class OrderClaimsController < ApplicationController
+    include PersonalDataAccessLogging
     skip_before_action :require_admin
     before_action :require_staff
     before_action :set_claim, only: [ :show, :approve, :reject, :complete ]
@@ -19,9 +20,11 @@ module Admin
       @page = params[:page].to_i.clamp(1, Float::INFINITY)
       @total_pages = (@total_count / 30.0).ceil
       @claims = claims.includes(order: [ :product, :variant ]).order(created_at: :desc, id: :desc).offset((@page - 1) * 30).limit(30)
+      log_personal_data_access(screen: "주문 클레임")
     end
 
     def show
+      log_personal_data_access(screen: "주문 클레임 상세", target: @claim)
     end
 
     def approve

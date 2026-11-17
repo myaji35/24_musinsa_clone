@@ -1,5 +1,6 @@
 module Admin
   class UsersController < ApplicationController
+    include PersonalDataAccessLogging
     def index
       q = params[:q]
       role = params[:role]
@@ -12,6 +13,7 @@ module Admin
       @page = params[:page].to_i.clamp(1, Float::INFINITY)
       @total_pages = (@total_count / 20.0).ceil
       @users = users.includes(:account).order(created_at: :desc).offset((@page - 1) * 20).limit(20)
+      log_personal_data_access(screen: "사용자 관리")
     end
 
     def suspend

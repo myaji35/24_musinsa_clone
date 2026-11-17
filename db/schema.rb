@@ -10,7 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_000006) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_000007) do
+  create_table "access_logs", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "user_label"
+    t.string "screen", null: false
+    t.string "action", null: false
+    t.string "target_type"
+    t.integer "target_id"
+    t.string "ip"
+    t.datetime "created_at", null: false
+    t.index ["created_at"], name: "index_access_logs_on_created_at"
+    t.index ["user_id", "created_at"], name: "index_access_logs_on_user_id_and_created_at"
+  end
+
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false

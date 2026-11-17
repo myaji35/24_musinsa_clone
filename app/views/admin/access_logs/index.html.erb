@@ -1,0 +1,50 @@
+<div class="max-w-5xl mx-auto p-6 space-y-6">
+  <h1 class="text-2xl font-bold">접속기록</h1>
+  <% filters = params.permit(:from, :to, :screen).to_h %>
+  <%= form_with url: admin_access_logs_path, method: :get, class: "flex flex-wrap items-end gap-3" do %>
+    <div><%= label_tag :from, "시작일" %><%= date_field_tag :from, @from, class: "field min-h-11" %></div>
+    <div><%= label_tag :to, "종료일" %><%= date_field_tag :to, @to, class: "field min-h-11" %></div>
+    <div><%= label_tag :screen, "화면" %><%= select_tag :screen, options_for_select(@screens, @screen), include_blank: "전체 화면", class: "field min-h-11" %></div>
+    <%= submit_tag "검색", name: nil, class: "btn min-h-11" %>
+  <% end %>
+  <p>총 <%= @total_count %>건</p>
+  <% if @access_logs.empty? %><p class="rounded border p-4">접속기록이 없습니다.</p><% end %>
+  <ul class="lg:hidden space-y-4">
+    <% @access_logs.each do |log| %>
+      <li class="rounded border p-4 space-y-2 break-words">
+        <p class="font-semibold"><%= log.screen %> · <%= log.action %></p>
+        <dl>
+          <dt>일시</dt><dd><%= seoul_datetime(log.created_at) %></dd>
+          <dt>직원</dt><dd><%= log.user_label %> (ID: <%= log.user_id %>)</dd>
+          <dt>대상</dt><dd><%= [log.target_type, log.target_id].compact.join(" #").presence || "—" %></dd>
+          <dt>IP</dt><dd><%= log.ip %></dd>
+        </dl>
+      </li>
+    <% end %>
+  </ul>
+  <div class="hidden lg:block overflow-x-auto">
+    <table class="w-full text-left text-sm">
+      <thead><tr><th>일시</th><th>직원</th><th>화면</th><th>동작</th><th>대상</th><th>IP</th></tr></thead>
+      <tbody>
+        <% @access_logs.each do |log| %>
+          <tr class="border-b">
+            <td><%= seoul_datetime(log.created_at) %></td>
+            <td class="break-all"><%= log.user_label %> (ID: <%= log.user_id %>)</td>
+            <td><%= log.screen %></td><td><%= log.action %></td>
+            <td><%= [log.target_type, log.target_id].compact.join(" #").presence || "—" %></td>
+            <td class="break-all"><%= log.ip %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <nav aria-label="페이지" class="flex flex-wrap items-center gap-3">
+    <% if @page > 1 %>
+      <%= link_to "이전", admin_access_logs_path(filters.merge(page: @page - 1)), class: "min-h-11 inline-flex items-center px-3 underline" %>
+    <% end %>
+    <p><%= @page %> / <%= [@total_pages, 1].max %></p>
+    <% if @page < @total_pages %>
+      <%= link_to "다음", admin_access_logs_path(filters.merge(page: @page + 1)), class: "min-h-11 inline-flex items-center px-3 underline" %>
+    <% end %>
+  </nav>
+</div>

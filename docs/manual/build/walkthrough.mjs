@@ -26,7 +26,7 @@ if (!['http:', 'https:'].includes(base.protocol) || base.username || base.passwo
 const out = path.resolve(options.OUT_DIR || path.join(dir, 'out/walkthrough'));
 const FACTORY = '(점검) 매뉴얼 시험 공장';
 const CONTACT = '(점검) 陈经理';
-const MEMO = '(점검) 매뉴얼 점검 발주';
+const MEMO = `(점검) 매뉴얼 점검 발주 ${new Date().toISOString()}`;
 const FEEDBACK = '(점검) 매뉴얼 점검용 의견입니다';
 const CLAIM = '(점검) 시험 클레임';
 const results = [], state = {};
@@ -106,7 +106,8 @@ async function safePO() {
 }
 async function poStatus() {
   const panel = page.locator('div.bg-white').filter({ has: page.getByRole('heading', { name: '발주 정보', exact: true }) });
-  return (await panel.locator('span').first().innerText()).trim();
+  const status = (await panel.locator('span').first().innerText()).trim();
+  return ({ draft: '작성 중', submitted: '제출됨', confirmed: '확정됨', received: '입고됨', cancelled: '취소됨' })[status] ?? status;
 }
 async function mode() {
   await go('/wechat');
@@ -254,39 +255,34 @@ try {
   });
   await step(6, 4, '점검 발주 생성·제출', async () => {
     await auth(); if (!state.contact) skip('점검 대화 상대 없음');
-    await manualMode(); await go('/purchase_orders');
-    const rows = page.locator('tbody tr').filter({ hasText: FACTORY });
-    const links = await rows.locator('a[href]').evaluateAll(nodes => [...new Set(nodes.map(n => n.getAttribute('href')).filter(h => /^\/purchase_orders\/\d+$/.test(h)))]);
-    for (const link of links) {
-      await go(link);
-      if (await page.getByText(MEMO, { exact: true }).count()) { state.po = link; note('기존 점검 발주 재사용'); break; }
-    }
-    if (!state.po) {
-      await go('/purchase_orders/new');
-      const form = formAt('/purchase_orders');
-      await form.locator('[name="purchase_order[supplier_id]"]').selectOption({ label: FACTORY });
-      const due = new Date(); due.setDate(due.getDate() + 21);
-      await form.locator('[name="purchase_order[expected_delivery_date]"]').fill(new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(due));
-      await form.locator('[name="purchase_order[notes]"]').fill(MEMO);
-      const variant = form.locator('select[name$="[variant_id]"]').first();
-      const value = await variant.locator('option').evaluateAll(nodes => nodes.find(n => n.value)?.value);
-      check(value, '상품·옵션 목록 비어 있음'); await variant.selectOption(value);
-      await form.locator('input[name$="[quantity]"]').first().fill('1');
-      await form.locator('input[name$="[unit_price]"]').first().fill('1');
-      await write(form, '발주서 생성');
-      check(/^\/purchase_orders\/\d+$/.test(new URL(page.url()).pathname), '발주 저장 실패');
-      state.po = new URL(page.url()).pathname;
-    }
+    await manualMode();
+    await go('/purchase_orders/new');
+    const form = formAt('/purchase_orders');
+    await form.locator('[name="purchase_order[supplier_id]"]').selectOption({ label: FACTORY });
+    const due = new Date(); due.setDate(due.getDate() + 21);
+    await form.locator('[name="purchase_order[expected_delivery_date]"]').fill(new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(due));
+    await form.locator('[name="purchase_order[notes]"]').fill(MEMO);
+    const variant = form.locator('select[name$="[variant_id]"]').first();
+    const value = await variant.locator('option').evaluateAll(nodes => nodes.find(n => n.value)?.value);
+    check(value, '상품·옵션 목록 비어 있음'); await variant.selectOption(value);
+    await form.locator('input[name$="[quantity]"]').first().fill('1');
+    await form.locator('input[name$="[unit_price]"]').first().fill('1');
+    await write(form, '발주서 생성');
+    check(/^\/purchase_orders\/\d+$/.test(new URL(page.url()).pathname), '발주 저장 실패');
+    state.po = new URL(page.url()).pathname;
     await safePO();
-    if (await poStatus() === 'draft') await write(formAt(`${state.po}/submit`), '제출');
+    if (await poStatus() === '작성 중') await write(formAt(`${state.po}/submit`), '제출');
     const status = await poStatus();
-    check(['submitted', 'confirmed', 'received'].includes(status), '제출됨 상태 아님');
-    note(`상태: ${status}${status !== 'submitted' ? ' (이전 실행에서 제출 이후 진행됨)' : ' (제출됨)'}`);
+    check(status === '제출됨', '제출됨 상태 아님');
+    note(`상태: ${status}`);
     state.submitted = true;
   });
   await step(7, 5, '발주 통보문 복사·보냈음 표시', async () => {
     await auth(); if (!state.submitted) skip('발주 제출 단계 실패');
-    await go(state.po); await safePO();
+    // 제출 직후 화면에서 통보문이 보이는지 확인한다. 새로고침하지 않는다.
+    check(new URL(page.url()).pathname === state.po, '제출 직후 발주 화면 아님');
+    await safePO();
+    check(await poStatus() === '제출됨', '제출됨 상태 아님');
     const section = page.locator('section').filter({ has: page.getByRole('heading', { name: '위챗 발송 내역', exact: true }) });
     const item = section.locator('li').filter({ hasText: FACTORY }).first();
     await visible(item.locator('[data-clipboard-target="source"]'));
@@ -297,7 +293,6 @@ try {
     if (await item.getByRole('button', { name: '보내기 승인', exact: true }).count()) skip('자동 발송 승인 대기 상태: 외부 발송 방지를 위해 승인하지 않음');
     if (await item.getByRole('button', { name: '보냈음 표시', exact: true }).count()) {
       await write(item.locator('form').filter({ has: page.getByRole('button', { name: '보냈음 표시', exact: true }) }), '보냈음 표시');
-      await go(state.po);
     } else note('기존 처리 기록 재사용; 보내기 승인은 누르지 않음');
     await visible(section.locator('li').filter({ hasText: FACTORY }).first().getByText(/^처리:/));
     note('실제 위챗 외부 발송 없음');
@@ -325,11 +320,12 @@ try {
     await auth(); if (!state.submitted) skip('발주 제출 단계 실패');
     await go(state.po); await safePO();
     let status = await poStatus();
-    if (status === 'received') { note('이미 입고됨: 재입고하지 않음'); return; }
-    if (status === 'submitted') {
+    if (status === '입고됨') { note('이미 입고됨: 재입고하지 않음'); return; }
+    if (status === '제출됨') {
       const body = await page.locator('body').innerText();
       const link = state.confirm || body.match(/https?:\/\/[^\s<>]+\/po\/confirm\/[^\s<>]+/)?.[0];
       check(link, '공장 확정 링크 없음');
+      check(link.startsWith('https://'), '공장 확정 링크가 https://로 시작하지 않음');
       const url = new URL(link); check(url.origin === base.origin && /^\/po\/confirm\/[^/]+$/.test(url.pathname), '확정 링크 출처/경로 불일치');
       const factoryPage = await context.newPage();
       try {
@@ -342,9 +338,9 @@ try {
       } finally { await factoryPage.close(); }
       await go(state.po); await safePO(); status = await poStatus();
     }
-    check(status === 'confirmed', '확정됨 상태 확인 실패'); note('확정됨 확인');
+    check(status === '확정됨', '확정됨 상태 확인 실패'); note('확정됨 확인');
     await write(formAt(`${state.po}/receive`), '입고 처리');
-    check(await poStatus() === 'received', '입고됨 상태 확인 실패');
+    check(await poStatus() === '입고됨', '입고됨 상태 확인 실패');
     note('품목 1개·수량 1 전체 입고 확인');
   });
   await step(10, 8, '손님 주문·입금 확인 버튼 존재만 확인', async () => {

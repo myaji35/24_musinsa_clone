@@ -8,6 +8,7 @@ module ApplicationHelper
       [ "재고관리", inventory_scan_path ],
       [ "대시보드", dashboard_index_path ],
       [ "주문 관리", admin_orders_path ],
+      [ "주문 클레임", admin_order_claims_path ],
       [ "거래처", suppliers_path ],
       [ "발주", purchase_orders_path ],
       [ "클레임", supplier_claims_path ],

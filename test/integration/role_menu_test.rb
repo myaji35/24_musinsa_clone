@@ -32,12 +32,14 @@ class RoleMenuTest < ActionDispatch::IntegrationTest
     assert_select "nav[aria-label='관리 메뉴']" do
       assert_select "a[href=?]", inventory_scan_path, text: "재고관리"
       assert_select "a[href=?]", purchase_orders_path, text: "발주"
+      assert_select "a[href=?]", admin_order_claims_path, text: "주문 클레임"
       [ kpi_path, admin_users_path, sales_path, trends_path, product_analyses_path ].each do |path|
         assert_select "a[href=?]", path, count: 0
       end
     end
     assert_select "div[aria-label='모바일 관리자 메뉴']" do
       assert_select "a[href=?]", inventory_scan_path
+      assert_select "a[href=?]", admin_order_claims_path, text: "주문 클레임"
       assert_select "a[href=?]", admin_users_path, count: 0
     end
   end

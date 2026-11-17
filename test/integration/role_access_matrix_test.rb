@@ -10,6 +10,7 @@ class RoleAccessMatrixTest < ActionDispatch::IntegrationTest
     [ :get, -> { inventory_scan_path }, STAFF ],
     [ :get, -> { inventory_history_path }, STAFF ],
     [ :get, -> { admin_orders_path }, STAFF ],
+    [ :get, -> { admin_order_claims_path }, STAFF ],
     [ :get, -> { dashboard_index_path }, STAFF ],
     [ :get, -> { purchase_orders_path }, STAFF ],
     [ :get, -> { new_purchase_order_path }, STAFF ],

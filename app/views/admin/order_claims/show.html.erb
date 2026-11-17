@@ -1,0 +1,51 @@
+<div class="max-w-5xl mx-auto p-6 space-y-6">
+  <h1 class="text-2xl font-bold">주문 클레임 상세</h1>
+  <%= link_to "목록", admin_order_claims_path, class: "min-h-11 inline-flex items-center px-3 underline" %>
+  <section class="rounded border p-4 space-y-3">
+    <h2 class="text-lg font-bold">주문 요약</h2>
+    <% order = @claim.order %>
+    <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm">
+      <dt>주문번호</dt><dd class="min-w-0 break-words"><%= order.order_number %></dd>
+      <dt>상품</dt><dd class="min-w-0 break-words"><%= order.product.name %></dd>
+      <dt>옵션</dt><dd><%= [order.variant.color, order.variant.size].join(" / ") %></dd>
+      <dt>수량</dt><dd><%= order.quantity %></dd>
+      <dt>금액</dt><dd><%= admin_krw(order.total_price) %></dd>
+      <dt>주문 상태</dt><dd><%= order.status_label %></dd>
+      <dt>배송 완료일</dt><dd><%= order.delivered_at ? seoul_datetime(order.delivered_at) : "-" %></dd>
+    </dl>
+  </section>
+  <section class="rounded border p-4 space-y-3">
+    <h2 class="text-lg font-bold">요청 내용</h2>
+    <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm">
+      <dt>종류</dt><dd><%= @claim.kind_label %></dd>
+      <dt>상태</dt><dd><%= @claim.status_label %></dd>
+      <dt>요청자</dt><dd><%= @claim.requester == "member" ? "회원" : "비회원" %></dd>
+      <dt>요청 사유</dt><dd><%= @claim.reason_label %></dd>
+      <dt>상세</dt><dd class="min-w-0 break-words whitespace-pre-wrap"><%= @claim.detail.presence || "-" %></dd>
+    </dl>
+  </section>
+  <section class="rounded border p-4 space-y-3">
+    <h2 class="text-lg font-bold">처리 이력</h2>
+    <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm">
+      <dt>접수일</dt><dd><%= seoul_datetime(@claim.created_at) %></dd>
+      <dt>최근 처리일</dt><dd><%= @claim.processed_at ? seoul_datetime(@claim.processed_at) : "-" %></dd>
+      <dt>처리자</dt><dd><%= @claim.processed_by_user_id ? "직원 ##{@claim.processed_by_user_id}" : "-" %></dd>
+      <dt>환불 완료일</dt><dd><%= @claim.refunded_at ? seoul_datetime(@claim.refunded_at) : "-" %></dd>
+      <dt>처리 메모</dt><dd class="min-w-0 break-words whitespace-pre-wrap"><%= @claim.admin_note.presence || "-" %></dd>
+    </dl>
+  </section>
+  <% if @claim.status == "requested" %>
+    <section class="rounded border p-4 space-y-4">
+      <h2 class="text-lg font-bold">클레임 처리</h2>
+      <%= button_to "승인", approve_admin_order_claim_path(@claim), method: :patch, data: { turbo_confirm: "클레임을 승인하시겠습니까?" }, class: "min-h-11 inline-flex items-center rounded border px-4" %>
+      <%= form_with url: reject_admin_order_claim_path(@claim), method: :patch, data: { turbo_confirm: "입력한 사유로 클레임을 거절하시겠습니까?" }, class: "space-y-3" do |form| %>
+        <%= form.label :note, "거절 사유", class: "block font-semibold" %>
+        <%= form.text_area :note, required: true, rows: 3, class: "w-full rounded border p-3" %>
+        <%= form.submit "거절", class: "min-h-11 inline-flex items-center rounded border px-4" %>
+      <% end %>
+    </section>
+  <% elsif @claim.status == "approved" %>
+    <% label = { "cancel" => "환불 완료", "return" => "반품 입고·환불 완료", "exchange" => "교환 완료" }.fetch(@claim.kind) %>
+    <%= button_to label, complete_admin_order_claim_path(@claim), method: :patch, data: { turbo_confirm: "#{label} 처리하시겠습니까?" }, class: "min-h-11 inline-flex items-center rounded border px-4" %>
+  <% end %>
+</div>

@@ -5,7 +5,7 @@
   <% end %>
   <ul class="space-y-4 mt-4">
     <% @purchase_order.wechat_messages.for_account(current_account || Account.primary).includes(:processed_by, wechat_contact: :supplier).order(:created_at).each do |message| %>
-      <li class="border rounded-lg p-4 min-w-0 break-all"><%= link_to message.wechat_contact.display_name, wechat_path(message.wechat_contact) %> · <%= message.status %> · <%= l message.created_at, format: :short %> · <%= message.error %><%= render "wechat/message_actions", message: message %></li>
+      <li class="border rounded-lg p-4 min-w-0 break-all"><%= link_to message.wechat_contact.display_name, wechat_path(message.wechat_contact) %> · <%= wechat_status_badge(message.status) %><% if (type = wechat_message_type(message.msg_type)) %> · <%= type %><% end %> · <%= wechat_time(message.created_at) %> · <%= message.error %><%= render "wechat/message_actions", message: message %></li>
     <% end %>
   </ul>
 </section>

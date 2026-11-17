@@ -12,7 +12,7 @@
     <p>받기: 맥 위챗 알림을 자동으로 대화함에 넣음 / 보내기: 통보문을 복사해 위챗에서 직접 보내고 [보냈음 표시]</p>
     <p role="status">자동 발송: <%= Wechat::Config.mac_auto_send? ? "켜짐 — 보내기 승인 후 로컬 에이전트가 발송합니다." : "꺼짐" %></p>
     <% seen = account.wechat_agent_tokens.active.maximum(:last_seen_at) %>
-    <p role="status">에이전트 마지막 접속: <%= seen ? l(seen, format: :short) : "없음" %> <%= "연결 끊김" unless seen && seen >= 5.minutes.ago %></p>
+    <p role="status">에이전트 마지막 접속: <%= seen ? wechat_time(seen) : "없음" %> <%= "연결 끊김" unless seen && seen >= 5.minutes.ago %></p>
     <% if @raw_token %><p>토큰은 지금 한 번만 표시됩니다. 키체인에 저장하세요.</p><code><%= @raw_token %></code><% end %>
     <%= form_with url: issue_token_wechat_index_path, class: "flex flex-col gap-3 sm:flex-row sm:items-center my-4" do |form| %>
       <%= form.label :name, "에이전트 이름", class: "block text-gray-700 text-sm font-bold mb-2" %><%= form.text_field :name, required: true, maxlength: 100, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %><%= form.submit "토큰 발급", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
@@ -27,7 +27,7 @@
   <h2 class="text-xl font-bold">위챗 설정</h2>
   <p><% Wechat::Config.status.each do |name, configured| %><%= name %>: <%= configured ? "있음" : "없음" %> · <% end %>발송: <%= Wechat::Config.send_enabled? ? "켜짐" : "꺼짐" %></p>
   <p>서버 URL: <%= Wechat::Config.server_url %></p>
-  <% unless Wechat::Config.send_enabled? %><p role="status">발송 꺼짐 — 메시지는 disabled 상태로 저장됩니다.</p><% end %>
+  <% unless Wechat::Config.send_enabled? %><p role="status">발송 꺼짐 — 메시지는 발송 꺼짐 상태로 저장됩니다.</p><% end %>
 </section>
 
 <% end %>

@@ -125,4 +125,16 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       assert_not order.receive!
     end
   end
+  test "confirmation URL uses configured defaults and preserves explicit host override" do
+    original_host = ENV.delete("APP_HOST")
+    original_options = Rails.application.config.action_mailer.default_url_options
+    Rails.application.config.action_mailer.default_url_options = { host: "localhost", port: 3053, protocol: "http" }
+    po = purchase_orders(:one)
+    assert_equal "http://localhost:3053/po/confirm/#{po.confirmation_token}", po.confirmation_url
+    ENV["APP_HOST"] = "orders.example.test"
+    assert_equal "http://orders.example.test/po/confirm/#{po.confirmation_token}", po.confirmation_url
+  ensure
+    Rails.application.config.action_mailer.default_url_options = original_options
+    original_host.nil? ? ENV.delete("APP_HOST") : ENV["APP_HOST"] = original_host
+  end
 end

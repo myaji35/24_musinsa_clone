@@ -24,7 +24,7 @@
             <td class="p-2 sm:p-4 break-all"><%= contact.wechat_display_name.presence || contact.nickname %><p><%= "미연결 담당자" unless contact.supplier %> · <%= contact.subscribed? ? "구독 중" : "구독 해제" %></p></td>
             <td class="p-2 sm:p-4 break-all"><%= truncate(contact.latest_message&.content, length: 100) %></td>
             <td class="p-2 sm:p-4 break-words">안 읽음 <%= contact.unread_count %></td>
-            <td class="p-2 sm:p-4 break-all"><% if (current_account || Account.primary).wechat_channel_mode == "official" %><%= contact.window_open? ? "48시간 창 남은 시간: #{distance_of_time_in_words(Time.current, contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %><% else %><%= (current_account || Account.primary).wechat_channel_mode == "manual" ? "복사해서 보내기" : "맥 위챗 앱" %><% end %></td>
+            <td class="p-2 sm:p-4 break-all"><% if (current_account || Account.primary).wechat_channel_mode == "official" %><%= contact.window_open? ? "48시간 창 종료: #{wechat_time(contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %><% else %><%= (current_account || Account.primary).wechat_channel_mode == "manual" ? "복사해서 보내기" : "맥 위챗 앱" %><% end %></td>
           </tr>
         <% end %>
       </tbody>

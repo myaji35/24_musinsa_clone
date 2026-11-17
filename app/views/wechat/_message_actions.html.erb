@@ -7,5 +7,5 @@
     <%= button_to(message.status == "pending_manual" ? "보냈음 표시" : "보내기 승인", complete_wechat_index_path(message_id: message.id), class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg") %>
   <% end %>
   </div>
-  <% if message.processed_at %><p>처리: <%= processor&.name %> · <%= l message.processed_at, format: :short %></p><% end %>
+  <% if message.processed_at %><p>처리: <%= processor&.name %> · <%= wechat_time(message.processed_at) %></p><% end %>
 </section>

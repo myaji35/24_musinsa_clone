@@ -46,7 +46,7 @@ class WechatController < ApplicationController
   end
 
   def receive_message
-    return head :unprocessable_entity unless channel_account.wechat_channel_mode == "manual"
+    return head :unprocessable_entity unless channel_account.wechat_channel_mode.in?(%w[manual mac_app])
     @contact.wechat_messages.create!(account: channel_account, direction: "in", msg_type: "text", content: params[:content], status: "received_manual", received_at: Time.current, processed_by: current_user, processed_at: Time.current)
     @contact.update!(last_inbound_at: Time.current)
     redirect_to wechat_path(@contact)
@@ -71,8 +71,13 @@ class WechatController < ApplicationController
   end
 
   def send_message
-    message = Wechat::Client.new.send_text(contact: @contact, content: params[:content].to_s, sent_by: current_user)
-    redirect_to wechat_path(@contact), notice: "위챗: #{message.status}"
+    message = if channel_account.wechat_channel_mode.in?(%w[manual mac_app])
+      @contact.wechat_messages.create!(account: channel_account, direction: "out", msg_type: "text",
+        content: params[:content].to_s, sent_by: current_user, status: "pending_manual")
+    else
+      Wechat::Client.new.send_text(contact: @contact, content: params[:content].to_s, sent_by: current_user)
+    end
+    redirect_to wechat_path(@contact), notice: "위챗: #{helpers.wechat_status_label(message.status)}"
   rescue ActiveRecord::RecordInvalid
     redirect_to wechat_path(@contact), alert: "본문은 1~2000자로 입력해 주세요."
   end

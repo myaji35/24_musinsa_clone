@@ -8,7 +8,7 @@
         <dd class="inline">
           <%= business.public_send(key) || "등록 준비 중" %>
           <% if key == :registration_number && business.registration_digits.present? %>
-            <%= link_to "사업자정보 확인", "https://www.ftc.go.kr/bizCommPop.do?wrkr_no=#{business.registration_digits}", target: "_blank", rel: "noopener", class: "underline" %>
+            <%= link_to "사업자정보 확인", "https://www.ftc.go.kr/bizCommPop.do?wrkr_no=#{business.registration_digits}", target: "_blank", rel: "noopener", class: "tap underline" %>
           <% end %>
         </dd>
       </div>

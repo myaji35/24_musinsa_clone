@@ -37,26 +37,26 @@
       <nav class="absolute right-gutter hidden md:flex items-center gap-4" aria-label="계정 메뉴">
             <% if logged_in? %>
               <span><%= current_user.name.presence || current_user.email %></span>
-              <%= link_to "내 정보", my_path, class: "hover:underline" %>
-              <%= link_to "내 워크스페이스", workspace_path, class: "hover:underline" if tenant_member? %>
-              <%= button_to "로그아웃", logout_path, method: :delete, class: "hover:underline" %>
+              <%= link_to "내 정보", my_path, class: "tap hover:underline" %>
+              <%= link_to "내 워크스페이스", workspace_path, class: "tap hover:underline" if tenant_member? %>
+              <%= button_to "로그아웃", logout_path, method: :delete, class: "tap hover:underline" %>
             <% else %>
-              <%= link_to "로그인", login_path, class: "hover:underline" %>
-              <%= link_to "회원가입", join_path, class: "hover:underline" %>
+              <%= link_to "로그인", login_path, class: "tap hover:underline" %>
+              <%= link_to "회원가입", join_path, class: "tap hover:underline" %>
             <% end %>
-            <%= link_to "주문조회", orders_lookup_path, class: "hover:underline" %>
-            <%= link_to "장바구니 (#{cart_count})", cart_path, class: "hover:underline" %>
+            <%= link_to "주문조회", orders_lookup_path, class: "tap hover:underline" %>
+            <%= link_to "장바구니 (#{cart_count})", cart_path, class: "tap hover:underline" %>
       </nav>
     </div>
     <header class="sticky top-0 z-50 bg-paper border-b border-line h-header-m md:h-header px-gutter grid grid-cols-[1fr_auto_1fr] items-center">
       <div class="flex items-center gap-4">
         <details name="header-panel" class="menu">
-          <summary class="text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">메뉴</summary>
+          <summary class="tap text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">메뉴</summary>
           <div class="absolute left-0 right-0 top-full bg-scrim border-b border-line px-gutter py-6">
             <div class="md:hidden mb-4">
               <%= form_with url: root_path, method: :get, local: true, class: "flex items-center gap-2 w-full" do |f| %>
                   <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", aria: { label: "검색어" }, class: "field h-11 border-0 border-b border-line" %>
-                  <button type="submit" class="sym text-ui font-medium shrink-0">검색</button>
+                  <button type="submit" class="tap sym text-ui font-medium shrink-0">검색</button>
                 <% end %>
             </div>
             <nav aria-label="사이트 메뉴">
@@ -95,19 +95,19 @@
           </div>
         </details>
         <details name="header-panel" class="search hidden md:block">
-          <summary class="text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">검색</summary>
+          <summary class="tap text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">검색</summary>
           <div class="absolute left-0 right-0 top-full bg-scrim border-b border-line px-gutter py-6">
             <%= form_with url: root_path, method: :get, local: true, class: "flex items-center gap-2 w-full" do |f| %>
                   <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", aria: { label: "검색어" }, class: "field h-11 border-0 border-b border-line" %>
-                  <button type="submit" class="sym text-ui font-medium shrink-0">검색</button>
+                  <button type="submit" class="tap sym text-ui font-medium shrink-0">검색</button>
                 <% end %>
           </div>
         </details>
       </div>
-      <a href="/" class="font-display font-medium text-[18px] md:text-[22px] tracking-wordmark uppercase">JIEUM</a>
+      <a href="/" class="tap font-display font-medium text-[18px] md:text-[22px] tracking-wordmark uppercase">JIEUM</a>
       <div class="flex items-center justify-end gap-4 text-ui font-medium whitespace-nowrap">
-        <%= link_to "주문조회", orders_lookup_path, class: "hidden md:inline-flex" %>
-        <a href="<%= cart_path %>" aria-label="장바구니">장바구니 (<% if cart_count.positive? %><%= cart_count %><% else %>0<% end %>)</a>
+        <%= link_to "주문조회", orders_lookup_path, class: "tap hidden md:inline-flex" %>
+        <a href="<%= cart_path %>" class="tap" aria-label="장바구니">장바구니 (<% if cart_count.positive? %><%= cart_count %><% else %>0<% end %>)</a>
       </div>
     </header>
     <div class="h-catrow border-b border-hairline px-gutter flex items-center gap-2 overflow-x-auto">
@@ -158,22 +158,22 @@
                 <div>
                    <h2 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">HELP</h2>
                    <ul class="space-y-3">
-                       <li><%= link_to "비회원 주문조회", orders_lookup_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
-                       <li><%= link_to "배송·반품 안내", returns_policy_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
-                       <li><%= link_to "의견 보내기", new_feedback_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "비회원 주문조회", orders_lookup_path, class: "tap inline-block py-1 text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "배송·반품 안내", returns_policy_path, class: "tap inline-block py-1 text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "의견 보내기", new_feedback_path, class: "tap inline-block py-1 text-ink-2 hover:text-ink" %></li>
                    </ul>
                 </div>
                 <div>
                    <h2 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">POLICY</h2>
                    <ul class="space-y-3">
-                       <li><%= link_to "개인정보처리방침", privacy_policy_path, class: "inline-block py-1 font-medium text-ink-2 hover:text-ink" %></li>
-                       <li><%= link_to "이용약관", terms_policy_path, class: "inline-block py-1 font-normal text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "개인정보처리방침", privacy_policy_path, class: "tap inline-block py-1 font-medium text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "이용약관", terms_policy_path, class: "tap inline-block py-1 font-normal text-ink-2 hover:text-ink" %></li>
                    </ul>
                 </div>
             </div>
             <div class="mb-8"><%= render "shared/business_info" %></div>
             <div class="border-t border-hairline pt-6 text-center md:text-left text-caption text-ink-3">
-                <p>🤖 Generated with <a href="https://claude.com/claude-code" class="underline hover:text-ink">Claude Code</a> · COPYRIGHT (C) 2026 JIEUM ALL RIGHTS RESERVED.</p>
+                <p>🤖 Generated with <a href="https://claude.com/claude-code" class="tap underline hover:text-ink">Claude Code</a> · COPYRIGHT (C) 2026 JIEUM ALL RIGHTS RESERVED.</p>
             </div>
         </div>
     </footer>

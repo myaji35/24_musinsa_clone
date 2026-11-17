@@ -3,7 +3,7 @@
   <p class="break-all">주문서 번호: <%= @orders.first.checkout_number %></p>
   <% @orders.each do |order| %>
     <div class="border-b border-hairline py-5 space-y-2">
-      <span class="inline-block bg-ink text-inverse px-3 py-1 text-ui"><%= { "pending" => "결제 대기", "paid" => "결제 완료", "shipped" => "배송 중", "delivered" => "배송 완료", "cancelled" => "취소" }[order.status] %></span>
+      <span class="inline-block bg-ink text-inverse px-3 py-1 text-ui"><%= order.status_label %></span>
       <p class="text-ui font-medium"><%= order.product.name %></p>
       <p><%= order.variant.color %> / <%= order.variant.size %> · <%= order.quantity %>개</p>
       <p><%= price_won(order.total_price) %></p>

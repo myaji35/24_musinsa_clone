@@ -14,6 +14,7 @@ class CheckoutsController < ApplicationController
     end
 
     result = Orders::Intake.call(
+      user: (current_user if logged_in? && current_user.member?),
       items: @cart.items.map { |item| { variant_id: item.variant.id, quantity: item.quantity } },
       address: @checkout.slice("recipient_name", "phone", "postal_code", "address1", "address2"),
       birth_year: @checkout["birth_year"].presence, save_consent: false, traffic_source: current_traffic_source

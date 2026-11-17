@@ -6,5 +6,6 @@ class MyController < ApplicationController
   end
 
   def orders
+    @orders = current_user.orders.includes(:product, :variant).order(created_at: :desc)
   end
 end

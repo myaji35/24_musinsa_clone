@@ -6,6 +6,29 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
                  address1: "서울시 테스트로 1", address2: "비밀상세 201호" }
   end
 
+  test "회원 로그인 상태의 주문은 회원에게 연결한다" do
+    member = users(:member)
+    post login_path, params: { email: member.email, password: "TestPassword!2026" }
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    assert_difference "Order.count", 1 do
+      post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
+    end
+    order = Order.order(:id).last
+    assert_redirected_to customer_order_path(order.checkout_number)
+    assert_equal member, order.user
+  end
+
+  test "관리자 로그인 상태의 주문은 회원에게 연결하지 않는다" do
+    post login_path, params: { email: users(:one).email, password: "TestPassword!2026" }
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    assert_difference "Order.count", 1 do
+      post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
+    end
+    order = Order.order(:id).last
+    assert_redirected_to customer_order_path(order.checkout_number)
+    assert_nil order.user
+  end
+
   test "유입 링크부터 주문까지 마지막 유입을 정제하여 유지한다" do
     character = Character.create!(name: "하린", handle: "SeoHARIN")
     get product_path(products(:one)), params: { utm_source: "instagram" }
@@ -100,6 +123,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
       post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
     end
     order = Order.order(:id).last
+    assert_nil order.user
     assert_equal "pending", order.status
     assert_not order.shipping_address.save_consent?
     assert_redirected_to customer_order_path(order.checkout_number)

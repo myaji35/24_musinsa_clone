@@ -16,8 +16,9 @@ module Orders
 
     class InvalidInput < StandardError; end
 
-    def initialize(items:, address:, save_consent: false, birth_year: nil, traffic_source: nil, hold_tokens: {})
+    def initialize(items:, address:, save_consent: false, birth_year: nil, traffic_source: nil, hold_tokens: {}, user: nil)
       @hold_tokens = hold_tokens.to_h.stringify_keys
+      @user = user
       @items = items
       @address = address.to_h.symbolize_keys.slice(:recipient_name, :phone, :postal_code, :address1, :address2, :country_code)
       @save_consent = ActiveModel::Type::Boolean.new.cast(save_consent) || false
@@ -52,7 +53,7 @@ module Orders
             raise InvalidInput, "재고가 부족합니다: #{variant.product.name} #{variant.color}/#{variant.size} (남은 수량 #{remaining}개)"
           end
 
-          orders << Order.create!(anony_customer: customer, product: variant.product, variant: variant,
+          orders << Order.create!(user: @user, anony_customer: customer, product: variant.product, variant: variant,
                                   quantity: quantity.to_i, total_price: variant.product.price * quantity.to_i,
                                   status: "pending", shipping_address: address, checkout_number: checkout_number, **traffic_attributes)
           OrderShippingRecord.snapshot_for!(orders.last)

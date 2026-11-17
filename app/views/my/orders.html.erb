@@ -4,7 +4,38 @@
     <%= link_to "내 주문", my_orders_path %>
   </nav>
   <h1 class="text-title font-semibold mb-6">내 주문</h1>
-  <p class="text-ui mb-4">회원 주문 내역은 준비 중입니다. 비회원 주문은 주문조회에서 확인하세요.</p>
-  <p class="text-ui mb-6"><%= link_to "주문조회", orders_lookup_path %></p>
+  <% if @orders.any? %>
+    <div class="overflow-x-auto mb-6">
+      <table class="w-full text-ui">
+        <thead>
+          <tr>
+            <th scope="col">주문번호</th>
+            <th scope="col">상품명</th>
+            <th scope="col">옵션 색/사이즈</th>
+            <th scope="col">수량</th>
+            <th scope="col">금액</th>
+            <th scope="col">상태</th>
+            <th scope="col">주문일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr>
+              <td><%= order.order_number %></td>
+              <td><%= order.product.name %></td>
+              <td><%= order.variant.color %> / <%= order.variant.size %></td>
+              <td><%= order.quantity %></td>
+              <td><%= price_won(order.total_price) %></td>
+              <td><%= order.status %></td>
+              <td><%= order.created_at.strftime("%Y.%m.%d") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-ui mb-4">아직 회원으로 주문한 내역이 없습니다. 로그인 전에 한 주문은 주문조회에서 확인하세요.</p>
+    <p class="text-ui mb-6"><%= link_to "주문조회", orders_lookup_path %></p>
+  <% end %>
   <%= button_to "로그아웃", logout_path, method: :delete, class: "btn btn-primary w-full" %>
 </div>

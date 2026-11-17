@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   belongs_to :account, optional: true
+  has_many :orders, dependent: :nullify
 
   has_secure_password
 

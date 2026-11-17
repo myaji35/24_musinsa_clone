@@ -1,8 +1,11 @@
 class Order < ApplicationRecord
+  STATUS_LABELS = { "pending" => "결제 대기", "paid" => "결제 완료", "shipped" => "배송 중", "delivered" => "배송 완료", "cancelled" => "취소" }.freeze
+
   # 배송지 파기 시계가 도는 종결 상태 (ISS-058 C안)
   FINISHED_STATUSES = %w[delivered cancelled].freeze
 
   # Relations
+  belongs_to :user, optional: true
   belongs_to :source_character, class_name: "Character", optional: true
   belongs_to :anony_customer
   belongs_to :product
@@ -34,6 +37,10 @@ class Order < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
 
   # Methods
+
+  def status_label
+    STATUS_LABELS.fetch(status, status)
+  end
 
   def self.traffic_summary(by:)
     column = { platform: :source_platform, character: :source_character_id, video: :source_video_id }.fetch(by)

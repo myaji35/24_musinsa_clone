@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_000002) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -384,6 +384,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000001) do
     t.string "source_link_code"
     t.integer "source_character_id"
     t.datetime "source_landed_at"
+    t.integer "user_id"
     t.index ["anony_customer_id"], name: "index_orders_on_anony_customer_id"
     t.index ["checkout_number"], name: "index_orders_on_checkout_number"
     t.index ["created_at"], name: "index_orders_on_created_at"
@@ -394,6 +395,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000001) do
     t.index ["source_link_code"], name: "index_orders_on_source_link_code"
     t.index ["source_platform"], name: "index_orders_on_source_platform"
     t.index ["status"], name: "index_orders_on_status"
+    t.index ["user_id"], name: "index_orders_on_user_id"
     t.index ["variant_id"], name: "index_orders_on_variant_id"
   end
 
@@ -751,6 +753,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000001) do
   add_foreign_key "order_shipping_records", "orders"
   add_foreign_key "orders", "anony_customers"
   add_foreign_key "orders", "products"
+  add_foreign_key "orders", "users"
   add_foreign_key "orders", "variants"
   add_foreign_key "product_analyses", "characters"
   add_foreign_key "product_analyses", "products"

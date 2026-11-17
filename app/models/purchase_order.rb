@@ -2,6 +2,7 @@
 # 거래처에게 발주하는 주문서
 class PurchaseOrder < ApplicationRecord
   belongs_to :supplier
+  has_many :wechat_messages, dependent: :nullify
   has_many :purchase_order_items, dependent: :destroy
   has_many :variants, through: :purchase_order_items
 

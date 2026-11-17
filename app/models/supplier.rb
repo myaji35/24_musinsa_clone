@@ -8,6 +8,7 @@ class Supplier < ApplicationRecord
   scope :purchase_side, -> { where(kind: %w[purchase both]) }
   scope :sales_side, -> { where(kind: %w[sales both]) }
 
+  has_many :wechat_contacts, dependent: :nullify
   has_many :supplier_accounts, dependent: :destroy
   has_many :supplier_claims, dependent: :destroy
   has_many :products

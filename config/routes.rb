@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "home#index"
+  match "/webhooks/wechat", to: "webhooks/wechat#receive", via: [:get, :post], as: :wechat_webhook
+  resources :wechat, only: [:index, :show, :update], controller: :wechat do
+    member { post :send_message }
+  end
   post "/webhooks/shopify/orders_create", to: "webhooks/shopify#orders_create"
 
   resources :admin_orders, only: :index do
@@ -152,6 +156,7 @@ Rails.application.routes.draw do
   get "kpi", to: "kpi#index", as: :kpi
   resources :purchase_orders do
     member do
+      post :resend_wechat
       post :submit # 발주서 제출
       post :receive # 입고 처리
     end

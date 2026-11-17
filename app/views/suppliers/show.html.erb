@@ -124,3 +124,11 @@
   <%= f.submit "계정 발급", class: "bg-blue-600 text-white px-4 py-2 rounded-lg" %>
 <% end %>
 </div></section>
+<section class="container mx-auto px-4 py-8">
+  <h2 class="text-xl font-bold">연결된 위챗 담당자</h2>
+  <ul>
+    <% @supplier.wechat_contacts.for_account(@supplier.account).each do |contact| %>
+      <li><%= link_to contact.nickname.presence || contact.display_name, wechat_path(contact), class: "underline" %> · <%= contact.subscribed? ? "구독 중" : "구독 해제" %></li>
+    <% end %>
+  </ul>
+</section>

@@ -2,11 +2,11 @@
 class PurchaseOrdersController < ApplicationController
   skip_before_action :require_admin, only: [ :confirm ]
   skip_before_action :verify_authenticity_token, only: [ :confirm ] # 거래처 확인 페이지는 CSRF 제외
-  before_action :set_purchase_order, only: [ :show, :edit, :update, :destroy, :submit, :receive ]
+  before_action :set_purchase_order, only: [ :show, :edit, :update, :destroy, :submit, :receive, :resend_wechat ]
   before_action :set_purchase_order_by_token, only: [ :confirm ]
 
   def index
-    @purchase_orders = PurchaseOrder.includes(:supplier).recent
+    @purchase_orders = PurchaseOrder.where(supplier_id: supplier_scope.select(:id)).includes(:supplier).recent
   end
 
   def show
@@ -62,6 +62,8 @@ class PurchaseOrdersController < ApplicationController
         supplier: @purchase_order.supplier
       ).deliver_later
 
+      Wechat::PurchaseOrderNotifier.enqueue(@purchase_order, sent_by: current_user)
+
       # Slack 알림 (내부 모니터링)
       begin
         Notifications::SlackNotifier.call(
@@ -75,6 +77,15 @@ class PurchaseOrdersController < ApplicationController
       redirect_to @purchase_order, notice: "발주서가 제출되었습니다. 거래처 확인 대기 중입니다."
     else
       redirect_to @purchase_order, alert: "발주서 제출에 실패했습니다. (draft 상태만 제출 가능)"
+    end
+  end
+
+  def resend_wechat
+    if @purchase_order.status == "submitted"
+      Wechat::PurchaseOrderNotifier.enqueue(@purchase_order, sent_by: current_user)
+      redirect_to @purchase_order, notice: "위챗 재발송 작업을 등록했습니다."
+    else
+      redirect_to @purchase_order, alert: "제출된 발주서만 재발송할 수 있습니다."
     end
   end
 
@@ -109,7 +120,7 @@ class PurchaseOrdersController < ApplicationController
   private
 
   def set_purchase_order
-    @purchase_order = PurchaseOrder.find(params[:id])
+    @purchase_order = PurchaseOrder.where(supplier_id: supplier_scope.select(:id)).find(params[:id])
   end
 
   def set_purchase_order_by_token

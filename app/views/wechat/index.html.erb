@@ -1,0 +1,15 @@
+<main class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">위챗 대화</h1>
+  <%= render "settings" %>
+  <ul class="space-y-4">
+    <% @contacts.each do |contact| %>
+      <li class="border rounded-lg p-4">
+        <h2><%= link_to contact.display_name, wechat_path(contact), class: "font-bold underline" %></h2>
+        <p><%= contact.nickname %> <%= "미연결 담당자" unless contact.supplier %> · <%= contact.subscribed? ? "구독 중" : "구독 해제" %></p>
+        <p><%= truncate(contact.latest_message&.content, length: 100) %></p>
+        <p>안 읽음 <%= contact.unread_count %> · <%= contact.window_open? ? "48시간 창 남은 시간: #{distance_of_time_in_words(Time.current, contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %></p>
+      </li>
+    <% end %>
+  </ul>
+  <% if @contacts.empty? %><p>공식계정을 팔로우하고 메시지를 보내면 담당자가 표시됩니다.</p><% end %>
+</main>

@@ -1,4 +1,6 @@
 class Account < ApplicationRecord
+  has_many :wechat_contacts
+  has_many :wechat_messages
   has_many :suppliers
   has_many :schedule_events
   has_many :ledger_entries

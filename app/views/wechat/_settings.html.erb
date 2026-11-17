@@ -1,0 +1,6 @@
+<section class="border rounded-lg p-4 mb-6" aria-label="위챗 설정 상태">
+  <h2 class="text-xl font-bold">위챗 설정</h2>
+  <p><% Wechat::Config.status.each do |name, configured| %><%= name %>: <%= configured ? "있음" : "없음" %> · <% end %>발송: <%= Wechat::Config.send_enabled? ? "켜짐" : "꺼짐" %></p>
+  <p>서버 URL: <%= Wechat::Config.server_url %></p>
+  <% unless Wechat::Config.send_enabled? %><p role="status">발송 꺼짐 — 메시지는 disabled 상태로 저장됩니다.</p><% end %>
+</section>

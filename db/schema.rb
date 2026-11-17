@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_10_000194) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_000000) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -592,10 +592,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_000194) do
     t.string "source"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "expires_at" ], name: "index_stock_holds_on_expires_at"
-    t.index [ "order_id" ], name: "index_stock_holds_on_order_id"
-    t.index [ "token" ], name: "index_stock_holds_on_token", unique: true
-    t.index [ "variant_id" ], name: "index_stock_holds_on_variant_id"
+    t.index ["expires_at"], name: "index_stock_holds_on_expires_at"
+    t.index ["order_id"], name: "index_stock_holds_on_order_id"
+    t.index ["token"], name: "index_stock_holds_on_token", unique: true
+    t.index ["variant_id"], name: "index_stock_holds_on_variant_id"
   end
 
   create_table "stock_logs", force: :cascade do |t|
@@ -718,6 +718,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_000194) do
     t.index ["product_id"], name: "index_variants_on_product_id"
   end
 
+  create_table "wechat_contacts", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.string "open_id", null: false
+    t.string "nickname"
+    t.integer "supplier_id"
+    t.boolean "subscribed", default: true, null: false
+    t.datetime "last_inbound_at"
+    t.datetime "last_read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "open_id"], name: "index_wechat_contacts_on_account_id_and_open_id", unique: true
+    t.index ["account_id"], name: "index_wechat_contacts_on_account_id"
+    t.index ["supplier_id"], name: "index_wechat_contacts_on_supplier_id"
+  end
+
+  create_table "wechat_messages", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.integer "wechat_contact_id", null: false
+    t.string "direction", null: false
+    t.string "msg_type", null: false
+    t.text "content"
+    t.string "media_id"
+    t.string "wechat_msg_id"
+    t.string "status", null: false
+    t.text "error"
+    t.integer "purchase_order_id"
+    t.integer "sent_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_wechat_messages_on_account_id"
+    t.index ["purchase_order_id"], name: "index_wechat_messages_on_purchase_order_id"
+    t.index ["sent_by_id"], name: "index_wechat_messages_on_sent_by_id"
+    t.index ["wechat_contact_id", "created_at"], name: "index_wechat_messages_on_wechat_contact_id_and_created_at"
+    t.index ["wechat_contact_id"], name: "index_wechat_messages_on_wechat_contact_id"
+    t.index ["wechat_msg_id"], name: "index_wechat_messages_on_wechat_msg_id", unique: true
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "campaign_deliveries", "anony_customers"
@@ -775,4 +812,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_000194) do
   add_foreign_key "suppliers", "accounts"
   add_foreign_key "users", "accounts"
   add_foreign_key "variants", "products"
+  add_foreign_key "wechat_contacts", "accounts"
+  add_foreign_key "wechat_contacts", "suppliers"
+  add_foreign_key "wechat_messages", "accounts"
+  add_foreign_key "wechat_messages", "purchase_orders"
+  add_foreign_key "wechat_messages", "users", column: "sent_by_id"
+  add_foreign_key "wechat_messages", "wechat_contacts"
 end

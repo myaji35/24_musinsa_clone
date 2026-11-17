@@ -2,11 +2,16 @@ require "test_helper"
 
 class WechatAgentTest < ActionDispatch::IntegrationTest
   setup do
+    @mac_auto_send = ENV.delete("WECHAT_MAC_AUTO_SEND")
     @account = accounts(:jieum)
     @account.update!(wechat_channel_mode: "mac_app")
     @token, raw = WechatAgentToken.issue!(account: @account, name: "Mac")
     @headers = { "Authorization" => "Bearer #{raw}" }
     @contact = @account.wechat_contacts.create!(wechat_display_name: "工厂")
+  end
+
+  teardown do
+    @mac_auto_send.nil? ? ENV.delete("WECHAT_MAC_AUTO_SEND") : ENV["WECHAT_MAC_AUTO_SEND"] = @mac_auto_send
   end
 
   test "invalid tokens fail and heartbeat updates disconnect warning" do
@@ -26,7 +31,17 @@ class WechatAgentTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "disabled automatic sending hides previously queued messages but allows inbox" do
+    @contact.wechat_messages.create!(account: @account, direction: "out", msg_type: "text", content: "queued", status: "queued_mac")
+    get "/api/wechat_agent/outbox", headers: @headers
+    assert_equal [], response.parsed_body
+    post "/api/wechat_agent/inbox", headers: @headers, params: { display_name: "工厂", content: "你好", external_key: "manual-mode-inbox" }, as: :json
+    assert_response :no_content
+    assert_equal "received_mac", @contact.wechat_messages.last.status
+  end
+
   test "outbox requires approval and isolates results and inbox per tenant" do
+    ENV["WECHAT_MAC_AUTO_SEND"] = "true"
     message = Wechat::Client.new.send_text(contact: @contact, content: "订单")
     assert_equal "awaiting_approval", message.status
     get "/api/wechat_agent/outbox", headers: @headers

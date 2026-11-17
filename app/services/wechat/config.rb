@@ -5,6 +5,7 @@ module Wechat
     def self.token = ENV["WECHAT_TOKEN"].to_s
     def self.encoding_aes_key = ENV["WECHAT_ENCODING_AES_KEY"].to_s
     def self.template_id = ENV["WECHAT_PO_TEMPLATE_ID"].to_s
+    def self.mac_auto_send? = ENV["WECHAT_MAC_AUTO_SEND"] == "true"
     def self.send_enabled? = ENV["WECHAT_SEND_ENABLED"] == "true"
 
     def self.status

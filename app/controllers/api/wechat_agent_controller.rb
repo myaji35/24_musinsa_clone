@@ -6,6 +6,7 @@ module Api
     end
 
     def outbox
+      return render json: [] unless Wechat::Config.mac_auto_send?
       render json: @account.wechat_messages.where(status: "queued_mac").includes(:wechat_contact).order(:id).limit(30).map { |message|
         { id: message.id, display_name: message.wechat_contact.wechat_display_name, content: message.content }
       }

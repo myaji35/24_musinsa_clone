@@ -35,8 +35,9 @@ class WechatController < ApplicationController
   def complete
     message = channel_account.wechat_messages.find(params[:message_id])
     message.with_lock do
-      target = { "pending_manual" => [ "manual", "sent_manual" ], "awaiting_approval" => [ "mac_app", "queued_mac" ] }[message.status]
-      return head :conflict unless target && target.first == channel_account.wechat_channel_mode
+      target = { "pending_manual" => [ %w[manual mac_app], "sent_manual" ], "awaiting_approval" => [ %w[mac_app], "queued_mac" ] }[message.status]
+      return head :conflict unless target && target.first.include?(channel_account.wechat_channel_mode)
+      return head :unprocessable_entity if target.last == "queued_mac" && !Wechat::Config.mac_auto_send?
       return head :unprocessable_entity if target.last == "queued_mac" && message.wechat_contact.wechat_display_name.blank?
       message.update!(status: target.last, processed_by: current_user, processed_at: Time.current)
     end

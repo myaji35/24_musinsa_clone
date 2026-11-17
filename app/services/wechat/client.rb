@@ -17,7 +17,7 @@ module Wechat
       message = contact.wechat_messages.build(account: contact.account, direction: "out", msg_type: "text",
         content: content, purchase_order: purchase_order, sent_by: sent_by, status: "disabled")
       mode = contact.account.wechat_channel_mode
-      message.status = { "manual" => "pending_manual", "mac_app" => "awaiting_approval" }.fetch(mode, "disabled")
+      message.status = { "manual" => "pending_manual", "mac_app" => (Config.mac_auto_send? ? "awaiting_approval" : "pending_manual") }.fetch(mode, "disabled")
       message.save! # Validate before any HTTP request.
       return message unless mode == "official"
       return message unless Config.send_enabled?

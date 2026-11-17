@@ -29,9 +29,10 @@
 | `WECHAT_ENCODING_AES_KEY` | 선택: 안전 모드 43자 AES 키 |
 | `WECHAT_PO_TEMPLATE_ID` | 선택: 승인된 발주 알림 템플릿 ID |
 | `WECHAT_SEND_ENABLED` | 정확히 `true`일 때만 API 발송. 기본 꺼짐 |
+| `WECHAT_MAC_AUTO_SEND` | 정확히 `true`일 때만 맥 앱 자동 발송 승인·outbox 활성화. 기본 꺼짐 |
 | `APP_HOST` | 기존 앱 공개 URL/호스트(발주 확정 링크·웹훅 URL) |
 
-발송을 끄면 유효한 메시지는 `disabled`로만 저장하고 토큰 요청을 포함해 외부 API를 호출하지 않습니다. 나중에 켜도 저장된 메시지를 자동 발송하지 않습니다. 본문은 1~2000자로 제한합니다. 토큰은 `stable_token` POST로 취득하고 만료 5분 전까지 Rails.cache에 보관하며, 운영에서는 공유 캐시 사용을 권장합니다. 토큰 만료 오류는 갱신 후 한 번만 재시도합니다.
+공식계정 API 발송을 끄면 유효한 메시지는 `disabled`로만 저장하고 토큰 요청을 포함해 외부 API를 호출하지 않습니다. 나중에 켜도 저장된 메시지를 자동 발송하지 않습니다. 본문은 1~2000자로 제한합니다. 토큰은 `stable_token` POST로 취득하고 만료 5분 전까지 Rails.cache에 보관하며, 운영에서는 공유 캐시 사용을 권장합니다. 토큰 만료 오류는 갱신 후 한 번만 재시도합니다.
 
 ## 검증
 
@@ -51,7 +52,7 @@ bin/rails test
 | 방식 | 계정/준비 | 발주·대화 발송 | 수신 |
 | --- | --- | --- | --- |
 | manual (기본) | 개인 위챗 | pending_manual → 복사해서 직접 보내기 → sent_manual | 받은 메시지 붙여넣기 → received_manual |
-| mac_app | 개인 위챗, 운영자 맥·키체인·권한 | awaiting_approval → 운영자 보내기 승인 → queued_mac → sent_mac/failed | 로컬 알림 폴링 → received_mac |
+| mac_app | 개인 위챗, 운영자 맥·키체인·권한 | 기본 pending_manual → 복사해서 직접 보내기 → sent_manual (자동 발송 켜짐: awaiting_approval → 승인 → queued_mac → sent_mac/failed) | 로컬 알림 폴링 → received_mac |
 | official | 인증 공식계정·기존 환경변수 | 기존 공식 API와 48시간/템플릿 규칙 | 서명 검증 웹훅 |
 
 ### manual 운영
@@ -63,10 +64,12 @@ bin/rails test
 
 ### mac_app 운영
 
+실측 결과 WeChat 4.2 맥 앱은 화면 캡처·손쉬운 사용 정보로 현재 대화방을 확인할 수 없습니다. 로컬 에이전트 자동 발송은 맞는 대화방인지 검증할 수 없는 ‘눈 감고 보내기’이므로 **받기=에이전트 자동, 보내기=복사해서 직접 보내기**가 기본입니다. 서버 `WECHAT_MAC_AUTO_SEND=true`일 때만 기존 승인 대기 → 보내기 승인 → `queued_mac` 흐름을 허용하며 에이전트에도 `--send`가 필요합니다. 다른 값과 미설정은 꺼짐입니다. 켜도 기존 `pending_manual` 메시지는 자동 변환하지 않습니다.
+
 1. 방식을 mac_app으로 변경하고 대화방의 실제 이름을 정확히 등록합니다. 같은 표시 이름은 계정 내 하나만 등록할 수 있습니다.
 2. 에이전트 이름으로 토큰을 발급하고 한 번 표시되는 원문을 맥 키체인에 저장합니다. 서버 DB에는 SHA256 digest만 저장합니다. 분실하면 폐기 후 새로 발급합니다.
-3. [로컬 에이전트 설치 안내](../script/wechat_mac_agent/README.md)를 따라 기본 수신 전용으로 시작합니다. 발송은 위험과 권한을 확인한 후 `--send`로 활성화합니다.
-4. 발주 통보와 작성한 대화는 모두 승인 대기입니다. 본문과 대화방을 확인해 **보내기 승인**을 누릅니다. 승인 전에는 outbox에 노출되지 않습니다.
+3. [로컬 에이전트 설치 안내](../script/wechat_mac_agent/README.md)를 따라 수신 전용으로 시작합니다. 받기는 맥 위챗 알림을 자동으로 대화함에 넣습니다.
+4. 보내기는 발주 통보·대화 모두 기본 `pending_manual`입니다. **복사**하여 위챗에서 직접 보내고 **보냈음 표시**로 `sent_manual` 처리합니다. 자동 발송 꺼짐에서는 보내기 승인 버튼을 숨기고 서버도 승인을 거부하며 기존 `queued_mac`도 outbox에서 숨깁니다.
 5. 상단 마지막 접속을 확인합니다. 활성 토큰의 heartbeat가 없거나 5분 넘게 지나면 **연결 끊김**이 표시됩니다. 폐기한 토큰은 즉시 API 401 처리됩니다.
 
 에이전트 API는 Bearer 토큰으로 인증하고 mac_app 계정만 허용합니다. 일반 API Rack::Attack 제한(5분/IP당 300건)을 적용합니다. `GET /api/wechat_agent/outbox`, `POST /api/wechat_agent/outbox/:id/result` (`ok`: JSON boolean, `error`), `POST /api/wechat_agent/inbox` (`display_name`, `content`, ISO8601 `received_at`, `external_key`), `POST /api/wechat_agent/heartbeat`를 제공합니다. inbox external_key는 계정 안에서 중복을 무시하며, 모르는 표시 이름은 거래처 미연결 상대를 생성합니다. API에는 브라우저 세션이나 CSRF 토큰을 사용하지 않습니다.

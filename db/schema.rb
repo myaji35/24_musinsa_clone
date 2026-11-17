@@ -151,11 +151,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_100000) do
     t.string "factory_action"
     t.text "factory_flags"
     t.datetime "forwarded_at"
+    t.integer "account_id", null: false
+    t.integer "user_id"
+    t.integer "manual_chapter"
+    t.text "handling_note"
+    t.index ["account_id"], name: "index_feedbacks_on_account_id"
     t.index ["created_at"], name: "index_feedbacks_on_created_at"
     t.index ["kind"], name: "index_feedbacks_on_kind"
     t.index ["product_id"], name: "index_feedbacks_on_product_id"
     t.index ["reporter_hash"], name: "index_feedbacks_on_reporter_hash"
     t.index ["status"], name: "index_feedbacks_on_status"
+    t.index ["user_id"], name: "index_feedbacks_on_user_id"
   end
 
   create_table "image_processings", force: :cascade do |t|
@@ -783,7 +789,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_100000) do
   add_foreign_key "campaigns", "products"
   add_foreign_key "content_uploads", "characters"
   add_foreign_key "content_uploads", "products"
+  add_foreign_key "feedbacks", "accounts"
   add_foreign_key "feedbacks", "products", on_delete: :nullify
+  add_foreign_key "feedbacks", "users", on_delete: :nullify
   add_foreign_key "image_processings", "products"
   add_foreign_key "kakao_devices", "accounts"
   add_foreign_key "kakao_extraction_messages", "accounts"

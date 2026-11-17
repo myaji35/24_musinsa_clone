@@ -12,6 +12,7 @@ class Account < ApplicationRecord
   has_many :kakao_extractions
   has_many :kakao_extraction_messages
   has_many :kakao_messages
+  has_many :feedbacks
   has_many :users
 
   validates :name, :slug, presence: true

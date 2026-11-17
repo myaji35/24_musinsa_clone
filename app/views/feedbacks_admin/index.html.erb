@@ -1,0 +1,31 @@
+<section class="px-gutter py-8 space-y-6">
+  <h1 class="text-2xl font-bold">의견함</h1>
+  <%= form_with url: feedbacks_admin_index_path, method: :get, class: "flex flex-wrap gap-3 items-end" do |f| %>
+    <p><%= f.label :status, "상태" %><%= f.select :status, Feedback::STATUSES, { include_blank: "전체", selected: params[:status] }, class: "field" %></p>
+    <p><%= f.label :kind, "종류" %><%= f.select :kind, Feedback::KINDS.merge("칭찬" => "praise"), { include_blank: "전체", selected: params[:kind] }, class: "field" %></p>
+    <p><%= f.label :source, "출처" %><%= f.select :source, Feedback::SOURCES.keys, { include_blank: "전체", selected: params[:source] }, class: "field" %></p>
+    <p><%= f.label :manual_chapter, "매뉴얼 장" %><%= f.select :manual_chapter, Feedback::MANUAL_CHAPTERS, { include_blank: "전체", selected: params[:manual_chapter] }, class: "field" %></p>
+    <%= f.submit "조회", class: "btn btn-primary" %>
+  <% end %>
+  <p>최근 의견 최대 200개를 표시합니다.</p>
+  <section class="overflow-x-auto" aria-label="의견 목록">
+    <table class="w-full text-sm text-left">
+      <thead><tr><% %w[시각 상태 종류 출처 보낸사람 장 화면주소 내용].each do |heading| %><th class="p-3 border-b border-line"><%= heading %></th><% end %></tr></thead>
+      <tbody>
+        <% @feedbacks.each do |feedback| %>
+          <tr class="border-b border-line" data-feedback-id="<%= feedback.id %>">
+            <td class="p-3 whitespace-nowrap"><%= feedback.created_at.in_time_zone("Asia/Seoul").strftime("%Y년 %m월 %d일 %H:%M") %></td>
+            <td class="p-3"><%= Feedback::STATUSES.key(feedback.status) || { "needs_review" => "확인 필요", "forwarded" => "전달됨" }[feedback.status] %></td>
+            <td class="p-3"><%= Feedback::KINDS.key(feedback.kind) || "칭찬" %></td>
+            <td class="p-3"><%= feedback_source(feedback) %></td>
+            <td class="p-3"><%= feedback_sender(feedback) %></td>
+            <td class="p-3"><%= Feedback::MANUAL_CHAPTERS.key(feedback.manual_chapter) || "—" %></td>
+            <td class="p-3"><%= feedback_page_link(feedback) %></td>
+            <td class="p-3"><%= link_to truncate(feedback.body, length: 80), feedbacks_admin_path(feedback), class: "underline" %></td>
+          </tr>
+        <% end %>
+        <% if @feedbacks.empty? %><tr><td colspan="8" class="p-3">의견이 없습니다.</td></tr><% end %>
+      </tbody>
+    </table>
+  </section>
+</section>

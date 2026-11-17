@@ -73,6 +73,7 @@
                   <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
                   <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
                   <%= link_to "주문 관리", admin_orders_path %>
+                  <%= link_to "의견함 (#{feedback_new_count})", feedbacks_admin_index_path %>
                     <%= link_to "위챗", wechat_index_path %>
             <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
                   <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
@@ -125,6 +126,7 @@
             <%= link_to "재고관리", inventory_scan_path, class: "hover:text-gray-500" %>
             <%= link_to "대시보드", dashboard_index_path, class: "hover:text-gray-500 text-blue-600" %>
             <%= link_to "주문 관리", admin_orders_path %>
+            <%= link_to "의견함 (#{feedback_new_count})", feedbacks_admin_index_path %>
             <%= link_to "위챗", wechat_index_path %>
             <%= link_to "거래처", suppliers_path, class: "hover:text-gray-500 text-purple-600" %>
             <%= link_to "발주", purchase_orders_path, class: "hover:text-gray-500 text-green-600" %>
@@ -188,5 +190,6 @@
             </div>
         </div>
     </footer>
+    <%= render "shared/operator_feedback" if mall_admin? %>
   </body>
 </html>

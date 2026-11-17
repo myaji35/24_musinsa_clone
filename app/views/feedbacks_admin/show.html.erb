@@ -1,0 +1,15 @@
+<section class="px-gutter py-8 space-y-6">
+  <%= link_to "의견함으로", feedbacks_admin_index_path, class: "underline" %>
+  <h1 class="text-2xl font-bold">의견 상세</h1>
+  <p><%= @feedback.created_at.in_time_zone("Asia/Seoul").strftime("%Y년 %m월 %d일 %H:%M") %> · <%= feedback_sender(@feedback) %> · <%= feedback_source(@feedback) %> · <%= Feedback::KINDS.key(@feedback.kind) || "칭찬" %></p>
+  <p><%= Feedback::MANUAL_CHAPTERS.key(@feedback.manual_chapter) || "장 선택 없음" %></p>
+  <p><%= feedback_page_link(@feedback) %></p>
+  <article class="whitespace-pre-wrap break-words border-y border-line py-4"><%= @feedback.body %></article>
+  <% if @feedback.errors.any? %><p role="alert"><%= @feedback.errors.full_messages.join(" · ") %></p><% end %>
+  <%= form_with model: @feedback, url: feedbacks_admin_path(@feedback), class: "space-y-4" do |f| %>
+    <p><%= f.label :status, "상태" %><%= f.select :status, Feedback::STATUSES, {}, class: "field" %></p>
+    <p><%= f.label :handling_note, "처리 메모" %><%= f.text_area :handling_note, rows: 5, class: "field w-full h-auto py-2" %></p>
+    <% if @feedback.answered_at %><p>처리 시각: <%= @feedback.answered_at.in_time_zone("Asia/Seoul").strftime("%Y년 %m월 %d일 %H:%M") %></p><% end %>
+    <%= f.submit "저장", class: "btn btn-primary" %>
+  <% end %>
+</section>

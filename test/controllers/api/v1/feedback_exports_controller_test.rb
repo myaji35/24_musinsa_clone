@@ -61,7 +61,7 @@ class Api::V1::FeedbackExportsControllerTest < ActionDispatch::IntegrationTest
 
   test "default limit is 100 and requested limit is capped at 200" do
     now = Time.current
-    Feedback.insert_all!(201.times.map { { body: "상품에 대한 의견을 보냅니다.", created_at: now, updated_at: now } })
+    Feedback.insert_all!(201.times.map { { account_id: accounts(:jieum).id, body: "상품에 대한 의견을 보냅니다.", created_at: now, updated_at: now } })
     get "/api/v1/feedback_exports", headers: @headers
     assert_equal 100, response.parsed_body["count"]
     get "/api/v1/feedback_exports", params: { limit: 999 }, headers: @headers

@@ -84,6 +84,8 @@ Rails.application.routes.draw do
 
   resources :characters, only: [ :show ], param: :handle
 
+  resources :feedbacks_admin, only: [ :index, :show, :update ]
+  post "operator_feedbacks", to: "operator_feedbacks#create"
   resources :feedbacks, only: [ :new, :create ]
 
   get "product_info_notices", to: "product_info_notices#index"

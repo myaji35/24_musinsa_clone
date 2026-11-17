@@ -13,7 +13,7 @@ class WechatWebhookTest < ActionDispatch::IntegrationTest
   end
 
   def signature(encrypted = nil)
-    Digest::SHA1.hexdigest([ENV["WECHAT_TOKEN"], "1700000000", "nonce", encrypted].compact.sort.join)
+    Digest::SHA1.hexdigest([ ENV["WECHAT_TOKEN"], "1700000000", "nonce", encrypted ].compact.sort.join)
   end
 
   def callback_params
@@ -74,7 +74,7 @@ class WechatWebhookTest < ActionDispatch::IntegrationTest
 
   def encrypt(body, app_id: "test-app", bad_padding: false)
     key = "k" * 32
-    raw = "r" * 16 + [body.bytesize].pack("N") + body.b + app_id
+    raw = "r" * 16 + [ body.bytesize ].pack("N") + body.b + app_id
     padding = 32 - raw.bytesize % 32
     raw += padding.chr * padding
     raw.setbyte(-1, 0) if bad_padding
@@ -93,7 +93,7 @@ class WechatWebhookTest < ActionDispatch::IntegrationTest
       deliver("<xml><Encrypt><![CDATA[#{encrypted}]]></Encrypt></xml>", params)
       assert_response :success
     end
-    [encrypt(xml, app_id: "wrong"), encrypt(xml, bad_padding: true)].each do |invalid|
+    [ encrypt(xml, app_id: "wrong"), encrypt(xml, bad_padding: true) ].each do |invalid|
       deliver("<xml><Encrypt>#{invalid}</Encrypt></xml>", params.merge(msg_signature: signature(invalid)))
       assert_response :forbidden
     end
@@ -102,7 +102,7 @@ class WechatWebhookTest < ActionDispatch::IntegrationTest
   end
 
   test "DTD and malformed XML rejected" do
-    ["<xml>", '<!DOCTYPE xml [<!ENTITY x SYSTEM "file:///etc/passwd">]><xml><Content>&x;</Content></xml>'].each do |body|
+    [ "<xml>", '<!DOCTYPE xml [<!ENTITY x SYSTEM "file:///etc/passwd">]><xml><Content>&x;</Content></xml>' ].each do |body|
       deliver(body)
       assert_response :forbidden
     end

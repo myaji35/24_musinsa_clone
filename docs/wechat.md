@@ -1,6 +1,6 @@
-# 위챗 공식계정 연결
+# 위챗 채널 운영
 
-중국 공장 담당자와의 발주 통보·대화에 WeChat 공식계정(서비스 계정, 服务号)을 사용합니다. 현재 공식계정은 JIEUM 전용이며 수신은 기존 `Account.primary`(slug `jieum`)에 귀속됩니다. 다른 테넌트의 담당자를 이 공식계정에 연결하면 안 됩니다.
+중국 공장 담당자와의 발주 통보·대화에 수동 복사, 맥 앱 에이전트, 공식계정 중 하나를 선택합니다. 기본은 수동 복사입니다. 아래 공식계정 준비 절차는 official 방식에서만 필요합니다. 현재 공식계정은 JIEUM 전용이며 수신은 기존 `Account.primary`(slug `jieum`)에 귀속됩니다. 다른 테넌트의 담당자를 이 공식계정에 연결하면 안 됩니다.
 
 ## 준비
 
@@ -35,7 +35,7 @@
 
 ## 검증
 
-Ruby 3.3을 PATH 앞에 설정하고 `bin/rails db:migrate` 후 다음을 실행합니다. 위챗 테스트는 HTTP callable 주입 또는 스텁만 사용합니다.
+`source ~/.claude/factory-runner/scripts/env0053.sh`로 환경을 로드하고 `bin/rails db:migrate` 후 다음을 실행합니다. 위챗 테스트는 HTTP callable 주입 또는 스텁만 사용합니다.
 
 ```sh
 bin/rails test test/services/wechat test/controllers/wechat_webhook_test.rb test/controllers/wechat_controller_test.rb test/controllers/purchase_orders_controller_test.rb
@@ -43,3 +43,39 @@ bin/rails test
 ```
 
 프로토콜 참고: 제공된 Next.js 초안의 SHA1 서명·AES 규격을 Rails로 구현했습니다. 운영 설정과 템플릿 권한은 [위챗 공식계정 관리자](https://mp.weixin.qq.com/) 및 [공식 개발 문서](https://developers.weixin.qq.com/doc/offiaccount/Getting_Started/Overview.html)에서 확인합니다.
+
+## 개인 계정과 채널 방식
+
+계정별 기본 방식은 **manual**입니다. 공식계정 키가 없는 JIEUM도 개인 위챗으로 운영할 수 있습니다. 관리자 `/wechat` 상단에서 변경하며 변경·토큰 발급/폐기·메시지 처리의 계정/처리자 ID는 서버 로그에 기록됩니다. 기존 메시지는 방식 변경으로 자동 변환하거나 발송하지 않습니다.
+
+| 방식 | 계정/준비 | 발주·대화 발송 | 수신 |
+| --- | --- | --- | --- |
+| manual (기본) | 개인 위챗 | pending_manual → 복사해서 직접 보내기 → sent_manual | 받은 메시지 붙여넣기 → received_manual |
+| mac_app | 개인 위챗, 운영자 맥·키체인·권한 | awaiting_approval → 운영자 보내기 승인 → queued_mac → sent_mac/failed | 로컬 알림 폴링 → received_mac |
+| official | 인증 공식계정·기존 환경변수 | 기존 공식 API와 48시간/템플릿 규칙 | 서명 검증 웹훅 |
+
+### manual 운영
+
+1. `/wechat`에서 거래처와 위챗 표시 이름(대화방 이름)으로 상대를 추가합니다. 개인 계정은 open_id가 필요 없습니다. 공식계정 상대는 open_id가 필수입니다.
+2. 발주 제출 후 큐 워커가 중·한 병기 통보문을 만듭니다. 발주 상세 또는 대화 화면에서 복사하여 개인 위챗에 직접 보냅니다.
+3. 실제 보낸 뒤 **보냈음 표시**를 눌러 처리자·시각을 남깁니다. 버튼을 누르는 것만으로 위챗에 보내지 않습니다.
+4. 공장 답장은 대화 화면의 **받은 메시지 붙여넣기**로 기록합니다.
+
+### mac_app 운영
+
+1. 방식을 mac_app으로 변경하고 대화방의 실제 이름을 정확히 등록합니다. 같은 표시 이름은 계정 내 하나만 등록할 수 있습니다.
+2. 에이전트 이름으로 토큰을 발급하고 한 번 표시되는 원문을 맥 키체인에 저장합니다. 서버 DB에는 SHA256 digest만 저장합니다. 분실하면 폐기 후 새로 발급합니다.
+3. [로컬 에이전트 설치 안내](../script/wechat_mac_agent/README.md)를 따라 기본 수신 전용으로 시작합니다. 발송은 위험과 권한을 확인한 후 `--send`로 활성화합니다.
+4. 발주 통보와 작성한 대화는 모두 승인 대기입니다. 본문과 대화방을 확인해 **보내기 승인**을 누릅니다. 승인 전에는 outbox에 노출되지 않습니다.
+5. 상단 마지막 접속을 확인합니다. 활성 토큰의 heartbeat가 없거나 5분 넘게 지나면 **연결 끊김**이 표시됩니다. 폐기한 토큰은 즉시 API 401 처리됩니다.
+
+에이전트 API는 Bearer 토큰으로 인증하고 mac_app 계정만 허용합니다. 일반 API Rack::Attack 제한(5분/IP당 300건)을 적용합니다. `GET /api/wechat_agent/outbox`, `POST /api/wechat_agent/outbox/:id/result` (`ok`: JSON boolean, `error`), `POST /api/wechat_agent/inbox` (`display_name`, `content`, ISO8601 `received_at`, `external_key`), `POST /api/wechat_agent/heartbeat`를 제공합니다. inbox external_key는 계정 안에서 중복을 무시하며, 모르는 표시 이름은 거래처 미연결 상대를 생성합니다. API에는 브라우저 세션이나 CSRF 토큰을 사용하지 않습니다.
+
+검증 환경은 반드시 다음과 같이 로드합니다(PATH만 변경하면 GemNotFound 발생).
+
+```sh
+source ~/.claude/factory-runner/scripts/env0053.sh
+bin/rails db:migrate
+bin/rails test
+bundle exec rubocop app/services/wechat app/controllers/wechat_controller.rb app/controllers/webhooks/wechat_controller.rb app/controllers/api/wechat_agent_controller.rb app/models/wechat*.rb app/jobs/wechat_purchase_order_job.rb script/wechat_mac_agent test/script/wechat_mac_agent_test.rb test/controllers/wechat* test/services/wechat db/migrate/*wechat*.rb
+```

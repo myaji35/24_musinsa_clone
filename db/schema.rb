@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_100000) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "wechat_channel_mode", default: "manual", null: false
     t.index ["slug"], name: "index_accounts_on_slug", unique: true
   end
 
@@ -718,9 +719,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000000) do
     t.index ["product_id"], name: "index_variants_on_product_id"
   end
 
+  create_table "wechat_agent_tokens", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.string "name", null: false
+    t.string "token_digest", null: false
+    t.datetime "last_seen_at"
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_wechat_agent_tokens_on_account_id"
+    t.index ["token_digest"], name: "index_wechat_agent_tokens_on_token_digest", unique: true
+  end
+
   create_table "wechat_contacts", force: :cascade do |t|
     t.integer "account_id", null: false
-    t.string "open_id", null: false
+    t.string "open_id"
     t.string "nickname"
     t.integer "supplier_id"
     t.boolean "subscribed", default: true, null: false
@@ -728,7 +741,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000000) do
     t.datetime "last_read_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "wechat_display_name"
     t.index ["account_id", "open_id"], name: "index_wechat_contacts_on_account_id_and_open_id", unique: true
+    t.index ["account_id", "wechat_display_name"], name: "index_wechat_contacts_on_account_id_and_wechat_display_name", unique: true
     t.index ["account_id"], name: "index_wechat_contacts_on_account_id"
     t.index ["supplier_id"], name: "index_wechat_contacts_on_supplier_id"
   end
@@ -747,7 +762,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000000) do
     t.integer "sent_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "external_key"
+    t.datetime "processed_at"
+    t.datetime "received_at"
+    t.integer "processed_by_id"
+    t.index ["account_id", "external_key"], name: "index_wechat_messages_on_account_id_and_external_key", unique: true
     t.index ["account_id"], name: "index_wechat_messages_on_account_id"
+    t.index ["processed_by_id"], name: "index_wechat_messages_on_processed_by_id"
     t.index ["purchase_order_id"], name: "index_wechat_messages_on_purchase_order_id"
     t.index ["sent_by_id"], name: "index_wechat_messages_on_sent_by_id"
     t.index ["wechat_contact_id", "created_at"], name: "index_wechat_messages_on_wechat_contact_id_and_created_at"
@@ -812,10 +833,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_000000) do
   add_foreign_key "suppliers", "accounts"
   add_foreign_key "users", "accounts"
   add_foreign_key "variants", "products"
+  add_foreign_key "wechat_agent_tokens", "accounts"
   add_foreign_key "wechat_contacts", "accounts"
   add_foreign_key "wechat_contacts", "suppliers"
   add_foreign_key "wechat_messages", "accounts"
   add_foreign_key "wechat_messages", "purchase_orders"
+  add_foreign_key "wechat_messages", "users", column: "processed_by_id"
   add_foreign_key "wechat_messages", "users", column: "sent_by_id"
   add_foreign_key "wechat_messages", "wechat_contacts"
 end

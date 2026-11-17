@@ -10,7 +10,7 @@ class CreateWechat < ActiveRecord::Migration[8.0]
       t.datetime :last_read_at
       t.timestamps
     end
-    add_index :wechat_contacts, [:account_id, :open_id], unique: true
+    add_index :wechat_contacts, [ :account_id, :open_id ], unique: true
     create_table :wechat_messages do |t|
       t.references :account, null: false, foreign_key: true
       t.references :wechat_contact, null: false, foreign_key: true
@@ -26,6 +26,6 @@ class CreateWechat < ActiveRecord::Migration[8.0]
       t.timestamps
     end
     add_index :wechat_messages, :wechat_msg_id, unique: true
-    add_index :wechat_messages, [:wechat_contact_id, :created_at]
+    add_index :wechat_messages, [ :wechat_contact_id, :created_at ]
   end
 end

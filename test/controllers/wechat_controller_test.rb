@@ -3,6 +3,7 @@ require "minitest/mock"
 
 class WechatControllerTest < ActionDispatch::IntegrationTest
   setup do
+    accounts(:jieum).update!(wechat_channel_mode: "official")
     @contact = WechatContact.create!(account: accounts(:jieum), open_id: "admin-contact", nickname: "工厂")
     @message = @contact.wechat_messages.create!(account: @contact.account, direction: "in", msg_type: "text", content: "你好", status: "received")
     @foreign = WechatContact.create!(account: accounts(:other), open_id: "other-contact", nickname: "foreign-name")
@@ -35,7 +36,7 @@ class WechatControllerTest < ActionDispatch::IntegrationTest
     patch wechat_path(@contact), params: { supplier_id: foreign_supplier.id }
     assert_response :not_found
     assert_equal suppliers(:one), @contact.reload.supplier
-    [:get, :patch].each do |verb|
+    [ :get, :patch ].each do |verb|
       public_send(verb, wechat_path(@foreign))
       assert_response :not_found
     end

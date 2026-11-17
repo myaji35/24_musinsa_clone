@@ -1,15 +1,22 @@
 <main class="container mx-auto px-4 py-8">
   <h1 class="text-3xl font-bold mb-6">위챗 대화</h1>
   <%= render "settings" %>
+  <% unless (current_account || Account.primary).wechat_channel_mode == "official" %>
+    <%= form_with url: wechat_index_path do |form| %>
+      <%= form.label :supplier_id, "거래처" %><%= form.collection_select :supplier_id, supplier_scope.order(:name), :id, :name, include_blank: "미연결" %>
+      <%= form.label :wechat_display_name, "위챗 표시 이름 (대화방 이름)" %><%= form.text_field :wechat_display_name, required: true %>
+      <%= form.submit "대화 상대 추가" %>
+    <% end %>
+  <% end %>
   <ul class="space-y-4">
     <% @contacts.each do |contact| %>
       <li class="border rounded-lg p-4">
         <h2><%= link_to contact.display_name, wechat_path(contact), class: "font-bold underline" %></h2>
         <p><%= contact.nickname %> <%= "미연결 담당자" unless contact.supplier %> · <%= contact.subscribed? ? "구독 중" : "구독 해제" %></p>
         <p><%= truncate(contact.latest_message&.content, length: 100) %></p>
-        <p>안 읽음 <%= contact.unread_count %> · <%= contact.window_open? ? "48시간 창 남은 시간: #{distance_of_time_in_words(Time.current, contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %></p>
+        <p>안 읽음 <%= contact.unread_count %> <% if (current_account || Account.primary).wechat_channel_mode == "official" %>· <%= contact.window_open? ? "48시간 창 남은 시간: #{distance_of_time_in_words(Time.current, contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %><% end %></p>
       </li>
     <% end %>
   </ul>
-  <% if @contacts.empty? %><p>공식계정을 팔로우하고 메시지를 보내면 담당자가 표시됩니다.</p><% end %>
+  <% if @contacts.empty? %><p>대화 상대를 추가하거나 채널 안내에 따라 첫 메시지를 받아 주세요.</p><% end %>
 </main>

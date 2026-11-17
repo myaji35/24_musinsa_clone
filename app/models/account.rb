@@ -1,4 +1,7 @@
 class Account < ApplicationRecord
+  has_many :wechat_agent_tokens, dependent: :destroy
+  validates :wechat_channel_mode, inclusion: { in: %w[official manual mac_app] }
+
   has_many :wechat_contacts
   has_many :wechat_messages
   has_many :suppliers

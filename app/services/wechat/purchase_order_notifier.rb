@@ -3,7 +3,7 @@ module Wechat
     def self.call(purchase_order, sent_by: nil, client: Client.new)
       supplier = purchase_order.supplier
       # This deployment's official account belongs exclusively to JIEUM.
-      return unless supplier.account_id == Account.primary.id
+      return if supplier.account.wechat_channel_mode == "official" && supplier.account_id != Account.primary.id
       items = purchase_order.purchase_order_items
       quantity = items.sum(:quantity)
       due = purchase_order.expected_delivery_date&.iso8601 || "待定 / 미정"

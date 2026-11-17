@@ -10,7 +10,7 @@ module Wechat
 
     def self.verify!(signature:, timestamp:, nonce:, encrypted: nil)
       raise Invalid if Config.token.blank? || timestamp.blank? || nonce.blank?
-      expected = Digest::SHA1.hexdigest([Config.token, timestamp, nonce, encrypted].compact.sort.join)
+      expected = Digest::SHA1.hexdigest([ Config.token, timestamp, nonce, encrypted ].compact.sort.join)
       raise Invalid unless ActiveSupport::SecurityUtils.secure_compare(expected, signature.to_s)
     end
 
@@ -18,7 +18,7 @@ module Wechat
       raise Invalid if xml.bytesize > 1.megabyte || xml.match?(/<!DOCTYPE|<!ENTITY/i)
       doc = Nokogiri::XML(xml) { |options| options.strict.nonet }
       raise Invalid unless doc.root&.name == "xml"
-      doc.root.element_children.to_h { |node| [node.name, node.text] }
+      doc.root.element_children.to_h { |node| [ node.name, node.text ] }
     rescue Nokogiri::XML::SyntaxError
       raise Invalid
     end

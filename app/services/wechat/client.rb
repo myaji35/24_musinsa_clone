@@ -3,7 +3,7 @@ require "json"
 
 module Wechat
   class Client
-    TOKEN_ERRORS = [40001, 42001, 40014].freeze
+    TOKEN_ERRORS = [ 40001, 42001, 40014 ].freeze
     WINDOW_CLOSED = "48시간 창 닫힘 — 담당자가 공식계정에 메시지를 한 번 보내야 함".freeze
 
     # HTTP callable accepts a URI and JSON hash; tests inject an in-memory fake.
@@ -16,8 +16,15 @@ module Wechat
     def send_text(contact:, content:, purchase_order: nil, sent_by: nil, template_data: nil)
       message = contact.wechat_messages.build(account: contact.account, direction: "out", msg_type: "text",
         content: content, purchase_order: purchase_order, sent_by: sent_by, status: "disabled")
+      mode = contact.account.wechat_channel_mode
+      message.status = { "manual" => "pending_manual", "mac_app" => "awaiting_approval" }.fetch(mode, "disabled")
       message.save! # Validate before any HTTP request.
+      return message unless mode == "official"
       return message unless Config.send_enabled?
+      if contact.open_id.blank?
+        message.update!(status: "failed", error: "공식계정 open_id가 필요합니다")
+        return message
+      end
       unless contact.subscribed?
         message.update!(status: "window_closed", error: WINDOW_CLOSED)
         return message

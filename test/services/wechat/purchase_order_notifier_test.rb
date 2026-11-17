@@ -5,6 +5,7 @@ class WechatPurchaseOrderNotifierTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
 
   setup do
+    accounts(:jieum).update!(wechat_channel_mode: "official")
     @po = purchase_orders(:one)
     @po.update!(status: "draft")
     @contact = WechatContact.create!(account: @po.supplier.account, supplier: @po.supplier, open_id: "po-contact")
@@ -12,7 +13,7 @@ class WechatPurchaseOrderNotifierTest < ActionDispatch::IntegrationTest
 
   test "submit enqueues wechat and preserves mail even if enqueue fails" do
     sign_in
-    assert_enqueued_with(job: WechatPurchaseOrderJob, args: [@po.id, users(:one).id]) do
+    assert_enqueued_with(job: WechatPurchaseOrderJob, args: [ @po.id, users(:one).id ]) do
       Notifications::SlackNotifier.stub(:call, nil) { post submit_purchase_order_path(@po) }
     end
     assert_redirected_to purchase_order_path(@po)
@@ -32,7 +33,7 @@ class WechatPurchaseOrderNotifierTest < ActionDispatch::IntegrationTest
     Wechat::PurchaseOrderNotifier.call(@po, client: client)
     assert_equal 1, sent.size
     content = sent.first[:content]
-    ["新订单", "신규 발주", @po.order_number, "품목 수", "총수량", "납기", @po.confirmation_url].each { |part| assert_includes content, part }
+    [ "新订单", "신규 발주", @po.order_number, "품목 수", "총수량", "납기", @po.confirmation_url ].each { |part| assert_includes content, part }
     assert_equal @contact, sent.first[:contact]
   end
 

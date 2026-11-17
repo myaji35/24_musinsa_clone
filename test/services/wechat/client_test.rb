@@ -3,6 +3,7 @@ require "minitest/mock"
 
 class WechatClientTest < ActiveSupport::TestCase
   setup do
+    accounts(:jieum).update!(wechat_channel_mode: "official")
     @env = ENV.to_h.select { |key, _| key.start_with?("WECHAT_") }
     ENV.keys.grep(/^WECHAT_/).each { |key| ENV.delete(key) }
     ENV.update("WECHAT_APP_ID" => "test-app", "WECHAT_APP_SECRET" => "private-secret", "WECHAT_SEND_ENABLED" => "true")
@@ -10,7 +11,7 @@ class WechatClientTest < ActiveSupport::TestCase
     @calls = []
     @responses = []
     @cache = ActiveSupport::Cache::MemoryStore.new
-    @http = ->(uri, payload) { @calls << [uri, payload]; @responses.shift || raise("Unexpected HTTP request") }
+    @http = ->(uri, payload) { @calls << [ uri, payload ]; @responses.shift || raise("Unexpected HTTP request") }
     @client = Wechat::Client.new(http: @http, cache: @cache)
   end
 
@@ -24,14 +25,14 @@ class WechatClientTest < ActiveSupport::TestCase
   end
 
   test "stable token is POSTed and cached until five minutes before expiry" do
-    @responses = [{ "access_token" => "cached", "expires_in" => 7200 }, { "errcode" => 0 }, { "errcode" => 0 }]
+    @responses = [ { "access_token" => "cached", "expires_in" => 7200 }, { "errcode" => 0 }, { "errcode" => 0 } ]
     assert_equal "sent", send_text.status
     travel 6899.seconds do
       assert_equal "sent", send_text.status
     end
     assert_equal 1, @calls.count { |uri, _| uri.path.end_with?("stable_token") }
     assert_equal "client_credential", @calls.first.last[:grant_type]
-    @responses = [{ "access_token" => "new", "expires_in" => 7200 }, { "errcode" => 0 }]
+    @responses = [ { "access_token" => "new", "expires_in" => 7200 }, { "errcode" => 0 } ]
     travel 6901.seconds do
       assert_equal "sent", send_text.status
     end
@@ -39,10 +40,10 @@ class WechatClientTest < ActiveSupport::TestCase
   end
 
   test "invalid tokens refresh and retry exactly once" do
-    [40001, 42001, 40014].each do |code|
+    [ 40001, 42001, 40014 ].each do |code|
       @cache.clear
       @calls.clear
-      @responses = [{ "access_token" => "old" }, { "errcode" => code }, { "access_token" => "new" }, { "errcode" => code, "errmsg" => "expired" }]
+      @responses = [ { "access_token" => "old" }, { "errcode" => code }, { "access_token" => "new" }, { "errcode" => code, "errmsg" => "expired" } ]
       assert_equal "failed", send_text.status
       assert_equal 4, @calls.size
       assert_equal true, @calls[2].last[:force_refresh]
@@ -51,8 +52,8 @@ class WechatClientTest < ActiveSupport::TestCase
   end
 
   test "token refresh can recover a send without exposing either token" do
-    @responses = [{ "access_token" => "old-secret-token" }, { "errcode" => 40001 },
-      { "access_token" => "new-secret-token" }, { "errcode" => 0 }]
+    @responses = [ { "access_token" => "old-secret-token" }, { "errcode" => 40001 },
+      { "access_token" => "new-secret-token" }, { "errcode" => 0 } ]
     assert_equal "sent", send_text.status
     assert_equal 4, @calls.size
   end
@@ -61,7 +62,7 @@ class WechatClientTest < ActiveSupport::TestCase
     ENV["WECHAT_SEND_ENABLED"] = "false"
     assert_equal "disabled", send_text.status
     assert_empty @calls
-    ["", " ", "文" * 2001].each do |content|
+    [ "", " ", "文" * 2001 ].each do |content|
       assert_no_difference "WechatMessage.count" do
         assert_raises(ActiveRecord::RecordInvalid) { @client.send_text(contact: @contact, content: content) }
       end
@@ -75,7 +76,7 @@ class WechatClientTest < ActiveSupport::TestCase
     assert_empty @calls
     ENV["WECHAT_PO_TEMPLATE_ID"] = "template-test"
     assert_equal "window_closed", send_text.status # Manual replies never use a PO template.
-    @responses = [{ "access_token" => "cached" }, { "errcode" => 0, "msgid" => 1234 }]
+    @responses = [ { "access_token" => "cached" }, { "errcode" => 0, "msgid" => 1234 } ]
     po = purchase_orders(:one)
     message = send_text(purchase_order: po, template_data: { number: { value: po.order_number } })
     assert_equal "sent", message.status
@@ -93,7 +94,7 @@ class WechatClientTest < ActiveSupport::TestCase
   end
 
   test "API errors and HTTP exceptions cannot disclose credentials" do
-    @responses = [{ "access_token" => "token-secret" }, { "errcode" => 45015, "errmsg" => "private-secret rejected" }]
+    @responses = [ { "access_token" => "token-secret" }, { "errcode" => 45015, "errmsg" => "private-secret rejected" } ]
     message = send_text
     assert_equal "failed", message.status
     refute_includes message.error, "private-secret"

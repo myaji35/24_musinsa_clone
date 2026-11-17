@@ -4,8 +4,8 @@
     <%= button_to "위챗 재발송", resend_wechat_purchase_order_path(@purchase_order), method: :post, class: "border rounded p-2" %>
   <% end %>
   <ul>
-    <% @purchase_order.wechat_messages.for_account(current_account || Account.primary).includes(wechat_contact: :supplier).order(:created_at).each do |message| %>
-      <li><%= link_to message.wechat_contact.display_name, wechat_path(message.wechat_contact) %> · <%= message.status %> · <%= l message.created_at, format: :short %> · <%= message.error %></li>
+    <% @purchase_order.wechat_messages.for_account(current_account || Account.primary).includes(:processed_by, wechat_contact: :supplier).order(:created_at).each do |message| %>
+      <li><%= link_to message.wechat_contact.display_name, wechat_path(message.wechat_contact) %> · <%= message.status %> · <%= l message.created_at, format: :short %> · <%= message.error %><%= render "wechat/message_actions", message: message %></li>
     <% end %>
   </ul>
 </section>

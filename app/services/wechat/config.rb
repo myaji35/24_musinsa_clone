@@ -13,7 +13,7 @@ module Wechat
     end
 
     def self.redact(value)
-      [app_secret, token, encoding_aes_key, app_id].reject(&:blank?).reduce(value.to_s) { |text, secret| text.gsub(secret, "[FILTERED]") }
+      [ app_secret, token, encoding_aes_key, app_id ].reject(&:blank?).reduce(value.to_s) { |text, secret| text.gsub(secret, "[FILTERED]") }
     end
 
     def self.server_url

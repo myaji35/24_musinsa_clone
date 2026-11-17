@@ -1,0 +1,9 @@
+<% processor = message.processed_by %>
+<section data-controller="clipboard">
+  <p class="whitespace-pre-wrap" data-clipboard-target="source"><%= message.content %></p>
+  <% if message.direction == "out" %><button type="button" data-action="clipboard#copy">복사</button><p data-clipboard-target="status" role="status"></p><% end %>
+  <% if %w[pending_manual awaiting_approval].include?(message.status) %>
+    <%= button_to(message.status == "pending_manual" ? "보냈음 표시" : "보내기 승인", complete_wechat_index_path(message_id: message.id)) %>
+  <% end %>
+  <% if message.processed_at %><p>처리: <%= processor&.name %> · <%= l message.processed_at, format: :short %></p><% end %>
+</section>

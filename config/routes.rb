@@ -1,9 +1,24 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "home#index"
-  match "/webhooks/wechat", to: "webhooks/wechat#receive", via: [:get, :post], as: :wechat_webhook
-  resources :wechat, only: [:index, :show, :update], controller: :wechat do
-    member { post :send_message }
+  match "/webhooks/wechat", to: "webhooks/wechat#receive", via: [ :get, :post ], as: :wechat_webhook
+  resources :wechat, only: [ :index, :show, :update, :create ], controller: :wechat do
+    member do
+      post :send_message
+      post :receive_message
+    end
+    collection do
+      patch :channel
+      post :issue_token
+      delete "tokens/:token_id", action: :revoke_token, as: :revoke_token
+      post "messages/:message_id/complete", action: :complete, as: :complete
+    end
+  end
+  namespace :api do
+    get "wechat_agent/outbox", to: "wechat_agent#outbox"
+    post "wechat_agent/outbox/:id/result", to: "wechat_agent#result"
+    post "wechat_agent/inbox", to: "wechat_agent#inbox"
+    post "wechat_agent/heartbeat", to: "wechat_agent#heartbeat"
   end
   post "/webhooks/shopify/orders_create", to: "webhooks/shopify#orders_create"
 

@@ -2,7 +2,9 @@ class WechatContact < ApplicationRecord
   include AccountScoped
   belongs_to :supplier, optional: true
   has_many :wechat_messages, dependent: :destroy
-  validates :open_id, presence: true # Database unique index also handles concurrent callbacks.
+  validates :open_id, presence: true, if: -> { account&.wechat_channel_mode == "official" }
+  validates :wechat_display_name, presence: true, if: -> { open_id.blank? }
+  validates :wechat_display_name, uniqueness: { scope: :account_id }, allow_nil: true
   validate do
     errors.add(:supplier, "계정이 다릅니다") if supplier && supplier.account_id != account_id
   end
@@ -12,12 +14,12 @@ class WechatContact < ApplicationRecord
   end
 
   def display_name
-    supplier&.name || nickname.presence || "미연결 담당자 #{id}"
+    supplier&.name || wechat_display_name.presence || nickname.presence || "미연결 담당자 #{id}"
   end
 
   def latest_message
     if wechat_messages.loaded?
-      wechat_messages.max_by { |message| [message.created_at, message.id] }
+      wechat_messages.max_by { |message| [ message.created_at, message.id ] }
     else
       wechat_messages.order(created_at: :desc, id: :desc).first
     end

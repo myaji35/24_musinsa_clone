@@ -54,6 +54,10 @@ Rails.application.routes.draw do
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
+  get "join", to: "member_signups#new"
+  post "join", to: "member_signups#create"
+  get "my", to: "my#show", as: :my
+  get "my/orders", to: "my#orders", as: :my_orders
 
   resource :cart, only: [ :show ]
   resources :cart_items, only: [ :create, :update, :destroy ]

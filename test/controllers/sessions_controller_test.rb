@@ -1,6 +1,18 @@
 require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
+  test "로그인한 관리자가 로그인 화면에 접근하면 재고 스캔으로 이동한다" do
+    sign_in
+    get login_path
+    assert_redirected_to inventory_scan_path
+  end
+
+  test "로그인한 회원이 로그인 화면에 접근하면 홈으로 이동한다" do
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    get login_path
+    assert_redirected_to root_path
+  end
+
   test "로그인 후 원래 관리자 화면과 쿼리로 복귀한다" do
     [ trends_path, "#{dashboard_index_path}?range=7" ].each do |path|
       delete logout_path

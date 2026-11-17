@@ -64,6 +64,13 @@ class ApplicationController < ActionController::Base
     logged_in? && current_user.staff?
   end
 
+  def require_login
+    return if logged_in?
+
+    session[:return_to] = request.fullpath if request.get? && request.format.html?
+    redirect_to login_path, alert: "로그인이 필요합니다."
+  end
+
   def require_staff
     return if mall_staff?
 

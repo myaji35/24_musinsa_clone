@@ -1,5 +1,5 @@
 <div class="max-w-[400px] mx-auto px-gutter py-8 md:py-12">
-  <h1 class="text-title font-semibold mb-6">관리자 로그인</h1>
+  <h1 class="text-title font-semibold mb-6">로그인</h1>
   <%= form_with url: login_path, class: "space-y-4" do |form| %>
     <div>
       <%= form.label :email, "이메일", class: "block text-ui font-medium mb-2" %>
@@ -11,4 +11,5 @@
     </div>
     <%= form.submit "로그인", class: "btn btn-primary w-full" %>
   <% end %>
+  <p class="text-ui mt-6">아직 회원이 아니신가요? <%= link_to "회원가입", join_path %></p>
 </div>

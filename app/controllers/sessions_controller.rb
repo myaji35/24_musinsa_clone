@@ -1,7 +1,9 @@
 class SessionsController < ApplicationController
   skip_before_action :require_admin
+  rate_limit to: 10, within: 3.minutes, only: :create
 
   def new
+    redirect_to(mall_staff? ? inventory_scan_path : root_path) if logged_in?
   end
 
   def create

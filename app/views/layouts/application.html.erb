@@ -52,7 +52,7 @@
       <div class="flex items-center gap-4">
         <details name="header-panel" class="menu">
           <summary class="tap text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">메뉴</summary>
-          <div class="absolute left-0 right-0 top-full bg-scrim border-b border-line px-gutter py-6">
+          <div class="absolute left-0 right-0 top-full bg-paper border-b border-line px-gutter py-6 shadow-[0_8px_16px_rgba(0,0,0,0.06)] max-h-[calc(100dvh-var(--spacing-header-m)-2rem)] md:max-h-[calc(100dvh-var(--spacing-header)-var(--spacing-band))] overflow-y-auto overscroll-contain">
             <div class="md:hidden mb-4">
               <%= form_with url: root_path, method: :get, local: true, class: "flex items-center gap-2 w-full" do |f| %>
                   <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", aria: { label: "검색어" }, class: "field h-11 border-0 border-b border-line" %>
@@ -97,7 +97,7 @@
         </details>
         <details name="header-panel" class="search hidden md:block">
           <summary class="tap text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">검색</summary>
-          <div class="absolute left-0 right-0 top-full bg-scrim border-b border-line px-gutter py-6">
+          <div class="absolute left-0 right-0 top-full bg-paper border-b border-line px-gutter py-6 shadow-[0_8px_16px_rgba(0,0,0,0.06)] max-h-[calc(100dvh-var(--spacing-header-m)-2rem)] md:max-h-[calc(100dvh-var(--spacing-header)-var(--spacing-band))] overflow-y-auto overscroll-contain">
             <%= form_with url: root_path, method: :get, local: true, class: "flex items-center gap-2 w-full" do |f| %>
                   <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", aria: { label: "검색어" }, class: "field h-11 border-0 border-b border-line" %>
                   <button type="submit" class="tap sym text-ui font-medium shrink-0">검색</button>

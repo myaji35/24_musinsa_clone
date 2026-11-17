@@ -140,10 +140,10 @@
         <%= form.label "ai_attributes[mood]", "감성 (Mood)", class: "block text-sm font-medium text-gray-700 mb-2" %>
         <div class="flex flex-wrap gap-2">
           <% ["minimal", "casual", "vintage", "modern", "delicate"].each do |mood| %>
-            <label class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors">
+            <label class="inline-flex items-center px-3 py-1.5 min-h-11 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors focus-within:ring-2 focus-within:ring-black">
               <%= check_box_tag "product[ai_attributes][mood][]", mood,
                   (product.mood.is_a?(Array) ? product.mood.include?(mood) : product.mood == mood),
-                  class: "hidden peer" %>
+                  class: "sr-only peer" %>
               <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "minimal" => "미니멀", "casual" => "캐주얼", "vintage" => "빈티지", "modern" => "모던", "delicate" => "우아함" }[mood] %>
               </span>
@@ -157,10 +157,10 @@
         <%= form.label "ai_attributes[tpo]", "TPO (착용 상황)", class: "block text-sm font-medium text-gray-700 mb-2" %>
         <div class="flex flex-wrap gap-2">
           <% ["daily", "office", "date", "party", "casual"].each do |tpo| %>
-            <label class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors">
+            <label class="inline-flex items-center px-3 py-1.5 min-h-11 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors focus-within:ring-2 focus-within:ring-black">
               <%= check_box_tag "product[ai_attributes][tpo][]", tpo,
                   (product.tpo.is_a?(Array) ? product.tpo.include?(tpo) : product.tpo == tpo),
-                  class: "hidden peer" %>
+                  class: "sr-only peer" %>
               <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "daily" => "데일리", "office" => "오피스", "date" => "데이트", "party" => "파티", "casual" => "캐주얼" }[tpo] %>
               </span>
@@ -174,10 +174,10 @@
         <%= form.label "ai_attributes[fit_style]", "핏 스타일", class: "block text-sm font-medium text-gray-700 mb-2" %>
         <div class="flex flex-wrap gap-2">
           <% ["slim", "regular", "oversized", "loose"].each do |fit| %>
-            <label class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors">
+            <label class="inline-flex items-center px-3 py-1.5 min-h-11 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors focus-within:ring-2 focus-within:ring-black">
               <%= radio_button_tag "product[ai_attributes][fit_style]", fit,
                   product.fit_style == fit,
-                  class: "hidden peer" %>
+                  class: "sr-only peer" %>
               <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "slim" => "슬림", "regular" => "레귤러", "oversized" => "오버사이즈", "loose" => "루즈" }[fit] %>
               </span>
@@ -191,10 +191,10 @@
         <%= form.label "ai_attributes[material_feel]", "소재감", class: "block text-sm font-medium text-gray-700 mb-2" %>
         <div class="flex flex-wrap gap-2">
           <% ["soft", "structured", "lightweight", "warm"].each do |material| %>
-            <label class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors">
+            <label class="inline-flex items-center px-3 py-1.5 min-h-11 border border-gray-300 rounded-full cursor-pointer hover:border-black transition-colors focus-within:ring-2 focus-within:ring-black">
               <%= radio_button_tag "product[ai_attributes][material_feel]", material,
                   product.material_feel == material,
-                  class: "hidden peer" %>
+                  class: "sr-only peer" %>
               <span class="text-sm font-medium text-gray-700 peer-checked:text-white peer-checked:font-bold">
                 <%= { "soft" => "부드러움", "structured" => "구조감", "lightweight" => "가벼움", "warm" => "따뜻함" }[material] %>
               </span>

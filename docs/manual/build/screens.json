@@ -41,7 +41,7 @@
   {
     "id": "ch1-menu",
     "chapter": 1,
-    "url": "/dashboard",
+    "url": "/purchase_orders",
     "clip": "menu-row",
     "caption": "운영자 메뉴",
     "callouts": [
@@ -246,24 +246,34 @@
   {
     "id": "ch7-receive",
     "chapter": 7,
-    "url": "/purchase_orders/{confirmed_po_id}",
+    "url": "/purchase_orders/{partial_po_id}",
     "clip": "main > div",
     "caption": "발주서 상태와 품목",
     "callouts": [
       {
         "n": 1,
         "selector": "main span.rounded-full",
-        "label": "상태(제출됨 → 확정됨 → 입고됨)"
+        "label": "상태(제출됨 → 확정됨 → 일부 입고 → 입고됨)"
       },
       {
         "n": 2,
-        "selector": "form[action='/purchase_orders/{confirmed_po_id}/receive'] button",
-        "label": "입고 버튼"
+        "selector": "main table th:text-is('입고')",
+        "label": "발주 품목의 입고 열"
       },
       {
         "n": 3,
-        "selector": "main table th:text-is('수량')",
-        "label": "품목별 발주 수량(입고 처리 시 전량 반영)"
+        "selector": "form[action='/purchase_orders/{partial_po_id}/receive'] input[name^='received_quantities[']",
+        "label": "이번에 받은 수량 입력"
+      },
+      {
+        "n": 4,
+        "selector": "form[action='/purchase_orders/{partial_po_id}/receive'] input[type='submit'][value='입고 기록']",
+        "label": "입고 기록 버튼"
+      },
+      {
+        "n": 5,
+        "selector": "section:has(h2:text-is('입고 이력')) table",
+        "label": "입고 이력"
       }
     ]
   },

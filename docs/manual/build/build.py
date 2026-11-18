@@ -17,7 +17,7 @@ OUT = MANUAL / 'out'
 WORK = HERE / 'out' / 'pdf'
 SHOTS = HERE / 'out' / 'shots'
 ANNOTATED = HERE / 'out' / 'annotated'
-VERSION = '1.2'
+VERSION = '1.3'
 NAME = f'JIEUM_운영자매뉴얼_v{VERSION}'
 FONT = Path('/Volumes/E_SSD/02_GitHub.nosync/0058_insuPro/videos/shorts/engine/fonts')
 CIRCLES = '①②③④⑤⑥⑦⑧⑨⑩'
@@ -236,10 +236,10 @@ def stylesheet():
 
 
 def render_html(preface, chapters, screens, pages=None):
-    cover = f'''<section class="cover"><div class="wordmark">JIEUM</div><div class="cover-rule"></div><h1>운영자 매뉴얼</h1><p class="subtitle">발주 · 위챗 · 주문 운영</p><p class="edition">판 {VERSION}<br>2026-11-17</p><div class="ribbon">막히면 화면 오른쪽 아래 [의견 보내기]</div><div class="cover-bottom">JIEUM · OPERATIONS MANUAL</div></section>'''
+    cover = f'''<section class="cover"><div class="wordmark">JIEUM</div><div class="cover-rule"></div><h1>운영자 매뉴얼</h1><p class="subtitle">발주 · 위챗 · 주문 운영</p><p class="edition">판 {VERSION}<br>2026-11-19</p><div class="ribbon">막히면 화면 오른쪽 아래 [의견 보내기]</div><div class="cover-bottom">JIEUM · OPERATIONS MANUAL</div></section>'''
     info = '<section class="front"><div class="marker">MANUAL_INFO_START</div><h1>문서 정보</h1>'
     info += blocks([line for line in preface.splitlines() if not line.startswith('# ')])
-    info += f'<h2>판 이력</h2><table><thead><tr><th>판</th><th>날짜</th><th>내용</th></tr></thead><tbody><tr><td>{VERSION}</td><td>2026-11-17</td><td>운영 사이트 점검 반영 — 2장 저장 후 화면, 7장 입고 처리(전량·일부 입고) 정정</td></tr><tr><td>1.1</td><td>2026-11-17</td><td>장별 의견란 삭제 — 의견은 화면의 [의견 보내기]로 받음, 0장에 의견 보내기 안내 추가, 12장 삭제</td></tr><tr><td>1.0</td><td>2026-11-17</td><td>시범 운영판</td></tr></tbody></table></section>'
+    info += f'<h2>판 이력</h2><table><thead><tr><th>판</th><th>날짜</th><th>내용</th></tr></thead><tbody><tr><td>{VERSION}</td><td>2026-11-19</td><td>운영 사이트 점검 반영 — 2장 저장 후 화면, 7장 입고 처리(전량·일부 입고) 정정</td></tr><tr><td>1.1</td><td>2026-11-17</td><td>장별 의견란 삭제 — 의견은 화면의 [의견 보내기]로 받음, 0장에 의견 보내기 안내 추가, 12장 삭제</td></tr><tr><td>1.0</td><td>2026-11-17</td><td>시범 운영판</td></tr></tbody></table></section>'
     toc = '<section class="toc"><div class="marker">MANUAL_TOC_START</div><h1>목차</h1>'
     for chapter in chapters:
         n = chapter['n']

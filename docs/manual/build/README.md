@@ -29,7 +29,7 @@ RAILS_ENV=development bin/rails runner docs/manual/build/seed_demo.rb
 
 DB 변경을 포함한다. 거래처·대화방·발주 메모·메시지 내용으로 기존 예시를 찾아 재사용한다. 발주 납기는 실행일 +21일로 갱신한다. 예시 발주를 실무에서 확정·입고·취소했다면 덮어쓰지 않고 중단하므로 먼저 해당 예시 상태를 확인한다. 동시에 여러 번 실행하지 않는다.
 
-발주 2건은 작성 중과 제출됨이다. `PurchaseOrder#submit!` 및 `Wechat::PurchaseOrderNotifier.call`을 그대로 사용하며 `pending_manual`을 만든다. 처리 기록을 보여 주기 위해 별도의 `sent_manual` 통보 기록도 넣는다. 실제 위챗 발송, 이메일, Slack 전송은 하지 않는다. runner 프로세스의 ActiveJob 어댑터는 예시용 무발송 어댑터로 바꾸어 주문 콜백에서 외부 알림 작업도 등록하지 않는다.
+예시 발주는 작성 중, 제출됨, 확정됨과 일부 입고 상태로 준비한다. 별도의 일부 입고 예시는 최초 생성 때 기존 옵션의 재고를 1개 늘리고 입고 로그와 매입 원장을 만든다. 다시 실행할 때는 입고를 반복하지 않는다. `PurchaseOrder#submit!` 및 `Wechat::PurchaseOrderNotifier.call`을 그대로 사용하며 `pending_manual`을 만든다. 처리 기록을 보여 주기 위해 별도의 `sent_manual` 통보 기록도 넣는다. 실제 위챗 발송, 이메일, Slack 전송은 하지 않는다. runner 프로세스의 ActiveJob 어댑터는 예시용 무발송 어댑터로 바꾸어 주문 콜백에서 외부 알림 작업도 등록하지 않는다.
 
 입금 대기 주문이 하나도 없을 때만 가격·재고가 있는 기존 옵션을 골라 `Orders::Intake`로 1개 주문한다. 이 경우 앱 규칙대로 재고 1개 차감·출고 로그·배송지 스냅샷이 생긴다. 이름과 주소는 `예시 고객`, 전화·우편번호는 영(0)으로만 구성한 가상 값이다. 공장 클레임은 같은 거래처의 발주에 연결하되 기존 상품의 거래처를 변경하지 않기 위해 옵션 연결은 생략한다.
 
@@ -59,8 +59,6 @@ node docs/manual/build/capture.mjs http://localhost:3053
 현재 원고와 화면이 다른 부분은 원고·앱을 고치지 않고 경고로 보존한다.
 
 - 2장 ②: 거래처 신규 화면에 종류 입력이 없다.
-- 7장 ②: 제출됨 발주에는 입고 버튼이 없다(`confirmed` 전용).
-- 7장 ③: 현재 앱은 품목별 받은 수량 입력 없이 발주 수량 전량을 입고한다.
 - 5장 ④: 별도의 수동 발송 기록에서 처리자·시각을 보여 준다.
 
 결과는 `docs/manual/build/out/shots/<id>.png` 및 `.json`이다. JSON의 `width`, `height`, `callouts[].box`는 **캡처 좌측 상단 기준 CSS px**다. PNG 실제 픽셀은 그 값의 2배이며 `deviceScaleFactor`에 명시된다. 경고도 JSON에 남는다. 원고의 번호·순서를 유지하므로 누락된 번호를 재번호 매기지 않는다.
@@ -74,8 +72,8 @@ python3 docs/manual/build/build.py
 
 출력:
 
-- `docs/manual/out/JIEUM_운영자매뉴얼_v1.0.pdf`
-- `docs/manual/out/JIEUM_운영자매뉴얼_v1.0.html`
+- `docs/manual/out/JIEUM_운영자매뉴얼_v1.3.pdf`
+- `docs/manual/out/JIEUM_운영자매뉴얼_v1.3.html`
 
 주석은 Pillow로 `build/out/annotated/<id>.png`에 합성한다(자동 분할은 `<id>-<번호>.png`). 번호는 Pretendard Bold, 포인트색 원·흰 숫자·흰 테두리이며 바깥 배치와 겹침 회피를 적용한다. 원 지름은 캡처 폭의 7/174로 정해 전체 폭 인쇄 시 약 7mm다. 높이 제한으로 축소되면 원도 같은 비율로 축소된다. HTML은 합성 PNG 하나를 그림으로 사용하고 최대 높이 118mm, 최대 폭 100%로 비율을 유지한다. 의견란·주의 상자·그림은 통째로 쪽을 넘긴다.
 

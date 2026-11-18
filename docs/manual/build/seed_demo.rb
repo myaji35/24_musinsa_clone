@@ -71,6 +71,25 @@ ActiveRecord::Base.transaction do
     ids["#{role}_po_id"] = po.id
   end
 
+  # 별도 예시 발주만 한 번 일부 입고하여 입력 폼과 이력을 함께 보여 준다.
+  partial = supplier.purchase_orders.find_or_initialize_by(notes: "매뉴얼 예시 / partial")
+  if partial.new_record?
+    partial.status = "draft"
+    variants.each_with_index do |variant, index|
+      partial.purchase_order_items.build(variant: variant, quantity: [ 50, 80, 120 ][index],
+                                        unit_price: variant.product.price.presence || 10_000)
+    end
+    partial.expected_delivery_date = Date.current + 21
+    partial.save!
+    raise "예시 발주 제출 실패" unless partial.submit!
+    raise "예시 발주 확정 실패" unless partial.confirm!
+    raise "예시 발주 일부 입고 실패" unless partial.receive!({ partial.purchase_order_items.first.id => 1 })
+  else
+    abort "예시 발주 상태가 변경되었습니다: #{partial.id}. 기존 예시를 확인하세요" unless partial.status == "partially_received"
+    partial.update!(expected_delivery_date: Date.current + 21)
+  end
+  ids[:partial_po_id] = partial.id
+
   [ "收到，我们确认一下面料，明天回复您。", "面料已确认，预计12月8日出货。" ].each_with_index do |content, index|
     message = contact.wechat_messages.find_or_initialize_by(direction: "in", content: content)
     if message.new_record?

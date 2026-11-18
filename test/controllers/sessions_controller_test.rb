@@ -15,6 +15,20 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "운영자는 로그인 후 발주 화면으로 이동한다" do
+    post login_path, params: { email: users(:one).email, password: "TestPassword!2026" }
+    assert_redirected_to purchase_orders_path
+  end
+
+  test "운영자는 비밀번호 변경 후 발주 화면으로 이동한다" do
+    users(:one).update!(must_change_password: true)
+    post login_path, params: { email: users(:one).email, password: "TestPassword!2026" }
+    assert_redirected_to account_password_path
+    patch account_password_path, params: { current_password: "TestPassword!2026", password: "NewPassword!2026", password_confirmation: "NewPassword!2026" }
+    assert_redirected_to purchase_orders_path
+    assert_equal "비밀번호를 바꿨습니다.", flash[:notice]
+  end
+
   test "POST와 HTML이 아닌 요청은 복귀 경로를 저장하지 않는다" do
     post trends_path
     assert_redirected_to login_path
@@ -132,7 +146,7 @@ class SessionsReturnPathTest < ActionController::TestCase
       session[:return_to] = path
       session[:old_session_value] = "discard"
       post :create, params: { email: users(:one).email, password: "TestPassword!2026" }
-      assert_redirected_to inventory_scan_path
+      assert_redirected_to purchase_orders_path
       assert_equal users(:one).id, session[:user_id]
       assert_nil session[:return_to]
       assert_nil session[:old_session_value]

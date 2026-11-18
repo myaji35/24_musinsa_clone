@@ -171,7 +171,7 @@
                                     else "bg-gray-100 text-gray-800"
                                     end %>
                   <span class="px-2 py-1 rounded text-xs font-medium <%= status_class %>">
-                    <%= order.status %>
+                    <%= order_status_label(order.status) %>
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-600"><%= order.created_at.strftime("%Y-%m-%d %H:%M") %></td>

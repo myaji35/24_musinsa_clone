@@ -7,7 +7,7 @@
   </div>
   <div class="border border-gray-200 rounded-lg overflow-hidden bg-white">
     <table class="w-full text-sm text-left"><thead class="bg-gray-50 text-gray-600"><tr><th class="p-3">접수일</th><th class="p-3">공급사</th><th class="p-3">파일</th><th class="p-3">상태</th><th class="p-3">결과</th></tr></thead>
-      <tbody><% @supplier_imports.each do |item| %><tr class="border-t border-gray-200"><td class="p-3"><%= seoul_datetime(item.created_at) %></td><td class="p-3"><%= item.supplier&.name || "미선택" %></td><td class="p-3"><%= link_to item.file.filename.to_s, supplier_import_path(item), class: "underline" %></td><td class="p-3"><span class="inline-block rounded-full px-2 py-1 text-xs font-semibold text-white <%= item.status == 'done' ? 'bg-green-700' : item.status == 'failed' ? 'bg-red-700' : 'bg-gray-700' %>"><%= item.status %></span></td><td class="p-3"><%= item.imported_rows + item.updated_rows %> / <%= item.total_rows %></td></tr><% end %></tbody>
+      <tbody><% @supplier_imports.each do |item| %><tr class="border-t border-gray-200"><td class="p-3"><%= seoul_datetime(item.created_at) %></td><td class="p-3"><%= item.supplier&.name || "미선택" %></td><td class="p-3"><%= link_to item.file.filename.to_s, supplier_import_path(item), class: "underline" %></td><td class="p-3"><span class="inline-block rounded-full px-2 py-1 text-xs font-semibold text-white <%= item.status == 'done' ? 'bg-green-700' : item.status == 'failed' ? 'bg-red-700' : 'bg-gray-700' %>"><%= supplier_import_status_label(item.status) %></span></td><td class="p-3"><%= item.imported_rows + item.updated_rows %> / <%= item.total_rows %></td></tr><% end %></tbody>
     </table>
   </div>
 </div>

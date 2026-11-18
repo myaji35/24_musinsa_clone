@@ -23,7 +23,7 @@
   </section>
   <table class="w-full text-left"><thead><tr><th>주문번호</th><th>상태</th><th>유입</th><th>처리</th></tr></thead><tbody>
     <% @orders.each do |order| %>
-      <tr><td><%= order.order_number %></td><td><%= order.status %></td><td>
+      <tr><td><%= order.order_number %></td><td><%= order_status_label(order.status) %></td><td>
         <%= [order.source_platform, order.source_character&.name, order.source_video_id].compact_blank.join(" · ").presence || "직접" %>
       </td><td>
         <% if order.status == "pending" %>

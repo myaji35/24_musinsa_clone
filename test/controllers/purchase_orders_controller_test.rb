@@ -226,7 +226,21 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     post receive_purchase_order_url(@purchase_order)
 
     assert_redirected_to purchase_order_path(@purchase_order)
-    assert_match /실패/, flash[:alert]
+    assert_equal "입고 수량을 확인해 주세요(남은 수량을 넘을 수 없습니다).", flash[:alert]
+  end
+
+  test "입고 수량 파라미터로 부분 입고한다" do
+    @purchase_order.update!(status: "confirmed")
+    item = @purchase_order.purchase_order_items.first
+    post receive_purchase_order_url(@purchase_order), params: { received_quantities: { item.id => 4 } }
+    assert_equal "partially_received", @purchase_order.reload.status
+    assert_equal 4, item.reload.received_quantity
+    assert_equal 9, @variant.reload.stock
+    assert_equal "4개 입고를 기록했습니다. 남은 수량 6개는 일부 입고 상태로 남습니다.", flash[:notice]
+
+    post receive_purchase_order_url(@purchase_order), params: { received_quantities: { item.id => 6 } }
+    assert_equal "received", @purchase_order.reload.status
+    assert_equal "6개 입고를 기록했습니다. 발주가 입고 완료되었습니다.", flash[:notice]
   end
 
   # Calculate total amount

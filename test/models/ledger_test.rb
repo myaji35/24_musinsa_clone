@@ -125,7 +125,7 @@ class LedgerTest < ActiveSupport::TestCase
     assert_equal order.total_amount, item.amount
     assert_equal "purchase", item.entry_type
     assert_equal Date.current, item.occurred_on
-    assert_equal "발주 입고 #{order.order_number}", item.item_name
+    assert_equal "발주 입고 #{order.order_number} (1차)", item.item_name
   end
 
   test "ledger failure rolls back stock and receipt" do

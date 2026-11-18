@@ -11,6 +11,8 @@ class PurchaseOrdersController < ApplicationController
 
   def show
     @purchase_order_items = @purchase_order.purchase_order_items.includes(variant: :product)
+    @receipt_logs = StockLog.where(note: "발주서 입고: #{@purchase_order.order_number}", log_type: "in")
+      .includes(variant: :product).order(:created_at)
   end
 
   def new
@@ -87,15 +89,15 @@ class PurchaseOrdersController < ApplicationController
   # 거래처 확인 (토큰 기반 public 페이지)
   def confirm
     if @purchase_order.blank?
-      render plain: "유효하지 않은 확인 링크입니다.", status: :not_found
+      render plain: "确认链接无效。 / 유효하지 않은 확인 링크입니다.", status: :not_found
       return
     end
 
     if request.post?
       if @purchase_order.confirm!
-        render plain: "발주서가 확정되었습니다. 감사합니다!", status: :ok
+        render plain: "订单已确认，谢谢！ / 발주서가 확정되었습니다. 감사합니다!", status: :ok
       else
-        render plain: "이미 처리되었거나 만료된 확인 링크입니다.", status: :unprocessable_entity
+        render plain: "确认链接已处理或已过期。 / 이미 처리되었거나 만료된 확인 링크입니다.", status: :unprocessable_entity
       end
     else
       # GET 요청 시 확인 페이지 렌더링
@@ -105,10 +107,19 @@ class PurchaseOrdersController < ApplicationController
 
   # 입고 처리
   def receive
-    if @purchase_order.receive!
-      redirect_to @purchase_order, notice: "입고 처리가 완료되었습니다. 재고가 업데이트되었습니다."
+    received_before = @purchase_order.purchase_order_items.sum(:received_quantity)
+    if @purchase_order.receive!(params[:received_quantities]&.permit!&.to_h)
+      items = @purchase_order.purchase_order_items
+      received = items.sum(:received_quantity) - received_before
+      remaining = items.sum(:quantity) - items.sum(:received_quantity)
+      notice = if @purchase_order.status == "received"
+        "#{received}개 입고를 기록했습니다. 발주가 입고 완료되었습니다."
+      else
+        "#{received}개 입고를 기록했습니다. 남은 수량 #{remaining}개는 일부 입고 상태로 남습니다."
+      end
+      redirect_to @purchase_order, notice: notice
     else
-      redirect_to @purchase_order, alert: "입고 처리에 실패했습니다. (confirmed 상태만 처리 가능)"
+      redirect_to @purchase_order, alert: "입고 수량을 확인해 주세요(남은 수량을 넘을 수 없습니다)."
     end
   end
 

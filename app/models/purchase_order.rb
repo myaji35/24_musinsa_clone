@@ -11,7 +11,7 @@ class PurchaseOrder < ApplicationRecord
 
   # Validations
   validates :order_number, presence: true, uniqueness: true
-  validates :status, inclusion: { in: %w[draft submitted confirmed received cancelled] }
+  validates :status, inclusion: { in: %w[draft submitted confirmed partially_received received cancelled] }
 
   # Callbacks
   before_validation :generate_order_number, on: :create
@@ -23,7 +23,7 @@ class PurchaseOrder < ApplicationRecord
   scope :submitted, -> { where(status: "submitted") }
   scope :confirmed, -> { where(status: "confirmed") }
   scope :received, -> { where(status: "received") }
-  scope :pending, -> { where(status: [ "submitted", "confirmed" ]) }
+  scope :pending, -> { where(status: [ "submitted", "confirmed", "partially_received" ]) }
   scope :recent, -> { order(created_at: :desc) }
 
   # Methods
@@ -58,38 +58,37 @@ class PurchaseOrder < ApplicationRecord
   end
 
   # 실제 입고 처리
-  def receive!
+  def receive!(quantities = nil)
     with_lock do
-      return false unless status == "confirmed"
-      # 1. 각 아이템별로 StockLog 생성 및 재고 증가
-      purchase_order_items.each do |item|
-        StockLog.create!(
-          variant: item.variant,
-          log_type: "in",
-          quantity: item.quantity,
-          supplier: supplier.name,
-          unit_cost: item.unit_price,
-          note: "발주서 입고: #{order_number}"
-        )
-      end
+      return false unless status.in?(%w[confirmed partially_received])
 
-      LedgerEntry.find_or_create_by!(source: self, entry_type: "purchase") do |entry|
-        entry.account = supplier.account
-        entry.supplier = supplier
-        entry.occurred_on = Date.current
-        entry.item_name = "발주 입고 #{order_number}"
-        entry.amount = purchase_order_items.sum { |item| item.quantity * item.unit_price }
-      end
+      items = purchase_order_items.to_a
+      supplied = quantities&.to_h&.stringify_keys
+      return false if supplied && (supplied.keys - items.map { |item| item.id.to_s }).any?
 
-      # 2. 발주서 상태 변경
-      update!(
-        status: "received",
-        received_at: Time.current
-      )
+      amounts = items.to_h do |item|
+        raw = supplied ? supplied.fetch(item.id.to_s, 0) : item.quantity - item.received_quantity
+        quantity = Integer(raw, exception: false)
+        return false unless quantity && quantity.between?(0, item.quantity - item.received_quantity)
+        [ item, quantity ]
+      end
+      return false if amounts.values.sum.zero?
+
+      amounts.each do |item, quantity|
+        next if quantity.zero?
+        StockLog.create!(variant: item.variant, log_type: "in", quantity: quantity,
+          supplier: supplier.name, unit_cost: item.unit_price, note: "발주서 입고: #{order_number}")
+        item.update!(received_quantity: item.received_quantity + quantity)
+      end
+      sequence = LedgerEntry.where(source: self, entry_type: "purchase").count + 1
+      LedgerEntry.create!(source: self, entry_type: "purchase", account: supplier.account,
+        supplier: supplier, occurred_on: Date.current, item_name: "발주 입고 #{order_number} (#{sequence}차)",
+        amount: amounts.sum { |item, quantity| quantity * item.unit_price })
+      complete = items.all? { |item| item.received_quantity == item.quantity }
+      update!(status: complete ? "received" : "partially_received", received_at: complete ? Time.current : nil)
     end
-
     true
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "PO 입고 실패: #{e.message}"
     false
   end

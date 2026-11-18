@@ -22,7 +22,7 @@
       </tr>
       <tr>
         <td style="padding: 8px; border: 1px solid #ddd;"><strong>합계금액</strong></td>
-        <td style="padding: 8px; border: 1px solid #ddd;">₩<%= number_with_delimiter(@purchase_order.total_amount) %></td>
+        <td style="padding: 8px; border: 1px solid #ddd;">₩<%= number_with_delimiter(@purchase_order.total_amount.to_i) %></td>
       </tr>
       <tr>
         <td style="padding: 8px; border: 1px solid #ddd;"><strong>납기예정일</strong></td>
@@ -45,7 +45,7 @@
           <td style="padding: 8px; border: 1px solid #ddd;"><%= item.variant.color %></td>
           <td style="padding: 8px; border: 1px solid #ddd;"><%= item.variant.size %></td>
           <td style="padding: 8px; border: 1px solid #ddd;"><%= item.quantity %></td>
-          <td style="padding: 8px; border: 1px solid #ddd;">₩<%= number_with_delimiter(item.unit_price) %></td>
+          <td style="padding: 8px; border: 1px solid #ddd;">₩<%= number_with_delimiter(item.unit_price.to_i) %></td>
         </tr>
       <% end %>
     </table>

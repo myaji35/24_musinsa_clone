@@ -9,7 +9,8 @@ module ProductAnalysesHelper
 
   def analysis_badge(status)
     colors = { "done" => "#2E844A", "failed" => "#BA0517" }
-    content_tag(:span, status || "미분석", class: "rounded-full px-2 py-1 text-xs font-semibold text-white",
+    labels = { "pending" => "대기", "running" => "실행 중", "done" => "완료", "failed" => "실패" }
+    content_tag(:span, labels.fetch(status, status || "미분석"), class: "rounded-full px-2 py-1 text-xs font-semibold text-white",
       style: "background-color: #{colors.fetch(status, '#706E6B')}")
   end
 

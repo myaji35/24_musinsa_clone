@@ -13,8 +13,8 @@ class AccountPasswordsControllerTest < ActionDispatch::IntegrationTest
     old_session_id = session.id.to_s
     users(:one).update!(must_change_password: true)
     patch account_password_path, params: password_params
-    assert_redirected_to account_password_path
-    assert_equal "비밀번호를 바꿨습니다", flash[:notice]
+    assert_redirected_to purchase_orders_path
+    assert_equal "비밀번호를 바꿨습니다.", flash[:notice]
     assert_equal users(:one).id, session[:user_id]
     assert_not_equal old_session_id, session.id.to_s
     assert_not users(:one).reload.must_change_password?

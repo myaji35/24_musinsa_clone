@@ -141,4 +141,23 @@ class PurchaseOrderTest < ActiveSupport::TestCase
     Rails.application.config.action_mailer.default_url_options = original_options
     original_host.nil? ? ENV.delete("APP_HOST") : ENV["APP_HOST"] = original_host
   end
+  test "부분 입고는 잔량을 검증하고 입고마다 재고와 장부를 기록한다" do
+    order = purchase_orders(:one)
+    item = order.purchase_order_items.first
+    order.update!(status: "confirmed")
+    item.update!(quantity: 10, received_quantity: 0, unit_price: 1000)
+    stock = item.variant.stock
+    assert order.receive!({ item.id => 4 })
+    assert_equal "partially_received", order.reload.status
+    assert_equal 4, item.reload.received_quantity
+    assert_equal stock + 4, item.variant.reload.stock
+    assert_not order.receive!({ item.id => 7 })
+    assert_equal stock + 4, item.variant.reload.stock
+    assert order.receive!({ item.id => 6 })
+    assert_equal "received", order.reload.status
+    assert_not_nil order.received_at
+    assert_equal 10, item.reload.received_quantity
+    assert_equal stock + 10, item.variant.reload.stock
+    assert_equal [ 4000, 6000 ], LedgerEntry.where(source: order, entry_type: "purchase").order(:id).pluck(:amount).map(&:to_i)
+  end
 end

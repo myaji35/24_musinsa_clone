@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_000000) do
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -338,7 +338,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_100000) do
     t.index ["account_id", "supplier_id", "occurred_on"], name: "idx_on_account_id_supplier_id_occurred_on_5b137852c7"
     t.index ["account_id"], name: "index_ledger_entries_on_account_id"
     t.index ["created_by_user_id"], name: "index_ledger_entries_on_created_by_user_id"
-    t.index ["source_type", "source_id", "entry_type"], name: "index_ledger_purchase_source", unique: true, where: "source_id IS NOT NULL AND entry_type = 'purchase'"
+    t.index ["source_type", "source_id", "entry_type"], name: "index_ledger_purchase_source", unique: true, where: "source_id IS NOT NULL AND entry_type = 'purchase' AND source_type != 'PurchaseOrder'"
     t.index ["source_type", "source_id"], name: "index_ledger_entries_on_source"
     t.index ["supplier_id"], name: "index_ledger_entries_on_supplier_id"
   end
@@ -484,6 +484,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_100000) do
     t.decimal "subtotal", precision: 10, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "received_quantity", default: 0, null: false
     t.index ["purchase_order_id", "variant_id"], name: "index_po_items_on_po_and_variant", unique: true
     t.index ["purchase_order_id"], name: "index_purchase_order_items_on_purchase_order_id"
     t.index ["variant_id"], name: "index_purchase_order_items_on_variant_id"

@@ -25,10 +25,11 @@ class AccountPasswordsController < ApplicationController
 
     current_user.update!(password: password, password_confirmation: params[:password_confirmation],
                          must_change_password: false, password_changed_at: Time.current)
+    destination = mall_admin? ? (session[:return_to].presence || purchase_orders_path) : account_password_path
     user_id = current_user.id
     reset_session
     session[:user_id] = user_id
-    redirect_to account_password_path, notice: "비밀번호를 바꿨습니다"
+    redirect_to destination, notice: "비밀번호를 바꿨습니다."
   end
 
   private

@@ -43,6 +43,6 @@ class ActionDispatch::IntegrationTest
   # 실제 로그인 요청으로 관리자 세션을 생성한다.
   def sign_in(user = users(:one), password: "TestPassword!2026")
     post login_path, params: { email: user.email, password: password }
-    assert_redirected_to inventory_scan_path
+    assert_redirected_to purchase_orders_path
   end
 end

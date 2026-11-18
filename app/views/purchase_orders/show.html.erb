@@ -6,9 +6,6 @@
         <%= link_to "수정", edit_purchase_order_path(@purchase_order), class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg mr-2" %>
         <%= button_to "제출", submit_purchase_order_path(@purchase_order), method: :post, form: { data: { turbo_confirm: "발주서를 거래처에 제출하시겠습니까?" } }, class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mr-2" %>
       <% end %>
-      <% if @purchase_order.status == "confirmed" %>
-        <%= button_to "입고 처리", receive_purchase_order_path(@purchase_order), method: :post, form: { data: { turbo_confirm: "입고 처리하시겠습니까? 재고가 업데이트됩니다." } }, class: "bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mr-2" %>
-      <% end %>
       <%= link_to "목록", purchase_orders_path, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg" %>
     </div>
   </div>
@@ -43,6 +40,7 @@
             when "draft" then "bg-gray-100 text-gray-800"
             when "submitted" then "bg-yellow-100 text-yellow-800"
             when "confirmed" then "bg-blue-100 text-blue-800"
+            when "partially_received" then "bg-blue-100 text-blue-800"
             when "received" then "bg-green-100 text-green-800"
             when "cancelled" then "bg-red-100 text-red-800"
             end %>
@@ -52,7 +50,7 @@
         </div>
         <div>
           <p class="text-sm text-gray-600">총액</p>
-          <p class="font-medium text-xl text-blue-600">₩<%= number_with_delimiter(@purchase_order.total_amount) %></p>
+          <p class="font-medium text-xl text-blue-600">₩<%= number_with_delimiter(@purchase_order.total_amount.to_i) %></p>
         </div>
         <div>
           <p class="text-sm text-gray-600">납품 예정일</p>
@@ -118,7 +116,8 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상품명</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">옵션</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">수량</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">사입가</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">입고</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">사입가</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">소계</th>
           </tr>
         </thead>
@@ -128,19 +127,59 @@
               <td class="px-6 py-4 whitespace-nowrap"><%= item.product_name %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= item.variant_name %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= item.quantity %></td>
-              <td class="px-6 py-4 whitespace-nowrap">₩<%= number_with_delimiter(item.unit_price) %></td>
-              <td class="px-6 py-4 whitespace-nowrap font-medium">₩<%= number_with_delimiter(item.subtotal) %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= item.received_quantity %> / <%= item.quantity %></td>
+              <td class="px-6 py-4 whitespace-nowrap">₩<%= number_with_delimiter(item.unit_price.to_i) %></td>
+              <td class="px-6 py-4 whitespace-nowrap font-medium">₩<%= number_with_delimiter(item.subtotal.to_i) %></td>
             </tr>
           <% end %>
         </tbody>
         <tfoot class="bg-gray-50">
           <tr>
-            <td colspan="4" class="px-6 py-4 text-right font-bold">총액</td>
-            <td class="px-6 py-4 font-bold text-lg text-blue-600">₩<%= number_with_delimiter(@purchase_order.total_amount) %></td>
+            <td colspan="5" class="px-6 py-4 text-right font-bold">총액</td>
+            <td class="px-6 py-4 font-bold text-lg text-blue-600">₩<%= number_with_delimiter(@purchase_order.total_amount.to_i) %></td>
           </tr>
         </tfoot>
       </table>
     </div>
   </div>
+  <% if @receipt_logs.any? %>
+    <section class="bg-white rounded-lg shadow p-6 mt-6">
+      <h2 class="text-xl font-bold mb-4">입고 이력</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50"><tr>
+            <th class="px-6 py-3 text-left">일시</th><th class="px-6 py-3 text-left">상품</th>
+            <th class="px-6 py-3 text-left">옵션</th><th class="px-6 py-3 text-left">수량</th>
+          </tr></thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @receipt_logs.each do |log| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap"><%= log.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= log.variant.product.name %></td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= log.variant.color %> / <%= log.variant.size %></td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= log.quantity %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  <% end %>
+  <% if @purchase_order.status.in?(%w[confirmed partially_received]) %>
+    <section class="bg-white rounded-lg shadow p-6 mt-6">
+      <h2 class="text-xl font-bold mb-4">입고 처리</h2>
+      <%= form_with url: receive_purchase_order_path(@purchase_order), method: :post, data: { turbo_confirm: "입고한 수량만큼 재고가 늘어납니다. 계속할까요?" } do %>
+        <div class="overflow-x-auto"><table class="min-w-full text-left">
+          <thead><tr><th>상품·옵션</th><th>발주 수량</th><th>받은 수량(누적)</th><th>남은 수량</th><th>이번에 받은 수량</th></tr></thead>
+          <tbody><% @purchase_order_items.each do |item| %>
+            <% remaining = item.quantity - item.received_quantity %>
+            <tr><td><%= item.product_name %> · <%= item.variant_name %></td><td><%= item.quantity %></td><td><%= item.received_quantity %></td><td><%= remaining %></td>
+              <td><%= number_field_tag "received_quantities[#{item.id}]", remaining, min: 0, max: remaining, class: "border rounded p-2 w-24", aria: { label: "#{item.product_name} #{item.variant_name} 이번에 받은 수량" } %></td></tr>
+          <% end %></tbody>
+        </table></div>
+        <%= submit_tag "입고 기록", class: "bg-blue-600 text-white px-4 py-2 rounded mt-4" %>
+      <% end %>
+    </section>
+  <% end %>
 </div>
 <%= render "wechat/purchase_order_messages" %>

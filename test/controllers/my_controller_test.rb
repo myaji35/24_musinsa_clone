@@ -139,11 +139,13 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     other_member = User.create!(email: "member-b@example.com", name: "회원 B",
                                 password: "TestPassword!2026", role: :member)
     order = orders(:one)
-    order.update!(user: member)
+    order.update!(user: member, checkout_number: "CHK-20261119-MYLINK01")
     post login_path, params: { email: member.email, password: "TestPassword!2026" }
     get my_orders_path
     assert_response :success
     assert_select "tbody tr", count: 1
+    assert_select "ul.md\\:hidden li a[href=?]", customer_order_path(order.checkout_number), text: order.product.name
+    assert_select "tbody td a[href=?]", customer_order_path(order.checkout_number), text: order.order_number
     assert_select "td", text: order.order_number
     assert_select "td", text: order.product.name
     assert_select "td", text: "#{order.variant.color} / #{order.variant.size}"
@@ -158,6 +160,22 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_not_includes response.body, order.order_number
     assert_select "p", text: "아직 회원으로 주문한 내역이 없습니다. 로그인 전에 한 주문은 주문조회에서 확인하세요."
+  end
+
+  test "결제 번호가 없는 주문은 링크 없이 표시한다" do
+    member = users(:member)
+    order = orders(:one)
+    order.update!(user: member)
+    order.update_column(:checkout_number, nil)
+    post login_path, params: { email: member.email, password: "TestPassword!2026" }
+
+    get my_orders_path
+
+    assert_response :success
+    assert_select "ul.md\\:hidden li p.font-medium", text: order.product.name
+    assert_select "ul.md\\:hidden li a", text: order.product.name, count: 0
+    assert_select "tbody td", text: order.order_number
+    assert_select "tbody td a", text: order.order_number, count: 0
   end
 
   test "손님은 내 주문에 접근할 때 로그인으로 이동한다" do

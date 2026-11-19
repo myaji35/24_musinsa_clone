@@ -8,7 +8,11 @@
     <ul class="md:hidden text-ui mb-6">
       <% @orders.each do |order| %>
         <li class="border-b border-hairline py-4">
-          <p class="font-medium"><%= order.product.name %></p>
+          <% if order.checkout_number.present? %>
+            <%= link_to(order.product.name, customer_order_path(order.checkout_number), class: "tap font-medium") %>
+          <% else %>
+            <p class="font-medium"><%= order.product.name %></p>
+          <% end %>
           <p><%= order.variant.color %> / <%= order.variant.size %> · 수량 <%= order.quantity %></p>
           <p class="flex justify-between">
             <span><%= price_won(order.total_price) %></span>
@@ -45,7 +49,13 @@
         <tbody>
           <% @orders.each do |order| %>
             <tr>
-              <td><%= order.order_number %></td>
+              <td>
+                <% if order.checkout_number.present? %>
+                  <%= link_to(order.order_number, customer_order_path(order.checkout_number), class: "tap underline underline-offset-4") %>
+                <% else %>
+                  <%= order.order_number %>
+                <% end %>
+              </td>
               <td><%= order.product.name %></td>
               <td><%= order.variant.color %> / <%= order.variant.size %></td>
               <td><%= order.quantity %></td>

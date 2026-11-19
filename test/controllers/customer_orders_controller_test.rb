@@ -30,6 +30,23 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "회원은 세션 허용 없이 자신의 주문을 조회한다" do
+    member = users(:member)
+    @order.update!(user: member)
+    post login_path, params: { email: member.email, password: "TestPassword!2026" }
+    get customer_order_path(@order.checkout_number)
+    assert_response :success
+  end
+
+  test "회원은 다른 회원의 주문을 조회할 수 없다" do
+    other_member = User.create!(email: "member-b@example.com", name: "회원 B",
+                                password: "TestPassword!2026", role: :member)
+    @order.update!(user: other_member)
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    get customer_order_path(@order.checkout_number)
+    assert_redirected_to orders_lookup_path
+  end
+
   test "틀린 뒤 네 자리는 거부하고 올바르면 마스킹된 내역을 허용한다" do
     post orders_lookup_path, params: { checkout_number: @order.checkout_number, phone_suffix: "0000" }
     assert_response :unprocessable_entity

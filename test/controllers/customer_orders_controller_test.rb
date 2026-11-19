@@ -36,6 +36,10 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
     post login_path, params: { email: member.email, password: "TestPassword!2026" }
     get customer_order_path(@order.checkout_number)
     assert_response :success
+    assert_select 'nav[aria-label="내 계정"] a[aria-current="page"][href=?]', my_orders_path, text: "내 주문"
+    assert_select "a.btn.btn-secondary.w-full[href=?]", my_orders_path, text: "내 주문으로"
+    assert_select "a[href=?] div.bg-placeholder", product_path(@order.product)
+    assert_select "a[href=?]", new_my_order_claim_path(@order), text: "취소 요청"
   end
 
   test "회원은 다른 회원의 주문을 조회할 수 없다" do
@@ -56,6 +60,8 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to customer_order_path(@order.checkout_number)
     follow_redirect!
     assert_response :success
+    assert_select "a.btn.btn-secondary.w-full[href=?]", products_path, text: "쇼핑 계속하기"
+    assert_select "a[href=?] div.bg-placeholder", product_path(@order.product)
     assert_includes response.body, "홍*"
     assert_includes response.body, "010-****-9876"
     assert_not_includes response.body, "홍길동"

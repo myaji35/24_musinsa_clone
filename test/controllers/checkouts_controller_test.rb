@@ -27,6 +27,8 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", new_checkout_path, text: "비회원 주문하기"
     get new_checkout_path
     assert_select "h1", text: "비회원 주문서"
+    assert_select 'input[name="checkout[phone]"][type="tel"][autocomplete="shipping tel"]'
+    assert_select 'input[name="checkout[postal_code]"][autocomplete="shipping postal-code"]'
   end
 
   test "회원 로그인 상태의 주문은 회원에게 연결한다" do

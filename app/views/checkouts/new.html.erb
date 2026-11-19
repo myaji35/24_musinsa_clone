@@ -14,10 +14,16 @@
   </ul>
   <p class="flex justify-between border-t border-line pt-4 text-ui font-medium">주문 합계 <%= price_won(@cart.total, variant: :lg) %></p>
   <%= form_with scope: :checkout, url: checkout_path, class: "space-y-4" do |f| %>
-    <% { recipient_name: "받는 분", phone: "휴대폰", postal_code: "우편번호", address1: "주소", address2: "상세주소", birth_year: "출생연도(선택)" }.each do |field, label| %>
+    <h2 class="text-ui font-semibold pt-2">배송 정보</h2>
+    <% { recipient_name: ["받는 분", { autocomplete: "shipping name" }],
+         phone: ["휴대폰", { type: "tel", autocomplete: "shipping tel", inputmode: "tel", placeholder: "010-1234-5678" }],
+         postal_code: ["우편번호", { autocomplete: "shipping postal-code", inputmode: "numeric", maxlength: 5, pattern: "[0-9]{5}", placeholder: "5자리 숫자" }],
+         address1: ["주소", { autocomplete: "shipping address-line1", placeholder: "도로명 또는 지번 주소" }],
+         address2: ["상세주소", { autocomplete: "shipping address-line2", placeholder: "동·호수 등 (선택)" }],
+         birth_year: ["출생연도(선택)", { autocomplete: "bday-year", inputmode: "numeric", maxlength: 4, placeholder: "예: 1985" }] }.each do |field, (label, options)| %>
       <div>
         <%= f.label field, label, class: "block text-ui font-medium mb-2" %>
-        <%= f.text_field field, value: @checkout[field.to_s], required: ![:address2, :birth_year].include?(field), class: "field", inputmode: [:phone, :postal_code, :birth_year].include?(field) ? "numeric" : "text" %>
+        <%= f.text_field field, value: @checkout[field.to_s], required: ![:address2, :birth_year].include?(field), class: "field", inputmode: "text", **options %>
       </div>
     <% end %>
     <p class="text-caption text-ink-3">출생연도는 익명 취향분석용이며 입력하지 않아도 주문할 수 있습니다.</p>

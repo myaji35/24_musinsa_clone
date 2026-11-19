@@ -31,7 +31,8 @@ class CustomerClaimsController < ApplicationController
 
   def render_form(status: :ok)
     render template: "order_claims/_form", layout: "application",
-           locals: { order: @order, claim: @claim, submit_url: customer_order_claims_path(@order.checkout_number, order_id: @order.id) }, status: status
+           locals: { order: @order, claim: @claim, submit_url: customer_order_claims_path(@order.checkout_number, order_id: @order.id),
+                     back_url: customer_order_path(@order.checkout_number) }, status: status
   end
 
   def authorize_checkout

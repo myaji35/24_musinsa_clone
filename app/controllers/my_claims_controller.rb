@@ -29,6 +29,7 @@ class MyClaimsController < ApplicationController
 
   def render_form(status: :ok)
     render template: "order_claims/_form", layout: "application",
-           locals: { order: @order, claim: @claim, submit_url: my_order_claims_path(@order) }, status: status
+           locals: { order: @order, claim: @claim, submit_url: my_order_claims_path(@order),
+                     back_url: my_orders_path, member_nav: true }, status: status
   end
 end

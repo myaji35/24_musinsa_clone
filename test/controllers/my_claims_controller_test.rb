@@ -43,6 +43,17 @@ class MyClaimsControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", text: "취소 접수", count: 2
   end
 
+  test "결제 대기 주문 폼은 취소를 미리 선택한다" do
+    @order.update!(status: "pending")
+    login_member
+    get new_my_order_claim_path(@order)
+    assert_response :success
+    assert_select "h1", text: "취소 요청"
+    assert_select "input[type=radio][value=cancel][checked]"
+    assert_select "p", text: /반품·교환은 배송 완료/, count: 0
+    assert_select "a[href=?]", my_orders_path, text: "돌아가기"
+  end
+
   test "유효하지 않은 요청은 입력값과 오류를 표시한다" do
     login_member
     post my_order_claims_path(@order), params: { order_claim: { kind: "cancel", reason_code: "invalid", detail: "상세 내용" } }

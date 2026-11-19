@@ -31,6 +31,10 @@ class CustomerClaimsControllerTest < ActionDispatch::IntegrationTest
     verify_checkout
     get new_customer_order_claim_path(@order.checkout_number, order_id: @order.id)
     assert_response :success
+    assert_select "h1", text: "취소 요청"
+    assert_select "input[type=radio][value=cancel][checked]"
+    assert_select "p", text: /반품·교환은 배송 완료/, count: 0
+    assert_select "a[href=?]", customer_order_path(@order.checkout_number), text: "돌아가기"
     assert_difference "OrderClaim.count", 1 do
       submit_claim
     end

@@ -47,32 +47,39 @@
     "callouts": [
       {
         "n": 1,
-        "selector": "nav[aria-label='관리 메뉴']",
+        "selector": "nav[aria-label='관리 메뉴'] [aria-label='데스크톱 관리자 메뉴'] > div",
         "label": "운영자 메뉴 줄"
       },
       {
-        "n": 2,
-        "selector": "nav[aria-label='관리 메뉴'] a[href='/wechat']",
+        "n": 3,
+        "selector": "nav[aria-label='관리 메뉴'] [aria-label='데스크톱 관리자 메뉴'] a[href='/wechat']",
         "label": "위챗"
       },
       {
-        "n": 3,
-        "selector": "nav[aria-label='관리 메뉴'] a[href='/suppliers']",
-        "label": "거래처"
-      },
-      {
         "n": 4,
-        "selector": "nav[aria-label='관리 메뉴'] a[href='/purchase_orders']",
+        "selector": "nav[aria-label='관리 메뉴'] [aria-label='데스크톱 관리자 메뉴'] a[href='/purchase_orders']",
         "label": "발주"
       },
       {
         "n": 5,
-        "selector": "nav[aria-label='관리 메뉴'] a[href='/admin_orders']",
+        "selector": "nav[aria-label='관리 메뉴'] [aria-label='데스크톱 관리자 메뉴'] a[href='/admin_orders']",
         "label": "주문 관리"
       }
-    ],
-    "calloutPlacement": "top",
-    "menuEnd": "클레임"
+    ]
+  },
+  {
+    "id": "ch1-today",
+    "chapter": 1,
+    "url": "/purchase_orders",
+    "clip": "section[aria-labelledby='today-tasks-heading']",
+    "caption": "오늘 할 일",
+    "callouts": [
+      {
+        "n": 2,
+        "selector": "section[aria-labelledby='today-tasks-heading']",
+        "label": "오늘 할 일"
+      }
+    ]
   },
   {
     "id": "ch2-supplier",
@@ -88,8 +95,8 @@
       },
       {
         "n": 2,
-        "selector": "form#new_supplier input[type='submit'], form[action='/suppliers'] input[type='submit']",
-        "label": "저장 버튼"
+        "selector": "form[action='/suppliers'] input[type='submit'][value='등록']",
+        "label": "등록 버튼"
       }
     ]
   },
@@ -122,8 +129,13 @@
       },
       {
         "n": 5,
-        "selector": "main table",
+        "selector": "main div.hidden.md\\:block table",
         "label": "대화 목록"
+      }
+    ],
+    "actions": [
+      {
+        "click": "details:not([open]) > summary:text-is('채널 설정 · 대화 상대 추가')"
       }
     ]
   },
@@ -141,8 +153,8 @@
       },
       {
         "n": 2,
-        "selector": "#purchase-order-items",
-        "label": "품목·수량"
+        "selector": "#purchase-order-items .purchase-order-item",
+        "label": "품목·수량·사입가·소계"
       }
     ]
   },
@@ -257,7 +269,7 @@
       },
       {
         "n": 2,
-        "selector": "main table th:text-is('입고')",
+        "selector": "main div:has(> h2:text-is('발주 품목')) table th:text-is('입고')",
         "label": "발주 품목의 입고 열"
       },
       {
@@ -281,22 +293,23 @@
     "id": "ch8-orders",
     "chapter": 8,
     "url": "/admin_orders",
-    "clip": "main > div > table:has(th:text-is('주문번호')), main > table:has(th:text-is('주문번호'))",
+    "clip": "main div.hidden.md\\:block > table:has(th:text-is('주문번호'))",
     "caption": "입금 대기 주문",
     "callouts": [
       {
         "n": 1,
-        "selector": "tr:has(form[action='/admin_orders/{pending_order_id}/confirm_payment']) td:nth-child(2)",
+        "selector": "main div.hidden.md\\:block tr:has(form[action='/admin_orders/{pending_order_id}/confirm_payment']) td:nth-child(4) span",
         "label": "주문 상태"
       },
       {
         "n": 2,
-        "selector": "form[action='/admin_orders/{pending_order_id}/confirm_payment'] button",
+        "selector": "main div.hidden.md\\:block form[action='/admin_orders/{pending_order_id}/confirm_payment'] button",
         "label": "입금 확인 버튼"
       }
     ],
     "clipRows": 6,
-    "clipMaxWidth": 900
+    "clipMaxWidth": 1000,
+    "clipInclude": "tr:has(form[action='/admin_orders/{pending_order_id}/confirm_payment'])"
   },
   {
     "id": "ch9-sales",

@@ -52,14 +52,11 @@ node docs/manual/build/capture.mjs http://localhost:3053
 
 `BASE_URL`은 첫 번째 위치 인자이며 생략하면 `http://localhost:3053`이다. 1366×900 CSS px, 배율 2로 캡처한다. 인증 정보를 출력하거나 파일로 저장하지 않는다. 대화 상세에 들어가면 앱 규칙대로 읽음 처리가 된다. 다시 안 읽음 예시가 필요하면 운영 DB가 아닌 개발 예시에서 준비한다.
 
-`screens.json`은 장·주소·캡처 영역·번호별 locator를 정의한다. `{submitted_po_id}` 같은 치환은 URL과 선택자 모두 지원한다. `clip: "main"`은 바깥 레이아웃의 `body > main`, 다른 문자열은 CSS/Playwright 선택자다. `menu-row`는 판매현황부터 `menuEnd`(현재 클레임)까지 캡처한다. 6장은 거래처 연결·대화 내역과 두 메시지 폼을 각각 캡처한다. `clipMaxWidth`는 왼쪽 기준 최대 폭이며 8장은 900px 안에 입금 확인 버튼이 들어오는지 검증한다. `actions: [{"click": "선택자"}]`로 캡처 전에 버튼을 눌러 패널을 열 수 있다. 0장의 `ch0-feedback`은 의견 패널을 연 상태를 캡처한다. callout은 `selector` 또는 정확히 일치하는 `text`를 지정한다.
+`screens.json`은 장·주소·캡처 영역·번호별 locator를 정의한다. `{submitted_po_id}` 같은 치환은 URL과 선택자 모두 지원한다. `clip: "main"`은 바깥 레이아웃의 `body > main`, 다른 문자열은 CSS/Playwright 선택자다. `operator-top`은 묶음 이름과 구분선을 포함한 데스크톱 운영 메뉴 줄부터 발주 목록의 오늘 할 일까지 캡처한다. 6장은 거래처 연결·대화 내역과 두 메시지 폼을 각각 캡처한다. `clipMaxWidth`는 왼쪽 기준 최대 폭이며 8장은 최대 1000px 안에 데스크톱 표의 입금 확인 버튼이 들어오는지 검증한다. `actions: [{"click": "선택자"}]`로 캡처 전에 패널을 열 수 있다. 0장은 의견 패널, 3장은 위챗 채널 설정을 펼친 상태로 캡처한다. callout은 `selector` 또는 정확히 일치하는 `text`를 지정한다.
 
 선택자는 `app/views/layouts/application.html.erb`, `suppliers/new`, `purchase_orders/{new,show}`, `wechat/{index,show,_settings,_message_actions,_purchase_order_messages}`, `admin_orders/index`, `sales/index`를 기준으로 정했다. 누락된 callout만 경고하고 계속하며, 인증 실패·화면 이동 실패·캡처 영역 누락은 중단한다. 앱의 버튼을 눌러 상태를 변경하지 않는다.
 
-현재 원고와 화면이 다른 부분은 원고·앱을 고치지 않고 경고로 보존한다.
-
-- 2장 ②: 거래처 신규 화면에 종류 입력이 없다.
-- 5장 ④: 별도의 수동 발송 기록에서 처리자·시각을 보여 준다.
+5장 ④는 별도의 수동 발송 기록에서 처리자·시각을 보여 준다.
 
 결과는 `docs/manual/build/out/shots/<id>.png` 및 `.json`이다. JSON의 `width`, `height`, `callouts[].box`는 **캡처 좌측 상단 기준 CSS px**다. PNG 실제 픽셀은 그 값의 2배이며 `deviceScaleFactor`에 명시된다. 경고도 JSON에 남는다. 원고의 번호·순서를 유지하므로 누락된 번호를 재번호 매기지 않는다.
 
@@ -72,8 +69,8 @@ python3 docs/manual/build/build.py
 
 출력:
 
-- `docs/manual/out/JIEUM_운영자매뉴얼_v1.3.pdf`
-- `docs/manual/out/JIEUM_운영자매뉴얼_v1.3.html`
+- `docs/manual/out/JIEUM_운영자매뉴얼_v1.4.pdf`
+- `docs/manual/out/JIEUM_운영자매뉴얼_v1.4.html`
 
 주석은 Pillow로 `build/out/annotated/<id>.png`에 합성한다(자동 분할은 `<id>-<번호>.png`). 번호는 Pretendard Bold, 포인트색 원·흰 숫자·흰 테두리이며 바깥 배치와 겹침 회피를 적용한다. 원 지름은 캡처 폭의 7/174로 정해 전체 폭 인쇄 시 약 7mm다. 높이 제한으로 축소되면 원도 같은 비율로 축소된다. HTML은 합성 PNG 하나를 그림으로 사용하고 최대 높이 118mm, 최대 폭 100%로 비율을 유지한다. 의견란·주의 상자·그림은 통째로 쪽을 넘긴다.
 

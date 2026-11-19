@@ -52,11 +52,12 @@ try {
       let clip = { x: 0, y: 0, ...dimensions };
       let scope = page;
       if (screen.clip === 'menu-row') {
-        const links = page.locator('nav[aria-label="관리 메뉴"] a');
-        const first = await documentBox(links.first());
-        const last = await documentBox(links.filter({ hasText: new RegExp(`^${screen.menuEnd || 'KPI'}$`) }).first());
-        if (!first || !last) throw new Error('관리 메뉴 줄을 찾지 못했습니다');
-        clip = { x: first.x, y: first.y - 4, width: last.x + last.width - first.x, height: Math.max(first.height, last.y + last.height - first.y) + 8 };
+        const menu = page.locator('nav[aria-label="관리 메뉴"] [aria-label="데스크톱 관리자 메뉴"] > div');
+        const first = await documentBox(menu.locator('a').filter({ hasText: /^발주/ }).first());
+        const last = await documentBox(menu.locator('a').filter({ hasText: /^의견함/ }).last());
+        const row = await documentBox(menu);
+        if (!first || !last || !row) throw new Error('운영 메뉴 줄을 찾지 못했습니다');
+        clip = { x: first.x, y: row.y, width: last.x + last.width - first.x, height: row.height };
       } else if (screen.clip === 'conversation-top' || screen.clip === 'conversation-forms') {
         const topPanel = screen.clip === 'conversation-top';
         const first = await documentBox(page.locator(topPanel ? "main section:has(h2:text-is('거래처 연결'))" : "main h2:text-is('받은 메시지 붙여넣기')").first());
@@ -82,14 +83,19 @@ try {
             const last = await documentBox(rows.nth(count - 1));
             clip.height = Math.min(clip.height, last.y + last.height - clip.y + 4);
           }
+          if (screen.clipInclude) {
+            const included = await documentBox(scope.locator(expand(screen.clipInclude)).first());
+            if (!included) throw new Error(`${screen.id}: 필수 캡처 행을 찾지 못했습니다`);
+            clip.height = Math.max(clip.height, included.y + included.height - clip.y + 4);
+          }
         }
       }
       if (screen.clipMaxWidth) {
         // Keep the left columns and the payment action within a readable crop.
         clip.width = Math.min(clip.width, screen.clipMaxWidth);
-        const payment = await documentBox(page.locator(`form[action='/admin_orders/${ids.pending_order_id}/confirm_payment'] button`).first());
+        const payment = await documentBox(scope.locator(`form[action='/admin_orders/${ids.pending_order_id}/confirm_payment'] button`).first());
         if (!payment || payment.x < clip.x || payment.x + payment.width > clip.x + clip.width) {
-          throw new Error(`${screen.id}: 900px clip 안에 입금 확인 버튼이 없습니다`);
+          throw new Error(`${screen.id}: ${screen.clipMaxWidth}px clip 안에 입금 확인 버튼이 없습니다`);
         }
       }
       const callouts = [];

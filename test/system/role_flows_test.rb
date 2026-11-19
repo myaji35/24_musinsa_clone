@@ -1,6 +1,17 @@
 require "application_system_test_case"
 
 class RoleFlowsTest < ApplicationSystemTestCase
+  test "모두 동의와 개별 필수 동의가 동기화된다" do
+    visit join_path
+    check "필수 항목에 모두 동의합니다"
+    assert_checked_field "[필수] 이용약관에 동의합니다"
+    assert_checked_field "[필수] 개인정보 수집·이용에 동의합니다"
+    assert_checked_field "[필수] 만 14세 이상입니다"
+
+    uncheck "[필수] 이용약관에 동의합니다"
+    assert_unchecked_field "필수 항목에 모두 동의합니다"
+  end
+
   test "손님이 가입하고 상품을 주문한 뒤 내 주문을 확인한다" do
     visit join_path
     fill_in "이름", with: "가입 테스트"

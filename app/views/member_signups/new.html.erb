@@ -25,19 +25,23 @@
       <%= form.label :password_confirmation, "비밀번호 확인", class: "block text-ui font-medium mb-2" %>
       <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", class: "field" %>
     </div>
-    <fieldset>
+    <fieldset data-controller="consent-all">
       <legend class="text-ui font-medium mb-2">약관 동의</legend>
+      <label class="flex items-start gap-3 py-2 min-h-11 cursor-pointer border-b border-hairline mb-1">
+        <input type="checkbox" id="member_consent_all" class="mt-1 h-5 w-5 shrink-0" data-consent-all-target="all" data-action="change->consent-all#toggleAll">
+        <span class="font-medium">필수 항목에 모두 동의합니다</span>
+      </label>
       <label class="flex items-start gap-3 py-2 min-h-11 cursor-pointer">
-        <%= check_box_tag "member[terms_agreement]", "1", @consents&.[](:terms_agreement) == "1", class: "mt-1 h-5 w-5 shrink-0" %>
+        <%= check_box_tag "member[terms_agreement]", "1", @consents&.[](:terms_agreement) == "1", class: "mt-1 h-5 w-5 shrink-0", data: { consent_all_target: "item", action: "change->consent-all#sync" } %>
         <span>[필수] 이용약관에 동의합니다 <%= link_to "보기", terms_policy_path, target: "_blank", rel: "noopener noreferrer", class: "btn-text tap" %></span>
       </label>
       <label class="flex items-start gap-3 py-2 min-h-11 cursor-pointer">
-        <%= check_box_tag "member[privacy_agreement]", "1", @consents&.[](:privacy_agreement) == "1", class: "mt-1 h-5 w-5 shrink-0" %>
+        <%= check_box_tag "member[privacy_agreement]", "1", @consents&.[](:privacy_agreement) == "1", class: "mt-1 h-5 w-5 shrink-0", data: { consent_all_target: "item", action: "change->consent-all#sync" } %>
         <span>[필수] 개인정보 수집·이용에 동의합니다 <%= link_to "보기", privacy_policy_path, target: "_blank", rel: "noopener noreferrer", class: "btn-text tap" %></span>
       </label>
       <p class="text-caption text-ink-2">수집 항목: 이메일, 이름, 비밀번호(암호화) · 목적: 회원 인증, 주문 내역 제공 · 보유: 회원 탈퇴 시까지(법령에 따라 보관해야 하는 주문 기록은 해당 기간까지)</p>
       <label class="flex items-start gap-3 py-2 min-h-11 cursor-pointer">
-        <%= check_box_tag "member[age_confirmation]", "1", @consents&.[](:age_confirmation) == "1", class: "mt-1 h-5 w-5 shrink-0" %>
+        <%= check_box_tag "member[age_confirmation]", "1", @consents&.[](:age_confirmation) == "1", class: "mt-1 h-5 w-5 shrink-0", data: { consent_all_target: "item", action: "change->consent-all#sync" } %>
         <span>[필수] 만 14세 이상입니다</span>
       </label>
     </fieldset>

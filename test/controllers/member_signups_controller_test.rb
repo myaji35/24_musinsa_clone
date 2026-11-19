@@ -1,6 +1,13 @@
 require "test_helper"
 
 class MemberSignupsControllerTest < ActionDispatch::IntegrationTest
+  test "가입 화면의 모두 동의 체크박스는 서버에 전송되지 않는다" do
+    get join_path
+    assert_select "label", text: /필수 항목에 모두 동의합니다/ do
+      assert_select "input[type=checkbox]#member_consent_all:not([name])"
+    end
+  end
+
   test "가입 화면에 전달한 경로로 가입 후 복귀한다" do
     get join_path(return_to: cart_path)
     post_signup

@@ -9,6 +9,14 @@
       <p class="mt-2 text-body text-ink-2">“<%= params[:q] %>”에 해당하는 상품이 없습니다.</p>
       <p class="mt-1 text-body text-ink-2">다른 검색어를 입력하거나 검색을 초기화해보세요.</p>
       <%= link_to "검색 초기화", root_path(request.query_parameters.except("q")), class: "mt-6 btn btn-secondary" %>
+      <section class="mt-14 text-left">
+        <h3 class="text-ui font-semibold mb-4">이런 상품은 어떠세요</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-x-2 md:gap-x-3 gap-y-7">
+          <% @suggested_products.each do |product| %>
+            <%= render "products/card", product: product %>
+          <% end %>
+        </div>
+      </section>
     </div>
   <% else %>
     <% if @stories.present? %>
@@ -21,10 +29,20 @@
     <%# 랭킹 섹션 %>
     <div class="mt-14 md:mt-20" id="ranking">
       <div class="flex items-center justify-between mb-4 border-b border-line pb-3">
-          <div><p class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3">RANKING</p><h2 class="text-title font-semibold">JIEUM 랭킹</h2></div>
-          <div class="text-caption text-ink-3 tabular-nums">
-            <%= Time.current.strftime("%m.%d %H:00") %> 갱신
+          <div>
+            <% if params[:q].present? %>
+              <p class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3">SEARCH</p>
+              <h2 class="text-title font-semibold">“<%= params[:q] %>” 검색 결과</h2>
+            <% else %>
+              <p class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3">RANKING</p>
+              <h2 class="text-title font-semibold">JIEUM 랭킹</h2>
+            <% end %>
           </div>
+          <% if params[:q].blank? %>
+            <div class="text-caption text-ink-3 tabular-nums">
+              <%= Time.current.strftime("%m.%d %H:00") %> 갱신
+            </div>
+          <% end %>
       </div>
 
       <%# 카테고리 필터 %>

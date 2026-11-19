@@ -77,20 +77,16 @@
               <% end %>
               <% if mall_admin? && !operator_area? %>
                 <div aria-label="모바일 관리자 메뉴" class="md:hidden border-b border-hairline px-gutter py-2 text-caption flex flex-wrap gap-x-4 gap-y-1">
-                  <%= operator_menu_link "판매현황", sales_path %>
-                  <%= operator_menu_link "재고관리", inventory_scan_path %>
-                  <%= operator_menu_link "대시보드", dashboard_index_path %>
-                  <%= operator_menu_link "주문 관리", admin_orders_path %>
-                  <%= operator_menu_link "의견함 (#{feedback_new_count})", feedbacks_admin_index_path %>
-                    <%= operator_menu_link "위챗", wechat_index_path %>
-            <%= operator_menu_link "거래처", suppliers_path %>
-                  <%= operator_menu_link "발주", purchase_orders_path %>
-                  <%= operator_menu_link "클레임", supplier_claims_path %>
-                  <%= operator_menu_link "상품 입고(엑셀)", supplier_imports_path %>
-                  <%= operator_menu_link "상품정보 입력", product_info_notices_path %>
-                  <%= operator_menu_link "상품분석", product_analyses_path %>
-                  <%= operator_menu_link "트렌드", trends_path %>
-                  <%= operator_menu_link "KPI", kpi_path %>
+                  <% operator_menu_groups.each do |group_name, links| %>
+                    <div class="w-full">
+                      <% if group_name.present? %><p class="text-caption text-ink-3 mb-1"><%= group_name %></p><% end %>
+                      <div class="flex flex-wrap gap-x-4 gap-y-1">
+                        <% links.each do |name, path| %>
+                          <%= operator_menu_link name, path %>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
                 </div>
               <% end %>
 
@@ -138,38 +134,23 @@
         <nav aria-label="관리 메뉴">
         <div aria-label="데스크톱 관리자 메뉴" class="hidden md:block">
           <div class="border-b border-hairline px-gutter py-2 text-caption flex flex-wrap gap-x-4 gap-y-1">
-            <%= operator_menu_link "판매현황", sales_path %>
-            <%= operator_menu_link "재고관리", inventory_scan_path %>
-            <%= operator_menu_link "대시보드", dashboard_index_path %>
-            <%= operator_menu_link "주문 관리", admin_orders_path %>
-            <%= operator_menu_link "의견함 (#{feedback_new_count})", feedbacks_admin_index_path %>
-            <%= operator_menu_link "위챗", wechat_index_path %>
-            <%= operator_menu_link "거래처", suppliers_path %>
-            <%= operator_menu_link "발주", purchase_orders_path %>
-            <%= operator_menu_link "클레임", supplier_claims_path %>
-            <%= operator_menu_link "상품 입고(엑셀)", supplier_imports_path %>
-            <%= operator_menu_link "상품정보 입력", product_info_notices_path %>
-            <%= operator_menu_link "상품분석", product_analyses_path %>
-            <%= operator_menu_link "트렌드", trends_path %>
-            <%= operator_menu_link "KPI", kpi_path %>
+            <% operator_menu_groups.each_with_index do |(group_name, links), index| %>
+              <% if index.positive? %><span aria-hidden="true" class="w-px h-4 bg-line mx-1 self-center"></span><% end %>
+              <% if group_name.present? %><span class="text-caption text-ink-3"><%= group_name %></span><% end %>
+              <% links.each do |name, path| %>
+                <%= operator_menu_link name, path %>
+              <% end %>
+            <% end %>
           </div>
         </div>
         <% if operator_area? %>
           <div data-controller="scroll-active" aria-label="모바일 관리자 바로가기" class="md:hidden border-b border-hairline px-gutter py-2 text-caption flex gap-x-4 overflow-x-auto whitespace-nowrap">
-            <%= operator_menu_link "판매현황", sales_path %>
-            <%= operator_menu_link "재고관리", inventory_scan_path %>
-            <%= operator_menu_link "대시보드", dashboard_index_path %>
-            <%= operator_menu_link "주문 관리", admin_orders_path %>
-            <%= operator_menu_link "의견함 (#{feedback_new_count})", feedbacks_admin_index_path %>
-            <%= operator_menu_link "위챗", wechat_index_path %>
-            <%= operator_menu_link "거래처", suppliers_path %>
-            <%= operator_menu_link "발주", purchase_orders_path %>
-            <%= operator_menu_link "클레임", supplier_claims_path %>
-            <%= operator_menu_link "상품 입고(엑셀)", supplier_imports_path %>
-            <%= operator_menu_link "상품정보 입력", product_info_notices_path %>
-            <%= operator_menu_link "상품분석", product_analyses_path %>
-            <%= operator_menu_link "트렌드", trends_path %>
-            <%= operator_menu_link "KPI", kpi_path %>
+            <% operator_menu_groups.each_with_index do |(_group_name, links), index| %>
+              <% if index.positive? %><span aria-hidden="true" class="w-px h-4 bg-line mx-1 self-center shrink-0"></span><% end %>
+              <% links.each do |name, path| %>
+                <%= operator_menu_link name, path %>
+              <% end %>
+            <% end %>
           </div>
         <% end %>
         </nav>

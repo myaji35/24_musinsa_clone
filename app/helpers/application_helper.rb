@@ -28,6 +28,16 @@ module ApplicationHelper
     paths.any? { |path| request.path == path || request.path.start_with?("#{path}/") }
   end
 
+  def operator_menu_groups
+    [
+      [ "발주·거래처", [ [ "발주", purchase_orders_path ], [ "거래처", suppliers_path ], [ "위챗", wechat_index_path ], [ "클레임", supplier_claims_path ] ] ],
+      [ "주문·재고", [ [ "주문 관리", admin_orders_path ], [ "판매현황", sales_path ], [ "재고관리", inventory_scan_path ] ] ],
+      [ "상품", [ [ "상품 입고(엑셀)", supplier_imports_path ], [ "상품정보 입력", product_info_notices_path ] ] ],
+      [ "분석", [ [ "상품분석", product_analyses_path ], [ "트렌드", trends_path ], [ "대시보드", dashboard_index_path ], [ "KPI", kpi_path ] ] ],
+      [ "", [ [ "의견함 (#{feedback_new_count})", feedbacks_admin_index_path ] ] ]
+    ]
+  end
+
   def operator_menu_link(name, path)
     active = request.path == path || request.path.start_with?("#{path}/")
     link_to name, path, class: "text-ink hover:underline#{' font-bold underline' if active}", aria: { current: (active ? "page" : nil) }

@@ -226,7 +226,8 @@ class MyControllerTest < ActionDispatch::IntegrationTest
         password: "TestPassword!2026", password_confirmation: "TestPassword!2026",
         terms_agreement: "1", privacy_agreement: "1", age_confirmation: "1" } }
     end
-    assert_redirected_to root_path
+    # 가입 전 보던 화면으로 복귀한다.
+    assert_redirected_to my_path
     assert_equal email, User.find(session[:user_id]).email
   end
 

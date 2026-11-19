@@ -1,6 +1,22 @@
 require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
+  test "로그인 화면에 전달한 경로로 로그인 후 복귀한다" do
+    get login_path(return_to: cart_path)
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    assert_redirected_to cart_path
+  end
+
+  test "로그인 화면에 전달한 외부 경로는 무시한다" do
+    [ "https://evil.example", "//evil" ].each do |path|
+      get login_path(return_to: path)
+      assert_nil session[:return_to]
+      post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+      assert_redirected_to root_path
+      delete logout_path
+    end
+  end
+
   test "손님 장바구니는 로그인 뒤에도 유지된다" do
     post cart_items_path, params: { variant_id: variants(:one).id, quantity: 2 }
     post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
@@ -193,7 +209,7 @@ class SessionsReturnPathTest < ActionController::TestCase
 
   test "안전하지 않은 복귀 경로는 기본 화면으로 이동한다" do
     [ "https://evil.com", "//evil.com", "/\\evil.com", "/login", "/login?next=/trends",
-      "/logout", "/logout?next=/trends", "/login/", "/%", "trends", nil ].each do |path|
+      "/logout", "/logout?next=/trends", "/login/", "/join", "/join?next=/cart", "/%", "trends", nil ].each do |path|
       session[:return_to] = path
       session[:old_session_value] = "discard"
       post :create, params: { email: users(:one).email, password: "TestPassword!2026" }

@@ -25,6 +25,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     post cart_items_path, params: { variant_id: variants(:one).id }
     get cart_path
     assert_select "a[href=?]", new_checkout_path, text: "비회원 주문하기"
+    assert_select "p.text-caption a.btn-text[href=?]", login_path(return_to: cart_path), text: "로그인"
     get new_checkout_path
     assert_select "h1", text: "비회원 주문서"
     assert_select 'input[name="checkout[phone]"][type="tel"][autocomplete="shipping tel"]'

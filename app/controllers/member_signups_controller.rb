@@ -4,6 +4,9 @@ class MemberSignupsController < ApplicationController
   rate_limit to: 10, within: 3.minutes, only: :create
 
   def new
+    if (return_to = safe_return_path(params[:return_to]))
+      session[:return_to] = return_to
+    end
     @user = User.new
   end
 
@@ -32,11 +35,12 @@ class MemberSignupsController < ApplicationController
     agreed_at = Time.current
     @user.assign_attributes(terms_agreed_at: agreed_at, privacy_agreed_at: agreed_at, age_confirmed_at: agreed_at)
     if @user.save
+      return_to = session[:return_to]
       cart = session[:cart]
       reset_session
       session[:cart] = cart if cart.present?
       session[:user_id] = @user.id
-      redirect_to root_path, notice: "회원가입이 완료되었습니다."
+      redirect_to safe_return_path(return_to) || root_path, notice: "회원가입이 완료되었습니다."
     else
       render :new, status: :unprocessable_entity
     end

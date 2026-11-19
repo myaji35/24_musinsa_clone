@@ -5,13 +5,13 @@ class RoleMenuTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select "nav[aria-label='계정 메뉴']" do
-      assert_select "a[href=?]", login_path, text: "로그인"
-      assert_select "a[href=?]", join_path, text: "회원가입"
+      assert_select "a[href^='/login']", text: "로그인"
+      assert_select "a[href^='/join']", text: "회원가입"
     end
     assert_select "div[aria-label='모바일 계정 메뉴']" do
       assert_select "p", text: "계정"
-      assert_select "a[href=?]", login_path, text: "로그인"
-      assert_select "a[href=?]", join_path, text: "회원가입"
+      assert_select "a[href^='/login']", text: "로그인"
+      assert_select "a[href^='/join']", text: "회원가입"
       assert_select "a[href=?]", orders_lookup_path, text: "비회원 주문조회"
     end
     assert_no_management_menu

@@ -14,6 +14,19 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def safe_return_path(path)
+    return unless path.is_a?(String) && path.start_with?("/")
+    return if path.start_with?("//", "/\\")
+
+    uri = URI.parse(path)
+    return if uri.scheme || uri.host
+    return if [ login_path, logout_path, join_path ].include?(uri.path.delete_suffix("/"))
+
+    path
+  rescue URI::InvalidURIError
+    nil
+  end
+
   def supplier_scope
     (current_account || Account.primary).suppliers
   end

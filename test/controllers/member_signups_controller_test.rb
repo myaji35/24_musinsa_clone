@@ -1,6 +1,12 @@
 require "test_helper"
 
 class MemberSignupsControllerTest < ActionDispatch::IntegrationTest
+  test "가입 화면에 전달한 경로로 가입 후 복귀한다" do
+    get join_path(return_to: cart_path)
+    post_signup
+    assert_redirected_to cart_path
+  end
+
   test "손님 장바구니는 회원가입 뒤에도 유지된다" do
     post cart_items_path, params: { variant_id: variants(:one).id, quantity: 2 }
     post_signup

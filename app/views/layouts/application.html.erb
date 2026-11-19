@@ -33,6 +33,7 @@
 
   <body class="bg-paper text-ink font-sans antialiased" data-controller="lazy-load">
     <% member = logged_in? && current_user.member? %>
+    <% auth_return_to = request.fullpath unless [ login_path, join_path ].include?(request.path) %>
     <div class="relative h-8 md:h-band bg-ink text-inverse text-caption flex items-center justify-center px-gutter">
       <p>전 상품 무료배송 · 7일 내 반품</p>
       <nav class="absolute right-gutter hidden md:flex items-center gap-4" aria-label="계정 메뉴">
@@ -43,8 +44,8 @@
               <%= link_to "내 워크스페이스", workspace_path, class: "tap hover:underline" if tenant_member? %>
               <%= button_to "로그아웃", logout_path, method: :delete, class: "tap hover:underline" %>
             <% else %>
-              <%= link_to "로그인", login_path, class: "tap hover:underline" %>
-              <%= link_to "회원가입", join_path, class: "tap hover:underline" %>
+              <%= link_to "로그인", login_path(return_to: auth_return_to), class: "tap hover:underline" %>
+              <%= link_to "회원가입", join_path(return_to: auth_return_to), class: "tap hover:underline" %>
             <% end %>
             <%= link_to "주문조회", orders_lookup_path, class: "tap hover:underline" unless member %>
             <%= link_to "장바구니 (#{cart_count})", cart_path, class: "tap hover:underline" %>
@@ -89,7 +90,7 @@
             </ul>
             <div aria-label="모바일 계정 메뉴" class="md:hidden border-t border-hairline mt-2 pt-2">
               <p class="text-caption text-ink-2 py-1"><%= logged_in? ? "내 계정" : "계정" %></p>
-              <% account_links = logged_in? ? [ [ "내 정보", my_path ] ] : [ [ "로그인", login_path ], [ "회원가입", join_path ] ] %>
+              <% account_links = logged_in? ? [ [ "내 정보", my_path ] ] : [ [ "로그인", login_path(return_to: auth_return_to) ], [ "회원가입", join_path(return_to: auth_return_to) ] ] %>
               <% account_links << [ "내 주문", my_orders_path ] if member %>
               <% account_links.each do |name, path| %>
                 <%= link_to name, path, class: "text-ui font-medium py-2 block#{' underline' if current_page?(path)}", aria: { current: (current_page?(path) ? "page" : nil) } %>

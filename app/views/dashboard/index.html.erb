@@ -127,12 +127,13 @@
 
   <%# 최근 주문 테이블 %>
   <div class="bg-white rounded-lg shadow border border-gray-200">
-    <div class="p-6 border-b border-gray-200">
+    <div class="p-6 border-b border-gray-200 flex items-center justify-between gap-3">
       <h2 class="text-xl font-bold">최근 <%= @period %>일 주문</h2>
+      <%= link_to "주문 관리에서 전체 보기 →", admin_orders_path, class: "tap text-sm text-blue-600 hover:underline" %>
     </div>
 
     <% if @recent_orders.any? %>
-      <div class="overflow-x-auto">
+      <div class="hidden md:block overflow-x-auto">
         <table class="w-full">
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
@@ -163,14 +164,7 @@
                   <% end %>
                 </td>
                 <td class="px-6 py-4 text-sm">
-                  <% status_class = case order.status
-                                    when "delivered" then "bg-green-100 text-green-800"
-                                    when "shipped" then "bg-blue-100 text-blue-800"
-                                    when "paid" then "bg-yellow-100 text-yellow-800"
-                                    when "cancelled" then "bg-red-100 text-red-800"
-                                    else "bg-gray-100 text-gray-800"
-                                    end %>
-                  <span class="px-2 py-1 rounded text-xs font-medium <%= status_class %>">
+                  <span class="px-2 py-1 rounded text-xs font-medium <%= order_status_badge_class(order.status) %>">
                     <%= order_status_label(order.status) %>
                   </span>
                 </td>
@@ -179,6 +173,28 @@
             <% end %>
           </tbody>
         </table>
+      </div>
+      <div class="md:hidden px-6">
+        <ul class="divide-y divide-gray-200">
+          <% @recent_orders.first(10).each do |order| %>
+            <li class="py-3 flex justify-between gap-3">
+              <div class="min-w-0">
+                <div class="text-sm font-bold"><%= order.order_number %></div>
+                <div class="text-xs text-gray-600 truncate"><%= order.product.name %> · <%= order.quantity %></div>
+              </div>
+              <div class="shrink-0 text-right">
+                <div class="text-sm font-bold">₩<%= number_with_delimiter(order.total_price.to_i) %></div>
+                <span class="px-2 py-1 rounded text-xs font-medium whitespace-nowrap <%= order_status_badge_class(order.status) %>">
+                  <%= order_status_label(order.status) %>
+                </span>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+        <% if @recent_orders.size > 10 %>
+          <p class="text-sm text-gray-600">외 <%= @recent_orders.size - 10 %>건</p>
+        <% end %>
+        <%= link_to "주문 관리에서 전체 보기 →", admin_orders_path, class: "tap block py-3 text-sm text-blue-600 hover:underline" %>
       </div>
     <% else %>
       <div class="p-12 text-center text-gray-600">

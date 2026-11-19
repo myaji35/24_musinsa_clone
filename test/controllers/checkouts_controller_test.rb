@@ -132,6 +132,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "전자상거래법에 따라 #{Rails.configuration.x.order_record_retention_years}년 보관 뒤 파기"
     assert_select 'a[href=?][target="_blank"][rel="noopener"]', privacy_policy_path, text: "개인정보처리방침 보기", count: 1
     assert_includes response.body, variants(:one).product.name
+    assert_select 'ul li div[class~="w-12"][class~="aspect-[2/3]"]', count: 1
     assert_select 'input[name="checkout[save_consent]"]', count: 0
     assert_no_difference "Order.count" do
       post checkout_path, params: { checkout: @address }

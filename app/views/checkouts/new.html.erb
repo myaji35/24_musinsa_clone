@@ -6,8 +6,9 @@
   <% end %>
   <ul class="border-y border-line divide-y divide-hairline">
     <% @cart.items.each do |item| %>
-      <li class="p-4 flex justify-between gap-4 text-ui">
-        <span class="min-w-0"><span class="text-ui font-medium"><%= item.product.name %></span><br><%= item.variant.color %> / <%= item.variant.size %> · <%= item.quantity %>개</span>
+      <li class="p-4 flex gap-4 items-start text-ui">
+        <%= render "shared/product_thumb", product: item.product, size: :sm %>
+        <span class="min-w-0 flex-1"><span class="text-ui font-medium"><%= item.product.name %></span><br><%= item.variant.color %> / <%= item.variant.size %> · <%= item.quantity %>개</span>
         <span class="shrink-0"><%= price_won(item.line_total) %></span>
       </li>
     <% end %>

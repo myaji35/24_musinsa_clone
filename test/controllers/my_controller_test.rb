@@ -151,9 +151,11 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     get my_orders_path
     assert_response :success
     assert_select "tbody tr", count: 1
+    assert_select 'tbody td div[class~="w-12"][class~="aspect-[2/3]"]', count: 1
     assert_select 'ul.md\\:hidden li div[class~="aspect-[2/3]"]', count: 1
     assert_select "ul.md\\:hidden li a[href=?]", customer_order_path(order.checkout_number), text: order.product.name
     assert_select "tbody td a[href=?]", customer_order_path(order.checkout_number), text: order.order_number
+    assert_select "tbody td a[href=?]", customer_order_path(order.checkout_number), text: order.product.name
     assert_select "td", text: order.order_number
     assert_select "td", text: order.product.name
     assert_select "td", text: "#{order.variant.color} / #{order.variant.size}"
@@ -184,6 +186,7 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     assert_select "ul.md\\:hidden li a", text: order.product.name, count: 0
     assert_select "tbody td", text: order.order_number
     assert_select "tbody td a", text: order.order_number, count: 0
+    assert_select "tbody td a", text: order.product.name, count: 0
   end
 
   test "손님은 내 주문에 접근할 때 로그인으로 이동한다" do

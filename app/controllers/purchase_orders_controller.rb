@@ -6,7 +6,23 @@ class PurchaseOrdersController < ApplicationController
   before_action :set_purchase_order_by_token, only: [ :confirm ]
 
   def index
-    @purchase_orders = PurchaseOrder.where(supplier_id: supplier_scope.select(:id)).includes(:supplier).recent
+    purchase_order_scope = PurchaseOrder.where(supplier_id: supplier_scope.select(:id))
+    @status_filters = { "draft" => "작성 중", "submitted" => "공장 확인 대기", "receiving" => "입고 대기", "received" => "입고 완료", "cancelled" => "취소" }
+    @selected_status = params[:status] if @status_filters.key?(params[:status])
+    @purchase_orders = purchase_order_scope.includes(:supplier).recent
+    if @selected_status
+      statuses = @selected_status == "receiving" ? %w[confirmed partially_received] : @selected_status
+      @purchase_orders = @purchase_orders.where(status: statuses)
+    end
+
+    contacts = WechatContact.for_account(current_account || Account.primary).includes(:wechat_messages)
+    @today_tasks = [
+      { name: "입금 확인 대기", count: Order.pending.count, path: admin_orders_path(status: "pending"), color: "border-l-yellow-500" },
+      { name: "입고 대기 발주", count: purchase_order_scope.where(status: %w[confirmed partially_received]).count, path: purchase_orders_path(status: "receiving"), color: "border-l-blue-500" },
+      { name: "공장 확인 대기", count: purchase_order_scope.where(status: "submitted").count, path: purchase_orders_path(status: "submitted"), color: "border-l-orange-500" },
+      { name: "안 읽은 위챗", count: contacts.sum(&:unread_count), path: wechat_index_path, color: "border-l-green-500" },
+      { name: "새 의견", count: helpers.feedback_new_count, path: feedbacks_admin_index_path, color: "border-l-purple-500" }
+    ]
   end
 
   def show

@@ -4,6 +4,25 @@
     <%= link_to "발주서 생성", new_purchase_order_path, class: "bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg" %>
   </div>
 
+  <section class="mb-6" aria-labelledby="today-tasks-heading">
+    <h2 id="today-tasks-heading" class="text-xl font-bold mb-3">오늘 할 일</h2>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <% @today_tasks.each do |task| %>
+        <%= link_to task[:path], class: "block rounded-lg bg-white shadow p-4 #{task[:count].positive? ? "border-l-4 #{task[:color]} text-gray-900" : 'text-gray-400'}" do %>
+          <strong class="block text-2xl"><%= task[:count] %></strong>
+          <span class="block mt-1"><%= task[:name] %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+
+  <nav class="flex flex-wrap gap-2 mb-6" aria-label="발주 상태 필터">
+    <%= link_to "전체", purchase_orders_path, class: "rounded-full border px-4 py-2#{' font-bold' unless @selected_status}", aria: { current: ("page" unless @selected_status) } %>
+    <% @status_filters.each do |status, label| %>
+      <%= link_to label, purchase_orders_path(status: status), class: "rounded-full border px-4 py-2#{' font-bold' if @selected_status == status}", aria: { current: ("page" if @selected_status == status) } %>
+    <% end %>
+  </nav>
+
   <% if @purchase_orders.any? %>
     <div class="bg-white rounded-lg shadow overflow-hidden hidden md:block">
       <table class="min-w-full divide-y divide-gray-200">
@@ -70,7 +89,7 @@
     </ul>
   <% else %>
     <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-      등록된 발주서가 없습니다. 새로운 발주서를 생성해주세요.
+      <%= @selected_status ? "해당 상태의 발주서가 없습니다." : "등록된 발주서가 없습니다. 새로운 발주서를 생성해주세요." %>
     </div>
   <% end %>
 </div>

@@ -64,6 +64,28 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "입고 대기 필터와 오늘 할 일은 현재 계정 발주만 집계한다" do
+    @purchase_order.update!(status: "confirmed")
+    partial = PurchaseOrder.create!(supplier: @supplier, status: "partially_received")
+    submitted = PurchaseOrder.create!(supplier: @supplier, status: "submitted")
+    foreign_supplier = Supplier.create!(account: accounts(:other), name: "다른 계정 거래처", phone: "02-9999-9999", active: true)
+    foreign = PurchaseOrder.create!(supplier: foreign_supplier, status: "confirmed")
+    receiving_count = PurchaseOrder.where(supplier_id: accounts(:jieum).suppliers.select(:id), status: %w[confirmed partially_received]).count
+
+    get purchase_orders_path(status: "receiving")
+    assert_response :success
+    assert_select "nav[aria-label='발주 상태 필터'] a[aria-current='page']", text: "입고 대기"
+    assert_select "a[href='#{purchase_order_path(@purchase_order)}']", minimum: 1
+    assert_select "a[href='#{purchase_order_path(partial)}']", minimum: 1
+    assert_select "a[href='#{purchase_order_path(submitted)}']", count: 0
+    assert_select "a[href='#{purchase_order_path(foreign)}']", count: 0
+    assert_select "section[aria-labelledby='today-tasks-heading'] a[href='#{purchase_orders_path(status: 'receiving')}']" do
+      assert_select "strong", text: receiving_count.to_s
+      assert_select "span", text: "입고 대기 발주"
+    end
+    assert_select "section[aria-labelledby='today-tasks-heading'] a", count: 5
+  end
+
   # GET /purchase_orders/new
   test "should get new" do
     get new_purchase_order_url

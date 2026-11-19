@@ -3,8 +3,8 @@
 
   <%= form_with(model: @supplier, class: "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4") do |form| %>
     <% if @supplier.errors.any? %>
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        <p class="font-bold"><%= pluralize(@supplier.errors.count, "error") %> 발생:</p>
+      <div role="alert" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <p class="font-bold">입력을 확인해 주세요 (<%= @supplier.errors.count %>건)</p>
         <ul class="list-disc list-inside">
           <% @supplier.errors.map(&:message).each do |message| %>
             <li><%= message %></li>

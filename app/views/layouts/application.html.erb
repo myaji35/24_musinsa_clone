@@ -168,14 +168,14 @@
       <% end %>
     <main class="<%= 'pb-16' if mall_admin? %>">
       <% if flash[:notice].present? || flash[:alert].present? %>
-        <div class="px-gutter pt-6 space-y-3">
+        <div class="<%= operator_area? ? "container mx-auto px-4" : "px-gutter" %> pt-6 space-y-3">
           <% if flash[:notice].present? %>
-            <div role="status" class="border border-ink px-4 py-3 text-body text-notice">
+            <div role="status" class="<%= operator_area? ? "border-l-4 border-green-600 bg-green-50 text-green-900" : "border border-ink text-notice" %> px-4 py-3 text-body">
               <%= flash[:notice] %>
             </div>
           <% end %>
           <% if flash[:alert].present? %>
-            <div role="alert" class="border border-ink px-4 py-3 text-body text-sale">
+            <div role="alert" class="<%= operator_area? ? "border-l-4 border-red-600 bg-red-50 text-red-900" : "border border-ink text-sale" %> px-4 py-3 text-body">
               <%= flash[:alert] %>
             </div>
           <% end %>

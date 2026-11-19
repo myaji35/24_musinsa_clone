@@ -46,8 +46,8 @@
   <!-- Stock Out Form -->
   <%= form_with(model: @stock_log, url: inventory_stock_out_path, method: :post, class: "space-y-6") do |form| %>
     <% if @stock_log.errors.any? %>
-      <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-        <h3 class="text-sm font-bold text-red-800 mb-2"><%= pluralize(@stock_log.errors.count, "error") %> 발생:</h3>
+      <div role="alert" class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <h3 class="text-sm font-bold text-red-800 mb-2">입력을 확인해 주세요 (<%= @stock_log.errors.count %>건)</h3>
         <ul class="list-disc list-inside text-sm text-red-700">
           <% @stock_log.errors.each do |error| %>
             <li><%= error.full_message %></li>

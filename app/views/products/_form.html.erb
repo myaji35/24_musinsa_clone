@@ -1,7 +1,7 @@
 <%= form_with(model: product, class: "space-y-6") do |form| %>
   <% if product.errors.any? %>
-    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-      <h3 class="text-sm font-bold text-red-800 mb-2"><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h3>
+    <div role="alert" class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <h3 class="text-sm font-bold text-red-800 mb-2">입력을 확인해 주세요 (<%= product.errors.count %>건)</h3>
       <ul class="list-disc list-inside text-sm text-red-700">
         <% product.errors.each do |error| %>
           <li><%= error.full_message %></li>

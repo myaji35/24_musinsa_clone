@@ -134,10 +134,16 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, variants(:one).product.name
     assert_select 'ul li div[class~="w-12"][class~="aspect-[2/3]"]', count: 1
     assert_select 'input[name="checkout[save_consent]"]', count: 0
+    assert_select 'input[type="checkbox"][name="checkout[privacy_consent]"][required]'
+    assert_select 'input[type="checkbox"][name="checkout[privacy_consent]"][aria-invalid]', count: 0
+    assert_select 'input[type="checkbox"][name="checkout[privacy_consent]"][aria-describedby]', count: 0
     assert_no_difference "Order.count" do
       post checkout_path, params: { checkout: @address }
     end
     assert_response :unprocessable_entity
+    assert_select "#privacy-consent-error.text-caption.text-sale", text: "개인정보 수집·이용에 동의해 주세요"
+    assert_select 'input[type="checkbox"][name="checkout[privacy_consent]"][aria-invalid="true"][aria-describedby="privacy-consent-error"]'
+    assert_select '#checkout-errors[role="alert"][tabindex="-1"][autofocus]'
     assert_select 'input[name="checkout[phone]"][value="010-7777-9876"]'
     post checkout_path, params: { checkout: @address.merge(privacy_consent: "1", postal_code: "bad") }
     assert_response :unprocessable_entity

@@ -10,6 +10,7 @@ class CheckoutsController < ApplicationController
   def create
     @checkout = params.require(:checkout).permit(:recipient_name, :phone, :postal_code, :address1, :address2, :birth_year, :privacy_consent).to_h
     unless @checkout["privacy_consent"] == "1"
+      @consent_error = true
       @errors = [ "개인정보 수집·이용에 동의해 주세요" ]
       return render :new, status: :unprocessable_entity
     end

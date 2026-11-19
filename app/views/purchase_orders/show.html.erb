@@ -1,16 +1,16 @@
 <div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold">발주서 상세 - <%= @purchase_order.order_number %></h1>
+  <div class="flex flex-wrap gap-3 justify-between items-center mb-6">
+    <h1 class="text-2xl md:text-3xl font-bold">발주서 상세 - <span class="block md:inline"><%= @purchase_order.order_number %></span></h1>
     <div class="flex items-center gap-2">
       <% if @purchase_order.status == "draft" %>
-        <%= link_to "수정", edit_purchase_order_path(@purchase_order), class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg mr-2" %>
-        <%= button_to "제출", submit_purchase_order_path(@purchase_order), method: :post, form: { data: { turbo_confirm: "발주서를 거래처에 제출하시겠습니까?" } }, class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mr-2" %>
+        <%= link_to "수정", edit_purchase_order_path(@purchase_order), class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg whitespace-nowrap mr-2" %>
+        <%= button_to "제출", submit_purchase_order_path(@purchase_order), method: :post, form: { data: { turbo_confirm: "발주서를 거래처에 제출하시겠습니까?" } }, class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg whitespace-nowrap mr-2" %>
       <% end %>
-      <%= link_to "목록", purchase_orders_path, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg" %>
+      <%= link_to "목록", purchase_orders_path, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg whitespace-nowrap" %>
     </div>
   </div>
 
-  <div class="grid grid-cols-3 gap-6 mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
     <div class="bg-white rounded-lg shadow p-6">
       <h2 class="text-xl font-bold mb-4">거래처 정보</h2>
       <div class="space-y-2">
@@ -81,6 +81,36 @@
       </div>
     </div>
   </div>
+
+  <% if @purchase_order.status.in?(%w[confirmed partially_received]) %>
+    <section class="bg-white rounded-lg shadow p-6 mb-6 border-2 border-blue-500">
+      <h2 class="text-xl font-bold mb-4">입고 처리 <span class="text-sm font-normal text-gray-600">남은 수량 <%= @purchase_order_items.sum { |item| item.quantity - item.received_quantity } %>개</span></h2>
+      <%= form_with url: receive_purchase_order_path(@purchase_order), method: :post, data: { turbo_confirm: "입고한 수량만큼 재고가 늘어납니다. 계속할까요?" } do %>
+        <div role="table" aria-label="입고 처리 품목">
+          <div role="row" class="hidden md:grid md:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-2 font-semibold text-sm py-2 border-b">
+            <div role="columnheader">상품·옵션</div>
+            <div role="columnheader">발주 수량</div>
+            <div role="columnheader">받은 수량(누적)</div>
+            <div role="columnheader">남은 수량</div>
+            <div role="columnheader">이번에 받은 수량</div>
+          </div>
+          <% @purchase_order_items.each do |item| %>
+            <% remaining = item.quantity - item.received_quantity %>
+            <div role="row" class="grid grid-cols-3 md:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-2 py-3 border-b items-center">
+              <div role="cell" class="col-span-3 md:col-span-1 font-medium"><%= item.product_name %> · <%= item.variant_name %></div>
+              <div role="cell"><span class="md:hidden text-sm text-gray-500">발주 </span><%= item.quantity %></div>
+              <div role="cell"><span class="md:hidden text-sm text-gray-500">받음 </span><%= item.received_quantity %></div>
+              <div role="cell"><span class="md:hidden text-sm text-gray-500">남음 </span><%= remaining %></div>
+              <div role="cell" class="col-span-3 md:col-span-1">
+                <label class="flex items-center gap-2"><span class="md:hidden">이번에 받은 수량</span><%= number_field_tag "received_quantities[#{item.id}]", remaining, min: 0, max: remaining, inputmode: "numeric", class: "border rounded p-2 w-28", aria: { label: "#{item.product_name} #{item.variant_name} 이번에 받은 수량" } %></label>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <%= submit_tag "입고 기록", class: "bg-blue-600 text-white px-4 py-3 rounded mt-4 w-full md:w-auto" %>
+      <% end %>
+    </section>
+  <% end %>
 
   <% if @purchase_order.notes.present? %>
     <div class="bg-white rounded-lg shadow p-6 mb-6">
@@ -163,22 +193,6 @@
           </tbody>
         </table>
       </div>
-    </section>
-  <% end %>
-  <% if @purchase_order.status.in?(%w[confirmed partially_received]) %>
-    <section class="bg-white rounded-lg shadow p-6 mt-6">
-      <h2 class="text-xl font-bold mb-4">입고 처리</h2>
-      <%= form_with url: receive_purchase_order_path(@purchase_order), method: :post, data: { turbo_confirm: "입고한 수량만큼 재고가 늘어납니다. 계속할까요?" } do %>
-        <div class="overflow-x-auto"><table class="min-w-full text-left">
-          <thead><tr><th>상품·옵션</th><th>발주 수량</th><th>받은 수량(누적)</th><th>남은 수량</th><th>이번에 받은 수량</th></tr></thead>
-          <tbody><% @purchase_order_items.each do |item| %>
-            <% remaining = item.quantity - item.received_quantity %>
-            <tr><td><%= item.product_name %> · <%= item.variant_name %></td><td><%= item.quantity %></td><td><%= item.received_quantity %></td><td><%= remaining %></td>
-              <td><%= number_field_tag "received_quantities[#{item.id}]", remaining, min: 0, max: remaining, class: "border rounded p-2 w-24", aria: { label: "#{item.product_name} #{item.variant_name} 이번에 받은 수량" } %></td></tr>
-          <% end %></tbody>
-        </table></div>
-        <%= submit_tag "입고 기록", class: "bg-blue-600 text-white px-4 py-2 rounded mt-4" %>
-      <% end %>
     </section>
   <% end %>
 </div>

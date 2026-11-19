@@ -5,13 +5,13 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M12 5v14M5 12h14" stroke-width="2"/></svg>미분석 전체 분석 (최대 50건)
     <% end %>
   </div>
-  <%= form_with url: product_analyses_path, method: :get, class: "mb-5 flex flex-wrap gap-3" do |f| %>
+  <%= form_with url: product_analyses_path, method: :get, class: "mb-5 grid grid-cols-2 gap-2 md:flex md:flex-wrap md:gap-3" do |f| %>
     <%= f.select :character_id, options_from_collection_for_select(@characters, :id, :name, params[:character_id]), { include_blank: "전체 캐릭터" }, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
     <%= f.select :status, options_for_select([["전체 상태", ""], ["미분석", "unanalysed"], ["대기", "pending"], ["실행 중", "running"], ["완료", "done"], ["실패", "failed"]], params[:status]), {}, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
     <%= f.select :supplier_import_id, options_from_collection_for_select(SupplierImport.order(created_at: :desc).limit(50), :id, :id, params[:supplier_import_id]), { include_blank: "전체 가져오기" }, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
-    <%= f.submit "필터", class: "rounded bg-gray-900 px-4 py-2 text-white" %>
+    <%= f.submit "필터", class: "col-span-2 w-full rounded bg-gray-900 px-4 py-2 text-white md:w-auto" %>
   <% end %>
-  <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+  <div class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 bg-white">
     <table class="w-full min-w-[1100px] text-sm text-left">
       <thead class="bg-gray-50"><tr><th class="p-3">상품</th><th class="p-3">판매가 / 공급가 / 마진</th><th class="p-3">상태</th><th class="p-3">캐릭터</th><th class="p-3">컨셉 / 훅</th><th class="p-3">목표 / 실적 / 달성률</th><th class="p-3">작업</th></tr></thead>
       <tbody>
@@ -30,4 +30,22 @@
       </tbody>
     </table>
   </div>
+  <ul class="md:hidden space-y-3">
+    <% @rows.each do |row| %>
+      <% product = row.product %><% analysis = row.analysis %>
+      <li class="border rounded-lg p-3 bg-white">
+        <div class="flex gap-3">
+          <% if product.image.attached? %><%= image_tag product.image.variant(resize_to_limit: [64, 64]), class: "w-16 h-20 object-cover" %><% elsif product.image_url.present? %><%= image_tag product.image_url, class: "w-16 h-20 object-cover" %><% end %>
+          <div class="min-w-0 flex-1 space-y-1">
+            <p class="font-bold"><% if analysis %><%= link_to product.name, product_analysis_path(analysis) %><% else %><%= product.name %><% end %></p>
+            <p><%= analysis_badge(analysis&.status) %> <%= manual_assignment_badge(analysis) %></p>
+            <p class="text-sm"><span class="text-xs text-gray-500">판매가</span> <%= won(product.price) %> · <span class="text-xs text-gray-500">마진</span> <%= won(row.unit_margin) %></p>
+            <p class="text-sm"><%= analysis&.character&.name %><% if analysis&.character %> <span class="text-gray-500">@<%= analysis.character.handle %></span><% end %></p>
+            <p class="text-xs text-gray-500"><span>목표</span> <%= won(row.target_revenue) %> · <span>실적</span> <%= won(row.actual_revenue) %> · <span>달성률</span> <%= percent(row.achievement) %></p>
+          </div>
+        </div>
+        <div class="mt-3 flex justify-end"><%= button_to "분석", product_analyses_path(product_id: product.id), class: "border rounded px-3 py-1 text-sm" %></div>
+      </li>
+    <% end %>
+  </ul>
 </div>

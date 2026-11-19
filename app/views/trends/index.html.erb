@@ -17,12 +17,14 @@
   <% if @snapshots.empty? %>
     <p class="bg-white border rounded-lg p-6">아직 트렌드 데이터가 없습니다. 데이터랩에서 CSV를 내려받아 위 폼으로 업로드하세요.</p>
   <% end %>
-  <section class="bg-white border rounded-lg p-6 overflow-x-auto">
+  <section class="bg-white border rounded-lg p-6">
     <h2 class="text-lg font-bold mb-2">캐릭터별 추천</h2>
     <p class="text-sm text-gray-600 mb-4">최근 4주 평균과 직전 4주 평균의 상승률 순입니다. 연령대 실측을 우선 사용하며, 없으면 전체 실측을 사용합니다. 상대지수는 조회 조건에 따라 달라지므로 동일한 조건으로 수집하세요.</p>
-    <table class="w-full text-sm text-left"><thead><tr class="border-b"><th class="p-3">캐릭터</th><th class="p-3">연령대</th><th class="p-3">담당 의류</th><th class="p-3">상위 시리즈 · 상승률 · 후보 상품</th></tr></thead><tbody>
+    <p class="md:hidden text-sm text-gray-500 mb-2">← 옆으로 밀어 보기 →</p>
+    <div class="overflow-x-auto">
+    <table class="w-full min-w-[640px] text-sm text-left"><thead><tr class="border-b"><th class="p-3 whitespace-nowrap">캐릭터</th><th class="p-3 whitespace-nowrap">연령대</th><th class="p-3 whitespace-nowrap">담당 의류</th><th class="p-3 whitespace-nowrap">상위 시리즈 · 상승률 · 후보 상품</th></tr></thead><tbody>
       <% @recommendations.each do |character, rows| %>
-        <tr class="border-b"><td class="p-3"><%= character.name %></td><td class="p-3"><%= character.age_band ? "#{character.age_band}대" : "미지정" %></td><td class="p-3"><%= character.wardrobe %></td><td class="p-3 space-y-3">
+        <tr class="border-b"><td class="p-3 whitespace-nowrap"><%= character.name %></td><td class="p-3 whitespace-nowrap"><%= character.age_band ? "#{character.age_band}대" : "미지정" %></td><td class="p-3"><%= character.wardrobe %></td><td class="p-3 space-y-3">
           <% rows.each do |row| %>
             <div><p class="font-medium"><%= row[:series_name] %> · <%= row[:status] %> · <%= row[:growth] ? "#{number_with_precision(row[:growth], precision: 1)}%" : "상승률 계산 불가" %> · 최근 지수 <%= number_with_precision(row[:latest], precision: 2) %></p>
               <% if row[:products].empty? %><p class="text-gray-500">후보 상품 없음</p><% end %>
@@ -32,14 +34,18 @@
         </td></tr>
       <% end %>
     </tbody></table>
+    </div>
     <% if @characters_without_data.any? %>
       <p class="mt-4 text-sm text-gray-600">데이터 없음: <%= @characters_without_data.map(&:name).join(", ") %> — 담당 의류 CSV를 올리면 추천이 표시됩니다</p>
     <% end %>
   </section>
   <section class="bg-white border rounded-lg p-6">
     <h2 class="text-lg font-bold mb-4">최근 스냅샷 요약</h2>
-    <table class="w-full text-sm text-left"><thead><tr class="border-b"><th class="p-3">시리즈</th><th class="p-3">최신 주</th><th class="p-3">상대지수</th><th class="p-3">연령대 · 출처</th></tr></thead><tbody>
+    <p class="md:hidden text-sm text-gray-500 mb-2">← 옆으로 밀어 보기 →</p>
+    <div class="overflow-x-auto">
+    <table class="w-full min-w-[640px] text-sm text-left"><thead><tr class="border-b"><th class="p-3 whitespace-nowrap">시리즈</th><th class="p-3 whitespace-nowrap">최신 주</th><th class="p-3 whitespace-nowrap">상대지수</th><th class="p-3 whitespace-nowrap">연령대 · 출처</th></tr></thead><tbody>
       <% @snapshots.each do |name, snapshot| %><tr class="border-b"><td class="p-3"><%= name %></td><td class="p-3"><%= snapshot.period_start %></td><td class="p-3"><%= number_with_precision(snapshot.ratio, precision: 2) %></td><td class="p-3"><%= snapshot.age_band ? "#{snapshot.age_band}대" : "전체" %> · <%= snapshot.source == "datalab_csv" ? "CSV" : "API" %></td></tr><% end %>
     </tbody></table>
+    </div>
   </section>
 </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="bg-paper">
   <head>
     <title><%= content_for(:title) || "JIEUM - AI Fashion OS" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -31,7 +31,7 @@
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" crossorigin>
   </head>
 
-  <body class="bg-paper text-ink font-sans antialiased" data-controller="lazy-load">
+  <body class="bg-paper text-ink font-sans antialiased<%= " min-h-screen flex flex-col" if operator_area? %>" data-controller="lazy-load">
     <div class="relative h-8 md:h-band bg-ink text-inverse text-caption flex items-center justify-center px-gutter">
       <% if operator_area? %>
         <p class="font-bold">JIEUM 운영 화면</p>
@@ -155,7 +155,7 @@
         <% end %>
         </nav>
       <% end %>
-    <main class="<%= 'pb-16' if mall_admin? %>"<%= ' data-area="operator"'.html_safe if operator_area? %>>
+    <main class="<%= 'pb-16' if mall_admin? %><%= ' flex-1' if operator_area? %>"<%= ' data-area="operator"'.html_safe if operator_area? %>>
       <% if flash[:notice].present? || flash[:alert].present? %>
         <div class="<%= operator_area? ? "container mx-auto px-4" : "px-gutter" %> pt-6 space-y-3">
           <% if flash[:notice].present? %>

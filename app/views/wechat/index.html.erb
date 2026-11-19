@@ -1,6 +1,54 @@
 <main class="container mx-auto min-w-0 px-4 py-8">
-  <h1 class="text-3xl font-bold mb-6">위챗 대화</h1>
-  <%= render "settings" %>
+  <% unread_total = @contacts.sum(&:unread_count) %>
+  <div class="flex items-center justify-between gap-4 mb-6">
+    <h1 class="text-3xl font-bold">위챗 대화</h1>
+    <span class="rounded-full px-3 py-1 text-sm font-bold <%= unread_total.positive? ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600" %>"><%= unread_total.positive? ? "안 읽음 #{unread_total}" : "모두 읽음" %></span>
+  </div>
+  <% if @contacts.empty? %>
+    <p>대화 상대를 추가하거나 채널 안내에 따라 첫 메시지를 받아 주세요.</p>
+  <% else %>
+    <div class="hidden md:block max-w-full overflow-x-auto rounded-lg border">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-gray-50 text-gray-700">
+          <tr>
+            <% ["거래처", "대화방 이름", "마지막 메시지", "안 읽은 수", "48시간 창/방식"].each do |heading| %>
+              <th scope="col" class="p-2 sm:p-4 whitespace-nowrap"><%= heading %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          <% @contacts.each do |contact| %>
+            <tr class="align-top <%= "font-bold" if contact.unread_count.positive? %>">
+              <td class="p-2 sm:p-4 break-all"><%= link_to contact.display_name, wechat_path(contact), class: "font-bold text-blue-600 hover:text-blue-800 underline" %></td>
+              <td class="p-2 sm:p-4 break-all"><%= contact.wechat_display_name.presence || contact.nickname %><p><%= "미연결 담당자" unless contact.supplier %> · <%= contact.subscribed? ? "구독 중" : "구독 해제" %></p></td>
+              <td class="p-2 sm:p-4 break-all"><%= truncate(contact.latest_message&.content, length: 100) %></td>
+              <td class="p-2 sm:p-4 whitespace-nowrap"><span class="<%= "rounded-full bg-red-100 px-2 py-1 text-red-700" if contact.unread_count.positive? %>">안 읽음 <%= contact.unread_count %></span></td>
+              <td class="p-2 sm:p-4 break-all"><% if (current_account || Account.primary).wechat_channel_mode == "official" %><%= contact.window_open? ? "48시간 창 종료: #{wechat_time(contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %><% else %><%= (current_account || Account.primary).wechat_channel_mode == "manual" ? "복사해서 보내기" : "맥 위챗 앱" %><% end %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <ul class="space-y-3 md:hidden">
+      <% @contacts.each do |contact| %>
+        <li>
+          <%= link_to wechat_path(contact), class: "block border rounded-lg p-4 bg-white" do %>
+            <div class="flex items-start justify-between gap-3">
+              <span class="font-bold"><%= contact.display_name %></span>
+              <% if contact.unread_count.positive? %><span class="rounded-full bg-red-100 px-2 py-1 text-sm font-bold text-red-700 whitespace-nowrap">안 읽음 <%= contact.unread_count %></span><% end %>
+            </div>
+            <p class="mt-1 text-sm text-gray-500"><%= contact.wechat_display_name.presence || contact.nickname %> · <%= "미연결 담당자 · " unless contact.supplier %><%= contact.subscribed? ? "구독 중" : "구독 해제" %></p>
+            <p class="mt-2 line-clamp-2"><%= truncate(contact.latest_message&.content, length: 100) %></p>
+            <p class="mt-2 text-sm text-gray-500"><% if (current_account || Account.primary).wechat_channel_mode == "official" %><%= contact.window_open? ? "48시간 창 종료: #{wechat_time(contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %><% else %><%= (current_account || Account.primary).wechat_channel_mode == "manual" ? "복사해서 보내기" : "맥 위챗 앱" %><% end %></p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+  <details class="mt-8 border rounded-lg bg-white" <%= "open" if @contacts.empty? %>>
+    <summary class="p-4 font-bold cursor-pointer">채널 설정 · 대화 상대 추가</summary>
+    <div class="px-4 pb-4">
+      <%= render "settings" %>
   <% unless (current_account || Account.primary).wechat_channel_mode == "official" %>
     <%= form_with url: wechat_index_path, class: "grid grid-cols-1 gap-4 items-end md:grid-cols-3 bg-white shadow-md rounded p-4 mb-6" do |form| %>
       <div class="min-w-0"><%= form.label :supplier_id, "거래처", class: "block text-gray-700 text-sm font-bold mb-2" %><%= form.collection_select :supplier_id, supplier_scope.order(:name), :id, :name, { include_blank: "미연결" }, { class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" } %></div>
@@ -8,27 +56,6 @@
       <%= form.submit "대화 상대 추가", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
     <% end %>
   <% end %>
-  <div class="max-w-full overflow-x-auto rounded-lg border mb-6">
-    <table class="w-full table-fixed text-left text-sm">
-      <thead class="bg-gray-50 text-gray-700">
-        <tr>
-          <% ["거래처", "대화방 이름", "마지막 메시지", "안 읽은 수", "48시간 창/방식"].each do |heading| %>
-            <th scope="col" class="p-2 sm:p-4 break-words"><%= heading %></th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody class="divide-y">
-        <% @contacts.each do |contact| %>
-          <tr class="align-top">
-            <td class="p-2 sm:p-4 break-all"><%= link_to contact.display_name, wechat_path(contact), class: "font-bold text-blue-600 hover:text-blue-800 underline" %></td>
-            <td class="p-2 sm:p-4 break-all"><%= contact.wechat_display_name.presence || contact.nickname %><p><%= "미연결 담당자" unless contact.supplier %> · <%= contact.subscribed? ? "구독 중" : "구독 해제" %></p></td>
-            <td class="p-2 sm:p-4 break-all"><%= truncate(contact.latest_message&.content, length: 100) %></td>
-            <td class="p-2 sm:p-4 break-words">안 읽음 <%= contact.unread_count %></td>
-            <td class="p-2 sm:p-4 break-all"><% if (current_account || Account.primary).wechat_channel_mode == "official" %><%= contact.window_open? ? "48시간 창 종료: #{wechat_time(contact.last_inbound_at + 48.hours)}" : Wechat::Client::WINDOW_CLOSED %><% else %><%= (current_account || Account.primary).wechat_channel_mode == "manual" ? "복사해서 보내기" : "맥 위챗 앱" %><% end %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-  <% if @contacts.empty? %><p>대화 상대를 추가하거나 채널 안내에 따라 첫 메시지를 받아 주세요.</p><% end %>
+    </div>
+  </details>
 </main>

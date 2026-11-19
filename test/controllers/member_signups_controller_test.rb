@@ -28,6 +28,7 @@ class MemberSignupsControllerTest < ActionDispatch::IntegrationTest
     get join_path
     assert_response :success
     assert_select "h1", text: "회원가입"
+    assert_select '[data-controller=password-visibility] button[aria-label="비밀번호 보기"]', count: 2
     post_signup
     assert_redirected_to root_path
     user = User.find_by!(email: "new-member@example.com")

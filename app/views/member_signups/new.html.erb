@@ -18,12 +18,18 @@
     </div>
     <div>
       <%= form.label :password, "비밀번호", class: "block text-ui font-medium mb-2" %>
-      <%= form.password_field :password, required: true, autocomplete: "new-password", class: "field", aria: { describedby: "password-hint" } %>
+      <div class="relative" data-controller="password-visibility">
+        <%= form.password_field :password, required: true, autocomplete: "new-password", class: "field pr-16", data: { password_visibility_target: "input" }, aria: { describedby: "password-hint" } %>
+        <button type="button" hidden class="tap btn-text text-caption absolute right-3 top-1/2 -translate-y-1/2" data-password-visibility-target="toggle" data-action="password-visibility#toggle" aria-pressed="false" aria-label="비밀번호 보기">보기</button>
+      </div>
       <p id="password-hint" class="text-ui mt-2">비밀번호는 8자 이상 입력해 주세요.</p>
     </div>
     <div>
       <%= form.label :password_confirmation, "비밀번호 확인", class: "block text-ui font-medium mb-2" %>
-      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", class: "field" %>
+      <div class="relative" data-controller="password-visibility">
+        <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", class: "field pr-16", data: { password_visibility_target: "input" } %>
+        <button type="button" hidden class="tap btn-text text-caption absolute right-3 top-1/2 -translate-y-1/2" data-password-visibility-target="toggle" data-action="password-visibility#toggle" aria-pressed="false" aria-label="비밀번호 보기">보기</button>
+      </div>
     </div>
     <fieldset data-controller="consent-all">
       <legend class="text-ui font-medium mb-2">약관 동의</legend>

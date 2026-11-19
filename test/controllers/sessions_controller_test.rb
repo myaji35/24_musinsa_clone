@@ -3,6 +3,7 @@ require "test_helper"
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "로그인 화면에 전달한 경로로 로그인 후 복귀한다" do
     get login_path(return_to: cart_path)
+    assert_select '[data-controller=password-visibility] button[aria-label="비밀번호 보기"]'
     post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
     assert_redirected_to cart_path
   end

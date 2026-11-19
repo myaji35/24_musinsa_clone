@@ -1,6 +1,15 @@
 require "application_system_test_case"
 
 class RoleFlowsTest < ApplicationSystemTestCase
+  test "로그인 비밀번호를 보고 다시 숨긴다" do
+    visit login_path
+    fill_in "비밀번호", with: "TestPassword!2026", exact: true
+    find("button[aria-label='비밀번호 보기']").click
+    assert_selector 'input[name="password"][type="text"]', visible: true
+    find("button[aria-label='비밀번호 숨기기']").click
+    assert_selector 'input[name="password"][type="password"]', visible: true
+  end
+
   test "모두 동의와 개별 필수 동의가 동기화된다" do
     visit join_path
     check "필수 항목에 모두 동의합니다"

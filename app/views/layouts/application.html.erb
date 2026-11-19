@@ -142,7 +142,7 @@
           </div>
         </div>
         <% if operator_area? %>
-          <div aria-label="모바일 관리자 바로가기" class="md:hidden border-b border-hairline px-gutter py-2 text-caption flex gap-x-4 overflow-x-auto whitespace-nowrap">
+          <div data-controller="scroll-active" aria-label="모바일 관리자 바로가기" class="md:hidden border-b border-hairline px-gutter py-2 text-caption flex gap-x-4 overflow-x-auto whitespace-nowrap">
             <%= operator_menu_link "판매현황", sales_path %>
             <%= operator_menu_link "재고관리", inventory_scan_path %>
             <%= operator_menu_link "대시보드", dashboard_index_path %>

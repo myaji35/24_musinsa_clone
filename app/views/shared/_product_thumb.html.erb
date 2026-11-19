@@ -1,0 +1,16 @@
+<% link = local_assigns.fetch(:link, nil) %>
+<% source = product_image_source(product) %>
+<% thumbnail = capture do %>
+  <div class="w-[72px] aspect-[2/3] bg-placeholder overflow-hidden shrink-0">
+    <% if source.present? %>
+      <%= image_tag(source.is_a?(String) ? source : url_for(source), alt: "", aria: { hidden: true }, loading: "lazy", decoding: "async", class: "w-full h-full object-cover") %>
+    <% end %>
+  </div>
+<% end %>
+<% if link.present? %>
+  <%= link_to link, tabindex: -1, aria: { hidden: true }, class: "shrink-0" do %>
+    <%= thumbnail %>
+  <% end %>
+<% else %>
+  <%= thumbnail %>
+<% end %>

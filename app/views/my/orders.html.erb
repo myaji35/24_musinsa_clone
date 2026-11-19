@@ -7,28 +7,29 @@
   <% if @orders.any? %>
     <ul class="md:hidden text-ui mb-6">
       <% @orders.each do |order| %>
-        <li class="border-b border-hairline py-4">
-          <% if order.checkout_number.present? %>
-            <%= link_to(order.product.name, customer_order_path(order.checkout_number), class: "tap font-medium") %>
-          <% else %>
-            <p class="font-medium"><%= order.product.name %></p>
-          <% end %>
-          <p><%= order.variant.color %> / <%= order.variant.size %> · 수량 <%= order.quantity %></p>
-          <p class="flex justify-between">
-            <span><%= price_won(order.total_price) %></span>
-            <span><%= order.status_label %></span>
-          </p>
-          <p class="text-caption text-ink-2"><%= order.order_number %> · <%= order.created_at.strftime("%Y.%m.%d") %></p>
-          <% active_claim = order.active_claim %>
-          <% latest_claim = order.order_claims.where(status: %w[completed rejected]).order(created_at: :desc, id: :desc).first %>
-          <% if active_claim %>
-            <p class="text-ui"><%= active_claim.kind_label %> <%= active_claim.status_label %></p>
-          <% elsif order.claimable_kinds.any? %>
-            <%= link_to(order.claimable_kinds.include?("cancel") ? "취소 요청" : "반품·교환 요청", new_my_order_claim_path(order), class: "inline-flex items-center min-h-11 text-ui") %>
-          <% end %>
-          <% if latest_claim %>
-            <p class="text-caption text-ink-2"><%= latest_claim.kind_label %> <%= latest_claim.status_label %></p>
-          <% end %>
+        <li class="border-b border-hairline py-4 flex gap-4">
+          <%= render "shared/product_thumb", product: order.product, link: (customer_order_path(order.checkout_number) if order.checkout_number.present?) %>
+          <div class="min-w-0 flex-1 space-y-1">
+            <p class="text-caption font-medium"><%= order.status_label %></p>
+            <% if order.checkout_number.present? %>
+              <%= link_to(order.product.name, customer_order_path(order.checkout_number), class: "tap font-medium underline-offset-4 hover:underline") %>
+            <% else %>
+              <p class="font-medium"><%= order.product.name %></p>
+            <% end %>
+            <p><%= order.variant.color %> / <%= order.variant.size %> · 수량 <%= order.quantity %></p>
+            <p><%= price_won(order.total_price) %></p>
+            <p class="text-caption text-ink-2"><%= order.order_number %> · <%= order.created_at.strftime("%Y.%m.%d") %></p>
+            <% active_claim = order.active_claim %>
+            <% latest_claim = order.order_claims.where(status: %w[completed rejected]).order(created_at: :desc, id: :desc).first %>
+            <% if active_claim %>
+              <p class="text-ui"><%= active_claim.kind_label %> <%= active_claim.status_label %></p>
+            <% elsif order.claimable_kinds.any? %>
+              <%= link_to(order.claimable_kinds.include?("cancel") ? "취소 요청" : "반품·교환 요청", new_my_order_claim_path(order), class: "tap btn-text inline-flex items-center min-h-11 text-ui") %>
+            <% end %>
+            <% if latest_claim %>
+              <p class="text-caption text-ink-2"><%= latest_claim.kind_label %> <%= latest_claim.status_label %></p>
+            <% end %>
+          </div>
         </li>
       <% end %>
     </ul>

@@ -8,6 +8,7 @@ class CartItemsControllerTest < ActionDispatch::IntegrationTest
     get cart_path
     assert_response :success
     assert_select 'input[name="quantity"][value="2"]'
+    assert_select 'div[class~="aspect-[2/3]"]', count: 1
     patch cart_item_path(variants(:one)), params: { quantity: 99 }
     get cart_path
     assert_select 'input[name="quantity"][value="99"]'

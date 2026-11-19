@@ -144,6 +144,7 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     get my_orders_path
     assert_response :success
     assert_select "tbody tr", count: 1
+    assert_select 'ul.md\\:hidden li div[class~="aspect-[2/3]"]', count: 1
     assert_select "ul.md\\:hidden li a[href=?]", customer_order_path(order.checkout_number), text: order.product.name
     assert_select "tbody td a[href=?]", customer_order_path(order.checkout_number), text: order.order_number
     assert_select "td", text: order.order_number

@@ -33,7 +33,12 @@
 
   <body class="bg-paper text-ink font-sans antialiased" data-controller="lazy-load">
     <div class="relative h-8 md:h-band bg-ink text-inverse text-caption flex items-center justify-center px-gutter">
-      <p>전 상품 무료배송 · 7일 내 반품</p>
+      <% if operator_area? %>
+        <p class="font-bold">JIEUM 운영 화면</p>
+        <%= button_to "로그아웃", logout_path, method: :delete, form: { class: "absolute right-gutter md:hidden" }, class: "text-xs hover:underline" %>
+      <% else %>
+        <p>전 상품 무료배송 · 7일 내 반품</p>
+      <% end %>
       <nav class="absolute right-gutter hidden md:flex items-center gap-4" aria-label="계정 메뉴">
             <% if logged_in? %>
               <span><%= current_user.name.presence || current_user.email %></span>

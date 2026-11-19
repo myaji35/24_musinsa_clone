@@ -135,8 +135,9 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
     get my_orders_path
     assert_response :success
-    assert_select "p", text: "아직 회원으로 주문한 내역이 없습니다. 로그인 전에 한 주문은 주문조회에서 확인하세요."
-    assert_select "a[href=?]", orders_lookup_path, text: "주문조회"
+    assert_select "p", text: "아직 회원으로 주문한 내역이 없습니다."
+    assert_select "a.btn.btn-primary[href=?]", products_path, text: "쇼핑하러 가기"
+    assert_select "p.text-caption a.btn-text[href=?]", orders_lookup_path, text: "비회원 주문조회"
     assert_select "main form[action=?]", logout_path, count: 0
     assert_select "nav[aria-label=?] a[href=?][aria-current=page]", "내 계정", my_orders_path, text: "내 주문"
   end
@@ -169,7 +170,7 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     get my_orders_path
     assert_response :success
     assert_not_includes response.body, order.order_number
-    assert_select "p", text: "아직 회원으로 주문한 내역이 없습니다. 로그인 전에 한 주문은 주문조회에서 확인하세요."
+    assert_select "p", text: "아직 회원으로 주문한 내역이 없습니다."
   end
 
   test "결제 번호가 없는 주문은 링크 없이 표시한다" do

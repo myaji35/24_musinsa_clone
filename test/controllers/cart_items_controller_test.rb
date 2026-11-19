@@ -1,6 +1,26 @@
 require "test_helper"
 
 class CartItemsControllerTest < ActionDispatch::IntegrationTest
+  test "빈 장바구니에 인기 상품을 추천한다" do
+    product = products(:one)
+    product.update!(status: "published")
+
+    get cart_path
+
+    assert_response :success
+    assert_select "section h2", text: "이런 상품은 어떠세요"
+    assert_select "section h3 a[href=?]", product_path(product), text: product.name
+  end
+
+  test "추천할 상품이 없으면 빈 장바구니에 추천 섹션을 표시하지 않는다" do
+    Product.update_all(status: "draft")
+
+    get cart_path
+
+    assert_response :success
+    assert_select "section h2", text: "이런 상품은 어떠세요", count: 0
+  end
+
   test "로그인 없이 담고 변경하고 삭제한다" do
     post cart_items_path, params: { variant_id: variants(:one).id, quantity: 2 }
     assert_redirected_to cart_path

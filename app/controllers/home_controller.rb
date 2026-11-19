@@ -45,8 +45,7 @@ class HomeController < ApplicationController
 
     @ranked_products = @products.limit(50)
     if params[:q].present? && @ranked_products.empty?
-      @suggested_products = Product.published.includes(:variants, :worn_character).with_attached_image
-        .order(sales_count: :desc).limit(4)
+      @suggested_products = Product.popular_picks.limit(4)
     end
 
     # 29cm 스타일 큐레이션 섹션 준비

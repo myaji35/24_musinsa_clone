@@ -4,6 +4,16 @@
   <% if @cart.count.zero? %>
     <p class="text-body text-ink-2">장바구니가 비어 있습니다.</p>
     <%= link_to "상품 둘러보기", products_path, class: "btn btn-secondary" %>
+    <% if @suggested_products.any? %>
+      <section class="mt-14">
+        <h2 class="text-ui font-semibold mb-4">이런 상품은 어떠세요</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-x-2 md:gap-x-3 gap-y-7">
+          <% @suggested_products.each do |product| %>
+            <%= render "products/card", product: product %>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
   <% else %>
     <% @cart.items.each do |item| %>
       <div class="border-b border-hairline py-5 flex gap-4">

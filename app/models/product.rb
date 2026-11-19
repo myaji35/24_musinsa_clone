@@ -28,6 +28,7 @@ class Product < ApplicationRecord
   STATUSES = %w[draft published].freeze
   validates :status, inclusion: { in: STATUSES }
   scope :published, -> { where(status: "published") }
+  scope :popular_picks, -> { published.includes(:variants, :worn_character).with_attached_image.order(sales_count: :desc) }
 
   # 유니클로식 홈·메뉴용 상품 묶음(카탈로그 상품명·카테고리 기준)
   scope :paddings, -> { where("products.name LIKE ?", "%패딩%") }

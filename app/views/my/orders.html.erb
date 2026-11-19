@@ -87,7 +87,8 @@
       </table>
     </div>
   <% else %>
-    <p class="text-ui mb-4">아직 회원으로 주문한 내역이 없습니다. 로그인 전에 한 주문은 주문조회에서 확인하세요.</p>
-    <p class="text-ui mb-6"><%= link_to "주문조회", orders_lookup_path %></p>
+    <p class="text-ui mb-4">아직 회원으로 주문한 내역이 없습니다.</p>
+    <%= link_to "쇼핑하러 가기", products_path, class: "btn btn-primary w-full" %>
+    <p class="text-caption text-ink-2 mt-4">로그인 전에 한 주문은 <%= link_to "비회원 주문조회", orders_lookup_path, class: "btn-text" %>에서 확인하세요.</p>
   <% end %>
 </div>

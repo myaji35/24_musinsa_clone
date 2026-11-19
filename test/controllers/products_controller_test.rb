@@ -619,6 +619,8 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     get product_path(product)
 
     assert_response :success
+    assert_select "[data-testid=product-gallery].snap-x[role=region]"
+    assert_select "p.lg\\:hidden", text: /옆으로 넘겨 보기/
     assert_select "[data-testid=product-gallery] figure", product.gallery_image_urls.size
     assert_select "[data-testid=product-gallery] figure[data-controller=zoom]", 1
     assert_select "figure[data-real=true] figcaption", text: "실물 사진"

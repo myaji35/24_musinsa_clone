@@ -17,7 +17,9 @@ class SessionsController < ApplicationController
       end
 
       return_to = session[:return_to]
+      cart = session[:cart]
       reset_session
+      session[:cart] = cart if cart.present?
       session[:user_id] = user.id
       destination = if mall_staff?
         safe_return_path(return_to) || inventory_scan_path

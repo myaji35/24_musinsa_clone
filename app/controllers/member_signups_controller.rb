@@ -32,7 +32,9 @@ class MemberSignupsController < ApplicationController
     agreed_at = Time.current
     @user.assign_attributes(terms_agreed_at: agreed_at, privacy_agreed_at: agreed_at, age_confirmed_at: agreed_at)
     if @user.save
+      cart = session[:cart]
       reset_session
+      session[:cart] = cart if cart.present?
       session[:user_id] = @user.id
       redirect_to root_path, notice: "회원가입이 완료되었습니다."
     else

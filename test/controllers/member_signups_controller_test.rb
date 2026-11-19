@@ -1,6 +1,16 @@
 require "test_helper"
 
 class MemberSignupsControllerTest < ActionDispatch::IntegrationTest
+  test "손님 장바구니는 회원가입 뒤에도 유지된다" do
+    post cart_items_path, params: { variant_id: variants(:one).id, quantity: 2 }
+    post_signup
+    assert_redirected_to root_path
+
+    get cart_path
+    assert_response :success
+    assert_includes response.body, products(:one).name
+  end
+
   test "회원가입하면 계정 없는 일반 회원으로 저장하고 로그인한다" do
     get join_path
     assert_response :success

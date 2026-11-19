@@ -1,6 +1,16 @@
 require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
+  test "손님 장바구니는 로그인 뒤에도 유지된다" do
+    post cart_items_path, params: { variant_id: variants(:one).id, quantity: 2 }
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    assert_redirected_to root_path
+
+    get cart_path
+    assert_response :success
+    assert_includes response.body, products(:one).name
+  end
+
   test "로그인한 관리자가 로그인 화면에 접근하면 재고 스캔으로 이동한다" do
     sign_in
     get login_path

@@ -1,0 +1,4 @@
+<nav aria-label="내 계정" class="flex gap-4 text-ui mb-6">
+  <%= link_to "내 정보", my_path, class: (current == :info ? "tap font-semibold text-ink border-b border-ink" : "tap text-ink-2 hover:text-ink"), aria: { current: ("page" if current == :info) } %>
+  <%= link_to "내 주문", my_orders_path, class: (current == :orders ? "tap font-semibold text-ink border-b border-ink" : "tap text-ink-2 hover:text-ink"), aria: { current: ("page" if current == :orders) } %>
+</nav>

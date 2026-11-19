@@ -1,8 +1,5 @@
 <div class="max-w-[400px] mx-auto px-gutter py-8 md:py-12">
-  <nav aria-label="내 계정" class="flex gap-4 text-ui mb-6">
-    <%= link_to "내 정보", my_path, class: "tap" %>
-    <%= link_to "내 주문", my_orders_path, class: "tap" %>
-  </nav>
+  <%= render "my/nav", current: :info %>
   <h1 class="text-title font-semibold mb-6">이름 수정</h1>
   <% if @user.errors.any? %>
     <ul role="alert" class="text-ui mb-6">
@@ -18,4 +15,5 @@
     </div>
     <%= form.submit "저장", class: "btn btn-primary w-full" %>
   <% end %>
+  <%= link_to "취소", my_path, class: "btn btn-secondary w-full mt-3" %>
 </div>

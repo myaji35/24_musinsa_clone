@@ -10,11 +10,12 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "input[name='user[name]']"
     assert_select "a[href=?]", my_orders_path
+    assert_select "a[href=?]", my_path, text: "취소"
     get edit_my_password_path
     assert_response :success
     assert_select "input[autocomplete='current-password']", count: 1
     assert_select "input[autocomplete='new-password']", count: 2
-    assert_select "a[href=?]", my_path
+    assert_select "a[href=?]", my_path, text: "취소"
   end
 
   test "이름 수정에 성공한다" do
@@ -108,7 +109,7 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "회원과 운영자와 관리자 모두 내 정보와 한국어 역할을 확인한다" do
+  test "회원과 운영자와 관리자의 내 정보와 직원 역할을 확인한다" do
     { member: "일반 회원", operator: "운영자", one: "관리자" }.each do |fixture, label|
       user = users(fixture)
       post login_path, params: { email: user.email, password: "TestPassword!2026" }
@@ -116,9 +117,14 @@ class MyControllerTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_select "dd", text: user.name
       assert_select "dd", text: user.email
-      assert_select "dd", text: label
+      if user.staff?
+        assert_select "dt", text: "역할"
+        assert_select "dd", text: label
+      else
+        assert_select "dt", text: "역할", count: 0
+      end
       assert_select "dd", text: user.created_at.strftime("%Y-%m-%d")
-      assert_select "a[href=?]", my_path, text: "내 정보"
+      assert_select "nav[aria-label=?] a[href=?][aria-current=page]", "내 계정", my_path, text: "내 정보"
       assert_select "a[href=?]", my_orders_path, text: "내 주문"
       assert_select "form[action=?]", logout_path
       delete logout_path
@@ -131,7 +137,8 @@ class MyControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "p", text: "아직 회원으로 주문한 내역이 없습니다. 로그인 전에 한 주문은 주문조회에서 확인하세요."
     assert_select "a[href=?]", orders_lookup_path, text: "주문조회"
-    assert_select "form[action=?]", logout_path
+    assert_select "main form[action=?]", logout_path, count: 0
+    assert_select "nav[aria-label=?] a[href=?][aria-current=page]", "내 계정", my_orders_path, text: "내 주문"
   end
 
   test "내 주문에는 로그인한 회원의 주문만 표시한다" do

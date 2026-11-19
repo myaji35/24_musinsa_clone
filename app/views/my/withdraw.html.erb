@@ -1,8 +1,5 @@
 <div class="max-w-[400px] mx-auto px-gutter py-8 md:py-12">
-  <nav aria-label="내 계정" class="flex gap-4 text-ui mb-6">
-    <%= link_to "내 정보", my_path, class: "tap" %>
-    <%= link_to "내 주문", my_orders_path, class: "tap" %>
-  </nav>
+  <%= render "my/nav", current: :info %>
   <h1 class="text-title font-semibold mb-6">회원 탈퇴</h1>
   <ul class="list-disc pl-5 space-y-2 text-ui mb-6">
     <li>탈퇴하면 이메일·이름·비밀번호가 즉시 삭제되며 되돌릴 수 없습니다.</li>

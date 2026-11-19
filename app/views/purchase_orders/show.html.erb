@@ -3,10 +3,10 @@
     <h1 class="text-2xl md:text-3xl font-bold">발주서 상세 - <span class="block md:inline"><%= @purchase_order.order_number %></span></h1>
     <div class="flex items-center gap-2">
       <% if @purchase_order.status == "draft" %>
-        <%= link_to "수정", edit_purchase_order_path(@purchase_order), class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg whitespace-nowrap mr-2" %>
-        <%= button_to "제출", submit_purchase_order_path(@purchase_order), method: :post, form: { data: { turbo_confirm: "발주서를 거래처에 제출하시겠습니까?" } }, class: "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg whitespace-nowrap mr-2" %>
+        <%= link_to "수정", edit_purchase_order_path(@purchase_order), class: "btn btn-primary whitespace-nowrap mr-2" %>
+        <%= button_to "제출", submit_purchase_order_path(@purchase_order), method: :post, form: { data: { turbo_confirm: "발주서를 거래처에 제출하시겠습니까?" } }, class: "btn btn-primary whitespace-nowrap mr-2" %>
       <% end %>
-      <%= link_to "목록", purchase_orders_path, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg whitespace-nowrap" %>
+      <%= link_to "목록", purchase_orders_path, class: "btn whitespace-nowrap" %>
     </div>
   </div>
 
@@ -107,7 +107,7 @@
             </div>
           <% end %>
         </div>
-        <%= submit_tag "입고 기록", class: "bg-blue-600 text-white px-4 py-3 rounded mt-4 w-full md:w-auto" %>
+        <%= submit_tag "입고 기록", class: "btn btn-primary mt-4 w-full md:w-auto" %>
       <% end %>
     </section>
   <% end %>

@@ -1,5 +1,5 @@
 <div class="max-w-5xl mx-auto p-6">
-  <h1 class="text-2xl font-bold">주문 관리</h1>
+  <h1 class="text-2xl md:text-3xl font-bold">주문 관리</h1>
 
   <section class="my-6 rounded-lg bg-yellow-50 border border-yellow-200 p-4" aria-labelledby="pending-orders-heading">
     <h2 id="pending-orders-heading" class="font-bold">처리할 주문</h2>
@@ -10,10 +10,10 @@
     <% end %>
   </section>
 
-  <nav class="flex flex-wrap gap-2 mb-6" aria-label="주문 상태 필터">
-    <%= link_to "전체", admin_orders_path, class: "rounded-full border px-4 py-2#{' font-bold' unless @selected_status}", aria: { current: ("page" unless @selected_status) } %>
+  <nav class="flex gap-2 mb-6 overflow-x-auto whitespace-nowrap md:flex-wrap" aria-label="주문 상태 필터">
+    <%= link_to "전체", admin_orders_path, class: "chip#{' font-bold' unless @selected_status}", aria: { current: ("page" unless @selected_status) } %>
     <% @order_statuses.each do |status| %>
-      <%= link_to order_status_label(status), admin_orders_path(status: status), class: "rounded-full border px-4 py-2#{' font-bold' if @selected_status == status}", aria: { current: ("page" if @selected_status == status) } %>
+      <%= link_to order_status_label(status), admin_orders_path(status: status), class: "chip#{' font-bold' if @selected_status == status}", aria: { current: ("page" if @selected_status == status) } %>
     <% end %>
   </nav>
 

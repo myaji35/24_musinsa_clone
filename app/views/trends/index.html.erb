@@ -1,7 +1,7 @@
 <% content_for :title, "트렌드 - JIEUM" %>
 <div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
   <div class="flex items-center justify-between gap-4">
-    <h1 class="text-2xl font-bold">시즌·트렌드 상품 선정</h1>
+    <h1 class="text-2xl md:text-3xl font-bold">시즌·트렌드 상품 선정</h1>
     <span class="rounded bg-gray-100 px-3 py-2 text-sm font-medium"><%= @api_configured ? "API 키 있음" : "API 키 없음 — CSV 업로드를 쓰세요" %></span>
   </div>
   <section class="bg-white border rounded-lg p-6 space-y-4">
@@ -11,7 +11,7 @@
       <div><%= form.label :file, "CSV 파일", class: "block text-sm font-medium mb-2" %><%= form.file_field :file, accept: ".csv", required: true, class: "block border rounded p-2" %></div>
       <div><%= form.label :age_band, "연령대", class: "block text-sm font-medium mb-2" %><%= form.select :age_band, [["전체", ""], ["20대", 20], ["30대", 30], ["40대", 40], ["50대", 50]], {}, class: "border rounded p-2" %></div>
       <div><%= form.label :note, "메모", class: "block text-sm font-medium mb-2" %><%= form.text_field :note, class: "border rounded p-2" %></div>
-      <%= form.submit "CSV 업로드", class: "bg-black text-white rounded px-4 py-2 cursor-pointer" %>
+      <%= form.submit "CSV 업로드", class: "btn btn-primary" %>
     <% end %>
   </section>
   <% if @snapshots.empty? %>

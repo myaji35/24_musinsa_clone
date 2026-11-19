@@ -1,6 +1,6 @@
 <section class="px-gutter py-8 space-y-6">
   <%= link_to "의견함으로", feedbacks_admin_index_path, class: "underline" %>
-  <h1 class="text-2xl font-bold">의견 상세</h1>
+  <h1 class="text-2xl md:text-3xl font-bold">의견 상세</h1>
   <p><%= @feedback.created_at.in_time_zone("Asia/Seoul").strftime("%Y년 %m월 %d일 %H:%M") %> · <%= feedback_sender(@feedback) %> · <%= feedback_source(@feedback) %> · <%= Feedback::KINDS.key(@feedback.kind) || "칭찬" %></p>
   <p><%= Feedback::MANUAL_CHAPTERS.key(@feedback.manual_chapter) || "장 선택 없음" %></p>
   <p><%= feedback_page_link(@feedback) %></p>

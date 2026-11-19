@@ -1,7 +1,7 @@
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold">발주서 관리</h1>
-    <%= link_to "발주서 생성", new_purchase_order_path, class: "bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg" %>
+    <h1 class="text-2xl md:text-3xl font-bold">발주서 관리</h1>
+    <%= link_to "발주서 생성", new_purchase_order_path, class: "btn btn-primary" %>
   </div>
 
   <section class="mb-6" aria-labelledby="today-tasks-heading">
@@ -16,10 +16,10 @@
     </div>
   </section>
 
-  <nav class="flex flex-wrap gap-2 mb-6" aria-label="발주 상태 필터">
-    <%= link_to "전체", purchase_orders_path, class: "rounded-full border px-4 py-2#{' font-bold' unless @selected_status}", aria: { current: ("page" unless @selected_status) } %>
+  <nav class="flex gap-2 mb-6 overflow-x-auto whitespace-nowrap md:flex-wrap" aria-label="발주 상태 필터">
+    <%= link_to "전체", purchase_orders_path, class: "chip#{' font-bold' unless @selected_status}", aria: { current: ("page" unless @selected_status) } %>
     <% @status_filters.each do |status, label| %>
-      <%= link_to label, purchase_orders_path(status: status), class: "rounded-full border px-4 py-2#{' font-bold' if @selected_status == status}", aria: { current: ("page" if @selected_status == status) } %>
+      <%= link_to label, purchase_orders_path(status: status), class: "chip#{' font-bold' if @selected_status == status}", aria: { current: ("page" if @selected_status == status) } %>
     <% end %>
   </nav>
 

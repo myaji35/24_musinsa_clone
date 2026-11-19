@@ -1,10 +1,10 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-  <h1 class="text-2xl font-bold">판매현황</h1>
+  <h1 class="text-2xl md:text-3xl font-bold">판매현황</h1>
   <%= form_with url: sales_path, method: :get, class: "flex flex-wrap gap-3 items-end" do |f| %>
     <div><%= f.label :period, "기간", class: "block text-sm font-bold" %><%= f.select :period, [["오늘", "today"], ["7일", "7"], ["30일", "30"], ["직접", "custom"]], selected: @period %></div>
     <div><%= f.label :from, "시작일", class: "block text-sm font-bold" %><%= f.date_field :from, value: @from %></div>
     <div><%= f.label :to, "종료일", class: "block text-sm font-bold" %><%= f.date_field :to, value: @to %></div>
-    <%= f.submit "조회", class: "bg-black text-white px-4 py-2 rounded" %>
+    <%= f.submit "조회", class: "btn btn-primary" %>
   <% end %>
   <p class="text-sm text-gray-600"><%= @from %> ~ <%= @to %> · 취소 주문 제외</p>
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">

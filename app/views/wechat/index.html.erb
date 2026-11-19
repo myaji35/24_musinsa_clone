@@ -1,7 +1,7 @@
 <main class="container mx-auto min-w-0 px-4 py-8">
   <% unread_total = @contacts.sum(&:unread_count) %>
   <div class="flex items-center justify-between gap-4 mb-6">
-    <h1 class="text-3xl font-bold">위챗 대화</h1>
+    <h1 class="text-2xl md:text-3xl font-bold">위챗 대화</h1>
     <span class="rounded-full px-3 py-1 text-sm font-bold <%= unread_total.positive? ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600" %>"><%= unread_total.positive? ? "안 읽음 #{unread_total}" : "모두 읽음" %></span>
   </div>
   <% if @contacts.empty? %>
@@ -53,7 +53,7 @@
     <%= form_with url: wechat_index_path, class: "grid grid-cols-1 gap-4 items-end md:grid-cols-3 bg-white shadow-md rounded p-4 mb-6" do |form| %>
       <div class="min-w-0"><%= form.label :supplier_id, "거래처", class: "block text-gray-700 text-sm font-bold mb-2" %><%= form.collection_select :supplier_id, supplier_scope.order(:name), :id, :name, { include_blank: "미연결" }, { class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" } %></div>
       <div class="min-w-0"><%= form.label :wechat_display_name, "위챗 표시 이름 (대화방 이름)", class: "block text-gray-700 text-sm font-bold mb-2" %><%= form.text_field :wechat_display_name, required: true, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" %></div>
-      <%= form.submit "대화 상대 추가", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
+      <%= form.submit "대화 상대 추가", class: "btn btn-primary" %>
     <% end %>
   <% end %>
     </div>

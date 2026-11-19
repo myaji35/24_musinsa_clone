@@ -1,5 +1,5 @@
 <div class="container mx-auto px-4 py-8 max-w-2xl">
-  <h1 class="text-3xl font-bold mb-6">거래처 등록</h1>
+  <h1 class="text-2xl md:text-3xl font-bold mb-6">거래처 등록</h1>
 
   <%= form_with(model: @supplier, class: "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4") do |form| %>
     <% if @supplier.errors.any? %>
@@ -49,7 +49,7 @@
     </div>
 
     <div class="flex items-center justify-between">
-      <%= form.submit "등록", class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" %>
+      <%= form.submit "등록", class: "btn btn-primary" %>
       <%= link_to "취소", suppliers_path, class: "text-gray-600 hover:text-gray-800" %>
     </div>
   <% end %>

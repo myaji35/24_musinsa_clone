@@ -7,7 +7,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
       <% end %>
-      <h1 class="text-2xl font-bold text-gray-900">출고 처리</h1>
+      <h1 class="text-2xl md:text-3xl font-bold">출고 처리</h1>
     </div>
     <p class="text-sm text-gray-500">상품 출고 및 재고 감소</p>
   </div>
@@ -108,7 +108,7 @@
 
     <!-- 제출 버튼 -->
     <div class="flex gap-3">
-      <%= form.submit "출고 처리", class: "flex-1 bg-black text-white font-bold py-4 rounded-md hover:bg-gray-800 transition-colors cursor-pointer" %>
+      <%= form.submit "출고 처리", class: "btn btn-primary flex-1" %>
       <%= link_to "취소", inventory_scan_path, class: "flex-1 bg-white border border-gray-300 text-black font-bold py-4 rounded-md hover:border-black transition-colors text-center" %>
     </div>
   <% end %>

@@ -1,5 +1,5 @@
 <div class="max-w-7xl mx-auto px-4 py-8">
-  <h1 class="text-2xl font-bold mb-3">상품정보 입력</h1>
+  <h1 class="text-2xl md:text-3xl font-bold mb-3">상품정보 입력</h1>
   <p class="font-bold mb-2">미완성 <%= @incomplete_count %>개 / 전체 <%= @total_count %>개</p>
   <p class="text-sm text-gray-600 mb-4">납품처에서 받은 내용을 그대로 적어 주세요. 비워 둔 칸은 손님 화면에 '확인 중'으로 보입니다</p>
   <div class="flex gap-4 mb-4 text-sm">
@@ -44,7 +44,7 @@
     <% if @products.any? %>
       <div class="sticky bottom-0 z-20 bg-white/95 backdrop-blur border-t py-3 pr-28 md:pr-32 flex items-center justify-between gap-3">
         <span data-unsaved-form-target="status" aria-live="polite">변경 없음</span>
-        <%= submit_tag "상품정보 모두 저장", class: "shrink-0 bg-black text-white rounded-md px-5 py-3 font-bold" %>
+        <%= submit_tag "상품정보 모두 저장", class: "btn btn-primary shrink-0" %>
       </div>
     <% end %>
   <% end %>

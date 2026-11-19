@@ -9,7 +9,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
           <% end %>
-          <h1 class="text-xl font-bold text-gray-900">재고 관리</h1>
+          <h1 class="text-2xl md:text-3xl font-bold">재고 관리</h1>
         </div>
         <%= link_to inventory_history_path, class: "text-sm text-gray-600 hover:text-black flex items-center gap-1" do %>
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@
         <button type="button"
                 data-action="click->barcode-scanner#toggle"
                 data-barcode-scanner-target="scanButton"
-                class="w-full py-4 bg-black text-white font-bold rounded-md hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                class="btn btn-primary w-full flex items-center justify-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -75,7 +75,7 @@
           <%= form.label :barcode, "바코드 직접 입력", class: "block text-sm font-medium text-gray-700 mb-2" %>
           <%= form.text_field :barcode, data: { barcode_scanner_target: "manualInput" }, class: "w-full border border-gray-300 rounded-md px-4 py-3 text-lg font-mono placeholder:font-sans focus:ring-black focus:border-black", placeholder: "바코드 번호를 입력하세요", autofocus: true %>
         </div>
-        <%= form.submit "조회", class: "w-full py-4 bg-gray-900 text-white font-bold rounded-md hover:bg-gray-800 transition-colors cursor-pointer" %>
+        <%= form.submit "조회", class: "btn btn-primary w-full" %>
       <% end %>
 
       <% if params[:barcode].present? %>

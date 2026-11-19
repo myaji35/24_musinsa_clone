@@ -1,7 +1,7 @@
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold">거래처 관리</h1>
-    <%= link_to "거래처 등록", new_supplier_path, class: "bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg" %>
+    <h1 class="text-2xl md:text-3xl font-bold">거래처 관리</h1>
+    <%= link_to "거래처 등록", new_supplier_path, class: "btn btn-primary" %>
   </div>
 
   <% if @suppliers.any? %>

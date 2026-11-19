@@ -2,9 +2,9 @@
 <section class="min-w-0 space-y-3 mt-3" data-controller="clipboard">
   <p class="whitespace-pre-wrap break-all font-mono text-sm bg-gray-100 border border-gray-200 rounded p-4 w-full max-w-3xl" data-clipboard-target="source"><%= message.content %></p>
   <div class="flex flex-wrap items-center gap-3">
-  <% if message.direction == "out" %><button type="button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline" data-action="clipboard#copy">복사</button><p data-clipboard-target="status" role="status"></p><% end %>
+  <% if message.direction == "out" %><button type="button" class="btn btn-primary" data-action="clipboard#copy">복사</button><p data-clipboard-target="status" role="status"></p><% end %>
   <% if message.status == "pending_manual" || (message.status == "awaiting_approval" && Wechat::Config.mac_auto_send?) %>
-    <%= button_to(message.status == "pending_manual" ? "보냈음 표시" : "보내기 승인", complete_wechat_index_path(message_id: message.id), class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg") %>
+    <%= button_to(message.status == "pending_manual" ? "보냈음 표시" : "보내기 승인", complete_wechat_index_path(message_id: message.id), class: "btn") %>
   <% end %>
   </div>
   <% if message.processed_at %><p>처리: <%= processor&.name %> · <%= wechat_time(message.processed_at) %></p><% end %>

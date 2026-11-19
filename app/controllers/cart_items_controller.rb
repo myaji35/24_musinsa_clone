@@ -2,6 +2,8 @@ class CartItemsController < ApplicationController
   skip_before_action :require_admin
 
   def create
+    return redirect_back(fallback_location: products_path, alert: "색상·사이즈를 선택해 주세요") if params[:variant_id].blank?
+
     # 공개 전(초안) 상품은 주소를 알아도 담을 수 없다
     variant = Variant.includes(:product).find_by(id: params[:variant_id])
     return head :not_found unless variant && (variant.product.published? || mall_staff?)

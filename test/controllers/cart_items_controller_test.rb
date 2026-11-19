@@ -17,6 +17,13 @@ class CartItemsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "장바구니가 비어 있습니다"
   end
 
+  test "옵션 없이 담으면 상품 목록으로 돌아가 안내한다" do
+    post cart_items_path
+
+    assert_redirected_to products_path
+    assert_equal "색상·사이즈를 선택해 주세요", flash[:alert]
+  end
+
   test "바로구매는 주문서로 이동하고 없는 옵션은 버린다" do
     post cart_items_path, params: { variant_id: -1 }
     get cart_path

@@ -28,7 +28,9 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "form#buy[action=?][method=post]", cart_items_path do
       assert_select "input[name=variant_id][value=?][checked]:not([disabled])", @variant.id.to_s
+      assert_select "input[name=variant_id][value=?][required]", @variant.id.to_s
       assert_select "input[name=variant_id][value=?][disabled]", sold_out.id.to_s
+      assert_select "#variant-hint", count: 0
       assert_select "input[name=quantity][value='1'][min='1'][max='99']"
       assert_select "button[name=buy_now][value='1']", text: "바로구매"
       assert_select "button", text: "장바구니"
@@ -42,6 +44,20 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", product_reviews_path(@product) do
       assert_select "select[name='review[rating]'][required]"
       assert_select "textarea[name='review[content]'][required]"
+    end
+  end
+
+  test "재고 옵션이 여러 개면 선택을 안내한다" do
+    @variant.update!(stock: 3)
+    @product.variants.create!(color: "Black", size: "XL", stock: 2)
+
+    get product_path(@product)
+
+    assert_response :success
+    assert_select "form#buy" do
+      assert_select "input[name=variant_id][checked]", count: 0
+      assert_select "input[name=variant_id][required][aria-describedby=variant-hint]", count: 2
+      assert_select "#variant-hint", text: "색상·사이즈를 선택해 주세요"
     end
   end
 

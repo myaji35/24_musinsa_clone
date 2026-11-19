@@ -122,7 +122,7 @@
         <fieldset data-testid="variant-picker" class="border-y border-line py-4 space-y-4" <%= "disabled" if @variants.empty? %>>
           <legend class="sr-only">색상 / 사이즈</legend>
           <p aria-hidden="true" class="block w-full mb-3 text-ui font-medium">색상 / 사이즈</p>
-          <% first_available = @variants.find { |variant| variant.stock.to_i.positive? } %>
+          <% available_variants = @variants.select { |variant| variant.stock.to_i.positive? } %>
           <% @variants.group_by(&:color).each do |color, variants| %>
             <div class="flex items-start gap-3 w-full">
               <span class="flex items-center gap-1.5 w-20 sm:w-28 shrink-0 text-ui text-ink-2">
@@ -132,7 +132,7 @@
                 <% variants.sort_by { |variant| Product::SIZE_ORDER.index(variant.size.to_s.upcase) || 99 }.each do |variant| %>
                   <% sold_out = !variant.stock.to_i.positive? %>
                   <label class="relative">
-                    <input type="radio" name="variant_id" value="<%= variant.id %>" class="peer sr-only" <%= "checked" if variant == first_available %> <%= "disabled" if sold_out %> aria-label="<%= color %> <%= variant.size %><%= ' 품절' if sold_out %>">
+                    <input type="radio" name="variant_id" value="<%= variant.id %>" class="peer sr-only" <%= "checked" if available_variants.one? && variant == available_variants.first %> <%= sold_out ? "disabled" : "required" %> <% if available_variants.many? %>aria-describedby="variant-hint"<% end %> aria-label="<%= color %> <%= variant.size %><%= ' 품절' if sold_out %>">
                     <span class="grid place-items-center min-w-12 h-11 px-3 border text-ui font-medium cursor-pointer peer-checked:border-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-disabled:cursor-not-allowed peer-disabled:text-ink-3 peer-disabled:line-through border-hairline"><%= variant.size %></span>
                   </label>
                 <% end %>
@@ -140,6 +140,7 @@
             </div>
           <% end %>
           <%= link_to "사이즈 안내", (@product.detail_page&.dig("size") ? "#detail-size" : "#product-spec"), class: "btn-text text-ui tap" %>
+          <% if available_variants.many? %><p class="text-caption text-ink-2" id="variant-hint">색상·사이즈를 선택해 주세요</p><% end %>
         </fieldset>
         <p class="text-caption text-ink-2"><span class="font-medium">무료배송</span> · <%= delivery_eta %> 도착 예정</p>
         <%= f.label :quantity, "수량", class: "block text-ui font-medium" %>

@@ -30,6 +30,7 @@ class RoleFlowsTest < ApplicationSystemTestCase
     assert product.published?
     assert_operator variant.stock, :>, 0
     visit product_path(product)
+    find("label", text: variant.size, match: :first).click
     click_button "장바구니", exact: true
     assert_current_path cart_path
     assert_text product.name

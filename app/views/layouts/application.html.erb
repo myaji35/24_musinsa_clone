@@ -155,7 +155,7 @@
         <% end %>
         </nav>
       <% end %>
-    <main class="<%= 'pb-16' if mall_admin? %>">
+    <main class="<%= 'pb-16' if mall_admin? %>"<%= ' data-area="operator"'.html_safe if operator_area? %>>
       <% if flash[:notice].present? || flash[:alert].present? %>
         <div class="<%= operator_area? ? "container mx-auto px-4" : "px-gutter" %> pt-6 space-y-3">
           <% if flash[:notice].present? %>

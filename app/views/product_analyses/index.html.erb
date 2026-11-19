@@ -6,9 +6,9 @@
     <% end %>
   </div>
   <%= form_with url: product_analyses_path, method: :get, class: "mb-5 grid grid-cols-2 gap-2 md:flex md:flex-wrap md:gap-3" do |f| %>
-    <%= f.select :character_id, options_from_collection_for_select(@characters, :id, :name, params[:character_id]), { include_blank: "전체 캐릭터" }, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
-    <%= f.select :status, options_for_select([["전체 상태", ""], ["미분석", "unanalysed"], ["대기", "pending"], ["실행 중", "running"], ["완료", "done"], ["실패", "failed"]], params[:status]), {}, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
-    <%= f.select :supplier_import_id, options_from_collection_for_select(SupplierImport.order(created_at: :desc).limit(50), :id, :id, params[:supplier_import_id]), { include_blank: "전체 가져오기" }, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
+    <%= f.select :character_id, options_from_collection_for_select(@characters, :id, :name, params[:character_id]), { include_blank: "전체 캐릭터" }, aria: { label: "캐릭터" }, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
+    <%= f.select :status, options_for_select([["전체 상태", ""], ["미분석", "unanalysed"], ["대기", "pending"], ["실행 중", "running"], ["완료", "done"], ["실패", "failed"]], params[:status]), {}, aria: { label: "분석 상태" }, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
+    <%= f.select :supplier_import_id, options_from_collection_for_select(SupplierImport.order(created_at: :desc).limit(50), :id, :id, params[:supplier_import_id]), { include_blank: "전체 가져오기" }, aria: { label: "가져오기 묶음" }, class: "border border-gray-200 rounded px-3 py-2 bg-white" %>
     <%= f.submit "필터", class: "btn btn-primary col-span-2 w-full md:w-auto" %>
   <% end %>
   <div class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 bg-white">

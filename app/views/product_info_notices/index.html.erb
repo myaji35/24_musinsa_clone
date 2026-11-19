@@ -3,8 +3,8 @@
   <p class="font-bold mb-2">미완성 <%= @incomplete_count %>개 / 전체 <%= @total_count %>개</p>
   <p class="text-sm text-gray-600 mb-4">납품처에서 받은 내용을 그대로 적어 주세요. 비워 둔 칸은 손님 화면에 '확인 중'으로 보입니다</p>
   <div class="flex gap-4 mb-4 text-sm">
-    <%= link_to "미완성 상품만", product_info_notices_path, class: "text-blue-600 underline" %>
-    <%= link_to "전체 상품", product_info_notices_path(all: 1), class: "text-blue-600 underline" %>
+    <%= link_to "미완성 상품만", product_info_notices_path, class: "tap text-blue-600 underline" %>
+    <%= link_to "전체 상품", product_info_notices_path(all: 1), class: "tap text-blue-600 underline" %>
   </div>
   <%= form_with url: product_info_notices_path, method: :patch, data: { controller: "unsaved-form", action: "input->unsaved-form#track submit->unsaved-form#saving" } do %>
     <div class="relative md:overflow-x-auto border border-gray-200 rounded-lg mb-4" data-testid="product-info-table">
@@ -22,7 +22,7 @@
             <% missing_fields = product.info_notice_missing_fields %>
             <tr id="product_notice_<%= product.id %>" class="block md:table-row border-b md:border-0 py-3 md:py-0 md:border-t border-gray-200">
               <th scope="row" class="block md:table-cell static md:sticky left-0 z-10 bg-white p-3">
-                <%= link_to product.name, product_path(product), class: "block mb-2 underline" %>
+                <%= link_to product.name, product_path(product), class: "tap mb-2 underline" %>
                 <span class="inline-block rounded px-2 py-1 bg-gray-100"><%= product.published? ? "공개" : "비공개" %></span>
                 <span class="inline-block rounded px-2 py-1 bg-yellow-100 text-yellow-900">빠진 항목 <%= missing_fields.size %>개</span>
               </th>

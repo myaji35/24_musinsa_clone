@@ -70,6 +70,13 @@
 }
 
 @layer components {
+  @media (max-width: 767px) {
+    [data-area="operator"] .chip { min-height: 40px; padding-left: 12px; padding-right: 12px; }
+  }
+  [data-area="operator"] .tap { display: inline-flex; align-items: center; min-height: 40px; }
+  [data-area="operator"] :is(a, button, input, select, textarea, summary):focus-visible,
+  [aria-label="관리 메뉴"] a:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
+
   /* 가격 — 헬퍼 price_won() 이 찍는 span 에 붙는다 */
   .price { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-ink-2); font-size: var(--text-ui); line-height: var(--text-ui--line-height); }
   .price-lg { font-size: 14px; line-height: 20px; }

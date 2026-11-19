@@ -48,8 +48,10 @@
             <% else %>
               <%= link_to "로그인", login_path, class: "hover:underline" %>
             <% end %>
-            <%= link_to "주문조회", orders_lookup_path, class: "hover:underline" %>
-            <%= link_to "장바구니 (#{cart_count})", cart_path, class: "hover:underline" %>
+            <% unless operator_area? %>
+              <%= link_to "주문조회", orders_lookup_path, class: "hover:underline" %>
+              <%= link_to "장바구니 (#{cart_count})", cart_path, class: "hover:underline" %>
+            <% end %>
       </nav>
     </div>
     <header class="sticky top-0 z-50 bg-paper border-b border-line h-header-m md:h-header px-gutter grid grid-cols-[1fr_auto_1fr] items-center">
@@ -102,6 +104,7 @@
             </ul>
           </div>
         </details>
+        <% unless operator_area? %>
         <details name="header-panel" class="search hidden md:block">
           <summary class="text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">검색</summary>
           <div class="absolute left-0 right-0 top-full bg-scrim border-b border-line px-gutter py-6">
@@ -111,11 +114,16 @@
                 <% end %>
           </div>
         </details>
+        <% end %>
       </div>
       <a href="/" class="font-display font-medium text-[18px] md:text-[22px] tracking-wordmark uppercase">JIEUM</a>
       <div class="flex items-center justify-end gap-4 text-ui font-medium whitespace-nowrap">
-        <%= link_to "주문조회", orders_lookup_path, class: "hidden md:inline-flex" %>
-        <a href="<%= cart_path %>" aria-label="장바구니">장바구니 (<% if cart_count.positive? %><%= cart_count %><% else %>0<% end %>)</a>
+        <% if operator_area? %>
+          <span class="text-caption text-ink-2 truncate max-w-[10rem]"><%= current_user.name.presence || current_user.email %></span>
+        <% else %>
+          <%= link_to "주문조회", orders_lookup_path, class: "hidden md:inline-flex" %>
+          <a href="<%= cart_path %>" aria-label="장바구니">장바구니 (<% if cart_count.positive? %><%= cart_count %><% else %>0<% end %>)</a>
+        <% end %>
       </div>
     </header>
     <% unless operator_area? %>
@@ -187,6 +195,15 @@
       <%= yield %>
     </main>
     
+    <% if operator_area? %>
+    <footer class="border-t border-line mt-12 px-gutter py-4 text-caption text-ink-2 flex flex-wrap gap-x-4 gap-y-1 justify-between">
+      <span>JIEUM 운영 화면</span>
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
+        <%= link_to "쇼핑몰 보기", root_path %>
+        <%= link_to "개인정보처리방침", privacy_policy_path %>
+      </div>
+    </footer>
+    <% else %>
     <footer class="border-t border-line bg-paper px-gutter pt-12 pb-20 mt-20 text-caption text-ink-2">
         <div class="">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
@@ -219,6 +236,7 @@
             </div>
         </div>
     </footer>
+    <% end %>
     <%= render "shared/operator_feedback" if mall_admin? %>
   </body>
 </html>

@@ -68,7 +68,7 @@
                   <% end %>
                 </nav>
               <% end %>
-              <% if mall_admin? %>
+              <% if mall_admin? && !operator_area? %>
                 <div aria-label="모바일 관리자 메뉴" class="md:hidden border-b border-hairline px-gutter py-2 text-caption flex flex-wrap gap-x-4 gap-y-1">
                   <%= operator_menu_link "판매현황", sales_path %>
                   <%= operator_menu_link "재고관리", inventory_scan_path %>
@@ -113,12 +113,14 @@
         <a href="<%= cart_path %>" aria-label="장바구니">장바구니 (<% if cart_count.positive? %><%= cart_count %><% else %>0<% end %>)</a>
       </div>
     </header>
+    <% unless operator_area? %>
     <div class="h-catrow border-b border-hairline px-gutter flex items-center gap-2 overflow-x-auto">
       <%= link_to "전체", root_path(anchor: "ranking"), class: "chip", aria: { current: (params[:category].blank? && current_page?(root_path) ? "page" : nil) } %>
       <% shop_categories.map(&:first).each do |name| %>
         <%= link_to name, root_path(category: name, anchor: "ranking"), class: "chip", aria: { current: (params[:category] == name ? "page" : nil) } %>
       <% end %>
     </div>
+    <% end %>
       <% if mall_admin? %>
         <nav aria-label="관리 메뉴">
         <div aria-label="데스크톱 관리자 메뉴" class="hidden md:block">
@@ -139,6 +141,24 @@
             <%= operator_menu_link "KPI", kpi_path %>
           </div>
         </div>
+        <% if operator_area? %>
+          <div aria-label="모바일 관리자 바로가기" class="md:hidden border-b border-hairline px-gutter py-2 text-caption flex gap-x-4 overflow-x-auto whitespace-nowrap">
+            <%= operator_menu_link "판매현황", sales_path %>
+            <%= operator_menu_link "재고관리", inventory_scan_path %>
+            <%= operator_menu_link "대시보드", dashboard_index_path %>
+            <%= operator_menu_link "주문 관리", admin_orders_path %>
+            <%= operator_menu_link "의견함 (#{feedback_new_count})", feedbacks_admin_index_path %>
+            <%= operator_menu_link "위챗", wechat_index_path %>
+            <%= operator_menu_link "거래처", suppliers_path %>
+            <%= operator_menu_link "발주", purchase_orders_path %>
+            <%= operator_menu_link "클레임", supplier_claims_path %>
+            <%= operator_menu_link "상품 입고(엑셀)", supplier_imports_path %>
+            <%= operator_menu_link "상품정보 입력", product_info_notices_path %>
+            <%= operator_menu_link "상품분석", product_analyses_path %>
+            <%= operator_menu_link "트렌드", trends_path %>
+            <%= operator_menu_link "KPI", kpi_path %>
+          </div>
+        <% end %>
         </nav>
       <% end %>
     <main class="<%= 'pb-16' if mall_admin? %>">

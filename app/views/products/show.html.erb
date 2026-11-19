@@ -44,7 +44,7 @@
       <% gallery.each_with_index do |url, i| %>
         <% real = url.end_with?("/real.jpg") %>
         <%# 돋보기 확대는 맨 위 큰 사진에만 %>
-        <figure class="relative col-span-full! bg-placeholder overflow-hidden w-[86%] shrink-0 snap-start lg:w-auto <%= 'col-span-2 cursor-zoom-in' if i.zero? %>" data-real="<%= real %>"
+        <figure class="relative col-span-full! bg-placeholder overflow-hidden w-[86%] shrink-0 snap-start md:w-[calc(50%-0.25rem)] lg:w-auto <%= 'col-span-2 cursor-zoom-in' if i.zero? %>" data-real="<%= real %>"
                 <%= tag.attributes(data: { controller: "zoom", action: "mouseenter->zoom#enter mousemove->zoom#move mouseleave->zoom#leave" }) if i.zero? %>>
           <%= catalog_image_tag url, sizes: "(min-width: 1024px) 50vw, 100vw", # 돋보기 확대용으로 작은 칸도 1440px 사진을 받는다
                 alt: "#{@product.name} #{real ? '실물 사진' : '착용 사진'}", loading: (i.zero? ? "eager" : "lazy"),

@@ -4,6 +4,7 @@ class CheckoutsController < ApplicationController
 
   def new
     @checkout = {}
+    @checkout["recipient_name"] = current_user.name if logged_in? && current_user.member? && current_user.name.present?
   end
 
   def create

@@ -6,6 +6,29 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
                  address1: "서울시 테스트로 1", address2: "비밀상세 201호" }
   end
 
+  test "회원 장바구니와 주문서에 회원 문구와 이름을 표시한다" do
+    member = users(:member)
+    post login_path, params: { email: member.email, password: "TestPassword!2026" }
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    get cart_path
+    assert_select "a[href=?]", new_checkout_path, text: "주문하기"
+    get new_checkout_path
+    assert_select "h1", text: "주문서"
+    assert_select 'input[name="checkout[recipient_name]"][value=?]', member.name
+    with_payout_env({}) do
+      get new_checkout_path
+      assert_select '[data-testid="checkout-payment-note"]', text: /준비되면 내 주문에서 확인하실 수 있습니다\./
+    end
+  end
+
+  test "손님 장바구니와 주문서에 비회원 문구를 표시한다" do
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    get cart_path
+    assert_select "a[href=?]", new_checkout_path, text: "비회원 주문하기"
+    get new_checkout_path
+    assert_select "h1", text: "비회원 주문서"
+  end
+
   test "회원 로그인 상태의 주문은 회원에게 연결한다" do
     member = users(:member)
     post login_path, params: { email: member.email, password: "TestPassword!2026" }

@@ -22,7 +22,7 @@ class RoleFlowsTest < ApplicationSystemTestCase
     click_button "장바구니", exact: true
     assert_current_path cart_path
     assert_text product.name
-    click_link "비회원 주문하기"
+    click_link "주문하기", exact: true
     assert_current_path new_checkout_path
     fill_in "받는 분", with: "테스트"
     fill_in "휴대폰", with: "010-0000-0000"

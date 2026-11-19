@@ -1,6 +1,6 @@
 <div class="max-w-[720px] mx-auto px-gutter py-8 md:py-12 space-y-6">
   <p class="font-display text-eyebrow tracking-eyebrow uppercase">CHECKOUT</p>
-  <h1 class="text-title font-semibold">비회원 주문서</h1>
+  <h1 class="text-title font-semibold"><%= logged_in? && current_user.member? ? "주문서" : "비회원 주문서" %></h1>
   <% if @errors.present? %>
     <div role="alert" class="border border-sale text-sale px-4 py-3 text-body"><%= @errors.join(" / ") %></div>
   <% end %>
@@ -31,7 +31,7 @@
       <% if instruction.ready? %>
         결제는 주문 후 계좌이체로 진행됩니다(주문 완료 화면에서 입금 계좌 안내)
       <% else %>
-        결제는 주문 후 계좌이체로 진행됩니다. 입금 계좌는 준비 중이며, 준비되면 주문조회(주문서 번호 + 휴대폰 뒤 4자리)에서 확인하실 수 있습니다.
+        결제는 주문 후 계좌이체로 진행됩니다. 입금 계좌는 준비 중이며, <%= logged_in? && current_user.member? ? "준비되면 내 주문에서 확인하실 수 있습니다." : "준비되면 주문조회(주문서 번호 + 휴대폰 뒤 4자리)에서 확인하실 수 있습니다." %>
       <% end %>
     </p>
     <% business = BusinessInfo.new %>

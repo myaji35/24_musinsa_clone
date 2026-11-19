@@ -8,6 +8,21 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
     @order = result.orders.first
   end
 
+  test "회원 본인 주문의 결제 안내에 내 주문 링크를 표시한다" do
+    member = users(:member)
+    @order.update!(user: member)
+    post login_path, params: { email: member.email, password: "TestPassword!2026" }
+    [ {}, { "PAYOUT_BANK" => "테스트은행", "PAYOUT_ACCOUNT" => "000-00-000000", "PAYOUT_HOLDER" => "테스트예금주" } ].each do |values|
+      with_payout_env(values) do
+        post orders_lookup_path, params: { checkout_number: @order.checkout_number, phone_suffix: "9876" }
+        get customer_order_path(@order.checkout_number)
+        assert_response :success
+        assert_select "#payment-instruction a[href=?]", my_orders_path, text: "내 주문"
+        assert_not_includes response.body, "휴대폰 뒤 4자리"
+      end
+    end
+  end
+
   test "세션 미허용 주문은 조회 폼으로 이동한다" do
     get customer_order_path(@order.checkout_number)
     assert_redirected_to orders_lookup_path

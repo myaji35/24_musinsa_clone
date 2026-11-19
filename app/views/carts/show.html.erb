@@ -19,6 +19,6 @@
       </div>
     <% end %>
     <p class="flex justify-between border-t border-line pt-4 text-ui font-medium">합계 <%= price_won(@cart.total, variant: :lg) %></p>
-    <%= link_to "비회원 주문하기", new_checkout_path, class: "btn btn-primary w-full" %>
+    <%= link_to (logged_in? && current_user.member? ? "주문하기" : "비회원 주문하기"), new_checkout_path, class: "btn btn-primary w-full" %>
   <% end %>
 </div>

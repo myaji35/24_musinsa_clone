@@ -22,7 +22,7 @@
   <p class="flex justify-between border-t border-line pt-4 text-ui font-medium">합계 <%= price_won(@orders.sum(&:total_price), variant: :lg) %></p>
   <% pending_orders = @orders.select { |order| order.status == "pending" } %>
   <% if pending_orders.any? %>
-    <%= render "payment_instruction", instruction: PaymentInstruction.new, pending_orders: pending_orders, checkout_number: @orders.first.checkout_number, order_time: @orders.map(&:created_at).min %>
+    <%= render "payment_instruction", instruction: PaymentInstruction.new, pending_orders: pending_orders, checkout_number: @orders.first.checkout_number, order_time: @orders.map(&:created_at).min, member_order: (logged_in? && current_user.member? && @orders.first.user_id == current_user.id) %>
   <% end %>
   <h2 class="text-ui font-medium">배송지</h2>
   <% if @address %>

@@ -8,8 +8,12 @@ class RoleMenuTest < ActionDispatch::IntegrationTest
       assert_select "a[href=?]", login_path, text: "로그인"
       assert_select "a[href=?]", join_path, text: "회원가입"
     end
-    assert_select "li[class='md:hidden'] a[href=?]", login_path, text: "로그인"
-    assert_select "li[class='md:hidden'] a[href=?]", join_path, text: "회원가입"
+    assert_select "div[aria-label='모바일 계정 메뉴']" do
+      assert_select "p", text: "계정"
+      assert_select "a[href=?]", login_path, text: "로그인"
+      assert_select "a[href=?]", join_path, text: "회원가입"
+      assert_select "a[href=?]", orders_lookup_path, text: "비회원 주문조회"
+    end
     assert_no_management_menu
   end
 
@@ -18,8 +22,17 @@ class RoleMenuTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select "a[href=?]", my_path, text: "내 정보", count: 2
-    assert_select "li[class='md:hidden'] form[action=?]", logout_path do
-      assert_select "button", text: "로그아웃"
+    assert_select "div[aria-label='모바일 계정 메뉴']" do
+      assert_select "p", text: "내 계정"
+      assert_select "a[href=?]", my_orders_path, text: "내 주문"
+      assert_select "a[href=?]", orders_lookup_path, count: 0
+      assert_select "form[action=?]", logout_path do
+        assert_select "button", text: "로그아웃"
+      end
+    end
+    assert_select "nav[aria-label='계정 메뉴']" do
+      assert_select "a[href=?]", my_orders_path, text: "내 주문"
+      assert_select "a[href=?]", orders_lookup_path, count: 0
     end
     assert_select "a[href=?]", workspace_path, count: 0
     assert_no_management_menu
@@ -29,6 +42,8 @@ class RoleMenuTest < ActionDispatch::IntegrationTest
     login_as(:operator)
     get root_path
     assert_response :success
+    assert_select "div[aria-label='모바일 계정 메뉴'] a[href=?]", orders_lookup_path, text: "주문조회"
+    assert_select "nav[aria-label='계정 메뉴'] a[href=?]", orders_lookup_path, text: "주문조회"
     assert_select "nav[aria-label='관리 메뉴']" do
       assert_select "a[href=?]", inventory_scan_path, text: "재고관리"
       assert_select "a[href=?]", purchase_orders_path, text: "발주"
@@ -43,6 +58,14 @@ class RoleMenuTest < ActionDispatch::IntegrationTest
       assert_select "a[href=?]", admin_users_path, count: 0
       assert_select "a[href=?]", admin_access_logs_path, count: 0
     end
+  end
+
+  test "모바일 계정 메뉴는 현재 페이지를 표시한다" do
+    login_as(:member)
+    get my_orders_path
+
+    assert_select "div[aria-label='모바일 계정 메뉴'] a[href=?][aria-current='page'].underline", my_orders_path, text: "내 주문"
+    assert_select "div[aria-label='모바일 계정 메뉴'] a[href=?]:not([aria-current]).underline", my_path, count: 0
   end
 
   test "관리자에게 사용자 관리와 경영 메뉴를 표시한다" do

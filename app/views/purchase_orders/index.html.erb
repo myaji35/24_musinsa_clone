@@ -16,10 +16,19 @@
     </div>
   </section>
 
+  <%= form_with url: purchase_orders_path, method: :get, class: "flex gap-2 mb-3" do %>
+    <%= hidden_field_tag :status, @selected_status if @selected_status %>
+    <%= search_field_tag :q, params[:q], placeholder: "발주번호 또는 거래처 이름", aria: { label: "발주번호 또는 거래처 이름" }, class: "field w-full md:w-80" %>
+    <%= submit_tag "찾기", class: "btn" %>
+  <% end %>
+  <% if @query.present? %>
+    <p class="mb-3">“<%= @query %>” 검색 결과 <%= @purchase_orders.size %>건 · <%= link_to "검색 지우기", purchase_orders_path(status: @selected_status), class: "text-blue-600" %></p>
+  <% end %>
+
   <nav class="flex gap-2 mb-6 overflow-x-auto whitespace-nowrap md:flex-wrap" aria-label="발주 상태 필터">
-    <%= link_to "전체", purchase_orders_path, class: "chip#{' font-bold' unless @selected_status}", aria: { current: ("page" unless @selected_status) } %>
+    <%= link_to "전체", purchase_orders_path(q: @query.presence), class: "chip#{' font-bold' unless @selected_status}", aria: { current: ("page" unless @selected_status) } %>
     <% @status_filters.each do |status, label| %>
-      <%= link_to label, purchase_orders_path(status: status), class: "chip#{' font-bold' if @selected_status == status}", aria: { current: ("page" if @selected_status == status) } %>
+      <%= link_to label, purchase_orders_path(status: status, q: @query.presence), class: "chip#{' font-bold' if @selected_status == status}", aria: { current: ("page" if @selected_status == status) } %>
     <% end %>
   </nav>
 
@@ -89,7 +98,7 @@
     </ul>
   <% else %>
     <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-      <%= @selected_status ? "해당 상태의 발주서가 없습니다." : "등록된 발주서가 없습니다. 새로운 발주서를 생성해주세요." %>
+      <%= @query.present? ? "검색 결과가 없습니다." : (@selected_status ? "해당 상태의 발주서가 없습니다." : "등록된 발주서가 없습니다. 새로운 발주서를 생성해주세요.") %>
     </div>
   <% end %>
 </div>

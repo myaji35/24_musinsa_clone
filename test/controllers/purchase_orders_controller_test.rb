@@ -86,6 +86,27 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_select "section[aria-labelledby='today-tasks-heading'] a", count: 5
   end
 
+  test "발주 검색은 번호와 거래처를 찾고 상태와 계정을 제한한다" do
+    submitted = PurchaseOrder.create!(supplier: @supplier, status: "submitted")
+    foreign_supplier = Supplier.create!(account: accounts(:other), name: "Test Supplier Foreign", phone: "02-9999-9999", active: true)
+    foreign = PurchaseOrder.create!(supplier: foreign_supplier, status: "draft")
+
+    get purchase_orders_path, params: { q: "  #{@purchase_order.order_number.downcase}  " }
+    assert_select "a[href='#{purchase_order_path(@purchase_order)}']", minimum: 1
+    assert_select "a[href='#{purchase_order_path(submitted)}']", count: 0
+
+    get purchase_orders_path, params: { q: "test supplier", status: "draft" }
+    assert_select "a[href='#{purchase_order_path(@purchase_order)}']", minimum: 1
+    assert_select "a[href='#{purchase_order_path(submitted)}']", count: 0
+    assert_select "a[href='#{purchase_order_path(foreign)}']", count: 0
+    assert_select "input[name=status][value=draft]"
+    assert_select "section[aria-labelledby='today-tasks-heading'] a[href='#{purchase_orders_path(status: 'submitted')}'] strong", text: PurchaseOrder.where(supplier_id: accounts(:jieum).suppliers.select(:id), status: "submitted").count.to_s
+
+    get purchase_orders_path, params: { q: "%" }
+    assert_select "a[href='#{purchase_order_path(@purchase_order)}']", count: 0
+    assert_select "div", text: "검색 결과가 없습니다."
+  end
+
   # GET /purchase_orders/new
   test "should get new" do
     get new_purchase_order_url
@@ -263,6 +284,20 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     post receive_purchase_order_url(@purchase_order), params: { received_quantities: { item.id => 6 } }
     assert_equal "received", @purchase_order.reload.status
     assert_equal "6개 입고를 기록했습니다. 발주가 입고 완료되었습니다.", flash[:notice]
+  end
+
+  test "다른 발주의 품목 입고 수량은 무시한다" do
+    @purchase_order.update!(status: "confirmed")
+    item = @purchase_order.purchase_order_items.first
+    other_order = PurchaseOrder.create!(supplier: @supplier, status: "confirmed")
+    other_item = other_order.purchase_order_items.create!(variant: @variant, quantity: 10, unit_price: 30000)
+
+    post receive_purchase_order_url(@purchase_order), params: { received_quantities: { item.id => 4, other_item.id => 3 } }
+
+    assert_equal "partially_received", @purchase_order.reload.status
+    assert_equal 4, item.reload.received_quantity
+    assert_equal 0, other_item.reload.received_quantity
+    assert_equal 9, @variant.reload.stock
   end
 
   # Calculate total amount

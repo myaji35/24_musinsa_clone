@@ -4,6 +4,11 @@ class SuppliersController < ApplicationController
 
   def index
     @suppliers = supplier_scope.active.recent
+    @query = params[:q].to_s.strip
+    if @query.present?
+      pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@query)}%"
+      @suppliers = @suppliers.where("name LIKE :pattern ESCAPE '\\' OR contact_person LIKE :pattern ESCAPE '\\' OR phone LIKE :pattern ESCAPE '\\'", pattern: pattern)
+    end
   end
 
   def show

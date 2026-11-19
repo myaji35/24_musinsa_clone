@@ -15,6 +15,12 @@ class PurchaseOrdersController < ApplicationController
       @purchase_orders = @purchase_orders.where(status: statuses)
     end
 
+    @query = params[:q].to_s.strip
+    if @query.present?
+      pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@query)}%"
+      @purchase_orders = @purchase_orders.joins(:supplier).where("purchase_orders.order_number LIKE :pattern ESCAPE '\\' OR suppliers.name LIKE :pattern ESCAPE '\\'", pattern: pattern)
+    end
+
     contacts = WechatContact.for_account(current_account || Account.primary).includes(:wechat_messages)
     @today_tasks = [
       { name: "입금 확인 대기", count: Order.pending.count, path: admin_orders_path(status: "pending"), color: "border-l-yellow-500" },
@@ -124,7 +130,9 @@ class PurchaseOrdersController < ApplicationController
   # 입고 처리
   def receive
     received_before = @purchase_order.purchase_order_items.sum(:received_quantity)
-    if @purchase_order.receive!(params[:received_quantities]&.permit!&.to_h)
+    item_ids = @purchase_order.purchase_order_items.pluck(:id).map(&:to_s)
+    quantities = params[:received_quantities]&.permit(*item_ids)&.to_h
+    if @purchase_order.receive!(quantities)
       items = @purchase_order.purchase_order_items
       received = items.sum(:received_quantity) - received_before
       remaining = items.sum(:quantity) - items.sum(:received_quantity)

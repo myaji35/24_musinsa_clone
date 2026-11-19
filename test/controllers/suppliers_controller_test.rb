@@ -18,6 +18,30 @@ class SuppliersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "거래처 검색은 이름 담당자 연락처를 찾고 계정을 제한한다" do
+    @supplier.update!(contact_person: "Alice", phone: "02-1234-5678")
+    foreign = Supplier.create!(account: accounts(:other), name: "Korea Fashion Foreign", phone: "02-9999-9999", active: true)
+    [ "  korea fashion  ", "alice", "1234" ].each do |query|
+      get suppliers_path, params: { q: query }
+      assert_select "a[href='#{supplier_path(@supplier)}']", minimum: 1
+      assert_select "a[href='#{supplier_path(foreign)}']", count: 0
+    end
+    get suppliers_path, params: { q: "%" }
+    assert_select "a[href='#{supplier_path(@supplier)}']", count: 0
+    assert_select "div", text: "검색 결과가 없습니다."
+  end
+
+  test "모바일 카드에 빈 상세 줄을 표시하지 않는다" do
+    @supplier.update!(contact_person: nil, payment_terms: nil, email: nil)
+    get suppliers_path, params: { q: @supplier.name }
+    assert_select "ul.md\\:hidden li" do
+      assert_select "div.text-gray-600", count: 0
+    end
+    @supplier.update!(contact_person: "Alice")
+    get suppliers_path, params: { q: @supplier.name }
+    assert_select "ul.md\\:hidden li div.text-gray-600", text: "Alice"
+  end
+
   # GET /suppliers/new
   test "should get new" do
     get new_supplier_url

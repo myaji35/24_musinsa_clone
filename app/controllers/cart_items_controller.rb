@@ -22,7 +22,7 @@ class CartItemsController < ApplicationController
     cart = Cart.new(session[:cart] || {})
     cart.update(params[:variant_id] || params[:id], params[:quantity])
     session[:cart] = cart.to_h
-    redirect_to cart_path
+    redirect_to cart_path, notice: "수량을 변경했습니다"
   end
 
   def destroy

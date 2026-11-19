@@ -12,11 +12,12 @@
           <%= link_to item.product.name, product_path(item.product), class: "text-ui font-medium" %>
           <p class="text-caption text-ink-3"><%= item.variant.color %> / <%= item.variant.size %></p>
           <p><%= price_won(item.line_total) %></p>
-          <%= form_with url: cart_item_path(item.variant), method: :patch, class: "flex flex-wrap items-center gap-3" do |f| %>
-            <%= f.label :quantity, "수량", for: "quantity_#{item.variant.id}", class: "text-ui font-medium" %>
-            <%= f.number_field :quantity, value: item.quantity, min: 1, max: 99, id: "quantity_#{item.variant.id}", class: "field w-24 h-11" %>
-            <%= f.submit "변경", class: "btn btn-secondary h-11 px-4" %>
-          <% end %>
+          <div class="flex items-center gap-3" role="group" aria-label="<%= item.product.name %> 수량">
+            <span class="text-ui font-medium">수량</span>
+            <%= button_to "−", cart_item_path(item.variant), method: :patch, params: { quantity: item.quantity - 1 }, class: "btn btn-secondary h-11 w-11 p-0", form_class: "inline", aria: { label: "수량 줄이기" }, disabled: item.quantity == 1 %>
+            <output class="min-w-8 text-center text-ui tabular-nums" aria-live="polite"><%= item.quantity %></output>
+            <%= button_to "+", cart_item_path(item.variant), method: :patch, params: { quantity: item.quantity + 1 }, class: "btn btn-secondary h-11 w-11 p-0", form_class: "inline", aria: { label: "수량 늘리기" }, disabled: item.quantity == 99 %>
+          </div>
           <%= button_to "삭제", cart_item_path(item.variant), method: :delete, class: "btn-text text-caption" %>
         </div>
       </div>

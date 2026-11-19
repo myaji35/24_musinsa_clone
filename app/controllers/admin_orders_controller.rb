@@ -1,6 +1,10 @@
 class AdminOrdersController < ApplicationController
   def index
+    @order_statuses = %w[pending paid shipped delivered cancelled]
+    @selected_status = params[:status] if @order_statuses.include?(params[:status])
+    @pending_count = Order.pending.count
     @orders = Order.recent.includes(:source_character)
+    @orders = @orders.where(status: @selected_status) if @selected_status
     @traffic_summaries = %i[platform character video].index_with { |by| Order.traffic_summary(by: by) }
     @traffic_characters = Character.where(id: @traffic_summaries[:character].map(&:first)).pluck(:id, :name).to_h
   end

@@ -13,6 +13,21 @@ class AdminOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "youtube · 하린 · video-1"
   end
 
+  test "주문 상태 필터는 허용된 상태만 적용한다" do
+    sign_in
+    get admin_orders_path(status: "paid")
+    assert_response :success
+    assert_includes response.body, orders(:one).order_number
+    assert_not_includes response.body, orders(:two).order_number
+    assert_select 'a[aria-current="page"]', text: "결제 완료"
+
+    get admin_orders_path(status: "invalid")
+    assert_response :success
+    assert_includes response.body, orders(:one).order_number
+    assert_includes response.body, orders(:two).order_number
+    assert_select 'a[aria-current="page"]', text: "전체"
+  end
+
   test "admin confirms only pending orders" do
     sign_in
     order = orders(:one)

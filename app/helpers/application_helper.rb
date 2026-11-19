@@ -3,6 +3,17 @@ module ApplicationHelper
     { "pending" => "입금 대기", "paid" => "결제 완료", "preparing" => "상품 준비", "shipped" => "배송 중", "delivered" => "배송 완료", "cancelled" => "취소", "refunded" => "환불" }.fetch(status, status)
   end
 
+  def order_status_badge_class(status)
+    case status
+    when "pending" then "bg-yellow-100 text-yellow-800"
+    when "paid" then "bg-blue-100 text-blue-800"
+    when "preparing", "shipping", "shipped" then "bg-indigo-100 text-indigo-800"
+    when "delivered", "completed" then "bg-green-100 text-green-800"
+    when "cancelled", "refunded" then "bg-red-100 text-red-800"
+    else "bg-gray-100 text-gray-800"
+    end
+  end
+
   def supplier_import_status_label(status)
     { "pending" => "대기", "processing" => "처리 중", "done" => "완료", "failed" => "실패" }.fetch(status, status)
   end

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>회원·화면 보완 결과</title>
+<style>
+  :root { --paper:#fcfcfc; --ink:#111; --ink2:#444; --ink3:#707070; --hair:#e3e3e3; --ok:#0a7a3d; --warn:#9a5b00; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:400 14px/1.6 -apple-system, "Apple SD Gothic Neo", sans-serif; }
+  header { position:sticky; top:0; z-index:5; background:var(--paper); border-bottom:1px solid var(--ink); padding:12px 16px; display:flex; gap:14px; flex-wrap:wrap; align-items:baseline; }
+  header h1 { margin:0; font-size:15px; letter-spacing:.1em; }
+  nav a { color:var(--ink); margin-right:12px; }
+  section { padding:24px 16px; border-bottom:1px solid var(--hair); max-width:1200px; }
+  h2 { font-size:16px; margin:0 0 10px; }
+  table { border-collapse:collapse; width:100%; max-width:860px; font-size:13px; }
+  th, td { border-bottom:1px solid var(--hair); padding:6px 8px; text-align:left; vertical-align:top; }
+  th { font-weight:600; } td.n { text-align:right; font-variant-numeric:tabular-nums; }
+  .good { color:var(--ok); font-weight:600; }
+  .warn { border-left:3px solid var(--warn); padding:8px 12px; background:#fff8ec; max-width:860px; }
+  .row { display:grid; gap:12px; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); }
+  figure { margin:0; } figcaption { color:var(--ink2); font-size:12px; padding-top:4px; }
+  img { width:100%; display:block; border:1px solid var(--hair); max-height:640px; object-fit:cover; object-position:top; cursor:zoom-in; }
+  dialog { padding:0; border:0; background:transparent; max-width:96vw; max-height:96vh; }
+  dialog img { max-height:none; width:auto; max-width:96vw; object-fit:contain; }
+  dialog::backdrop { background:rgba(252,252,252,.94); }
+  ul { padding-left:18px; margin:6px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>회원·화면 보완</h1>
+  <nav><a href="#sum">요약</a><a href="#ux">화면 측정</a><a href="#flow">실제 흐름</a><a href="#decide">확인 필요</a></nav>
+</header>
+
+<section id="sum">
+  <h2>요약 — ISS-213(회원·개인정보) · ISS-214(웹·패드·모바일·폰), 브랜치 feat/auth-roles (main 미병합·미배포)</h2>
+  <ul>
+    <li><b>회원:</b> 가입 필수 동의 3종(약관·개인정보·만 14세)과 동의 시각, 이름·비밀번호 변경, 회원 탈퇴(정보 즉시 삭제·주문은 법정 보관), 관리자 검색·필터·계정 정지.</li>
+    <li><b>주문 클레임:</b> 고객 취소·반품·교환 요청(회원·비회원), 결제 대기 취소는 즉시 처리, 관리자·운영자 승인·거절·완료(환불·반품 입고 재고 복원).</li>
+    <li><b>개인정보:</b> 직원 개인정보 화면 접속기록(1년 보관·관리자만 열람), 처리 끝난 클레임 3년 보관 파기, 방침·약관 초안.</li>
+    <li><b>화면:</b> 스타일은 바꾸지 않고 결함만 고쳤습니다. 터치 영역, 관리 표 카드화, 메뉴 패널 비침, 인트로 작은 글씨, 발주 상태 한국어, 금액 소수점, 운영자에게 보이던 권한 없는 버튼.</li>
+    <li><b>검증:</b> 테스트 905 · 시스템 15 · 실패 0, rubocop 0, brakeman 0. 실서버로 11단계 흐름 전부 통과, DB 실측(탈퇴 기록에 개인 식별 칸 없음, 주문 보존·연결 해제).</li>
+  </ul>
+</section>
+
+<section id="ux">
+  <h2>90개 화면 재측정 (5기기 × 18화면, 고치기 전 → 후)</h2>
+  <table>
+    <tr><th>항목</th><th class="n">전</th><th class="n">후</th></tr>
+    <tr><td>12px 미만 글씨</td><td class="n">540</td><td class="n good">0</td></tr>
+    <tr><td>화면 전체 가로 넘침(px 합)</td><td class="n">0</td><td class="n good">0</td></tr>
+    <tr><td>작은 터치 영역(40px 미만) — 패드 가로</td><td class="n">932</td><td class="n">397</td></tr>
+    <tr><td>작은 터치 영역 — 패드 세로</td><td class="n">932</td><td class="n">374</td></tr>
+    <tr><td>작은 터치 영역 — 모바일 430</td><td class="n">778</td><td class="n">228</td></tr>
+    <tr><td>작은 터치 영역 — 폰 360</td><td class="n">778</td><td class="n">228</td></tr>
+    <tr><td>안쪽 가로 스크롤 영역(의도된 런웨이 줄·차트 포함)</td><td class="n">10</td><td class="n">10</td></tr>
+  </table>
+  <p style="color:var(--ink2);max-width:860px">남은 작은 터치 영역의 대부분은 입력칸 위 글자 라벨(누를 필요 없음)과 상품 카드 안의 이름 줄(카드 사진 전체가 링크)입니다. 관리 표가 화면 밖으로 잘리던 문제(거래처·발주의 수정 버튼)는 패드·폰에서 0건입니다. 재측정 중 제 R4 변경이 만든 부작용(메뉴 패널 가로 스크롤 144곳)을 발견해 바로 고쳤습니다.</p>
+  <div class="row">
+    <figure><img src="img/2026-11-17-responsive_phone_suppliers.png" alt="전 거래처 폰"><figcaption>전 — 거래처(폰): 수정 버튼이 화면 밖</figcaption></figure>
+    <figure><img src="img/2026-11-17-responsive-after_phone_suppliers.png" alt="후 거래처 폰"><figcaption>후 — 카드 목록, 버튼 44px</figcaption></figure>
+    <figure><img src="img/2026-11-17-responsive_phone_purchase-orders.png" alt="전 발주 폰"><figcaption>전 — 발주(폰)</figcaption></figure>
+    <figure><img src="img/2026-11-17-responsive-after_phone_purchase-orders.png" alt="후 발주 폰"><figcaption>후 — 상태 한국어·금액 소수점 제거</figcaption></figure>
+  </div>
+</section>
+
+<section id="flow">
+  <h2>실제 흐름 (폰 360 회원 + 웹 1440 관리자, 실서버)</h2>
+  <div class="row">
+    <figure><img src="img/2026-11-17-flow213_01-join-consent-errors.png" alt="동의 누락"><figcaption>1 동의 없이 가입 → 3개 안내</figcaption></figure>
+    <figure><img src="img/2026-11-17-flow213_03-order-complete.png" alt="주문 완료"><figcaption>3 주문 완료</figcaption></figure>
+    <figure><img src="img/2026-11-17-flow213_04-immediate-cancel.png" alt="즉시 취소"><figcaption>4 결제 대기 주문 취소 → 즉시 완료</figcaption></figure>
+    <figure><img src="img/2026-11-17-flow213_07-paid-cancel-request.png" alt="취소 요청 접수"><figcaption>7 결제 완료 주문 취소 요청 → 접수</figcaption></figure>
+    <figure><img src="img/2026-11-17-flow213_08-refund-completed.png" alt="환불 완료"><figcaption>8 관리자 승인 → 환불 완료</figcaption></figure>
+    <figure><img src="img/2026-11-17-flow213_09-access-logs.png" alt="접속기록"><figcaption>9 접속기록에 방금 연 화면 기록</figcaption></figure>
+    <figure><img src="img/2026-11-17-flow213_10-profile-password.png" alt="정보 수정"><figcaption>10 이름·비밀번호 변경</figcaption></figure>
+    <figure><img src="img/2026-11-17-flow213_11-withdraw-login-rejected.png" alt="탈퇴 후 로그인 실패"><figcaption>11 탈퇴 → 같은 이메일 로그인 실패</figcaption></figure>
+  </div>
+</section>
+
+<section id="decide">
+  <h2>대표님 확인이 필요한 것 (컨펌 문서로 올림)</h2>
+  <div class="warn">
+    <ul>
+      <li><b>개인정보처리방침·이용약관 초안</b>(회원·탈퇴·클레임·접속기록·만 14세, 약관 제17~19조) — 법적 문구.</li>
+      <li><b>보관 기간</b> — 법령 표준값을 썼습니다: 주문 기록 5년, 클레임(소비자 불만·분쟁) 3년, 접속기록 1년.</li>
+      <li><b>main 병합·운영 배포</b> — 인증·권한·개인정보 처리 방식이 바뀌는 변경이라 대표님 확인 전에는 하지 않습니다. 새 마이그레이션 7개는 테이블·칸을 추가만 합니다.</li>
+      <li><b>범위 밖으로 남긴 것</b> — 비밀번호 재설정(메일 발송 설정 필요).</li>
+    </ul>
+  </div>
+</section>
+
+<dialog id="zoom"><img alt=""></dialog>
+<script>
+  const d = document.getElementById("zoom"), z = d.querySelector("img");
+  document.querySelectorAll("figure img").forEach(i => i.addEventListener("click", () => { z.src = i.src; z.alt = i.alt; d.showModal(); }));
+  d.addEventListener("click", () => d.close());
+</script>
+</body>
+</html>

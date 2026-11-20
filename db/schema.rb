@@ -10,7 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_19_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_20_000007) do
+  create_table "access_logs", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "user_label"
+    t.string "screen", null: false
+    t.string "action", null: false
+    t.string "target_type"
+    t.integer "target_id"
+    t.string "ip"
+    t.datetime "created_at", null: false
+    t.index ["created_at"], name: "index_access_logs_on_created_at"
+    t.index ["user_id", "created_at"], name: "index_access_logs_on_user_id_and_created_at"
+  end
+
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -343,6 +356,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_000000) do
     t.index ["supplier_id"], name: "index_ledger_entries_on_supplier_id"
   end
 
+  create_table "member_withdrawals", force: :cascade do |t|
+    t.datetime "withdrawn_at", null: false
+    t.integer "orders_count", default: 0, null: false
+    t.string "reason", limit: 30
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.integer "variant_id", null: false
     t.string "notification_type", null: false
@@ -355,6 +376,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_000000) do
     t.index ["sent_at"], name: "index_notifications_on_sent_at"
     t.index ["status"], name: "index_notifications_on_status"
     t.index ["variant_id"], name: "index_notifications_on_variant_id"
+  end
+
+  create_table "order_claims", force: :cascade do |t|
+    t.integer "order_id", null: false
+    t.integer "user_id"
+    t.string "kind", null: false
+    t.string "status", default: "requested", null: false
+    t.string "reason_code", null: false
+    t.text "detail"
+    t.string "requester", null: false
+    t.integer "processed_by_user_id"
+    t.datetime "processed_at"
+    t.text "admin_note"
+    t.datetime "refunded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id", "status"], name: "index_order_claims_on_order_id_and_status"
+    t.index ["order_id"], name: "index_order_claims_on_order_id"
+    t.index ["user_id"], name: "index_order_claims_on_user_id"
   end
 
   create_table "order_shipping_records", force: :cascade do |t|
@@ -391,6 +431,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_000000) do
     t.string "source_link_code"
     t.integer "source_character_id"
     t.datetime "source_landed_at"
+    t.integer "user_id"
     t.index ["anony_customer_id"], name: "index_orders_on_anony_customer_id"
     t.index ["checkout_number"], name: "index_orders_on_checkout_number"
     t.index ["created_at"], name: "index_orders_on_created_at"
@@ -401,6 +442,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_000000) do
     t.index ["source_link_code"], name: "index_orders_on_source_link_code"
     t.index ["source_platform"], name: "index_orders_on_source_platform"
     t.index ["status"], name: "index_orders_on_status"
+    t.index ["user_id"], name: "index_orders_on_user_id"
     t.index ["variant_id"], name: "index_orders_on_variant_id"
   end
 
@@ -711,8 +753,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_000000) do
     t.integer "account_id"
     t.boolean "must_change_password", default: false, null: false
     t.datetime "password_changed_at"
+    t.integer "role", default: 0, null: false
+    t.datetime "terms_agreed_at"
+    t.datetime "privacy_agreed_at"
+    t.datetime "age_confirmed_at"
+    t.datetime "suspended_at"
     t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["role"], name: "index_users_on_role"
+    t.index ["suspended_at"], name: "index_users_on_suspended_at"
   end
 
   create_table "variants", force: :cascade do |t|
@@ -815,9 +864,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_000000) do
   add_foreign_key "ledger_entries", "suppliers"
   add_foreign_key "ledger_entries", "users", column: "created_by_user_id"
   add_foreign_key "notifications", "variants"
+  add_foreign_key "order_claims", "orders"
+  add_foreign_key "order_claims", "users", column: "processed_by_user_id", on_delete: :nullify
+  add_foreign_key "order_claims", "users", on_delete: :nullify
   add_foreign_key "order_shipping_records", "orders"
   add_foreign_key "orders", "anony_customers"
   add_foreign_key "orders", "products"
+  add_foreign_key "orders", "users"
   add_foreign_key "orders", "variants"
   add_foreign_key "product_analyses", "characters"
   add_foreign_key "product_analyses", "products"

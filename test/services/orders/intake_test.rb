@@ -8,6 +8,22 @@ class Orders::IntakeTest < ActiveSupport::TestCase
     @items = [ { variant_id: variants(:one).id, quantity: 2 }, { variant_id: variants(:two).id, quantity: 1 } ]
   end
 
+  test "회원을 전달하면 생성한 모든 주문에 연결한다" do
+    result = Orders::Intake.call(items: @items, address: @address, user: users(:member))
+
+    assert result.success?, result.errors.inspect
+    assert_equal 2, result.orders.size
+    result.orders.each { |order| assert_equal users(:member), order.reload.user }
+  end
+
+  test "회원을 전달하지 않으면 모든 주문의 회원은 없다" do
+    result = Orders::Intake.call(items: @items, address: @address)
+
+    assert result.success?, result.errors.inspect
+    assert_equal 2, result.orders.size
+    result.orders.each { |order| assert_nil order.reload.user }
+  end
+
   test "유입 정보와 캐릭터를 모든 품목에 저장한다" do
     character = Character.create!(name: "하린", handle: "SeoHARIN")
     source = { platform: "youtube", campaign: "spring", video_id: "video-1",

@@ -20,7 +20,8 @@ class CustomerOrdersController < ApplicationController
   end
 
   def show
-    unless Array(session[:allowed_checkout_numbers]).include?(params[:checkout_number])
+    unless Array(session[:allowed_checkout_numbers]).include?(params[:checkout_number]) ||
+        (logged_in? && Order.where(checkout_number: params[:checkout_number], user_id: current_user.id).exists?)
       return redirect_to orders_lookup_path
     end
 

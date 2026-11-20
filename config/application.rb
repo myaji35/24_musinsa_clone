@@ -11,6 +11,8 @@ module MusinsaClone
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
     config.x.order_record_retention_years = Integer(ENV.fetch("ORDER_RECORD_RETENTION_YEARS", "5"))
+    config.x.access_log_retention_days = Integer(ENV.fetch("ACCESS_LOG_RETENTION_DAYS", "365"))
+    config.x.order_claim_retention_years = Integer(ENV.fetch("ORDER_CLAIM_RETENTION_YEARS", "3"))
     config.x.shipping_address_retention_days = Integer(ENV.fetch("SHIPPING_ADDRESS_RETENTION_DAYS", "90"))
 
     config.x.business = {

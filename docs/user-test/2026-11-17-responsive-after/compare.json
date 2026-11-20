@@ -1,0 +1,42 @@
+{
+ "smallTouchTargets": [
+  3420,
+  1227
+ ],
+ "smallText": [
+  540,
+  0
+ ],
+ "horizontalScrollContainers": [
+  10,
+  10
+ ],
+ "overflowPx": [
+  0,
+  0
+ ],
+ "screens": [
+  90,
+  90
+ ],
+ "touch-web": [
+  0,
+  0
+ ],
+ "touch-pad-landscape": [
+  932,
+  397
+ ],
+ "touch-pad-portrait": [
+  932,
+  374
+ ],
+ "touch-mobile": [
+  778,
+  228
+ ],
+ "touch-phone": [
+  778,
+  228
+ ]
+}

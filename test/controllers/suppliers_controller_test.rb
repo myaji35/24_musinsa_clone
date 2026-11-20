@@ -125,8 +125,8 @@ class SuppliersControllerTest < ActionDispatch::IntegrationTest
 
     get suppliers_url
     assert_response :success
-    assert_select "a", text: @supplier.name
-    assert_select "a", text: inactive.name, count: 0
+    assert_select "table a", text: @supplier.name
+    assert_select "table a", text: inactive.name, count: 0
   end
 
   # Supplier with purchase orders

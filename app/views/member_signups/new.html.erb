@@ -1,0 +1,57 @@
+<div class="max-w-[400px] mx-auto px-gutter py-8 md:py-12">
+  <h1 class="text-title font-semibold mb-6">회원가입</h1>
+  <% if @user.errors.any? %>
+    <ul role="alert" class="text-ui mb-6">
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+  <%= form_with model: @user, scope: :member, url: join_path, class: "space-y-4" do |form| %>
+    <div>
+      <%= form.label :name, "이름", class: "block text-ui font-medium mb-2" %>
+      <%= form.text_field :name, required: true, autocomplete: "name", class: "field" %>
+    </div>
+    <div>
+      <%= form.label :email, "이메일", class: "block text-ui font-medium mb-2" %>
+      <%= form.email_field :email, required: true, autocomplete: "email", class: "field" %>
+    </div>
+    <div>
+      <%= form.label :password, "비밀번호", class: "block text-ui font-medium mb-2" %>
+      <div class="relative" data-controller="password-visibility">
+        <%= form.password_field :password, required: true, autocomplete: "new-password", class: "field pr-16", data: { password_visibility_target: "input" }, aria: { describedby: "password-hint" } %>
+        <button type="button" hidden class="tap btn-text text-caption absolute right-3 top-1/2 -translate-y-1/2" data-password-visibility-target="toggle" data-action="password-visibility#toggle" aria-pressed="false" aria-label="비밀번호 보기">보기</button>
+      </div>
+      <p id="password-hint" class="text-ui mt-2">비밀번호는 8자 이상 입력해 주세요.</p>
+    </div>
+    <div>
+      <%= form.label :password_confirmation, "비밀번호 확인", class: "block text-ui font-medium mb-2" %>
+      <div class="relative" data-controller="password-visibility">
+        <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", class: "field pr-16", data: { password_visibility_target: "input" } %>
+        <button type="button" hidden class="tap btn-text text-caption absolute right-3 top-1/2 -translate-y-1/2" data-password-visibility-target="toggle" data-action="password-visibility#toggle" aria-pressed="false" aria-label="비밀번호 보기">보기</button>
+      </div>
+    </div>
+    <fieldset data-controller="consent-all">
+      <legend class="text-ui font-medium mb-2">약관 동의</legend>
+      <label class="flex items-start gap-3 py-2 min-h-11 cursor-pointer border-b border-hairline mb-1">
+        <input type="checkbox" id="member_consent_all" class="mt-1 h-5 w-5 shrink-0" data-consent-all-target="all" data-action="change->consent-all#toggleAll">
+        <span class="font-medium">필수 항목에 모두 동의합니다</span>
+      </label>
+      <label class="flex items-start gap-3 py-2 min-h-11 cursor-pointer">
+        <%= check_box_tag "member[terms_agreement]", "1", @consents&.[](:terms_agreement) == "1", class: "mt-1 h-5 w-5 shrink-0", data: { consent_all_target: "item", action: "change->consent-all#sync" } %>
+        <span>[필수] 이용약관에 동의합니다 <%= link_to "보기", terms_policy_path, target: "_blank", rel: "noopener noreferrer", class: "btn-text tap" %></span>
+      </label>
+      <label class="flex items-start gap-3 py-2 min-h-11 cursor-pointer">
+        <%= check_box_tag "member[privacy_agreement]", "1", @consents&.[](:privacy_agreement) == "1", class: "mt-1 h-5 w-5 shrink-0", data: { consent_all_target: "item", action: "change->consent-all#sync" } %>
+        <span>[필수] 개인정보 수집·이용에 동의합니다 <%= link_to "보기", privacy_policy_path, target: "_blank", rel: "noopener noreferrer", class: "btn-text tap" %></span>
+      </label>
+      <p class="text-caption text-ink-2">수집 항목: 이메일, 이름, 비밀번호(암호화) · 목적: 회원 인증, 주문 내역 제공 · 보유: 회원 탈퇴 시까지(법령에 따라 보관해야 하는 주문 기록은 해당 기간까지)</p>
+      <label class="flex items-start gap-3 py-2 min-h-11 cursor-pointer">
+        <%= check_box_tag "member[age_confirmation]", "1", @consents&.[](:age_confirmation) == "1", class: "mt-1 h-5 w-5 shrink-0", data: { consent_all_target: "item", action: "change->consent-all#sync" } %>
+        <span>[필수] 만 14세 이상입니다</span>
+      </label>
+    </fieldset>
+    <%= form.submit "회원가입", class: "btn btn-primary w-full" %>
+  <% end %>
+  <p class="text-ui mt-6">이미 회원이신가요? <%= link_to "로그인", login_path(return_to: params[:return_to].presence), class: "btn-text" %></p>
+</div>

@@ -44,6 +44,9 @@ class HomeController < ApplicationController
     end
 
     @ranked_products = @products.limit(50)
+    if params[:q].present? && @ranked_products.empty?
+      @suggested_products = Product.popular_picks.limit(4)
+    end
 
     # 29cm 스타일 큐레이션 섹션 준비
     @stories = params[:q].present? || params[:category].present? ? [] : prepare_stories

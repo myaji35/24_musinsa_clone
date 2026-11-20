@@ -25,6 +25,16 @@ development:
     queue: default
     schedule: at 4:30am every day
 
+  access_log_purge:
+    class: AccessLogPurgeJob
+    queue: default
+    schedule: at 4:45am every day
+
+  order_claim_purge:
+    class: OrderClaimPurgeJob
+    queue: default
+    schedule: at 4:50am every day
+
   order_shipping_record_purge:
     class: OrderShippingRecordPurgeJob
     queue: default
@@ -68,6 +78,16 @@ production:
     class: Feedbacks::PurgeContactsJob
     queue: default
     schedule: at 4:30am every day
+
+  access_log_purge:
+    class: AccessLogPurgeJob
+    queue: default
+    schedule: at 4:45am every day
+
+  order_claim_purge:
+    class: OrderClaimPurgeJob
+    queue: default
+    schedule: at 4:50am every day
 
   order_shipping_record_purge:
     class: OrderShippingRecordPurgeJob

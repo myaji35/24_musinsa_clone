@@ -95,6 +95,19 @@
   .chip { display: inline-flex; align-items: center; height: var(--spacing-chip); padding: 0 8px; border: 1px solid transparent; font-size: var(--text-ui); font-weight: 500; white-space: nowrap; }
   .chip[aria-current="page"], .chip.is-selected { border-color: var(--color-ink); }
 
+  @media (pointer: coarse) {
+    .tap, .chip { position: relative; }
+    .tap::after, .chip::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      transform: translate(-50%, -50%);
+    }
+  }
+
   /* 입력 */
   .field { height: var(--spacing-control); padding: 0 12px; border: 1px solid var(--color-hairline); border-radius: 0; background: transparent; font-size: var(--text-body); color: var(--color-ink); width: 100%; }
   .field:focus { border-color: var(--color-ink); outline: none; }

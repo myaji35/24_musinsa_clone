@@ -65,6 +65,7 @@
       <% { platform: "플랫폼별", character: "캐릭터별", video: "영상별" }.each do |by, title| %>
         <div class="rounded border p-3">
           <h3 class="font-semibold mb-2"><%= title %></h3>
+          <div class="overflow-x-auto">
           <table class="w-full text-left text-sm">
             <thead><tr><th>유입원</th><th>주문 수</th><th>매출 합계</th></tr></thead>
             <tbody>
@@ -76,6 +77,7 @@
               <% end %>
             </tbody>
           </table>
+          </div>
         </div>
       <% end %>
     </div>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>회원 화면 20회 개선</title>
+<style>
+  :root { --paper:#fcfcfc; --ink:#111; --ink2:#444; --hair:#e3e3e3; --ok:#0a7a3d; --warn:#9a5b00; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:400 14px/1.6 -apple-system, "Apple SD Gothic Neo", sans-serif; }
+  header { position:sticky; top:0; z-index:5; background:var(--paper); border-bottom:1px solid var(--ink); padding:12px 16px; display:flex; gap:14px; flex-wrap:wrap; align-items:baseline; }
+  header h1 { margin:0; font-size:15px; letter-spacing:.1em; }
+  nav a { color:var(--ink); margin-right:12px; }
+  section { padding:24px 16px; border-bottom:1px solid var(--hair); max-width:1200px; }
+  h2 { font-size:16px; margin:0 0 10px; }
+  h3 { font-size:14px; margin:18px 0 8px; }
+  table { border-collapse:collapse; width:100%; max-width:960px; font-size:13px; }
+  th, td { border-bottom:1px solid var(--hair); padding:6px 8px; text-align:left; vertical-align:top; }
+  th { font-weight:600; } td.n { white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .good { color:var(--ok); font-weight:600; }
+  .warn { border-left:3px solid var(--warn); padding:8px 12px; background:#fff8ec; max-width:960px; }
+  .pair { display:grid; gap:12px; grid-template-columns:repeat(auto-fill, minmax(180px, 220px)); align-items:start; }
+  .pair.wide { grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); }
+  figure { margin:0; } figcaption { color:var(--ink2); font-size:12px; padding-top:4px; }
+  img { width:100%; display:block; border:1px solid var(--hair); cursor:zoom-in; }
+  dialog { padding:0; border:0; background:transparent; max-width:96vw; max-height:96vh; }
+  dialog img { width:auto; max-width:96vw; max-height:96vh; object-fit:contain; }
+  dialog::backdrop { background:rgba(252,252,252,.94); }
+  ul { padding-left:18px; margin:6px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>회원 화면 20회 개선</h1>
+  <nav><a href="#sum">요약</a><a href="#list">회차표</a><a href="#flow">흐름 결함</a><a href="#screens">화면 전후</a><a href="#hold">보류</a></nav>
+</header>
+
+<section id="sum">
+  <h2>요약 — 브랜치 design/member-loop (feat/auth-roles 위 커밋 20개, main 미병합·미배포)</h2>
+  <ul>
+    <li><b>방식:</b> 회차마다 회원(로그인한 일반 회원·가입 전 손님) 눈으로 화면을 찍어 보고, 막히거나 헷갈리는 곳 하나를 골라 고쳤습니다. 스타일 개편 없이 기존 색·글자·여백 안에서만 고쳤습니다.</li>
+    <li><b>흐름 결함 5건을 고쳤습니다:</b> 로그인하면 장바구니가 사라짐, 로그인 뒤 홈으로 튕김, 사이즈 자동 선택으로 잘못 주문할 위험, 수량을 바꿔도 반영되지 않음, 내 주문 → 상세 → 취소 요청이 주문조회로 튕김.</li>
+    <li><b>측정:</b> 폰 상품 상세 길이 6,193 → 3,960px, 패드 4,333 → 3,897px. 17개 화면 × 폰·패드·웹 51장에서 가로 넘침·12px 미만 글씨·오류 <span class="good">0</span>.</li>
+    <li><b>검증:</b> 전체 테스트 927건, 시스템 테스트 17건 실패 0. brakeman 0, rubocop 0. 회차마다 실서버(3073)에서 회원 계정으로 직접 눌러 확인했습니다.</li>
+  </ul>
+</section>
+
+<section id="list">
+  <h2>회차표</h2>
+  <table>
+    <tr><th>회차</th><th>회원이 겪던 문제 → 고친 것</th></tr>
+    <tr><td class="n">1</td><td>로그인했는데 '비회원 주문하기'·'비회원 주문서' → 회원 문구, 받는 분에 회원 이름 미리 채움</td></tr>
+    <tr><td class="n">2</td><td>내 주문에서 주문 상세로 못 감 → 상품명 링크, 본인 주문은 휴대폰 확인 없이 열람</td></tr>
+    <tr><td class="n">3</td><td>내 주문·장바구니가 글자뿐 → 상품 사진, 주문 상태를 카드 맨 위로</td></tr>
+    <tr><td class="n">4</td><td>계정 화면: 직원용 '역할' 표시, 로그아웃이 가장 큰 버튼 → 현재 탭 표시, 로그아웃 보조 버튼, 수정 화면 '취소'</td></tr>
+    <tr><td class="n">5</td><td>폰 상품 상세: 가격·사이즈가 사진 5장 아래 → 사진 가로 넘김</td></tr>
+    <tr><td class="n">6</td><td>주문서 빈 칸만 6개 → 입력 예시, 자동완성, 전화 자판</td></tr>
+    <tr><td class="n">7</td><td><b>장바구니 담고 로그인하면 장바구니가 비어 버림</b> → 유지</td></tr>
+    <tr><td class="n">8</td><td>메뉴에 '내 주문' 없음, 항목 12개 나열 → 계정 묶음, 회원 '내 주문'</td></tr>
+    <tr><td class="n">9</td><td>취소 요청: 하나뿐인 종류를 직접 선택, 해당 없는 안내 → 미리 선택, 해당 안내만, 사진·돌아가기</td></tr>
+    <tr><td class="n">10</td><td><b>장바구니에서 로그인하면 홈으로 튕김</b> → 보던 화면으로 복귀(외부 주소 차단)</td></tr>
+    <tr><td class="n">11</td><td>필수 동의 3개를 하나씩 → '필수 항목에 모두 동의'</td></tr>
+    <tr><td class="n">12</td><td>웹 내 주문 표·주문서에 사진 없음 → 폰과 맞춤</td></tr>
+    <tr><td class="n">13</td><td>주문 상세 정리 + <b>상세 → 취소 요청이 주문조회로 튕김(2회차 부작용)</b> 수정</td></tr>
+    <tr><td class="n">14</td><td>검색 결과 제목이 'JIEUM 랭킹', 0건이면 막다른 화면 → '“코트” 검색 결과', 0건이면 인기 상품</td></tr>
+    <tr><td class="n">15</td><td>패드에서 첫 사진이 화면보다 큼 → 두 장 나란히</td></tr>
+    <tr><td class="n">16</td><td><b>사이즈가 미리 선택돼 고르지 않고 담으면 S 주문</b> → 직접 선택(옵션 1개면 자동)</td></tr>
+    <tr><td class="n">17</td><td><b>수량 숫자만 고치고 주문하면 반영 안 됨</b> → − / + 버튼 즉시 반영</td></tr>
+    <tr><td class="n">18</td><td>빈 장바구니·빈 내 주문이 막다른 길 → 인기 상품, '쇼핑하러 가기'</td></tr>
+    <tr><td class="n">19</td><td>주문서 동의 누락이 맨 위 박스로만 → 그 칸으로 이동·칸 아래 오류</td></tr>
+    <tr><td class="n">20</td><td>폰에서 비밀번호 오타 확인 불가 → '보기/숨기기'</td></tr>
+  </table>
+</section>
+
+<section id="flow">
+  <h2>흐름 결함 (실서버 실측)</h2>
+  <table>
+    <tr><th>상황</th><th>전</th><th>후</th></tr>
+    <tr><td>손님이 담고 로그인 → 장바구니</td><td>0개</td><td class="good">그대로 유지</td></tr>
+    <tr><td>장바구니에서 '로그인' → 로그인 후 위치</td><td>홈(/)</td><td class="good">/cart</td></tr>
+    <tr><td>상세에서 사이즈 안 고르고 '장바구니'</td><td>S가 담김</td><td class="good">담기지 않고 선택 안내</td></tr>
+    <tr><td>수량을 2로 고치고 '변경' 없이 주문</td><td>1개로 주문</td><td class="good">−/+ 누르는 즉시 반영</td></tr>
+    <tr><td>내 주문 → 상세 → 취소 요청</td><td>주문조회로 튕김</td><td class="good">/my/orders/:id/claims/new</td></tr>
+  </table>
+</section>
+
+<section id="screens">
+  <h2>화면 전후 (폰 390, 일부 패드·웹)</h2>
+  <h3>상품 상세(폰) — 가격·사이즈 위치</h3>
+  <div class="pair">
+    <figure><img src="img/detail-before.jpg" alt="전 1화면"><figcaption>전 — 첫 화면</figcaption></figure>
+    <figure><img src="img/detail-before2.jpg" alt="전 2화면"><figcaption>전 — 두 번째 화면도 사진</figcaption></figure>
+    <figure><img src="img/detail-after.jpg" alt="후"><figcaption>후 — 사진 넘김, 바로 아래 상품명·가격</figcaption></figure>
+    <figure><img src="img/picker-after.jpg" alt="사이즈 선택"><figcaption>후 — 사이즈 직접 선택 안내(16)</figcaption></figure>
+  </div>
+  <h3>패드 상품 상세</h3>
+  <div class="pair">
+    <figure><img src="img/pad-before.jpg" alt="패드 전"><figcaption>전</figcaption></figure>
+    <figure><img src="img/pad-after.jpg" alt="패드 후"><figcaption>후 — 두 장 나란히, 가격 보임</figcaption></figure>
+  </div>
+  <h3>장바구니</h3>
+  <div class="pair">
+    <figure><img src="img/cart-before.jpg" alt="장바구니 전"><figcaption>전 — '비회원 주문하기', 글자뿐, 수량 '변경'</figcaption></figure>
+    <figure><img src="img/cart-after.jpg" alt="장바구니 후"><figcaption>후 — 사진, −/+, '주문하기'</figcaption></figure>
+    <figure><img src="img/guestcart-after.jpg" alt="손님 장바구니"><figcaption>손님 — 로그인 후 장바구니로 복귀</figcaption></figure>
+    <figure><img src="img/emptycart-after.jpg" alt="빈 장바구니"><figcaption>빈 장바구니 — 인기 상품</figcaption></figure>
+  </div>
+  <h3>주문서</h3>
+  <div class="pair">
+    <figure><img src="img/checkout-before.jpg" alt="주문서 전"><figcaption>전 — 빈 칸만</figcaption></figure>
+    <figure><img src="img/checkout-after.jpg" alt="주문서 후"><figcaption>후 — 입력 예시·자동완성</figcaption></figure>
+  </div>
+  <h3>내 주문·내 정보·메뉴</h3>
+  <div class="pair">
+    <figure><img src="img/orders-before.jpg" alt="내 주문 전"><figcaption>내 주문 전</figcaption></figure>
+    <figure><img src="img/orders-after.jpg" alt="내 주문 후"><figcaption>내 주문 후 — 사진·상태·상세 링크</figcaption></figure>
+    <figure><img src="img/my-before.jpg" alt="내 정보 전"><figcaption>내 정보 전</figcaption></figure>
+    <figure><img src="img/my-after.jpg" alt="내 정보 후"><figcaption>내 정보 후</figcaption></figure>
+    <figure><img src="img/menu-before.jpg" alt="메뉴 전"><figcaption>메뉴 전 — 내 주문 없음</figcaption></figure>
+    <figure><img src="img/menu-after.jpg" alt="메뉴 후"><figcaption>메뉴 후 — 내 계정 묶음</figcaption></figure>
+  </div>
+  <div class="pair wide" style="margin-top:12px">
+    <figure><img src="img/web-orders-before.jpg" alt="웹 내 주문 전"><figcaption>웹 내 주문 전</figcaption></figure>
+    <figure><img src="img/web-orders-after.jpg" alt="웹 내 주문 후"><figcaption>웹 내 주문 후</figcaption></figure>
+  </div>
+  <h3>취소 요청·검색·로그인</h3>
+  <div class="pair">
+    <figure><img src="img/claim-before.jpg" alt="취소 전"><figcaption>취소 요청 전</figcaption></figure>
+    <figure><img src="img/claim-after.jpg" alt="취소 후"><figcaption>취소 요청 후</figcaption></figure>
+    <figure><img src="img/search-before.jpg" alt="검색 전"><figcaption>검색 전 — 'JIEUM 랭킹'</figcaption></figure>
+    <figure><img src="img/search-after.jpg" alt="검색 후"><figcaption>검색 후 — '“코트” 검색 결과'</figcaption></figure>
+    <figure><img src="img/login-after.jpg" alt="비밀번호 보기"><figcaption>로그인 — 비밀번호 보기</figcaption></figure>
+  </div>
+</section>
+
+<section id="hold">
+  <h2>하지 않은 것 / 대표님 확인</h2>
+  <div class="warn">
+    <ul>
+      <li><b>지난 배송지 불러오기</b> — 다시 주문하는 회원이 주소를 매번 입력합니다. 주문 배송 정보를 다음 주문 채움에 쓰는 것은 개인정보 이용 목적이 바뀌는 일이라 하지 않았습니다.</li>
+      <li><b>main 병합·배포</b> — 이 브랜치는 아직 컨펌 대기 중인 feat/auth-roles 위에 있습니다. 인증 컨펌과 함께 병합 여부를 정하시면 됩니다.</li>
+    </ul>
+  </div>
+</section>
+
+<dialog id="zoom"><img alt=""></dialog>
+<script>
+  const d = document.getElementById("zoom"), z = d.querySelector("img");
+  document.querySelectorAll("figure img").forEach(i => i.addEventListener("click", () => { z.src = i.src; z.alt = i.alt; d.showModal(); }));
+  d.addEventListener("click", () => d.close());
+</script>
+</body>
+</html>

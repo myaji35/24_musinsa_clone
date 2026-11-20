@@ -40,8 +40,8 @@
                 </td>
                 <td class="px-6 py-4 text-sm font-mono font-medium"><%= region[:zip_prefix] %>xxx</td>
                 <td class="px-6 py-4 text-sm"><%= number_with_delimiter(region[:order_count]) %>건</td>
-                <td class="px-6 py-4 text-sm font-bold">₩<%= number_with_delimiter(region[:total_sales].to_i) %></td>
-                <td class="px-6 py-4 text-sm text-gray-600">₩<%= number_with_delimiter(avg_order_value.to_i) %></td>
+                <td class="px-6 py-4 text-sm font-bold"><%= admin_krw(region[:total_sales]) %></td>
+                <td class="px-6 py-4 text-sm text-gray-600"><%= admin_krw(avg_order_value) %></td>
                 <td class="px-6 py-4 text-sm">
                   <div class="flex items-center gap-2">
                     <div class="flex-1 bg-gray-200 rounded-full h-2 max-w-[100px]">

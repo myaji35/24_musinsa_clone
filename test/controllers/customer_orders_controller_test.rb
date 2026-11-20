@@ -8,11 +8,47 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
     @order = result.orders.first
   end
 
+  test "회원 본인 주문의 결제 안내에 내 주문 링크를 표시한다" do
+    member = users(:member)
+    @order.update!(user: member)
+    post login_path, params: { email: member.email, password: "TestPassword!2026" }
+    [ {}, { "PAYOUT_BANK" => "테스트은행", "PAYOUT_ACCOUNT" => "000-00-000000", "PAYOUT_HOLDER" => "테스트예금주" } ].each do |values|
+      with_payout_env(values) do
+        post orders_lookup_path, params: { checkout_number: @order.checkout_number, phone_suffix: "9876" }
+        get customer_order_path(@order.checkout_number)
+        assert_response :success
+        assert_select "#payment-instruction a[href=?]", my_orders_path, text: "내 주문"
+        assert_not_includes response.body, "휴대폰 뒤 4자리"
+      end
+    end
+  end
+
   test "세션 미허용 주문은 조회 폼으로 이동한다" do
     get customer_order_path(@order.checkout_number)
     assert_redirected_to orders_lookup_path
     get orders_lookup_path
     assert_response :success
+  end
+
+  test "회원은 세션 허용 없이 자신의 주문을 조회한다" do
+    member = users(:member)
+    @order.update!(user: member)
+    post login_path, params: { email: member.email, password: "TestPassword!2026" }
+    get customer_order_path(@order.checkout_number)
+    assert_response :success
+    assert_select 'nav[aria-label="내 계정"] a[aria-current="page"][href=?]', my_orders_path, text: "내 주문"
+    assert_select "a.btn.btn-secondary.w-full[href=?]", my_orders_path, text: "내 주문으로"
+    assert_select "a[href=?] div.bg-placeholder", product_path(@order.product)
+    assert_select "a[href=?]", new_my_order_claim_path(@order), text: "취소 요청"
+  end
+
+  test "회원은 다른 회원의 주문을 조회할 수 없다" do
+    other_member = User.create!(email: "member-b@example.com", name: "회원 B",
+                                password: "TestPassword!2026", role: :member)
+    @order.update!(user: other_member)
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    get customer_order_path(@order.checkout_number)
+    assert_redirected_to orders_lookup_path
   end
 
   test "틀린 뒤 네 자리는 거부하고 올바르면 마스킹된 내역을 허용한다" do
@@ -24,6 +60,8 @@ class CustomerOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to customer_order_path(@order.checkout_number)
     follow_redirect!
     assert_response :success
+    assert_select "a.btn.btn-secondary.w-full[href=?]", products_path, text: "쇼핑 계속하기"
+    assert_select "a[href=?] div.bg-placeholder", product_path(@order.product)
     assert_includes response.body, "홍*"
     assert_includes response.body, "010-****-9876"
     assert_not_includes response.body, "홍길동"

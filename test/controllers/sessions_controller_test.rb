@@ -1,6 +1,45 @@
 require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
+  test "로그인 화면에 전달한 경로로 로그인 후 복귀한다" do
+    get login_path(return_to: cart_path)
+    assert_select '[data-controller=password-visibility] button[aria-label="비밀번호 보기"]'
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    assert_redirected_to cart_path
+  end
+
+  test "로그인 화면에 전달한 외부 경로는 무시한다" do
+    [ "https://evil.example", "//evil" ].each do |path|
+      get login_path(return_to: path)
+      assert_nil session[:return_to]
+      post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+      assert_redirected_to root_path
+      delete logout_path
+    end
+  end
+
+  test "손님 장바구니는 로그인 뒤에도 유지된다" do
+    post cart_items_path, params: { variant_id: variants(:one).id, quantity: 2 }
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    assert_redirected_to root_path
+
+    get cart_path
+    assert_response :success
+    assert_includes response.body, products(:one).name
+  end
+
+  test "로그인한 관리자가 로그인 화면에 접근하면 재고 스캔으로 이동한다" do
+    sign_in
+    get login_path
+    assert_redirected_to purchase_orders_path
+  end
+
+  test "로그인한 회원이 로그인 화면에 접근하면 홈으로 이동한다" do
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    get login_path
+    assert_redirected_to root_path
+  end
+
   test "로그인 후 원래 관리자 화면과 쿼리로 복귀한다" do
     [ trends_path, "#{dashboard_index_path}?range=7" ].each do |path|
       delete logout_path
@@ -119,6 +158,39 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_nil session[:user_id]
   end
 
+  test "정지 계정은 비밀번호가 맞아도 로그인할 수 없다" do
+    users(:member).update!(suspended_at: Time.current)
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    assert_response :unprocessable_entity
+    assert_select "[role=alert]", text: "이용이 정지된 계정입니다. 고객센터로 문의해 주세요."
+    assert_nil session[:user_id]
+  end
+
+  test "정지 계정도 비밀번호가 틀리면 일반 로그인 오류만 표시한다" do
+    users(:member).update!(suspended_at: Time.current)
+    post login_path, params: { email: users(:member).email, password: "wrong" }
+    assert_response :unprocessable_entity
+    assert_select "[role=alert]", text: "이메일 또는 비밀번호가 올바르지 않습니다."
+    assert_nil session[:user_id]
+  end
+
+  test "로그인 중 정지된 관리자는 다음 관리 화면 요청에서 로그아웃된다" do
+    sign_in
+    users(:one).update!(suspended_at: Time.current)
+    get admin_users_path
+    assert_redirected_to login_path
+    assert_nil session[:user_id]
+  end
+
+  test "로그인 중 정지된 회원은 다음 공개 화면 요청에서도 로그아웃된다" do
+    post login_path, params: { email: users(:member).email, password: "TestPassword!2026" }
+    assert_redirected_to root_path
+    users(:member).update!(suspended_at: Time.current)
+    get root_path
+    assert_response :success
+    assert_nil session[:user_id]
+  end
+
   test "로그아웃 후 보호된 페이지에 접근할 수 없다" do
     sign_in
     delete logout_path
@@ -129,11 +201,21 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "삭제된 사용자의 세션은 접근을 허용하지 않는다" do
-    user = User.create!(email: "removed@example.com", password: "TestPassword!2026")
+    user = User.create!(email: "removed@example.com", password: "TestPassword!2026", role: :admin)
     sign_in(user)
     user.destroy!
     get inventory_scan_path
     assert_redirected_to login_path
+  end
+
+  test "계정 없는 일반 회원은 관리 화면에 접근할 수 없다" do
+    user = User.create!(email: "member-noacct@example.com", password: "TestPassword!2026")
+    post login_path, params: { email: user.email, password: "TestPassword!2026" }
+
+    get inventory_scan_path
+    assert_response :redirect
+    assert_not_equal login_url, response.location
+    assert_not_equal inventory_scan_url, response.location
   end
 end
 
@@ -142,7 +224,7 @@ class SessionsReturnPathTest < ActionController::TestCase
 
   test "안전하지 않은 복귀 경로는 기본 화면으로 이동한다" do
     [ "https://evil.com", "//evil.com", "/\\evil.com", "/login", "/login?next=/trends",
-      "/logout", "/logout?next=/trends", "/login/", "/%", "trends", nil ].each do |path|
+      "/logout", "/logout?next=/trends", "/login/", "/join", "/join?next=/cart", "/%", "trends", nil ].each do |path|
       session[:return_to] = path
       session[:old_session_value] = "discard"
       post :create, params: { email: users(:one).email, password: "TestPassword!2026" }

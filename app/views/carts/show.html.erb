@@ -4,21 +4,38 @@
   <% if @cart.count.zero? %>
     <p class="text-body text-ink-2">장바구니가 비어 있습니다.</p>
     <%= link_to "상품 둘러보기", products_path, class: "btn btn-secondary" %>
+    <% if @suggested_products.any? %>
+      <section class="mt-14">
+        <h2 class="text-ui font-semibold mb-4">이런 상품은 어떠세요</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-x-2 md:gap-x-3 gap-y-7">
+          <% @suggested_products.each do |product| %>
+            <%= render "products/card", product: product %>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
   <% else %>
     <% @cart.items.each do |item| %>
-      <div class="border-b border-hairline py-5 space-y-3">
-        <%= link_to item.product.name, product_path(item.product), class: "text-ui font-medium" %>
-        <p class="text-caption text-ink-3"><%= item.variant.color %> / <%= item.variant.size %></p>
-        <p><%= price_won(item.line_total) %></p>
-        <%= form_with url: cart_item_path(item.variant), method: :patch, class: "flex flex-wrap items-center gap-3" do |f| %>
-          <%= f.label :quantity, "수량", for: "quantity_#{item.variant.id}", class: "text-ui font-medium" %>
-          <%= f.number_field :quantity, value: item.quantity, min: 1, max: 99, id: "quantity_#{item.variant.id}", class: "field w-24 h-11" %>
-          <%= f.submit "변경", class: "btn btn-secondary h-11 px-4" %>
-        <% end %>
-        <%= button_to "삭제", cart_item_path(item.variant), method: :delete, class: "btn-text text-caption" %>
+      <div class="border-b border-hairline py-5 flex gap-4">
+        <%= render "shared/product_thumb", product: item.product, link: product_path(item.product) %>
+        <div class="min-w-0 flex-1 space-y-3">
+          <%= link_to item.product.name, product_path(item.product), class: "text-ui font-medium" %>
+          <p class="text-caption text-ink-3"><%= item.variant.color %> / <%= item.variant.size %></p>
+          <p><%= price_won(item.line_total) %></p>
+          <div class="flex items-center gap-3" role="group" aria-label="<%= item.product.name %> 수량">
+            <span class="text-ui font-medium">수량</span>
+            <%= button_to "−", cart_item_path(item.variant), method: :patch, params: { quantity: item.quantity - 1 }, class: "btn btn-secondary h-11 w-11 p-0", form_class: "inline", aria: { label: "수량 줄이기" }, disabled: item.quantity == 1 %>
+            <output class="min-w-8 text-center text-ui tabular-nums" aria-live="polite"><%= item.quantity %></output>
+            <%= button_to "+", cart_item_path(item.variant), method: :patch, params: { quantity: item.quantity + 1 }, class: "btn btn-secondary h-11 w-11 p-0", form_class: "inline", aria: { label: "수량 늘리기" }, disabled: item.quantity == 99 %>
+          </div>
+          <%= button_to "삭제", cart_item_path(item.variant), method: :delete, class: "btn-text text-caption" %>
+        </div>
       </div>
     <% end %>
     <p class="flex justify-between border-t border-line pt-4 text-ui font-medium">합계 <%= price_won(@cart.total, variant: :lg) %></p>
-    <%= link_to "비회원 주문하기", new_checkout_path, class: "btn btn-primary w-full" %>
+    <%= link_to (logged_in? && current_user.member? ? "주문하기" : "비회원 주문하기"), new_checkout_path, class: "btn btn-primary w-full" %>
+    <% unless logged_in? %>
+      <p class="text-caption text-ink-2 mt-3">회원으로 주문하면 내 주문에서 바로 확인할 수 있습니다. <%= link_to "로그인", login_path(return_to: cart_path), class: "btn-text" %></p>
+    <% end %>
   <% end %>
 </div>

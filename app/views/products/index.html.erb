@@ -1,13 +1,13 @@
-<% if mall_admin? %>
+<% if mall_staff? %>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
   <!-- Header -->
   <div class="flex justify-between items-center mb-8">
     <div>
-      <h1 class="text-2xl font-bold text-gray-900 mb-2"><%= mall_admin? ? "상품 관리" : "상품 목록" %></h1>
+      <h1 class="text-2xl font-bold text-gray-900 mb-2"><%= mall_staff? ? "상품 관리" : "상품 목록" %></h1>
       <p class="text-sm text-gray-500">총 <%= @products.count %>개의 상품</p>
     </div>
 
-    <% if mall_admin? %>
+    <% if mall_staff? %>
       <%= link_to "상세스펙 현황", product_specs_path, class: "text-sm underline" %>
     <%= link_to new_product_path, class: "bg-black text-white font-bold px-6 py-3 rounded-md hover:bg-gray-800 transition-colors inline-flex items-center gap-2" do %>
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +48,7 @@
 
             <!-- Meta Info -->
             <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
-              <% if mall_admin? %>
+              <% if mall_staff? %>
                 <span>재고: <%= product.available_stock %></span>
               <% elsif product.sold_out? %>
                 <span class="px-2 py-0.5 bg-gray-100 text-gray-600 font-medium rounded">품절</span>
@@ -59,7 +59,7 @@
             </div>
 
             <!-- AI Attributes Tags -->
-            <% if mall_admin? && product.ai_attributes.present? %>
+            <% if mall_staff? && product.ai_attributes.present? %>
               <div class="flex flex-wrap gap-1 mb-3">
                 <% if product.mood.present? %>
                   <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded">
@@ -76,11 +76,11 @@
 
             <!-- Actions -->
             <div class="flex gap-2 pt-3 border-t border-gray-100">
-              <% if mall_admin? %>
+              <% if mall_staff? %>
               <span class="self-center px-2 py-0.5 text-xs font-bold rounded <%= product.published? ? 'bg-gray-100 text-gray-600' : 'bg-amber-100 text-amber-800' %>"><%= product.published? ? "공개" : "초안" %></span>
               <%= link_to "수정", edit_product_path(product), class: "flex-1 text-center text-xs font-medium text-gray-700 py-2 border border-gray-300 rounded hover:border-black transition-colors" %>
               <% end %>
-              <%= link_to (mall_admin? ? "상세페이지 미리보기" : "보기"), product_path(product), class: "flex-1 text-center text-xs font-medium text-white bg-black py-2 rounded hover:bg-gray-800 transition-colors" %>
+              <%= link_to (mall_staff? ? "상세페이지 미리보기" : "보기"), product_path(product), class: "flex-1 text-center text-xs font-medium text-white bg-black py-2 rounded hover:bg-gray-800 transition-colors" %>
             </div>
           </div>
         </div>
@@ -95,7 +95,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
       </svg>
       <h3 class="mt-2 text-sm font-medium text-gray-900">등록된 상품이 없습니다</h3>
-      <% if mall_admin? %>
+      <% if mall_staff? %>
       <p class="mt-1 text-sm text-gray-500">첫 번째 상품을 등록해보세요</p>
       <div class="mt-6">
         <%= link_to new_product_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800" do %>

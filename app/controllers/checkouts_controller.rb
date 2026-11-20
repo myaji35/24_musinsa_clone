@@ -4,16 +4,19 @@ class CheckoutsController < ApplicationController
 
   def new
     @checkout = {}
+    @checkout["recipient_name"] = current_user.name if logged_in? && current_user.member? && current_user.name.present?
   end
 
   def create
     @checkout = params.require(:checkout).permit(:recipient_name, :phone, :postal_code, :address1, :address2, :birth_year, :privacy_consent).to_h
     unless @checkout["privacy_consent"] == "1"
+      @consent_error = true
       @errors = [ "개인정보 수집·이용에 동의해 주세요" ]
       return render :new, status: :unprocessable_entity
     end
 
     result = Orders::Intake.call(
+      user: (current_user if logged_in? && current_user.member?),
       items: @cart.items.map { |item| { variant_id: item.variant.id, quantity: item.quantity } },
       address: @checkout.slice("recipient_name", "phone", "postal_code", "address1", "address2"),
       birth_year: @checkout["birth_year"].presence, save_consent: false, traffic_source: current_traffic_source

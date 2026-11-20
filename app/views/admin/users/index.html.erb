@@ -1,0 +1,75 @@
+<div class="max-w-5xl mx-auto p-6">
+  <h1 class="text-2xl font-bold mb-6">사용자 관리</h1>
+  <% filters = params.permit(:q, :role, :status, :page).to_h %>
+  <%= form_with url: admin_users_path, method: :get, class: "flex flex-col md:flex-row gap-2 mb-4" do %>
+    <%= search_field_tag :q, params[:q], placeholder: "이름·이메일 검색", aria: { label: "이름·이메일 검색어" }, class: "field min-h-[44px] flex-1" %>
+    <%= select_tag :role, options_for_select([["전체 역할", ""]] + User.roles.keys.map { |role| [User.new(role: role).role_label, role] }, params[:role]), aria: { label: "역할" }, class: "field min-h-[44px]" %>
+    <%= select_tag :status, options_for_select([["전체 상태", ""], ["이용 중", "active"], ["정지", "suspended"]], params[:status]), aria: { label: "상태" }, class: "field min-h-[44px]" %>
+    <%= submit_tag "검색", name: nil, class: "btn min-h-[44px]" %>
+  <% end %>
+  <p class="mb-4">총 <%= @total_count %>명</p>
+  <% if @users.empty? %>
+    <p>조건에 맞는 사용자가 없습니다.</p>
+  <% end %>
+  <ul class="md:hidden text-ui">
+    <% @users.each do |user| %>
+      <li class="border-b border-hairline py-4">
+        <p class="font-medium"><%= user.name %></p>
+        <p class="break-all"><%= user.email %></p>
+        <p class="text-caption text-ink-2"><%= user.account&.name || "몰" %> · <%= user.role_label %> · <%= user.created_at.strftime("%Y-%m-%d") %></p>
+        <p><%= user.suspended? ? "정지" : "이용 중" %><% if user.suspended? %> · 정지일 <%= user.suspended_at.strftime("%Y-%m-%d") %><% end %></p>
+        <div class="flex flex-wrap items-center gap-2 mt-2">
+          <% if user.suspended? %>
+            <%= button_to "정지 해제", unsuspend_admin_user_path(user, filters), method: :patch, class: "btn min-h-[44px]" %>
+          <% elsif !user.admin? && user != current_user %>
+            <%= button_to "정지", suspend_admin_user_path(user, filters), method: :patch, class: "btn min-h-[44px]", data: { turbo_confirm: "이 계정을 정지할까요? 정지하면 즉시 로그아웃됩니다." } %>
+          <% end %>
+          <%= form_with model: user, url: admin_user_path(user), method: :patch, class: "flex gap-2" do |form| %>
+            <%= form.select :role, User.roles.keys.map { |role| [ User.new(role: role).role_label, role ] }, {}, class: "flex-1", aria: { label: "#{user.name} 역할" } %>
+            <%= form.submit "변경", class: "btn" %>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+  <div class="hidden md:block">
+  <table class="w-full text-left">
+    <thead>
+      <tr><th>이름</th><th>이메일</th><th>소속 계정</th><th>역할</th><th>가입일</th><th>상태</th><th>계정 정지</th><th>역할 변경</th></tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td><%= user.account&.name || "몰" %></td>
+          <td><%= user.role_label %></td>
+          <td><%= user.created_at.strftime("%Y-%m-%d") %></td>
+          <td><%= user.suspended? ? "정지" : "이용 중" %><% if user.suspended? %> · 정지일 <%= user.suspended_at.strftime("%Y-%m-%d") %><% end %></td>
+          <td>
+            <% if user.suspended? %>
+              <%= button_to "정지 해제", unsuspend_admin_user_path(user, filters), method: :patch, class: "btn min-h-[44px]" %>
+            <% elsif !user.admin? && user != current_user %>
+              <%= button_to "정지", suspend_admin_user_path(user, filters), method: :patch, class: "btn min-h-[44px]", data: { turbo_confirm: "이 계정을 정지할까요? 정지하면 즉시 로그아웃됩니다." } %>
+            <% end %>
+          </td>
+          <td>
+            <%= form_with model: user, url: admin_user_path(user), method: :patch, class: "flex items-center gap-2" do |form| %>
+              <%= form.select :role, User.roles.keys.map { |role| [ User.new(role: role).role_label, role ] }, {}, aria: { label: "#{user.name} 역할" } %>
+              <%= form.submit "변경", class: "hover:underline" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  </div>
+  <nav aria-label="사용자 목록 페이지" class="flex gap-4 mt-6">
+    <% if @page > 1 %>
+      <%= link_to "이전", admin_users_path(filters.merge(page: @page - 1)), class: "inline-flex items-center min-h-[44px] px-4" %>
+    <% end %>
+    <% if @page < @total_pages %>
+      <%= link_to "다음", admin_users_path(filters.merge(page: @page + 1)), class: "inline-flex items-center min-h-[44px] px-4" %>
+    <% end %>
+  </nav>
+</div>

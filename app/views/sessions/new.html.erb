@@ -1,5 +1,5 @@
 <div class="max-w-[400px] mx-auto px-gutter py-8 md:py-12">
-  <h1 class="text-title font-semibold mb-6">관리자 로그인</h1>
+  <h1 class="text-title font-semibold mb-6">로그인</h1>
   <%= form_with url: login_path, class: "space-y-4" do |form| %>
     <div>
       <%= form.label :email, "이메일", class: "block text-ui font-medium mb-2" %>
@@ -7,8 +7,12 @@
     </div>
     <div>
       <%= form.label :password, "비밀번호", class: "block text-ui font-medium mb-2" %>
-      <%= form.password_field :password, required: true, autocomplete: "current-password", class: "field" %>
+      <div class="relative" data-controller="password-visibility">
+        <%= form.password_field :password, required: true, autocomplete: "current-password", class: "field pr-16", data: { password_visibility_target: "input" } %>
+        <button type="button" hidden class="tap btn-text text-caption absolute right-3 top-1/2 -translate-y-1/2" data-password-visibility-target="toggle" data-action="password-visibility#toggle" aria-pressed="false" aria-label="비밀번호 보기">보기</button>
+      </div>
     </div>
     <%= form.submit "로그인", class: "btn btn-primary w-full" %>
   <% end %>
+  <p class="text-ui mt-6">아직 회원이 아니신가요? <%= link_to "회원가입", join_path(return_to: params[:return_to].presence), class: "btn-text" %></p>
 </div>

@@ -191,4 +191,28 @@ class OrderTest < ActiveSupport::TestCase
     end
     assert_equal "shipped", order.reload.status
   end
+  test "결제 대기와 결제 완료는 취소만 요청할 수 있다" do
+    order = orders(:one)
+    %w[pending paid].each do |status|
+      order.status = status
+      assert_equal [ "cancel" ], order.claimable_kinds
+    end
+    %w[shipped cancelled].each do |status|
+      order.status = status
+      assert_empty order.claimable_kinds
+    end
+  end
+
+  test "배송 완료 당일부터 칠 일 경계까지 반품과 교환을 요청할 수 있다" do
+    order = orders(:two)
+    today = Date.new(2026, 11, 17)
+    [ today, today - 7 ].each do |date|
+      order.delivered_at = date.in_time_zone
+      assert_equal [ "return", "exchange" ], order.claimable_kinds(today)
+    end
+    [ today - 8, today + 1, nil ].each do |date|
+      order.delivered_at = date&.in_time_zone
+      assert_empty order.claimable_kinds(today)
+    end
+  end
 end

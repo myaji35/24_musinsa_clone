@@ -6,6 +6,55 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
                  address1: "서울시 테스트로 1", address2: "비밀상세 201호" }
   end
 
+  test "회원 장바구니와 주문서에 회원 문구와 이름을 표시한다" do
+    member = users(:member)
+    post login_path, params: { email: member.email, password: "TestPassword!2026" }
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    get cart_path
+    assert_select "a[href=?]", new_checkout_path, text: "주문하기"
+    get new_checkout_path
+    assert_select "h1", text: "주문서"
+    assert_select 'input[name="checkout[recipient_name]"][value=?]', member.name
+    with_payout_env({}) do
+      get new_checkout_path
+      assert_select '[data-testid="checkout-payment-note"]', text: /준비되면 내 주문에서 확인하실 수 있습니다\./
+    end
+  end
+
+  test "손님 장바구니와 주문서에 비회원 문구를 표시한다" do
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    get cart_path
+    assert_select "a[href=?]", new_checkout_path, text: "비회원 주문하기"
+    assert_select "p.text-caption a.btn-text[href=?]", login_path(return_to: cart_path), text: "로그인"
+    get new_checkout_path
+    assert_select "h1", text: "비회원 주문서"
+    assert_select 'input[name="checkout[phone]"][type="tel"][autocomplete="shipping tel"]'
+    assert_select 'input[name="checkout[postal_code]"][autocomplete="shipping postal-code"]'
+  end
+
+  test "회원 로그인 상태의 주문은 회원에게 연결한다" do
+    member = users(:member)
+    post login_path, params: { email: member.email, password: "TestPassword!2026" }
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    assert_difference "Order.count", 1 do
+      post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
+    end
+    order = Order.order(:id).last
+    assert_redirected_to customer_order_path(order.checkout_number)
+    assert_equal member, order.user
+  end
+
+  test "관리자 로그인 상태의 주문은 회원에게 연결하지 않는다" do
+    post login_path, params: { email: users(:one).email, password: "TestPassword!2026" }
+    post cart_items_path, params: { variant_id: variants(:one).id }
+    assert_difference "Order.count", 1 do
+      post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
+    end
+    order = Order.order(:id).last
+    assert_redirected_to customer_order_path(order.checkout_number)
+    assert_nil order.user
+  end
+
   test "유입 링크부터 주문까지 마지막 유입을 정제하여 유지한다" do
     character = Character.create!(name: "하린", handle: "SeoHARIN")
     get product_path(products(:one)), params: { utm_source: "instagram" }
@@ -83,11 +132,18 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "전자상거래법에 따라 #{Rails.configuration.x.order_record_retention_years}년 보관 뒤 파기"
     assert_select 'a[href=?][target="_blank"][rel="noopener"]', privacy_policy_path, text: "개인정보처리방침 보기", count: 1
     assert_includes response.body, variants(:one).product.name
+    assert_select 'ul li div[class~="w-12"][class~="aspect-[2/3]"]', count: 1
     assert_select 'input[name="checkout[save_consent]"]', count: 0
+    assert_select 'input[type="checkbox"][name="checkout[privacy_consent]"][required]'
+    assert_select 'input[type="checkbox"][name="checkout[privacy_consent]"][aria-invalid]', count: 0
+    assert_select 'input[type="checkbox"][name="checkout[privacy_consent]"][aria-describedby]', count: 0
     assert_no_difference "Order.count" do
       post checkout_path, params: { checkout: @address }
     end
     assert_response :unprocessable_entity
+    assert_select "#privacy-consent-error.text-caption.text-sale", text: "개인정보 수집·이용에 동의해 주세요"
+    assert_select 'input[type="checkbox"][name="checkout[privacy_consent]"][aria-invalid="true"][aria-describedby="privacy-consent-error"]'
+    assert_select '#checkout-errors[role="alert"][tabindex="-1"][autofocus]'
     assert_select 'input[name="checkout[phone]"][value="010-7777-9876"]'
     post checkout_path, params: { checkout: @address.merge(privacy_consent: "1", postal_code: "bad") }
     assert_response :unprocessable_entity
@@ -100,6 +156,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
       post checkout_path, params: { checkout: @address.merge(privacy_consent: "1") }
     end
     order = Order.order(:id).last
+    assert_nil order.user
     assert_equal "pending", order.status
     assert_not order.shipping_address.save_consent?
     assert_redirected_to customer_order_path(order.checkout_number)

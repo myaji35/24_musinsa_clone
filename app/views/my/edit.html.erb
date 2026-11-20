@@ -1,0 +1,19 @@
+<div class="max-w-[400px] mx-auto px-gutter py-8 md:py-12">
+  <%= render "my/nav", current: :info %>
+  <h1 class="text-title font-semibold mb-6">이름 수정</h1>
+  <% if @user.errors.any? %>
+    <ul role="alert" class="text-ui mb-6">
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+  <%= form_with model: @user, url: my_path, method: :patch, class: "space-y-4" do |form| %>
+    <div>
+      <%= form.label :name, "이름", class: "block text-ui font-medium mb-2" %>
+      <%= form.text_field :name, required: true, autocomplete: "name", class: "field" %>
+    </div>
+    <%= form.submit "저장", class: "btn btn-primary w-full" %>
+  <% end %>
+  <%= link_to "취소", my_path, class: "btn btn-secondary w-full mt-3" %>
+</div>

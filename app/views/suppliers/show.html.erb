@@ -2,7 +2,7 @@
   <div class="flex flex-wrap items-start justify-between gap-3 mb-6">
     <h1 class="text-2xl md:text-3xl font-bold"><%= @supplier.name %></h1>
     <div class="flex gap-2 shrink-0">
-      <%= link_to "수정", edit_supplier_path(@supplier), class: "btn btn-primary" %>
+      <%= link_to "수정", edit_supplier_path(@supplier), class: "btn btn-primary" if mall_admin? %>
       <%= link_to "목록", suppliers_path, class: "btn" %>
     </div>
   </div>
@@ -122,7 +122,9 @@
   <div class="flex flex-wrap gap-4 items-center border-b pb-3">
     <span><%= account.name %> · <%= account.email %></span>
     <span class="bg-gray-100 px-2 py-1 rounded"><%= account.active? ? "활성" : "비활성" %></span>
-    <%= button_to(account.active? ? "비활성화" : "활성화", toggle_supplier_supplier_account_path(@supplier, account), method: :patch, class: "text-blue-700") %>
+    <% if mall_admin? %>
+      <%= button_to(account.active? ? "비활성화" : "활성화", toggle_supplier_supplier_account_path(@supplier, account), method: :patch, class: "text-blue-700") %>
+    <% end %>
   </div>
 <% end %>
 <%= form_with model: SupplierAccount.new, url: supplier_supplier_accounts_path(@supplier), class: "space-y-3 max-w-lg" do |f| %>

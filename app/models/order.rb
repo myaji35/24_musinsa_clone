@@ -1,23 +1,28 @@
 class Order < ApplicationRecord
+  STATUS_LABELS = { "pending" => "결제 대기", "paid" => "결제 완료", "shipped" => "배송 중", "delivered" => "배송 완료", "cancelled" => "취소", "returned" => "반품 완료" }.freeze
+
   # 배송지 파기 시계가 도는 종결 상태 (ISS-058 C안)
-  FINISHED_STATUSES = %w[delivered cancelled].freeze
+  FINISHED_STATUSES = %w[delivered cancelled returned].freeze
 
   # Relations
+  belongs_to :user, optional: true
   belongs_to :source_character, class_name: "Character", optional: true
   belongs_to :anony_customer
   belongs_to :product
   belongs_to :variant
   belongs_to :shipping_address, optional: true
+  has_many :order_claims, dependent: :restrict_with_error
   has_one :shipping_record, class_name: "OrderShippingRecord"
 
   # Validations
   validates :quantity, numericality: { greater_than: 0 }
-  validates :status, inclusion: { in: %w[pending paid shipped delivered cancelled] }
+  validates :status, inclusion: { in: %w[pending paid shipped delivered cancelled returned] }
 
   validate :prevent_cancellation_after_shipping
 
   # Callbacks
   after_update :restore_cancelled_stock
+  after_update :restore_returned_stock
   before_save :record_delivery_time
   after_save :schedule_shipping_address_purge, if: -> { saved_change_to_status? && status.in?(FINISHED_STATUSES) }
   before_create :generate_order_number
@@ -34,6 +39,23 @@ class Order < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
 
   # Methods
+
+  def claimable_kinds(today = Date.current)
+    return [ "cancel" ] if status.in?(%w[pending paid])
+    if status == "delivered" && delivered_at && delivered_at.to_date.between?(today - 7, today)
+      return [ "return", "exchange" ]
+    end
+
+    []
+  end
+
+  def active_claim
+    order_claims.where(status: %w[requested approved]).order(:id).first
+  end
+
+  def status_label
+    STATUS_LABELS.fetch(status, status)
+  end
 
   def self.traffic_summary(by:)
     column = { platform: :source_platform, character: :source_character_id, video: :source_video_id }.fetch(by)
@@ -84,6 +106,15 @@ class Order < ApplicationRecord
     Variant.where(id: variant_id).update_all([ "stock = COALESCE(stock, 0) + ?", quantity ])
     StockLog.create!(variant: variant, log_type: "in", quantity: quantity, order_id: id,
                      note: "주문 취소 복원 #{order_number}", skip_variant_stock_update: true)
+  end
+
+  def restore_returned_stock
+    return unless saved_change_to_status?(from: "delivered", to: "returned")
+    return if StockLog.exists?(order_id: id, log_type: "in")
+
+    Variant.where(id: variant_id).update_all([ "stock = COALESCE(stock, 0) + ?", quantity ])
+    StockLog.create!(variant: variant, log_type: "in", quantity: quantity, order_id: id,
+                     note: "반품 입고 #{order_number}", skip_variant_stock_update: true)
   end
 
   def record_delivery_time

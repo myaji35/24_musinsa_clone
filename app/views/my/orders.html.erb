@@ -1,0 +1,94 @@
+<div class="max-w-[400px] md:max-w-3xl mx-auto px-gutter py-8 md:py-12">
+  <%= render "my/nav", current: :orders %>
+  <h1 class="text-title font-semibold mb-6">내 주문</h1>
+  <% if @orders.any? %>
+    <ul class="md:hidden text-ui mb-6">
+      <% @orders.each do |order| %>
+        <li class="border-b border-hairline py-4 flex gap-4">
+          <%= render "shared/product_thumb", product: order.product, link: (customer_order_path(order.checkout_number) if order.checkout_number.present?) %>
+          <div class="min-w-0 flex-1 space-y-1">
+            <p class="text-caption font-medium"><%= order.status_label %></p>
+            <% if order.checkout_number.present? %>
+              <%= link_to(order.product.name, customer_order_path(order.checkout_number), class: "tap font-medium underline-offset-4 hover:underline") %>
+            <% else %>
+              <p class="font-medium"><%= order.product.name %></p>
+            <% end %>
+            <p><%= order.variant.color %> / <%= order.variant.size %> · 수량 <%= order.quantity %></p>
+            <p><%= price_won(order.total_price) %></p>
+            <p class="text-caption text-ink-2"><%= order.order_number %> · <%= order.created_at.strftime("%Y.%m.%d") %></p>
+            <% active_claim = order.active_claim %>
+            <% latest_claim = order.order_claims.where(status: %w[completed rejected]).order(created_at: :desc, id: :desc).first %>
+            <% if active_claim %>
+              <p class="text-ui"><%= active_claim.kind_label %> <%= active_claim.status_label %></p>
+            <% elsif order.claimable_kinds.any? %>
+              <%= link_to(order.claimable_kinds.include?("cancel") ? "취소 요청" : "반품·교환 요청", new_my_order_claim_path(order), class: "tap btn-text inline-flex items-center min-h-11 text-ui") %>
+            <% end %>
+            <% if latest_claim %>
+              <p class="text-caption text-ink-2"><%= latest_claim.kind_label %> <%= latest_claim.status_label %></p>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    <div class="hidden md:block overflow-x-auto mb-6">
+      <table class="w-full text-ui">
+        <thead>
+          <tr>
+            <th scope="col" class="pb-2 border-b border-line">주문번호</th>
+            <th scope="col" class="pb-2 border-b border-line">상품명</th>
+            <th scope="col" class="pb-2 border-b border-line">옵션 색/사이즈</th>
+            <th scope="col" class="pb-2 border-b border-line">수량</th>
+            <th scope="col" class="pb-2 border-b border-line">금액</th>
+            <th scope="col" class="pb-2 border-b border-line">상태</th>
+            <th scope="col" class="pb-2 border-b border-line">주문일</th>
+            <th scope="col" class="pb-2 border-b border-line">요청</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr class="border-b border-hairline">
+              <td class="py-3 align-middle">
+                <% if order.checkout_number.present? %>
+                  <%= link_to(order.order_number, customer_order_path(order.checkout_number), class: "tap underline underline-offset-4") %>
+                <% else %>
+                  <%= order.order_number %>
+                <% end %>
+              </td>
+              <td class="py-3 align-middle">
+                <div class="flex items-center gap-3">
+                  <%= render "shared/product_thumb", product: order.product, size: :sm, link: (customer_order_path(order.checkout_number) if order.checkout_number.present?) %>
+                  <% if order.checkout_number.present? %>
+                    <%= link_to(order.product.name, customer_order_path(order.checkout_number), class: "tap underline-offset-4 hover:underline") %>
+                  <% else %>
+                    <%= order.product.name %>
+                  <% end %>
+                </div>
+              </td>
+              <td class="py-3 align-middle"><%= order.variant.color %> / <%= order.variant.size %></td>
+              <td class="py-3 align-middle"><%= order.quantity %></td>
+              <td class="py-3 align-middle"><%= price_won(order.total_price) %></td>
+              <td class="py-3 align-middle"><%= order.status_label %></td>
+              <td class="py-3 align-middle"><%= order.created_at.strftime("%Y.%m.%d") %></td>
+              <td class="py-3 align-middle">
+                <% active_claim = order.active_claim %>
+                <% latest_claim = order.order_claims.where(status: %w[completed rejected]).order(created_at: :desc, id: :desc).first %>
+                <% if active_claim %>
+                  <p class="text-ui"><%= active_claim.kind_label %> <%= active_claim.status_label %></p>
+                <% elsif order.claimable_kinds.any? %>
+                  <%= link_to(order.claimable_kinds.include?("cancel") ? "취소 요청" : "반품·교환 요청", new_my_order_claim_path(order), class: "tap btn-text inline-flex items-center min-h-11 text-ui") %>
+                <% end %>
+                <% if latest_claim %>
+                  <p class="text-caption text-ink-2"><%= latest_claim.kind_label %> <%= latest_claim.status_label %></p>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-ui mb-4">아직 회원으로 주문한 내역이 없습니다.</p>
+    <%= link_to "쇼핑하러 가기", products_path, class: "btn btn-primary w-full" %>
+    <p class="text-caption text-ink-2 mt-4">로그인 전에 한 주문은 <%= link_to "비회원 주문조회", orders_lookup_path, class: "btn-text" %>에서 확인하세요.</p>
+  <% end %>
+</div>

@@ -1,4 +1,4 @@
-<% cache([ "product-card-v5", product, product.variants.map(&:updated_at).max&.to_i, product.worn_character&.updated_at&.to_i, local_assigns[:show_category] ], expires_in: 10.minutes) do %>
+<% cache([ "product-card-v6", product, product.variants.map(&:updated_at).max&.to_i, product.worn_character&.updated_at&.to_i, local_assigns[:show_category] ], expires_in: 10.minutes) do %>
 <div class="group block relative">
 
   <%# 상품 이미지 영역 %>
@@ -32,7 +32,7 @@
               data-wishlist-target="button"
               aria-label="찜하기"
               aria-pressed="false"
-              class="w-8 h-8 bg-transparent flex items-center justify-center text-ink">
+              class="w-8 h-8 bg-transparent flex items-center justify-center text-ink tap">
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
              fill="none"
              viewBox="0 0 24 24"

@@ -23,6 +23,23 @@ Rails.application.routes.draw do
   end
   post "/webhooks/shopify/orders_create", to: "webhooks/shopify#orders_create"
 
+  namespace :admin do
+    resources :access_logs, only: :index
+    resources :order_claims, only: [ :index, :show ] do
+      member do
+        patch :approve
+        patch :reject
+        patch :complete
+      end
+    end
+    resources :users, only: [ :index, :update ] do
+      member do
+        patch :suspend
+        patch :unsuspend
+      end
+    end
+  end
+
   resources :admin_orders, only: :index do
     member { patch :confirm_payment }
   end
@@ -77,12 +94,26 @@ Rails.application.routes.draw do
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
+  get "join", to: "member_signups#new"
+  post "join", to: "member_signups#create"
+  get "my", to: "my#show", as: :my
+  get "my/edit", to: "my#edit", as: :edit_my
+  patch "my", to: "my#update"
+  get "my/withdraw", to: "my#withdraw", as: :withdraw_my
+  delete "my", to: "my#destroy"
+  get "my/password", to: "my#edit_password", as: :edit_my_password
+  patch "my/password", to: "my#update_password", as: :my_password
+  get "my/orders/:id/claims/new", to: "my_claims#new", as: :new_my_order_claim
+  post "my/orders/:id/claims", to: "my_claims#create", as: :my_order_claims
+  get "my/orders", to: "my#orders", as: :my_orders
 
   resource :cart, only: [ :show ]
   resources :cart_items, only: [ :create, :update, :destroy ]
   resource :checkout, only: [ :new, :create ]
   get "orders/lookup", to: "customer_orders#lookup", as: :orders_lookup
   post "orders/lookup", to: "customer_orders#verify"
+  get "orders/:checkout_number/claims/new", to: "customer_claims#new", as: :new_customer_order_claim
+  post "orders/:checkout_number/claims", to: "customer_claims#create", as: :customer_order_claims
   get "orders/:checkout_number", to: "customer_orders#show", as: :customer_order
 
   resources :characters, only: [ :show ], param: :handle

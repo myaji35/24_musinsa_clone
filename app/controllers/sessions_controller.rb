@@ -1,17 +1,37 @@
 class SessionsController < ApplicationController
   skip_before_action :require_admin
+  rate_limit to: 10, within: 3.minutes, only: :create
 
   def new
+    if logged_in?
+      redirect_to(mall_staff? ? purchase_orders_path : root_path)
+    elsif (return_to = safe_return_path(params[:return_to]))
+      session[:return_to] = return_to
+    end
   end
 
   def create
     user = User.find_by(email: params[:email].to_s.strip.downcase)
 
     if user&.password_digest.present? && user.authenticate(params[:password].to_s)
+      if user.suspended?
+        flash.now[:alert] = "이용이 정지된 계정입니다. 고객센터로 문의해 주세요."
+        render :new, status: :unprocessable_entity
+        return
+      end
+
       return_to = session[:return_to]
+      cart = session[:cart]
       reset_session
+      session[:cart] = cart if cart.present?
       session[:user_id] = user.id
-      destination = mall_admin? ? (safe_return_path(return_to) || purchase_orders_path) : workspace_path
+      destination = if mall_staff?
+        safe_return_path(return_to) || purchase_orders_path
+      elsif current_account && current_account != Account.primary_or_nil
+        workspace_path
+      else
+        safe_return_path(return_to) || root_path
+      end
       if user.must_change_password?
         session[:return_to] = safe_return_path(return_to)
         destination = account_password_path
@@ -26,20 +46,5 @@ class SessionsController < ApplicationController
   def destroy
     reset_session
     redirect_to root_path, status: :see_other, notice: "로그아웃되었습니다."
-  end
-
-  private
-
-  def safe_return_path(path)
-    return unless path.is_a?(String) && path.start_with?("/")
-    return if path.start_with?("//", "/\\")
-
-    uri = URI.parse(path)
-    return if uri.scheme || uri.host
-    return if [ login_path, logout_path ].include?(uri.path.delete_suffix("/"))
-
-    path
-  rescue URI::InvalidURIError
-    nil
   end
 end

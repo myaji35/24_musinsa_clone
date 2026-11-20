@@ -32,6 +32,8 @@
   </head>
 
   <body class="bg-paper text-ink font-sans antialiased<%= " min-h-screen flex flex-col" if operator_area? %>" data-controller="lazy-load">
+    <% member = logged_in? && current_user.member? %>
+    <% auth_return_to = request.fullpath unless [ login_path, join_path ].include?(request.path) %>
     <div class="relative h-8 md:h-band bg-ink text-inverse text-caption flex items-center justify-center px-gutter">
       <% if operator_area? %>
         <p class="font-bold">JIEUM 운영 화면</p>
@@ -42,27 +44,30 @@
       <nav class="absolute right-gutter hidden md:flex items-center gap-4" aria-label="계정 메뉴">
             <% if logged_in? %>
               <span><%= current_user.name.presence || current_user.email %></span>
-              <%= link_to "내 워크스페이스", workspace_path, class: "hover:underline" unless mall_admin? %>
-              <%= link_to "비밀번호 변경", account_password_path, class: "hover:underline" %>
-              <%= button_to "로그아웃", logout_path, method: :delete, class: "hover:underline" %>
+              <%= link_to "내 정보", my_path, class: "tap hover:underline" %>
+              <%= link_to "비밀번호 변경", account_password_path, class: "tap hover:underline" if mall_staff? %>
+              <%= link_to "내 주문", my_orders_path, class: "tap hover:underline" if member %>
+              <%= link_to "내 워크스페이스", workspace_path, class: "tap hover:underline" if tenant_member? %>
+              <%= button_to "로그아웃", logout_path, method: :delete, class: "tap hover:underline" %>
             <% else %>
-              <%= link_to "로그인", login_path, class: "hover:underline" %>
+              <%= link_to "로그인", login_path(return_to: auth_return_to), class: "tap hover:underline" %>
+              <%= link_to "회원가입", join_path(return_to: auth_return_to), class: "tap hover:underline" %>
             <% end %>
             <% unless operator_area? %>
-              <%= link_to "주문조회", orders_lookup_path, class: "hover:underline" %>
-              <%= link_to "장바구니 (#{cart_count})", cart_path, class: "hover:underline" %>
+            <%= link_to "주문조회", orders_lookup_path, class: "tap hover:underline" unless member %>
+            <%= link_to "장바구니 (#{cart_count})", cart_path, class: "tap hover:underline" %>
             <% end %>
       </nav>
     </div>
     <header class="sticky top-0 z-50 bg-paper border-b border-line h-header-m md:h-header px-gutter grid grid-cols-[1fr_auto_1fr] items-center">
       <div class="flex items-center gap-4">
         <details name="header-panel" class="menu">
-          <summary class="text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">메뉴</summary>
-          <div class="absolute left-0 right-0 top-full bg-scrim border-b border-line px-gutter py-6">
+          <summary class="tap text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">메뉴</summary>
+          <div class="absolute left-0 right-0 top-full bg-paper border-b border-line px-gutter py-6 shadow-[0_8px_16px_rgba(0,0,0,0.06)] max-h-[calc(100dvh-var(--spacing-header-m)-2rem)] md:max-h-[calc(100dvh-var(--spacing-header)-var(--spacing-band))] overflow-y-auto overscroll-contain overflow-x-hidden">
             <div class="md:hidden mb-4">
               <%= form_with url: root_path, method: :get, local: true, class: "flex items-center gap-2 w-full" do |f| %>
                   <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", aria: { label: "검색어" }, class: "field h-11 border-0 border-b border-line" %>
-                  <button type="submit" class="sym text-ui font-medium shrink-0">검색</button>
+                  <button type="submit" class="tap sym text-ui font-medium shrink-0">검색</button>
                 <% end %>
             </div>
             <nav aria-label="사이트 메뉴">
@@ -75,7 +80,7 @@
                   <% end %>
                 </nav>
               <% end %>
-              <% if mall_admin? && !operator_area? %>
+              <% if mall_staff? && !operator_area? %>
                 <div aria-label="모바일 관리자 메뉴" class="md:hidden border-b border-hairline px-gutter py-2 text-caption flex flex-wrap gap-x-4 gap-y-1">
                   <% operator_menu_groups.each do |group_name, links| %>
                     <div class="w-full">
@@ -96,29 +101,41 @@
               <% shop_categories.map(&:first).each do |name| %>
                 <li><%= link_to name, root_path(category: name, anchor: "ranking"), class: "text-ui font-medium py-2 block" %></li>
               <% end %>
-              <li class="md:hidden"><%= link_to "주문조회", orders_lookup_path, class: "text-ui font-medium py-2 block" %></li>
             </ul>
+            <div aria-label="모바일 계정 메뉴" class="md:hidden border-t border-hairline mt-2 pt-2">
+              <p class="text-caption text-ink-2 py-1"><%= logged_in? ? "내 계정" : "계정" %></p>
+              <% account_links = logged_in? ? [ [ "내 정보", my_path ] ] : [ [ "로그인", login_path(return_to: auth_return_to) ], [ "회원가입", join_path(return_to: auth_return_to) ] ] %>
+              <% account_links << [ "내 주문", my_orders_path ] if member %>
+              <% account_links.each do |name, path| %>
+                <%= link_to name, path, class: "text-ui font-medium py-2 block#{' underline' if current_page?(path)}", aria: { current: (current_page?(path) ? "page" : nil) } %>
+              <% end %>
+              <%= button_to "로그아웃", logout_path, method: :delete, class: "text-ui font-medium py-2 block" if logged_in? %>
+              <% unless member %>
+                <% path = orders_lookup_path %>
+                <%= link_to(logged_in? ? "주문조회" : "비회원 주문조회", path, class: "text-ui font-medium py-2 block#{' underline' if current_page?(path)}", aria: { current: (current_page?(path) ? "page" : nil) }) %>
+              <% end %>
+            </div>
           </div>
         </details>
         <% unless operator_area? %>
         <details name="header-panel" class="search hidden md:block">
-          <summary class="text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">검색</summary>
-          <div class="absolute left-0 right-0 top-full bg-scrim border-b border-line px-gutter py-6">
+          <summary class="tap text-ui font-medium list-none cursor-pointer h-chip inline-flex items-center">검색</summary>
+          <div class="absolute left-0 right-0 top-full bg-paper border-b border-line px-gutter py-6 shadow-[0_8px_16px_rgba(0,0,0,0.06)] max-h-[calc(100dvh-var(--spacing-header-m)-2rem)] md:max-h-[calc(100dvh-var(--spacing-header)-var(--spacing-band))] overflow-y-auto overscroll-contain overflow-x-hidden">
             <%= form_with url: root_path, method: :get, local: true, class: "flex items-center gap-2 w-full" do |f| %>
                   <%= f.text_field :q, value: params[:q], placeholder: "검색어를 입력하세요", aria: { label: "검색어" }, class: "field h-11 border-0 border-b border-line" %>
-                  <button type="submit" class="sym text-ui font-medium shrink-0">검색</button>
+                  <button type="submit" class="tap sym text-ui font-medium shrink-0">검색</button>
                 <% end %>
           </div>
         </details>
         <% end %>
       </div>
-      <a href="/" class="font-display font-medium text-[18px] md:text-[22px] tracking-wordmark uppercase">JIEUM</a>
+      <a href="/" class="tap font-display font-medium text-[18px] md:text-[22px] tracking-wordmark uppercase">JIEUM</a>
       <div class="flex items-center justify-end gap-4 text-ui font-medium whitespace-nowrap">
         <% if operator_area? %>
           <span class="text-caption text-ink-2 truncate max-w-[10rem]"><%= current_user.name.presence || current_user.email %></span>
         <% else %>
-          <%= link_to "주문조회", orders_lookup_path, class: "hidden md:inline-flex" %>
-          <a href="<%= cart_path %>" aria-label="장바구니">장바구니 (<% if cart_count.positive? %><%= cart_count %><% else %>0<% end %>)</a>
+        <%= link_to(member ? "내 주문" : "주문조회", member ? my_orders_path : orders_lookup_path, class: "tap hidden md:inline-flex") %>
+        <a href="<%= cart_path %>" class="tap" aria-label="장바구니">장바구니 (<% if cart_count.positive? %><%= cart_count %><% else %>0<% end %>)</a>
         <% end %>
       </div>
     </header>
@@ -130,7 +147,7 @@
       <% end %>
     </div>
     <% end %>
-      <% if mall_admin? %>
+      <% if mall_staff? %>
         <nav aria-label="관리 메뉴">
         <div aria-label="데스크톱 관리자 메뉴" class="hidden md:block">
           <div class="border-b border-hairline px-gutter py-2 text-caption flex flex-wrap gap-x-4 gap-y-1">
@@ -198,22 +215,22 @@
                 <div>
                    <h2 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">HELP</h2>
                    <ul class="space-y-3">
-                       <li><%= link_to "비회원 주문조회", orders_lookup_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
-                       <li><%= link_to "배송·반품 안내", returns_policy_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
-                       <li><%= link_to "의견 보내기", new_feedback_path, class: "inline-block py-1 text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "비회원 주문조회", orders_lookup_path, class: "tap inline-block py-1 text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "배송·반품 안내", returns_policy_path, class: "tap inline-block py-1 text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "의견 보내기", new_feedback_path, class: "tap inline-block py-1 text-ink-2 hover:text-ink" %></li>
                    </ul>
                 </div>
                 <div>
                    <h2 class="font-display text-eyebrow tracking-eyebrow uppercase text-ink-3 mb-3">POLICY</h2>
                    <ul class="space-y-3">
-                       <li><%= link_to "개인정보처리방침", privacy_policy_path, class: "inline-block py-1 font-medium text-ink-2 hover:text-ink" %></li>
-                       <li><%= link_to "이용약관", terms_policy_path, class: "inline-block py-1 font-normal text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "개인정보처리방침", privacy_policy_path, class: "tap inline-block py-1 font-medium text-ink-2 hover:text-ink" %></li>
+                       <li class="pointer-coarse:py-1"><%= link_to "이용약관", terms_policy_path, class: "tap inline-block py-1 font-normal text-ink-2 hover:text-ink" %></li>
                    </ul>
                 </div>
             </div>
             <div class="mb-8"><%= render "shared/business_info" %></div>
             <div class="border-t border-hairline pt-6 text-center md:text-left text-caption text-ink-3">
-                <p>🤖 Generated with <a href="https://claude.com/claude-code" class="underline hover:text-ink">Claude Code</a> · COPYRIGHT (C) 2026 JIEUM ALL RIGHTS RESERVED.</p>
+                <p>🤖 Generated with <a href="https://claude.com/claude-code" class="tap underline hover:text-ink">Claude Code</a> · COPYRIGHT (C) 2026 JIEUM ALL RIGHTS RESERVED.</p>
             </div>
         </div>
     </footer>

@@ -50,6 +50,29 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test "검색 결과 제목과 상품 수를 표시한다" do
+    get root_path, params: { q: "Best Seller" }
+
+    assert_response :success
+    assert_select "#ranking h2", text: "“Best Seller” 검색 결과"
+    assert_select "#ranking .text-caption", text: /총\s*1개/
+  end
+
+  test "검색 결과가 없으면 인기 상품을 추천한다" do
+    get root_path, params: { q: "zzqq" }
+
+    assert_response :success
+    assert_select "[role=status] section h3", text: "이런 상품은 어떠세요"
+    assert_select "[role=status] section .grid h3 a", minimum: 1
+  end
+
+  test "검색어가 없으면 랭킹 제목을 표시한다" do
+    get root_path
+
+    assert_response :success
+    assert_select "#ranking h2", text: "JIEUM 랭킹"
+  end
+
   test "랭킹 갱신 시각은 한국 날짜와 시간을 표시한다" do
     travel_to Time.utc(2026, 11, 1, 20, 30) do
       get root_path
@@ -113,7 +136,6 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
 
       assert_response :success
       assert_select "[role=status] h2", text: "검색 결과가 없습니다"
-      assert_select "a[href=?]", product_path(@product1), count: 0
     end
   end
 
@@ -139,7 +161,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "[role=status] p", text: "“#{query}”에 해당하는 상품이 없습니다."
     assert_select "a[href=?]", root_path(category: "상의"), text: "검색 초기화"
     assert_select "#ranking", count: 0
-    assert_select "a[href=?]", product_path(@product1), count: 0
+    assert_select "[role=status] section h3", text: "이런 상품은 어떠세요"
     assert_select "a[href=?]", new_product_path, count: 0
   end
 

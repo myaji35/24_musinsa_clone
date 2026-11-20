@@ -1,0 +1,20 @@
+<div class="max-w-[400px] mx-auto px-gutter py-8 md:py-12">
+  <%= render "my/nav", current: :info %>
+  <h1 class="text-title font-semibold mb-6">내 정보</h1>
+  <dl class="space-y-4 text-ui mb-6">
+    <div><dt class="font-medium">이름</dt><dd><%= current_user.name %></dd></div>
+    <div><dt class="font-medium">이메일</dt><dd><%= current_user.email %></dd></div>
+    <% if current_user.staff? %>
+      <div><dt class="font-medium">역할</dt><dd><%= current_user.role_label %></dd></div>
+    <% end %>
+    <div><dt class="font-medium">가입일</dt><dd><%= current_user.created_at.strftime("%Y-%m-%d") %></dd></div>
+  </dl>
+  <p class="flex gap-4 text-ui mb-6">
+    <%= link_to "이름 수정", edit_my_path, class: "tap btn-text" %>
+    <%= link_to "비밀번호 변경", edit_my_password_path, class: "tap btn-text" %>
+  </p>
+  <%= button_to "로그아웃", logout_path, method: :delete, class: "btn btn-secondary w-full" %>
+  <% unless current_user.staff? %>
+    <p class="text-xs mt-6"><%= link_to "회원 탈퇴", withdraw_my_path %></p>
+  <% end %>
+</div>

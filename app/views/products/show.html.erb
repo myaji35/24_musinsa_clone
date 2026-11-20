@@ -1,6 +1,6 @@
 <div class="px-gutter py-6 lg:py-8">
 
-  <% if mall_admin? %>
+  <% if mall_staff? %>
     <div data-testid="publication-bar" class="flex flex-wrap items-center justify-between gap-3 p-4 mb-6 text-sm border <%= @product.published? ? 'border-gray-300 bg-white' : 'border-amber-400 bg-amber-50' %>">
       <p class="font-medium text-gray-900">
         <% if @product.published? %>
@@ -39,12 +39,12 @@
     <!-- 좌측: 이미지 갤러리 -->
     <% gallery = @product.runway_video.attached? ? [] : @product.gallery_image_urls %>
     <% if gallery.any? %>
-    <%# 1열 세로 사진 스택 — 사진마다 착용 정보, 실물은 '실물 사진' %>
-    <div class="grid grid-cols-1 gap-0 self-start" data-testid="product-gallery">
+    <div class="min-w-0 self-start">
+    <div class="flex gap-2 overflow-x-auto snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-gutter px-gutter scroll-px-gutter lg:mx-0 lg:px-0 lg:grid lg:grid-cols-1 lg:gap-0 lg:overflow-visible lg:snap-none self-start" data-testid="product-gallery" role="region" aria-label="상품 사진, 옆으로 넘겨 보기" tabindex="0">
       <% gallery.each_with_index do |url, i| %>
         <% real = url.end_with?("/real.jpg") %>
         <%# 돋보기 확대는 맨 위 큰 사진에만 %>
-        <figure class="relative col-span-full! bg-placeholder overflow-hidden <%= 'col-span-2 cursor-zoom-in' if i.zero? %>" data-real="<%= real %>"
+        <figure class="relative col-span-full! bg-placeholder overflow-hidden w-[86%] shrink-0 snap-start md:w-[calc(50%-0.25rem)] lg:w-auto <%= 'col-span-2 cursor-zoom-in' if i.zero? %>" data-real="<%= real %>"
                 <%= tag.attributes(data: { controller: "zoom", action: "mouseenter->zoom#enter mousemove->zoom#move mouseleave->zoom#leave" }) if i.zero? %>>
           <%= catalog_image_tag url, sizes: "(min-width: 1024px) 50vw, 100vw", # 돋보기 확대용으로 작은 칸도 1440px 사진을 받는다
                 alt: "#{@product.name} #{real ? '실물 사진' : '착용 사진'}", loading: (i.zero? ? "eager" : "lazy"),
@@ -54,6 +54,10 @@
           </figcaption>
         </figure>
       <% end %>
+    </div>
+    <% if gallery.size > 1 %>
+      <p class="lg:hidden mt-2 text-caption text-ink-3">사진 <%= gallery.size %>장 · 옆으로 넘겨 보기</p>
+    <% end %>
     </div>
     <% else %>
     <div class="space-y-4">
@@ -118,7 +122,7 @@
         <fieldset data-testid="variant-picker" class="border-y border-line py-4 space-y-4" <%= "disabled" if @variants.empty? %>>
           <legend class="sr-only">색상 / 사이즈</legend>
           <p aria-hidden="true" class="block w-full mb-3 text-ui font-medium">색상 / 사이즈</p>
-          <% first_available = @variants.find { |variant| variant.stock.to_i.positive? } %>
+          <% available_variants = @variants.select { |variant| variant.stock.to_i.positive? } %>
           <% @variants.group_by(&:color).each do |color, variants| %>
             <div class="flex items-start gap-3 w-full">
               <span class="flex items-center gap-1.5 w-20 sm:w-28 shrink-0 text-ui text-ink-2">
@@ -128,14 +132,15 @@
                 <% variants.sort_by { |variant| Product::SIZE_ORDER.index(variant.size.to_s.upcase) || 99 }.each do |variant| %>
                   <% sold_out = !variant.stock.to_i.positive? %>
                   <label class="relative">
-                    <input type="radio" name="variant_id" value="<%= variant.id %>" class="peer sr-only" <%= "checked" if variant == first_available %> <%= "disabled" if sold_out %> aria-label="<%= color %> <%= variant.size %><%= ' 품절' if sold_out %>">
+                    <input type="radio" name="variant_id" value="<%= variant.id %>" class="peer sr-only" <%= "checked" if available_variants.one? && variant == available_variants.first %> <%= sold_out ? "disabled" : "required" %> <% if available_variants.many? %>aria-describedby="variant-hint"<% end %> aria-label="<%= color %> <%= variant.size %><%= ' 품절' if sold_out %>">
                     <span class="grid place-items-center min-w-12 h-11 px-3 border text-ui font-medium cursor-pointer peer-checked:border-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-disabled:cursor-not-allowed peer-disabled:text-ink-3 peer-disabled:line-through border-hairline"><%= variant.size %></span>
                   </label>
                 <% end %>
               </div>
             </div>
           <% end %>
-          <%= link_to "사이즈 안내", (@product.detail_page&.dig("size") ? "#detail-size" : "#product-spec"), class: "btn-text text-ui" %>
+          <%= link_to "사이즈 안내", (@product.detail_page&.dig("size") ? "#detail-size" : "#product-spec"), class: "btn-text text-ui tap" %>
+          <% if available_variants.many? %><p class="text-caption text-ink-2" id="variant-hint">색상·사이즈를 선택해 주세요</p><% end %>
         </fieldset>
         <p class="text-caption text-ink-2"><span class="font-medium">무료배송</span> · <%= delivery_eta %> 도착 예정</p>
         <%= f.label :quantity, "수량", class: "block text-ui font-medium" %>
@@ -210,7 +215,7 @@
       <% end %>
     </div>
 
-    <% if mall_admin? %>
+    <% if mall_staff? %>
       <%= link_to "모델 선택", product_model_pick_path(@product), class: "inline-block border border-black px-4 py-2 mb-4 font-bold" %>
       <%= form_with model: [@product, Review.new], class: "border border-black p-6 mb-8 space-y-4" do |form| %>
         <div>

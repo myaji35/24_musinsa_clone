@@ -10,6 +10,26 @@ class PoliciesControllerTest < ActionDispatch::IntegrationTest
     Rails.configuration.x.privacy = @original_privacy
   end
 
+  test "개인정보처리방침에 회원 탈퇴 접속기록 가입 연령과 권리 행사 링크를 표시한다" do
+    get privacy_policy_path
+
+    assert_response :success
+    assert_includes response.body, "회원 탈퇴"
+    assert_includes response.body, "접속기록"
+    assert_includes response.body, "만 14세"
+    assert_select "article a.btn-text[href=?]", my_path, text: "내 정보"
+    assert_select "article a.btn-text[href=?]", withdraw_my_path, text: "회원 탈퇴"
+  end
+
+  test "이용약관에 회원 탈퇴 및 자격 정지 조문을 표시한다" do
+    get terms_policy_path
+
+    assert_response :success
+    assert_select "h2", text: "제17조 (회원 가입)"
+    assert_select "h2", text: "제18조 (회원 탈퇴 및 자격 정지)"
+    assert_select "h2", text: "제19조 (취소·반품·교환 요청)"
+  end
+
   test "로그인 없이 처리방침과 설정의 보유 기간을 표시한다" do
     get privacy_policy_path
 

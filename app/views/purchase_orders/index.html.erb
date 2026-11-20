@@ -58,14 +58,16 @@
                   <%= purchase_order_status_label(po.status) %>
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">₩<%= number_with_delimiter(po.total_amount.to_i) %></td>
+              <td class="px-6 py-4 whitespace-nowrap"><%= admin_krw(po.total_amount) %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= po.expected_delivery_date&.strftime("%Y-%m-%d") || "-" %></td>
               <td class="px-6 py-4 whitespace-nowrap"><%= po.created_at.strftime("%Y-%m-%d") %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center gap-2">
                 <%= link_to "상세", purchase_order_path(po), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
                 <% if po.status == "draft" %>
                   <%= link_to "수정", edit_purchase_order_path(po), class: "text-blue-600 hover:text-blue-900 mr-3" %>
-                  <%= button_to "취소", purchase_order_path(po), method: :delete, form: { data: { turbo_confirm: "정말 취소하시겠습니까?" } }, class: "text-red-600 hover:text-red-900" %>
+                  <% if mall_admin? %>
+                    <%= button_to "취소", purchase_order_path(po), method: :delete, form: { data: { turbo_confirm: "정말 취소하시겠습니까?" } }, class: "text-red-600 hover:text-red-900" if mall_admin? %>
+                  <% end %>
                 <% end %>
               </td>
             </tr>
@@ -84,13 +86,13 @@
           </div>
           <div class="mt-2"><%= po.supplier.name %></div>
           <div class="mt-2 flex justify-between items-center gap-2">
-            <strong>₩<%= number_with_delimiter(po.total_amount.to_i) %></strong>
+            <strong><%= admin_krw(po.total_amount) %></strong>
             <span>납품 <%= po.expected_delivery_date&.strftime("%Y-%m-%d") || "-" %></span>
           </div>
           <% if po.status == "draft" %>
             <div class="mt-3 flex items-center gap-3 text-sm font-medium">
               <%= link_to "수정", edit_purchase_order_path(po), class: "tap text-blue-600 hover:text-blue-900" %>
-              <%= button_to "취소", purchase_order_path(po), method: :delete, form: { data: { turbo_confirm: "정말 취소하시겠습니까?" } }, class: "tap text-red-600 hover:text-red-900" %>
+              <%= button_to "취소", purchase_order_path(po), method: :delete, form: { data: { turbo_confirm: "정말 취소하시겠습니까?" } }, class: "tap text-red-600 hover:text-red-900" if mall_admin? %>
             </div>
           <% end %>
         </li>

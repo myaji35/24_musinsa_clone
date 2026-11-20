@@ -1,4 +1,6 @@
 class ProductCutoutsController < ApplicationController
+  skip_before_action :require_admin
+  before_action :require_staff
   before_action :set_product
 
   def show

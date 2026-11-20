@@ -1,4 +1,8 @@
 class AdminOrdersController < ApplicationController
+  include PersonalDataAccessLogging
+  skip_before_action :require_admin
+  before_action :require_staff
+
   def index
     @order_statuses = %w[pending paid shipped delivered cancelled]
     @selected_status = params[:status] if @order_statuses.include?(params[:status])
@@ -7,6 +11,7 @@ class AdminOrdersController < ApplicationController
     @orders = @orders.where(status: @selected_status) if @selected_status
     @traffic_summaries = %i[platform character video].index_with { |by| Order.traffic_summary(by: by) }
     @traffic_characters = Character.where(id: @traffic_summaries[:character].map(&:first)).pluck(:id, :name).to_h
+    log_personal_data_access(screen: "주문 관리")
   end
 
   def confirm_payment

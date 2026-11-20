@@ -1,4 +1,7 @@
 class SupplierClaimsController < ApplicationController
+  skip_before_action :require_admin
+  before_action :require_staff
+
   def index
     @claims = SupplierClaim.includes(:supplier).order(created_at: :desc)
   end

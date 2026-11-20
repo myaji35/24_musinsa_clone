@@ -5,7 +5,7 @@ class OperatorsTest < ActiveSupport::TestCase
   setup do
     Rails.application.load_tasks unless Rake::Task.task_defined?("operators:create")
     @environment = ENV.to_h.slice("EMAIL", "NAME", "TEMP_PASSWORD", "ACCOUNT_SLUG")
-    ENV["EMAIL"] = "operator@example.com"
+    ENV["EMAIL"] = "new-operator@example.com"
     ENV["NAME"] = "운영자"
     ENV["TEMP_PASSWORD"] = "tiny"
     ENV.delete("ACCOUNT_SLUG")
@@ -21,6 +21,7 @@ class OperatorsTest < ActiveSupport::TestCase
       run_task
     end
     user = User.find_by!(email: ENV["EMAIL"])
+    assert user.operator?
     assert_equal Account.primary, user.account
     assert user.must_change_password?
     assert user.authenticate("tiny")
@@ -37,6 +38,13 @@ class OperatorsTest < ActiveSupport::TestCase
     assert_nil user.password_changed_at
     assert user.authenticate("reset-secret")
     assert_not user.authenticate("tiny")
+  end
+
+  test "관리자 계정을 재설정해도 관리자 역할을 유지한다" do
+    user = users(:one)
+    ENV["EMAIL"] = user.email
+    run_task
+    assert user.reload.admin?
   end
 
   test "필수 환경 변수가 없으면 비밀번호를 출력하지 않고 종료한다" do

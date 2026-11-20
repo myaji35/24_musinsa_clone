@@ -12,7 +12,7 @@ class User < ApplicationRecord
 
   def suspended? = suspended_at.present?
 
-  validates :password, length: { minimum: 8 }, allow_nil: true
+  validates :password, length: { minimum: 8 }, allow_nil: true, unless: :must_change_password?
 
   normalizes :email, with: ->(email) { email.strip.downcase }
   validates :email, presence: true, uniqueness: { case_sensitive: false },

@@ -45,8 +45,8 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <% if mall_admin? %>
-                  <%= link_to "수정", edit_supplier_path(supplier), class: "text-indigo-600 hover:text-indigo-900 mr-3" if mall_admin? %>
-                  <%= link_to "비활성화", supplier_path(supplier), method: :delete, data: { turbo_method: :delete, turbo_confirm: "정말 비활성화하시겠습니까?" }, class: "text-red-600 hover:text-red-900" if mall_admin? %>
+                  <%= link_to "수정", edit_supplier_path(supplier), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
+                  <%= link_to "비활성화", supplier_path(supplier), method: :delete, data: { turbo_method: :delete, turbo_confirm: "정말 비활성화하시겠습니까?" }, class: "text-red-600 hover:text-red-900" %>
                 <% end %>
               </td>
             </tr>

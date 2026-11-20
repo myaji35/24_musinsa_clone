@@ -30,11 +30,11 @@ module ApplicationHelper
 
   def operator_menu_groups
     groups = [
-      [ "발주·거래처", [ [ "발주", purchase_orders_path ], [ "거래처", suppliers_path ], ( [ "위챗", wechat_index_path ] if mall_admin? ), [ "클레임", supplier_claims_path ] ] ],
-      [ "주문·재고", [ [ "주문 관리", admin_orders_path ], [ "주문 클레임", admin_order_claims_path ], ( [ "판매현황", sales_path ] if mall_admin? ), [ "재고관리", inventory_scan_path ] ] ],
+      [ "발주·거래처", [ [ "발주", purchase_orders_path ], [ "거래처", suppliers_path ], ([ "위챗", wechat_index_path ] if mall_admin?), [ "클레임", supplier_claims_path ] ] ],
+      [ "주문·재고", [ [ "주문 관리", admin_orders_path ], [ "주문 클레임", admin_order_claims_path ], ([ "판매현황", sales_path ] if mall_admin?), [ "재고관리", inventory_scan_path ] ] ],
       [ "상품", [ [ "상품 입고(엑셀)", supplier_imports_path ], [ "상품정보 입력", product_info_notices_path ] ] ],
-      [ "분석", [ ( [ "상품분석", product_analyses_path ] if mall_admin? ), ( [ "트렌드", trends_path ] if mall_admin? ), [ "대시보드", dashboard_index_path ], ( [ "KPI", kpi_path ] if mall_admin? ) ] ],
-      [ "", [ ( [ "의견함 (#{feedback_new_count})", feedbacks_admin_index_path ] if mall_admin? ), ( [ "사용자 관리", admin_users_path ] if mall_admin? ), ( [ "접속기록", admin_access_logs_path ] if mall_admin? ) ] ]
+      [ "분석", [ ([ "상품분석", product_analyses_path ] if mall_admin?), ([ "트렌드", trends_path ] if mall_admin?), [ "대시보드", dashboard_index_path ], ([ "KPI", kpi_path ] if mall_admin?) ] ],
+      [ "", [ ([ "의견함 (#{feedback_new_count})", feedbacks_admin_index_path ] if mall_admin?), ([ "사용자 관리", admin_users_path ] if mall_admin?), ([ "접속기록", admin_access_logs_path ] if mall_admin?) ] ]
     ]
     groups.map { |name, links| [ name, links.compact ] }.reject { |_, links| links.empty? }
   end
